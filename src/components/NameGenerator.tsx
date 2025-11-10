@@ -60,29 +60,148 @@ function NameGenerator({ onBack }: NameGeneratorProps) {
     '午': '火', '未': '土', '申': '金', '酉': '金', '戌': '土', '亥': '水'
   }
   
-  // 计算生辰八字
-  const calculateBazi = (birthDate: string, birthTime: string): string[] => {
-    if (!birthDate) return []
+  // 计算立春日期（简化算法，1900-2100年）
+  const getLichunDate = (year: number): Date => {
+    // 立春通常在2月4日或5日
+    // 1900-1999: 2月4日或5日
+    // 2000-2099: 2月4日
+    // 简化处理：1900-1999年，能被4整除的年份是2月4日，否则是2月5日
+    // 2000年后都是2月4日
+    if (year >= 2000) {
+      return new Date(year, 1, 4) // 2月4日
+    } else {
+      const day = year % 4 === 0 ? 4 : 5
+      return new Date(year, 1, day)
+    }
+  }
+  
+  // 计算节气对应的月份（简化版，实际需要精确的节气时间）
+  const getJieqiMonth = (_year: number, month: number, day: number): number => {
+    // 节气大致日期（简化版）
+    const jieqiDates = [
+      [2, 4],   // 立春 2月4日
+      [3, 6],   // 惊蛰 3月6日
+      [4, 5],   // 清明 4月5日
+      [5, 6],   // 立夏 5月6日
+      [6, 6],   // 芒种 6月6日
+      [7, 7],   // 小暑 7月7日
+      [8, 8],   // 立秋 8月8日
+      [9, 8],   // 白露 9月8日
+      [10, 8],  // 寒露 10月8日
+      [11, 7],  // 立冬 11月7日
+      [12, 7],  // 大雪 12月7日
+      [1, 6]    // 小寒 1月6日（次年）
+    ]
     
-    const date = new Date(birthDate)
+    // 判断当前日期属于哪个节气月
+    for (let i = 0; i < jieqiDates.length; i++) {
+      const [jieqiMonth, jieqiDay] = jieqiDates[i]
+      if (month < jieqiMonth || (month === jieqiMonth && day < jieqiDay)) {
+        // 返回上一个节气月（农历月份）
+        return i === 0 ? 12 : i // 如果小于立春，返回12月（上一年）
+      }
+    }
+    return 12 // 12月（小寒后）
+  }
+  
+  // 计算年柱（根据立春分界）
+  const calculateYearPillar = (date: Date): string => {
     const year = date.getFullYear()
     const month = date.getMonth() + 1
+    const day = date.getDate()
     
-    // 计算年柱（简化版，实际需要根据立春分界）
-    const yearGan = tiangan[(year - 4) % 10]
-    const yearZhi = dizhi[(year - 4) % 12]
+    // 判断是否在立春之前
+    const lichunDate = getLichunDate(year)
+    const currentDate = new Date(year, month - 1, day)
     
-    // 计算月柱（简化版，实际需要根据节气）
-    const monthGan = tiangan[((year % 5 === 0 ? 2 : year % 5) * 2 + month - 1) % 10]
-    const monthZhi = dizhi[(month + 1) % 12]
+    // 如果当前日期在立春之前，使用上一年的年柱
+    let actualYear = year
+    if (currentDate < lichunDate) {
+      actualYear = year - 1
+    }
     
-    // 计算日柱（简化版，实际需要复杂的公式）
-    const baseDate = new Date(1900, 0, 1)
-    const daysDiff = Math.floor((date.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24))
-    const dayGan = tiangan[(daysDiff + 6) % 10]
-    const dayZhi = dizhi[(daysDiff + 8) % 12]
+    // 计算年柱天干地支
+    const yearGan = tiangan[(actualYear - 4) % 10]
+    const yearZhi = dizhi[(actualYear - 4) % 12]
     
-    // 计算时柱
+    return yearGan + yearZhi
+  }
+  
+  // 计算月柱（根据节气）
+  const calculateMonthPillar = (date: Date, yearPillar: string): string => {
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    
+    // 判断是否在立春之前
+    const lichunDate = getLichunDate(year)
+    const currentDate = new Date(year, month - 1, day)
+    let actualYear = year
+    if (currentDate < lichunDate) {
+      actualYear = year - 1
+    }
+    
+    // 获取节气月（农历月份，从立春开始为正月）
+    const jieqiMonth = getJieqiMonth(actualYear, month, day)
+    
+    // 月支：正月为寅，二月为卯，以此类推
+    const monthZhi = dizhi[(jieqiMonth + 1) % 12] // +1是因为正月对应寅（索引2）
+    
+    // 月干：根据年干和月支计算（五虎遁）
+    // 甲己之年丙作首，乙庚之年戊为头，丙辛之年寻庚起，丁壬壬寅顺水流，若问戊癸何处起，甲寅之上好追求
+    const yearGan = yearPillar[0]
+    const yearGanIndex = tiangan.indexOf(yearGan)
+    
+    let monthGanIndex = 0
+    if (yearGanIndex === 0 || yearGanIndex === 5) { // 甲或己
+      monthGanIndex = (2 + jieqiMonth - 1) % 10 // 丙作首，正月为丙
+    } else if (yearGanIndex === 1 || yearGanIndex === 6) { // 乙或庚
+      monthGanIndex = (4 + jieqiMonth - 1) % 10 // 戊为头
+    } else if (yearGanIndex === 2 || yearGanIndex === 7) { // 丙或辛
+      monthGanIndex = (6 + jieqiMonth - 1) % 10 // 寻庚起
+    } else if (yearGanIndex === 3 || yearGanIndex === 8) { // 丁或壬
+      monthGanIndex = (8 + jieqiMonth - 1) % 10 // 壬寅顺水流
+    } else { // 戊或癸
+      monthGanIndex = (0 + jieqiMonth - 1) % 10 // 甲寅之上
+    }
+    
+    const monthGan = tiangan[monthGanIndex]
+    
+    return monthGan + monthZhi
+  }
+  
+  // 计算日柱（使用准确的公式）
+  const calculateDayPillar = (date: Date): string => {
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    
+    // 使用1900年1月1日为基准日（甲子日）
+    // 1900年1月1日是甲子日（天干索引0，地支索引0）
+    const baseYear = 1900
+    const baseMonth = 1
+    const baseDay = 1
+    
+    // 计算从基准日到目标日的天数
+    const baseDate = new Date(baseYear, baseMonth - 1, baseDay)
+    const targetDate = new Date(year, month - 1, day)
+    const daysDiff = Math.floor((targetDate.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24))
+    
+    // 计算日柱
+    // 天干：每10天循环
+    // 地支：每12天循环
+    const dayGanIndex = (daysDiff % 10 + 0) % 10 // 基准日是甲（索引0）
+    const dayZhiIndex = (daysDiff % 12 + 0) % 12 // 基准日是子（索引0）
+    
+    const dayGan = tiangan[dayGanIndex]
+    const dayZhi = dizhi[dayZhiIndex]
+    
+    return dayGan + dayZhi
+  }
+  
+  // 计算时柱（根据日干和时辰）
+  const calculateHourPillar = (_date: Date, dayPillar: string, birthTime: string): string => {
+    // 获取时辰（子时0-1，丑时1-3，寅时3-5...）
     let hour = 0
     if (birthTime) {
       const [h] = birthTime.split(':').map(Number)
@@ -90,12 +209,80 @@ function NameGenerator({ onBack }: NameGeneratorProps) {
     } else {
       hour = 12 // 默认中午
     }
-    const hourIndex = Math.floor((hour + 1) / 2) % 12
-    const dayGanIndex = tiangan.indexOf(dayGan)
-    const hourGan = tiangan[(dayGanIndex * 2 + hourIndex) % 10]
+    
+    // 计算时辰索引（子时0，丑时1，寅时2...）
+    // 子时：23-1点，丑时：1-3点，寅时：3-5点...
+    let hourIndex = 0
+    if (hour >= 23 || hour < 1) {
+      hourIndex = 0 // 子时
+    } else if (hour >= 1 && hour < 3) {
+      hourIndex = 1 // 丑时
+    } else if (hour >= 3 && hour < 5) {
+      hourIndex = 2 // 寅时
+    } else if (hour >= 5 && hour < 7) {
+      hourIndex = 3 // 卯时
+    } else if (hour >= 7 && hour < 9) {
+      hourIndex = 4 // 辰时
+    } else if (hour >= 9 && hour < 11) {
+      hourIndex = 5 // 巳时
+    } else if (hour >= 11 && hour < 13) {
+      hourIndex = 6 // 午时
+    } else if (hour >= 13 && hour < 15) {
+      hourIndex = 7 // 未时
+    } else if (hour >= 15 && hour < 17) {
+      hourIndex = 8 // 申时
+    } else if (hour >= 17 && hour < 19) {
+      hourIndex = 9 // 酉时
+    } else if (hour >= 19 && hour < 21) {
+      hourIndex = 10 // 戌时
+    } else {
+      hourIndex = 11 // 亥时
+    }
+    
     const hourZhi = dizhi[hourIndex]
     
-    return [yearGan + yearZhi, monthGan + monthZhi, dayGan + dayZhi, hourGan + hourZhi]
+    // 时干：根据日干和时支计算（五鼠遁）
+    // 甲己还生甲，乙庚丙作初，丙辛从戊起，丁壬庚子居，戊癸何方发，壬子是真途
+    const dayGan = dayPillar[0]
+    const dayGanIndex = tiangan.indexOf(dayGan)
+    
+    let hourGanIndex = 0
+    if (dayGanIndex === 0 || dayGanIndex === 5) { // 甲或己
+      hourGanIndex = (0 + hourIndex) % 10 // 甲己还生甲
+    } else if (dayGanIndex === 1 || dayGanIndex === 6) { // 乙或庚
+      hourGanIndex = (2 + hourIndex) % 10 // 乙庚丙作初
+    } else if (dayGanIndex === 2 || dayGanIndex === 7) { // 丙或辛
+      hourGanIndex = (4 + hourIndex) % 10 // 丙辛从戊起
+    } else if (dayGanIndex === 3 || dayGanIndex === 8) { // 丁或壬
+      hourGanIndex = (6 + hourIndex) % 10 // 丁壬庚子居
+    } else { // 戊或癸
+      hourGanIndex = (8 + hourIndex) % 10 // 戊癸何方发，壬子是真途
+    }
+    
+    const hourGan = tiangan[hourGanIndex]
+    
+    return hourGan + hourZhi
+  }
+  
+  // 计算生辰八字（完整版）
+  const calculateBazi = (birthDate: string, birthTime: string): string[] => {
+    if (!birthDate) return []
+    
+    const date = new Date(birthDate)
+    
+    // 计算年柱（根据立春分界）
+    const yearPillar = calculateYearPillar(date)
+    
+    // 计算月柱（根据节气和年柱）
+    const monthPillar = calculateMonthPillar(date, yearPillar)
+    
+    // 计算日柱
+    const dayPillar = calculateDayPillar(date)
+    
+    // 计算时柱（根据日柱和时辰）
+    const hourPillar = calculateHourPillar(date, dayPillar, birthTime)
+    
+    return [yearPillar, monthPillar, dayPillar, hourPillar]
   }
   
   // 分析五行
@@ -181,21 +368,23 @@ function NameGenerator({ onBack }: NameGeneratorProps) {
       '豪', '超', '翔', '龙', '鹏', '安', '峰', '瑞', '凯', '勇',
       '健', '军', '赐', '成', '阳', '德', '诚', '华', '清', '秀',
       '康', '泽', '启', '宏', '辰', '睿', '智', '信', '仁', '义',
-      '毅', '刚', '正', '直', '方', '圆', '和', '平', '乐', '福',
-      '祥', '吉', '利', '顺', '通', '达', '进', '步', '升', '高',
-      '兴', '旺', '发', '财', '富', '贵', '荣', '华', '昌', '盛',
-      '光', '亮', '新', '鲜', '美', '好', '优', '良', '佳', '妙',
-      '奇', '特', '异', '常', '非', '凡', '出', '众', '超', '群',
-      '卓', '越', '杰', '出', '优', '秀', '精', '英', '才', '华',
-      '学', '识', '见', '闻', '知', '识', '智', '慧', '聪', '明',
-      '敏', '捷', '快', '速', '灵', '活', '机', '动', '变', '化',
-      '创', '新', '改', '革', '开', '拓', '进', '取', '奋', '斗',
-      '努', '力', '勤', '奋', '刻', '苦', '专', '注', '认', '真',
-      '负', '责', '担', '当', '承', '诺', '守', '信', '诚', '实',
-      '真', '诚', '善', '良', '友', '爱', '和', '睦', '团', '结',
-      '合', '作', '协', '调', '配', '合', '支', '持', '帮', '助',
-      '关', '爱', '照', '顾', '体', '贴', '温', '柔', '细', '心',
-      '周', '到', '完', '美', '全', '面', '深', '刻', '透', '彻'
+      '毅', '刚', '正', '直', '和', '平', '乐', '福', '祥', '吉',
+      '利', '顺', '通', '达', '进', '升', '高', '兴', '旺', '荣',
+      '华', '昌', '盛', '光', '亮', '新', '美', '优', '良', '佳',
+      '妙', '奇', '凡', '众', '超', '群', '卓', '越', '杰', '秀',
+      '精', '英', '才', '华', '学', '识', '知', '识', '智', '慧',
+      '聪', '明', '敏', '捷', '灵', '活', '创', '新', '开', '拓',
+      '进', '取', '奋', '斗', '勤', '奋', '专', '注', '认', '真',
+      '承', '诺', '守', '信', '诚', '实', '真', '诚', '善', '良',
+      '友', '爱', '和', '睦', '温', '柔', '周', '到', '完', '美',
+      '全', '面', '深', '刻', '透', '彻', '子', '宸', '睿', '哲',
+      '思', '源', '修', '齐', '治', '平', '君', '礼', '义', '廉',
+      '忠', '孝', '节', '温', '良', '恭', '俭', '让', '谦', '逊',
+      '宽', '厚', '仁', '慈', '爱', '钰', '瑾', '琛', '璞', '琨',
+      '琰', '琮', '璎', '珞', '璨', '璟', '瑜', '琦', '瑶', '琼',
+      '润', '泽', '澜', '涛', '波', '潮', '瀚', '海', '江', '河',
+      '湖', '溪', '泉', '源', '流', '清', '澈', '澄', '湛', '深',
+      '渊', '洋', '浩', '瀚', '沛', '沐', '浴', '洗', '涤', '净'
     ]
 
     const femaleChars = [
@@ -203,53 +392,55 @@ function NameGenerator({ onBack }: NameGeneratorProps) {
       '桐', '悦', '琪', '欣', '晴', '妍', '颖', '雅', '儿', '婷',
       '柔', '梦', '菲', '晨', '静', '宁', '和', '平', '美', '丽',
       '慧', '敏', '灵', '雪', '月', '星', '花', '兰', '梅', '竹',
-      '菊', '莲', '荷', '桂', '桃', '梨', '樱', '杏', '李', '橙',
-      '柠', '柚', '桔', '彩', '光', '亮', '清', '净', '洁', '纯',
-      '真', '诚', '实', '信', '忠', '义', '仁', '德', '礼', '智',
-      '勇', '强', '健', '康', '安', '全', '完', '整', '齐', '一',
-      '统', '合', '和', '睦', '团', '结', '友', '爱', '关', '怀',
-      '体', '贴', '温', '柔', '细', '心', '周', '到', '完', '美',
-      '优', '雅', '高', '贵', '典', '雅', '端', '庄', '大', '方',
-      '文', '静', '秀', '气', '清', '新', '自', '然', '纯', '真',
-      '可', '爱', '活', '泼', '开', '朗', '乐', '观', '积', '极',
-      '向', '上', '进', '取', '努', '力', '勤', '奋', '刻', '苦',
-      '专', '注', '认', '真', '负', '责', '担', '当', '承', '诺',
-      '守', '信', '诚', '实', '真', '诚', '善', '良', '友', '爱',
-      '和', '睦', '团', '结', '合', '作', '协', '调', '配', '合',
-      '支', '持', '帮', '助', '关', '爱', '照', '顾', '体', '贴',
-      '温', '柔', '细', '心', '周', '到', '完', '美', '全', '面',
-      '深', '刻', '透', '彻', '精', '细', '微', '妙', '巧', '妙',
-      '奇', '特', '异', '常', '非', '凡', '出', '众', '超', '群',
-      '卓', '越', '杰', '出', '优', '秀', '精', '英', '才', '华',
-      '学', '识', '见', '闻', '知', '识', '智', '慧', '聪', '明',
-      '敏', '捷', '快', '速', '灵', '活', '机', '动', '变', '化',
-      '创', '新', '改', '革', '开', '拓', '进', '取', '奋', '斗',
-      '努', '力', '勤', '奋', '刻', '苦', '专', '注', '认', '真',
-      '负', '责', '担', '当', '承', '诺', '守', '信', '诚', '实',
-      '真', '诚', '善', '良', '友', '爱', '和', '睦', '团', '结',
-      '合', '作', '协', '调', '配', '合', '支', '持', '帮', '助',
-      '关', '爱', '照', '顾', '体', '贴', '温', '柔', '细', '心',
-      '周', '到', '完', '美', '全', '面', '深', '刻', '透', '彻'
+      '菊', '莲', '荷', '桂', '桃', '梨', '樱', '杏', '李', '彩',
+      '光', '亮', '清', '净', '洁', '纯', '真', '诚', '实', '信',
+      '仁', '德', '礼', '智', '勇', '健', '康', '安', '全', '完',
+      '整', '齐', '友', '爱', '关', '怀', '温', '柔', '周', '到',
+      '完', '美', '优', '雅', '高', '贵', '典', '雅', '端', '庄',
+      '大', '方', '文', '静', '秀', '气', '清', '新', '自', '然',
+      '纯', '真', '可', '爱', '活', '泼', '开', '朗', '乐', '观',
+      '积', '极', '向', '上', '进', '取', '勤', '奋', '专', '注',
+      '认', '真', '承', '诺', '守', '信', '诚', '实', '善', '良',
+      '友', '爱', '和', '睦', '精', '细', '微', '妙', '巧', '妙',
+      '奇', '凡', '众', '超', '群', '卓', '越', '杰', '秀', '精',
+      '英', '才', '华', '学', '识', '知', '识', '智', '慧', '聪',
+      '明', '敏', '捷', '灵', '活', '创', '新', '开', '拓', '进',
+      '取', '勤', '奋', '专', '注', '认', '真', '承', '诺', '守',
+      '信', '诚', '实', '善', '良', '友', '爱', '和', '睦', '温',
+      '柔', '周', '到', '完', '美', '子', '若', '如', '初', '念',
+      '忆', '惜', '怜', '珍', '宝', '珠', '玉', '翡', '翠', '珊',
+      '瑚', '玛', '瑙', '水', '晶', '钻', '石', '金', '银', '婉',
+      '约', '娴', '淑', '惠', '贤', '德', '容', '貌', '姿', '色',
+      '态', '度', '风', '韵', '气', '质', '品', '格', '钰', '瑾',
+      '琛', '璞', '琨', '琰', '琮', '璎', '珞', '璨', '璟', '瑜',
+      '琦', '琼', '润', '泽', '澜', '沁', '沐', '浴', '洗', '涤',
+      '澄', '澈', '湛', '深', '渊', '洋', '沛', '涵', '漪', '涟',
+      '波', '潮', '瀚', '海', '江', '河', '湖', '溪', '泉', '源',
+      '流', '清', '澈', '澄', '湛', '深', '渊', '洋', '沛', '沐'
     ]
 
     const neutralChars = [
       '文', '静', '远', '雅', '源', '心', '齐', '慧', '明', '清',
       '安', '秀', '诚', '德', '华', '思', '博', '宁', '和', '平',
       '康', '乐', '福', '祥', '瑞', '吉', '利', '顺', '通', '达',
-      '进', '步', '升', '高', '兴', '旺', '发', '财', '富', '贵',
-      '荣', '华', '昌', '盛', '光', '亮', '新', '鲜', '美', '好',
-      '优', '良', '佳', '妙', '奇', '特', '异', '常', '非', '凡',
-      '出', '众', '超', '群', '卓', '越', '杰', '出', '优', '秀',
-      '精', '英', '才', '华', '学', '识', '见', '闻', '知', '识',
-      '智', '慧', '聪', '明', '敏', '捷', '快', '速', '灵', '活',
-      '机', '动', '变', '化', '创', '新', '改', '革', '开', '拓',
-      '进', '取', '奋', '斗', '努', '力', '勤', '奋', '刻', '苦',
-      '专', '注', '认', '真', '负', '责', '担', '当', '承', '诺',
-      '守', '信', '诚', '实', '真', '诚', '善', '良', '友', '爱',
-      '和', '睦', '团', '结', '合', '作', '协', '调', '配', '合',
-      '支', '持', '帮', '助', '关', '爱', '照', '顾', '体', '贴',
-      '温', '柔', '细', '心', '周', '到', '完', '美', '全', '面',
-      '深', '刻', '透', '彻', '精', '细', '微', '妙', '巧', '妙'
+      '进', '升', '高', '兴', '旺', '荣', '华', '昌', '盛', '光',
+      '亮', '新', '美', '好', '优', '良', '佳', '妙', '奇', '凡',
+      '众', '超', '群', '卓', '越', '杰', '秀', '精', '英', '才',
+      '华', '学', '识', '知', '识', '智', '慧', '聪', '明', '敏',
+      '捷', '灵', '活', '创', '新', '开', '拓', '进', '取', '奋',
+      '斗', '勤', '奋', '专', '注', '认', '真', '承', '诺', '守',
+      '信', '诚', '实', '真', '诚', '善', '良', '友', '爱', '和',
+      '睦', '温', '柔', '周', '到', '完', '美', '全', '面', '深',
+      '刻', '透', '彻', '精', '细', '微', '妙', '巧', '妙', '子',
+      '若', '如', '初', '念', '忆', '惜', '怜', '珍', '宝', '珠',
+      '玉', '翡', '翠', '珊', '瑚', '水', '晶', '钻', '石', '金',
+      '银', '婉', '约', '娴', '淑', '惠', '贤', '德', '容', '貌',
+      '姿', '色', '态', '度', '风', '韵', '气', '质', '品', '格',
+      '修', '养', '钰', '瑾', '琛', '璞', '琨', '琰', '琮', '璎',
+      '珞', '璨', '璟', '瑜', '琦', '瑶', '琼', '润', '泽', '澜',
+      '沁', '沐', '浴', '洗', '涤', '澄', '澈', '湛', '深', '渊',
+      '洋', '沛', '涵', '漪', '涟', '波', '潮', '瀚', '海', '江',
+      '河', '湖', '溪', '泉', '源', '流', '清', '澈', '澄', '湛'
     ]
 
     // 计算姓氏长度
