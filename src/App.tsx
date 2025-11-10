@@ -346,7 +346,7 @@ function App() {
 
       <footer className="app-footer">
         <div className="footer-content">
-          <p className="footer-copyright">© 2024 命运工坊 - 仅供娱乐参考</p>
+          <p className="footer-copyright">© 2025 命运工坊 - 仅供娱乐参考</p>
           <div className="footer-team">
             <p className="team-label">Made with ❤️ by</p>
             <p className="team-name">默默团队</p>

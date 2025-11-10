@@ -34,7 +34,7 @@ export const exportReadingToText = (reading: ReadingRecord): string => {
   }
 
   text += '\n' + '='.repeat(40) + '\n'
-  text += '© 2024 命运工坊 - 仅供娱乐参考\n'
+  text += '© 2025 命运工坊 - 仅供娱乐参考\n'
 
   return text
 }
