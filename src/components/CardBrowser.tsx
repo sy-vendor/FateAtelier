@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { TarotCard } from '../data/tarotCards'
 import { tarotCards } from '../data/tarotCards'
 import { getCardIcon, getSuitIcon } from '../utils/cardIcons'
+import { toggleFavorite } from '../utils/favorites'
 import './CardBrowser.css'
 
 interface CardBrowserProps {
@@ -12,6 +13,28 @@ function CardBrowser({ onSelectCard }: CardBrowserProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState<'all' | 'major' | 'wands' | 'cups' | 'swords' | 'pentacles'>('all')
   const [showBrowser, setShowBrowser] = useState(false)
+  const [favorites, setFavorites] = useState<number[]>([])
+
+  useEffect(() => {
+    const updateFavorites = () => {
+      try {
+        const saved = localStorage.getItem('tarot-favorites')
+        setFavorites(saved ? JSON.parse(saved) : [])
+      } catch {
+        setFavorites([])
+      }
+    }
+    updateFavorites()
+    
+    // 监听收藏变化事件（包括storage事件和自定义事件）
+    window.addEventListener('storage', updateFavorites)
+    window.addEventListener('favorites-changed', updateFavorites)
+    
+    return () => {
+      window.removeEventListener('storage', updateFavorites)
+      window.removeEventListener('favorites-changed', updateFavorites)
+    }
+  }, [])
 
   const filteredCards = tarotCards.filter(card => {
     const matchesSearch = card.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -95,21 +118,36 @@ function CardBrowser({ onSelectCard }: CardBrowserProps) {
             <div
               key={card.id}
               className="browser-card"
-              onClick={() => {
-                onSelectCard(card)
-                setShowBrowser(false)
-              }}
             >
-              <div className="browser-card-icon">{getCardIcon(card)}</div>
-              <div className="browser-card-name">{card.name}</div>
-              <div className="browser-card-name-en">{card.nameEn}</div>
-              <div className="browser-card-type">
-                {card.type === 'major' ? '大阿卡纳' : 
-                 card.suit === 'wands' ? '权杖' : 
-                 card.suit === 'cups' ? '圣杯' : 
-                 card.suit === 'swords' ? '宝剑' : '星币'}
-                {card.suit && <span className="browser-card-suit">{getSuitIcon(card.suit)}</span>}
+              <div 
+                className="browser-card-content"
+                onClick={() => {
+                  onSelectCard(card)
+                  setShowBrowser(false)
+                }}
+              >
+                <div className="browser-card-icon">{getCardIcon(card)}</div>
+                <div className="browser-card-name">{card.name}</div>
+                <div className="browser-card-name-en">{card.nameEn}</div>
+                <div className="browser-card-type">
+                  {card.type === 'major' ? '大阿卡纳' : 
+                   card.suit === 'wands' ? '权杖' : 
+                   card.suit === 'cups' ? '圣杯' : 
+                   card.suit === 'swords' ? '宝剑' : '星币'}
+                  {card.suit && <span className="browser-card-suit">{getSuitIcon(card.suit)}</span>}
+                </div>
               </div>
+              <button
+                className={`favorite-btn ${favorites.includes(card.id) ? 'favorited' : ''}`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  toggleFavorite(card.id)
+                  // favorites状态会在事件监听器中自动更新
+                }}
+                title={favorites.includes(card.id) ? '取消收藏' : '收藏'}
+              >
+                {favorites.includes(card.id) ? '⭐' : '☆'}
+              </button>
             </div>
           ))}
         </div>

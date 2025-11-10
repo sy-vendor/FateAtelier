@@ -7,10 +7,14 @@ import ReadingHistory, { ReadingRecord } from './components/ReadingHistory'
 import HelpGuide from './components/HelpGuide'
 import DailyCard from './components/DailyCard'
 import Statistics from './components/Statistics'
+import Favorites from './components/Favorites'
+import CardDrawAnimation from './components/CardDrawAnimation'
+import ThreeCardDrawAnimation from './components/ThreeCardDrawAnimation'
 import { getCardIcon, getSuitIcon } from './utils/cardIcons'
 import { generateThreeCardReading } from './utils/readingInterpretation'
 import { downloadReading } from './utils/exportReading'
 import { shareReading } from './utils/shareReading'
+import { downloadAllData } from './utils/exportData'
 import { DrawnCard } from './types'
 import './App.css'
 
@@ -20,6 +24,10 @@ function App() {
   const [threeCardReading, setThreeCardReading] = useState<DrawnCard[] | null>(null)
   const [readingHistory, setReadingHistory] = useState<ReadingRecord[]>([])
   const [viewingHistoryReading, setViewingHistoryReading] = useState<ReadingRecord | null>(null)
+  const [drawingCard, setDrawingCard] = useState<{ card: TarotCard, isReversed: boolean } | null>(null)
+  const [showDrawAnimation, setShowDrawAnimation] = useState(false)
+  const [drawingThreeCards, setDrawingThreeCards] = useState<Array<{ card: TarotCard, isReversed: boolean }> | null>(null)
+  const [showThreeCardAnimation, setShowThreeCardAnimation] = useState(false)
 
   // 从localStorage加载历史记录
   useEffect(() => {
@@ -61,20 +69,31 @@ function App() {
     const card = availableCards[randomIndex]
     const reversed = Math.random() < 0.5
 
-    const newDrawnCard: DrawnCard = { card, isReversed: reversed }
-    const updatedDrawnCards = [...drawnCards, newDrawnCard]
-    setDrawnCards(updatedDrawnCards)
-    setSelectedCard(newDrawnCard)
-    setThreeCardReading(null) // 清除三牌占卜显示
+    // 显示抽牌动画
+    setDrawingCard({ card, isReversed: reversed })
+    setShowDrawAnimation(true)
+  }
 
-    // 保存到历史记录
-    const historyRecord: ReadingRecord = {
-      id: Date.now().toString(),
-      type: 'single',
-      cards: [newDrawnCard],
-      timestamp: Date.now()
+  const handleDrawAnimationComplete = () => {
+    if (drawingCard) {
+      const newDrawnCard: DrawnCard = { card: drawingCard.card, isReversed: drawingCard.isReversed }
+      const updatedDrawnCards = [...drawnCards, newDrawnCard]
+      setDrawnCards(updatedDrawnCards)
+      setSelectedCard(newDrawnCard)
+      setThreeCardReading(null) // 清除三牌占卜显示
+
+      // 保存到历史记录
+      const historyRecord: ReadingRecord = {
+        id: Date.now().toString(),
+        type: 'single',
+        cards: [newDrawnCard],
+        timestamp: Date.now()
+      }
+      setReadingHistory([historyRecord, ...readingHistory])
+      
+      setDrawingCard(null)
+      setShowDrawAnimation(false)
     }
-    setReadingHistory([historyRecord, ...readingHistory])
   }
 
   const drawThreeCards = () => {
@@ -86,7 +105,7 @@ function App() {
     const availableCards = tarotCards.filter(
       card => !drawnCards.some((drawn: DrawnCard) => drawn.card.id === card.id)
     )
-    const threeDrawnCards: DrawnCard[] = []
+    const threeDrawnCards: Array<{ card: TarotCard, isReversed: boolean }> = []
 
     for (let i = 0; i < 3; i++) {
       const randomIndex = Math.floor(Math.random() * availableCards.length)
@@ -98,20 +117,36 @@ function App() {
       availableCards.splice(randomIndex, 1)
     }
 
-    setDrawnCards([...drawnCards, ...threeDrawnCards])
-    setThreeCardReading(threeDrawnCards) // 设置三牌占卜显示
-    setSelectedCard(null) // 清除单张牌显示
+    // 显示三张牌抽牌动画
+    setDrawingThreeCards(threeDrawnCards)
+    setShowThreeCardAnimation(true)
+  }
 
-    // 生成解读并保存到历史记录
-    const interpretation = generateThreeCardReading(threeDrawnCards)
-    const historyRecord: ReadingRecord = {
-      id: Date.now().toString(),
-      type: 'three',
-      cards: threeDrawnCards,
-      timestamp: Date.now(),
-      interpretation
+  const handleThreeCardAnimationComplete = () => {
+    if (drawingThreeCards) {
+      const threeDrawnCards: DrawnCard[] = drawingThreeCards.map(dc => ({
+        card: dc.card,
+        isReversed: dc.isReversed
+      }))
+
+      setDrawnCards([...drawnCards, ...threeDrawnCards])
+      setThreeCardReading(threeDrawnCards) // 设置三牌占卜显示
+      setSelectedCard(null) // 清除单张牌显示
+
+      // 生成解读并保存到历史记录
+      const interpretation = generateThreeCardReading(threeDrawnCards)
+      const historyRecord: ReadingRecord = {
+        id: Date.now().toString(),
+        type: 'three',
+        cards: threeDrawnCards,
+        timestamp: Date.now(),
+        interpretation
+      }
+      setReadingHistory([historyRecord, ...readingHistory])
+      
+      setDrawingThreeCards(null)
+      setShowThreeCardAnimation(false)
     }
-    setReadingHistory([historyRecord, ...readingHistory])
   }
 
   const reset = () => {
@@ -180,11 +215,29 @@ function App() {
         <p className="subtitle">探索塔罗牌的奥秘</p>
         <div className="header-actions">
           <CardBrowser onSelectCard={handleSelectCardFromBrowser} />
+          <Favorites onSelectCard={handleSelectCardFromBrowser} />
           <HelpGuide />
         </div>
       </header>
 
       <main className="app-main">
+        {/* 单张牌抽牌动画 */}
+        {showDrawAnimation && drawingCard && (
+          <CardDrawAnimation
+            card={drawingCard.card}
+            isReversed={drawingCard.isReversed}
+            onComplete={handleDrawAnimationComplete}
+          />
+        )}
+
+        {/* 三张牌抽牌动画 */}
+        {showThreeCardAnimation && drawingThreeCards && (
+          <ThreeCardDrawAnimation
+            cards={drawingThreeCards}
+            onComplete={handleThreeCardAnimationComplete}
+          />
+        )}
+
         {/* 每日一牌 */}
         <DailyCard onSelectCard={handleSelectCardFromBrowser} />
 
@@ -338,6 +391,7 @@ function App() {
           readings={readingHistory}
           onViewReading={handleViewHistoryReading}
           onDeleteReading={handleDeleteHistoryReading}
+          onExportAll={() => downloadAllData(readingHistory)}
         />
 
         {/* 统计信息 */}
