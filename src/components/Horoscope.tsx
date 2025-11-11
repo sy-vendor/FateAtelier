@@ -19,6 +19,23 @@ const zodiacSigns = [
   { id: 'pisces', name: '双鱼座', icon: '♓' }
 ]
 
+// 星座四象映射：与上方列表索引对应
+const signIndexToElement: Array<'火' | '土' | '风' | '水'> = [
+  '火', '土', '风', '水', '火', '土', '风', '水', '火', '土', '风', '水'
+]
+// 四象显示文案与同属星座
+const elementToLabel: Record<'火'|'土'|'风'|'水', string> = {
+  '火': '火象星座',
+  '土': '土象星座',
+  '风': '风象星座',
+  '水': '水象星座'
+}
+const elementToPeers: Record<'火'|'土'|'风'|'水', string> = {
+  '火': '白羊座・狮子座・射手座',
+  '土': '金牛座・处女座・摩羯座',
+  '风': '双子座・天秤座・水瓶座',
+  '水': '巨蟹座・天蝎座・双鱼座'
+}
 // 轻量本地运势生成（无AI、无网络）：按日期+星座的可复现伪随机
 function mulberry32(seed: number) {
   let t = seed + 0x6D2B79F5
@@ -57,8 +74,8 @@ function genScore(rand: () => number) {
   return 60 + Math.floor(rand() * 41) // 60-100
 }
 
-function genAdvice(rand: () => number) {
-  const pieces = [
+function genAdvice(rand: () => number, element: '火' | '土' | '风' | '水') {
+  const common = [
     '把注意力放在当下的小目标上，会更高效也更踏实。',
     '与其纠结未知，不如先迈出第一步再微调方向。',
     '适合做一次小复盘，沉淀经验会带来新的灵感。',
@@ -80,10 +97,29 @@ function genAdvice(rand: () => number) {
     '保持弹性预期，容许小波动，你会走得更稳。',
     '遇到阻力时，先处理最容易的部分建立信心。'
   ]
-  return pick(rand, pieces)
+  const elementHints: Record<'火'|'土'|'风'|'水', string[]> = {
+    '火': [
+      '保持热情但别冲动，先做两分钟冷思考再行动。',
+      '把能量用在关键一击上，避免分散火力。'
+    ],
+    '土': [
+      '先筑地基再盖楼，流程与秩序会让你更安心。',
+      '一步一步落实计划，小步复利最稳健。'
+    ],
+    '风': [
+      '多交流与记录，灵感需要被及时捕捉和落地。',
+      '尝试换个角度表达，你的说服力会更强。'
+    ],
+    '水': [
+      '照顾情绪与直觉，内在的安定会带来外在顺利。',
+      '适合温柔推进，用柔软化解小阻力。'
+    ]
+  }
+  const pool = [...common, ...elementHints[element]]
+  return pick(rand, pool)
 }
 
-function genAspectText(rand: () => number, aspect: string) {
+function genAspectText(rand: () => number, aspect: string, element: '火' | '土' | '风' | '水') {
   const templates = [
     `${aspect}方面起伏不大，稳中有进，按原计划推进更安心。`,
     `${aspect}方面会浮现新的灵感或机会，及时记录并尝试。`,
@@ -104,10 +140,29 @@ function genAspectText(rand: () => number, aspect: string) {
     `${aspect}方面若卡住，先转向边界问题，容易找到突破口。`,
     `${aspect}方面适合收尾与总结，为下一阶段铺好路。`
   ]
-  return pick(rand, templates)
+  const elementFlavors: Record<'火'|'土'|'风'|'水', string[]> = {
+    '火': [
+      `${aspect}方面宜主动出击，但要控制节奏与情绪。`,
+      `${aspect}方面可设立挑战目标，用热情点燃进度。`
+    ],
+    '土': [
+      `${aspect}方面讲究稳扎稳打，细节打磨会有质变。`,
+      `${aspect}方面适合流程化，把控节点更踏实。`
+    ],
+    '风': [
+      `${aspect}方面重在沟通与交换想法，信息越充分越顺畅。`,
+      `${aspect}方面适合发散思考，再收敛到可执行方案。`
+    ],
+    '水': [
+      `${aspect}方面以柔克刚，先安抚情绪再推动事项。`,
+      `${aspect}方面重视直觉提示，往往能绕开不必要的阻力。`
+    ]
+  }
+  const pool = [...templates, ...elementFlavors[element]]
+  return pick(rand, pool)
 }
 
-function genHoroscope(seed: number) {
+function genHoroscope(seed: number, element: '火' | '土' | '风' | '水') {
   const rand = mulberry32(seed)
   const overall = genScore(rand)
   const love = genScore(rand)
@@ -117,16 +172,16 @@ function genHoroscope(seed: number) {
   const study = genScore(rand)
   const color = pick(rand, luckyColors)
   const item = pick(rand, luckyItems)
-  const summary = genAspectText(rand, '整体')
-  const advice = genAdvice(rand)
+  const summary = genAspectText(rand, '整体', element)
+  const advice = genAdvice(rand, element)
   const details = [
-    { key: '爱情', value: love, text: genAspectText(rand, '爱情') },
-    { key: '事业', value: career, text: genAspectText(rand, '事业') },
-    { key: '财富', value: wealth, text: genAspectText(rand, '财富') },
-    { key: '健康', value: health, text: genAspectText(rand, '健康') },
-    { key: '学业', value: study, text: genAspectText(rand, '学业') }
+    { key: '爱情', value: love, text: genAspectText(rand, '爱情', element) },
+    { key: '事业', value: career, text: genAspectText(rand, '事业', element) },
+    { key: '财富', value: wealth, text: genAspectText(rand, '财富', element) },
+    { key: '健康', value: health, text: genAspectText(rand, '健康', element) },
+    { key: '学业', value: study, text: genAspectText(rand, '学业', element) }
   ]
-  return { overall, summary, advice, color, item, details }
+  return { overall, summary, advice, color, item, details, element }
 }
 
 // 根据阳历日期计算星座
@@ -391,7 +446,8 @@ function Horoscope({ onBack }: HoroscopeProps) {
 
   const result = useMemo(() => {
     const seed = getSeed(today, signIndex, period)
-    return genHoroscope(seed)
+    const element = signIndexToElement[signIndex]
+    return genHoroscope(seed, element)
   }, [today, signIndex, period])
 
   const sign = zodiacSigns[signIndex]
@@ -518,6 +574,8 @@ function Horoscope({ onBack }: HoroscopeProps) {
           <div className="label">综合指数</div>
         </div>
         <div className="info-card">
+          <div className="info-row"><span>星座元素</span><b>{elementToLabel[result.element as '火'|'土'|'风'|'水']}</b></div>
+          <div className="info-row"><span>同属星座</span><b>{elementToPeers[result.element as '火'|'土'|'风'|'水']}</b></div>
           <div className="info-row"><span>幸运颜色</span><b>{result.color}</b></div>
           <div className="info-row"><span>幸运物品</span><b>{result.item}</b></div>
         </div>
