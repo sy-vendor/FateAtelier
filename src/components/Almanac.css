@@ -1,0 +1,236 @@
+.almanac {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.almanac-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.almanac-header h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.back-btn {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: #222;
+  color: #eee;
+  cursor: pointer;
+}
+.back-btn:hover {
+  background: #2a2a2a;
+}
+
+.almanac-date {
+  background: linear-gradient(135deg, #6b5cff 0%, #7c5cff 100%);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.date-display {
+  font-size: 20px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.ganzhi-display {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+}
+
+.almanac-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.almanac-card {
+  border: 1px solid #363636;
+  background: #181818;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.almanac-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #bbb;
+}
+
+.chongsha-content p {
+  margin: 8px 0;
+  color: #ddd;
+  font-size: 15px;
+}
+
+.highlight {
+  color: #ffd166;
+  font-weight: 600;
+  margin: 0 4px;
+}
+
+.wuxing-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #86e1ff;
+  text-align: center;
+}
+
+.fangwei-content p {
+  margin: 8px 0;
+  color: #ddd;
+  font-size: 15px;
+}
+
+.good {
+  color: #4ade80;
+}
+
+.bad {
+  color: #f87171;
+}
+
+.almanac-section {
+  margin-bottom: 20px;
+}
+
+.yi-card,
+.ji-card {
+  border: 1px solid #363636;
+  background: #181818;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.yi-card h3,
+.ji-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+}
+
+.items-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.item-tag {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  border: 1px solid;
+}
+
+.item-tag.good {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+}
+
+.item-tag.bad {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: #f87171;
+}
+
+.shichen-card {
+  border: 1px solid #363636;
+  background: #181818;
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.shichen-card h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+}
+
+.shichen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+}
+
+.shichen-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.shichen-item.good {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.shichen-item.bad {
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.shichen-item.neutral {
+  background: rgba(156, 163, 175, 0.1);
+  border-color: rgba(156, 163, 175, 0.3);
+}
+
+.shichen-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #ddd;
+}
+
+.shichen-item.good .shichen-name {
+  color: #4ade80;
+}
+
+.shichen-item.bad .shichen-name {
+  color: #f87171;
+}
+
+.shichen-jixiong {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.almanac-footer {
+  text-align: center;
+  padding: 16px;
+  color: #888;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .almanac-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ganzhi-display {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .shichen-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+

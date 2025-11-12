@@ -36,22 +36,30 @@ const elementToPeers: Record<'火'|'土'|'风'|'水', string> = {
   '风': '双子座・天秤座・水瓶座',
   '水': '巨蟹座・天蝎座・双鱼座'
 }
-// 轻量本地运势生成（无AI、无网络）：按日期+星座的可复现伪随机
-function mulberry32(seed: number) {
-  let t = seed + 0x6D2B79F5
-  return () => {
-    t = Math.imul(t ^ (t >>> 15), t | 1)
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-  }
+// 基于日期和星座的确定性哈希函数
+function hash(seed: number): number {
+  let h = seed
+  h = ((h << 5) - h) + seed
+  h = h ^ (h >>> 16)
+  h = h * 0x85ebca6b
+  h = h ^ (h >>> 13)
+  h = h * 0xc2b2ae35
+  h = h ^ (h >>> 16)
+  return Math.abs(h)
 }
 
-function getSeed(date: Date, signIndex: number, period: Period) {
+function getSeed(date: Date, signIndex: number, period: Period): number {
   const y = date.getFullYear()
   const m = date.getMonth() + 1
   const d = date.getDate()
   const base = period === 'today' ? (y * 10000 + m * 100 + d) : period === 'week' ? (y * 100 + getWeekNumber(date)) : (y * 100 + m)
   return base * 31 + signIndex * 97
+}
+
+// 确定性选择（基于哈希值）
+function select<T>(seed: number, list: T[]): T {
+  const index = hash(seed) % list.length
+  return list[index]
 }
 
 function getWeekNumber(date: Date) {
@@ -62,19 +70,28 @@ function getWeekNumber(date: Date) {
   return Math.ceil((((temp.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
 }
 
-const luckyColors = ['蓝色', '金色', '绿色', '银色', '紫色', '红色', '白色', '黑色', '橙色', '青色']
-const luckyItems = ['星形吊坠', '天然水晶', '精油香氛', '手账本', '幸运硬币', '羽毛笔', '丝巾', '手链', '耳饰', '胸针']
-// 预留：可扩展不同维度标签
+const luckyColors = [
+  '蓝色', '金色', '绿色', '银色', '紫色', '红色', '白色', '黑色', '橙色', '青色',
+  '粉色', '黄色', '棕色', '灰色', '米色', '深蓝', '浅绿', '珊瑚色', '薄荷绿', '薰衣草紫',
+  '玫瑰金', '古铜色', '翡翠绿', '琥珀色', '珍珠白', '星空蓝', '樱花粉', '柠檬黄', '橄榄绿', '酒红色',
+  '天蓝色', '象牙白', '墨绿色', '香槟金', '紫罗兰', '珊瑚橙', '薄荷蓝', '焦糖色', '海军蓝', '淡紫色'
+]
 
-function pick<T>(rand: () => number, list: T[]) {
-  return list[Math.floor(rand() * list.length)]
+const luckyItems = [
+  '星形吊坠', '天然水晶', '精油香氛', '手账本', '幸运硬币', '羽毛笔', '丝巾', '手链', '耳饰', '胸针',
+  '护身符', '平安符', '转运珠', '玉石挂件', '檀香手串', '紫水晶', '粉水晶', '黄水晶', '黑曜石', '玛瑙',
+  '琥珀', '珍珠', '翡翠', '和田玉', '红绳手链', '银饰', '金饰', '铜钱', '五帝钱', '八卦镜',
+  '风铃', '香囊', '护身卡', '幸运符', '许愿瓶', '能量石', '水晶球', '塔罗牌', '占卜牌', '护身手环',
+  '平安扣', '貔貅', '龙龟', '金蟾', '招财猫', '福字挂件', '如意', '葫芦', '佛珠', '念珠',
+  '木鱼', '经书', '护身符袋', '能量手链', '五行手链', '生肖挂件', '星座徽章', '幸运钥匙扣', '许愿石', '能量水晶'
+]
+
+// 基于种子生成分数（60-100）
+function genScore(seed: number): number {
+  return 60 + (hash(seed) % 41)
 }
 
-function genScore(rand: () => number) {
-  return 60 + Math.floor(rand() * 41) // 60-100
-}
-
-function genAdvice(rand: () => number, element: '火' | '土' | '风' | '水') {
+function genAdvice(seed: number, element: '火' | '土' | '风' | '水'): string {
   const common = [
     '把注意力放在当下的小目标上，会更高效也更踏实。',
     '与其纠结未知，不如先迈出第一步再微调方向。',
@@ -116,10 +133,10 @@ function genAdvice(rand: () => number, element: '火' | '土' | '风' | '水') {
     ]
   }
   const pool = [...common, ...elementHints[element]]
-  return pick(rand, pool)
+  return select(seed, pool)
 }
 
-function genAspectText(rand: () => number, aspect: string, element: '火' | '土' | '风' | '水') {
+function genAspectText(seed: number, aspect: string, element: '火' | '土' | '风' | '水'): string {
   const templates = [
     `${aspect}方面起伏不大，稳中有进，按原计划推进更安心。`,
     `${aspect}方面会浮现新的灵感或机会，及时记录并尝试。`,
@@ -159,27 +176,27 @@ function genAspectText(rand: () => number, aspect: string, element: '火' | '土
     ]
   }
   const pool = [...templates, ...elementFlavors[element]]
-  return pick(rand, pool)
+  return select(seed, pool)
 }
 
 function genHoroscope(seed: number, element: '火' | '土' | '风' | '水') {
-  const rand = mulberry32(seed)
-  const overall = genScore(rand)
-  const love = genScore(rand)
-  const career = genScore(rand)
-  const wealth = genScore(rand)
-  const health = genScore(rand)
-  const study = genScore(rand)
-  const color = pick(rand, luckyColors)
-  const item = pick(rand, luckyItems)
-  const summary = genAspectText(rand, '整体', element)
-  const advice = genAdvice(rand, element)
+  // 使用不同的种子偏移来生成不同的值
+  const overall = genScore(seed)
+  const love = genScore(seed * 31 + 1)
+  const career = genScore(seed * 31 + 2)
+  const wealth = genScore(seed * 31 + 3)
+  const health = genScore(seed * 31 + 4)
+  const study = genScore(seed * 31 + 5)
+  const color = select(seed * 31 + 6, luckyColors)
+  const item = select(seed * 31 + 7, luckyItems)
+  const summary = genAspectText(seed * 31 + 8, '整体', element)
+  const advice = genAdvice(seed * 31 + 9, element)
   const details = [
-    { key: '爱情', value: love, text: genAspectText(rand, '爱情', element) },
-    { key: '事业', value: career, text: genAspectText(rand, '事业', element) },
-    { key: '财富', value: wealth, text: genAspectText(rand, '财富', element) },
-    { key: '健康', value: health, text: genAspectText(rand, '健康', element) },
-    { key: '学业', value: study, text: genAspectText(rand, '学业', element) }
+    { key: '爱情', value: love, text: genAspectText(seed * 31 + 10, '爱情', element) },
+    { key: '事业', value: career, text: genAspectText(seed * 31 + 11, '事业', element) },
+    { key: '财富', value: wealth, text: genAspectText(seed * 31 + 12, '财富', element) },
+    { key: '健康', value: health, text: genAspectText(seed * 31 + 13, '健康', element) },
+    { key: '学业', value: study, text: genAspectText(seed * 31 + 14, '学业', element) }
   ]
   return { overall, summary, advice, color, item, details, element }
 }

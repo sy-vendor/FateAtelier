@@ -13,6 +13,7 @@ import ThreeCardDrawAnimation from './components/ThreeCardDrawAnimation'
 import ReadingTypeSelector from './components/ReadingTypeSelector'
 import NameGenerator from './components/NameGenerator'
 import Horoscope from './components/Horoscope'
+import Almanac from './components/Almanac'
 import { getCardIcon, getSuitIcon } from './utils/cardIcons'
 import { generateThreeCardReading } from './utils/readingInterpretation'
 import { downloadReading } from './utils/exportReading'
@@ -35,7 +36,7 @@ function App() {
   const [showReadingTypeSelector, setShowReadingTypeSelector] = useState(false)
   const [selectedReadingType, setSelectedReadingType] = useState<ReadingType>('general')
   const [customQuestion, setCustomQuestion] = useState<string | undefined>(undefined)
-  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope'>('tarot')
+  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac'>('tarot')
 
   // 从localStorage加载历史记录
   useEffect(() => {
@@ -251,7 +252,10 @@ function App() {
       <header className="app-header">
         <h1>🔮 命运工坊</h1>
         <p className="subtitle">
-          {currentPage === 'tarot' ? '探索塔罗牌的奥秘' : currentPage === 'name' ? '智能取名服务' : '星座运势 · 娱乐参考'}
+          {currentPage === 'tarot' ? '探索塔罗牌的奥秘' : 
+           currentPage === 'name' ? '智能取名服务' : 
+           currentPage === 'horoscope' ? '星座运势 · 娱乐参考' :
+           '今日黄历 · 传统历法'}
         </p>
         <div className="header-nav">
           <button
@@ -272,6 +276,12 @@ function App() {
           >
             ♈ 星座运势
           </button>
+          <button
+            className={`nav-btn ${currentPage === 'almanac' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('almanac')}
+          >
+            📅 今日黄历
+          </button>
         </div>
         {currentPage === 'tarot' && (
           <div className="header-actions">
@@ -287,6 +297,8 @@ function App() {
           <NameGenerator onBack={() => setCurrentPage('tarot')} />
         ) : currentPage === 'horoscope' ? (
           <Horoscope onBack={() => setCurrentPage('tarot')} />
+        ) : currentPage === 'almanac' ? (
+          <Almanac onBack={() => setCurrentPage('tarot')} />
         ) : (
           <>
         {/* 单张牌抽牌动画 */}
