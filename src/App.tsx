@@ -14,6 +14,7 @@ import ReadingTypeSelector from './components/ReadingTypeSelector'
 import NameGenerator from './components/NameGenerator'
 import Horoscope from './components/Horoscope'
 import Almanac from './components/Almanac'
+import CyberMerit from './components/CyberMerit'
 import { getCardIcon, getSuitIcon } from './utils/cardIcons'
 import { generateThreeCardReading } from './utils/readingInterpretation'
 import { downloadReading } from './utils/exportReading'
@@ -36,7 +37,7 @@ function App() {
   const [showReadingTypeSelector, setShowReadingTypeSelector] = useState(false)
   const [selectedReadingType, setSelectedReadingType] = useState<ReadingType>('general')
   const [customQuestion, setCustomQuestion] = useState<string | undefined>(undefined)
-  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac'>('tarot')
+  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac' | 'cybermerit'>('tarot')
 
   // 从localStorage加载历史记录
   useEffect(() => {
@@ -255,7 +256,8 @@ function App() {
           {currentPage === 'tarot' ? '探索塔罗牌的奥秘' : 
            currentPage === 'name' ? '智能取名服务' : 
            currentPage === 'horoscope' ? '星座运势 · 娱乐参考' :
-           '今日黄历 · 传统历法'}
+           currentPage === 'almanac' ? '今日黄历 · 传统历法' :
+           '赛博积德 · 功德无量'}
         </p>
         <div className="header-nav">
           <button
@@ -282,6 +284,12 @@ function App() {
           >
             📅 今日黄历
           </button>
+          <button
+            className={`nav-btn ${currentPage === 'cybermerit' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('cybermerit')}
+          >
+            🙏 赛博积德
+          </button>
         </div>
         {currentPage === 'tarot' && (
           <div className="header-actions">
@@ -299,6 +307,8 @@ function App() {
           <Horoscope onBack={() => setCurrentPage('tarot')} />
         ) : currentPage === 'almanac' ? (
           <Almanac onBack={() => setCurrentPage('tarot')} />
+        ) : currentPage === 'cybermerit' ? (
+          <CyberMerit onBack={() => setCurrentPage('tarot')} />
         ) : (
           <>
         {/* 单张牌抽牌动画 */}
