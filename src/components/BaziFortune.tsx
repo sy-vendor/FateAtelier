@@ -70,56 +70,71 @@ const calculateYearPillar = (date: Date): string => {
   return tiangan[ganIndex] + dizhi[zhiIndex]
 }
 
+// 精确计算节气对应的月份
+const getJieqiMonth = (year: number, month: number, day: number): number => {
+  const currentDate = new Date(year, month - 1, day)
+  
+  // 判断是否在立春之前，如果是则使用上一年
+  let actualYear = year
+  const lichunThisYear = getSolarTermDate(year, 0) // 立春
+  if (currentDate < lichunThisYear) {
+    actualYear = year - 1
+  }
+  
+  // 获取当前年份的所有节气日期
+  const solarTerms: Date[] = []
+  for (let i = 0; i < 12; i++) {
+    solarTerms.push(getSolarTermDate(actualYear, i))
+  }
+  // 添加下一年的立春（用于判断小寒后的日期）
+  solarTerms.push(getSolarTermDate(actualYear + 1, 0))
+  
+  // 判断当前日期属于哪个节气月
+  for (let i = 0; i < 12; i++) {
+    if (currentDate >= solarTerms[i] && currentDate < solarTerms[i + 1]) {
+      // 返回节气月（农历月份，从立春开始为正月）
+      return i + 1 // 立春为正月（1），惊蛰为二月（2），以此类推
+    }
+  }
+  
+  // 如果在小寒之后、立春之前，返回12月（上一年）
+  return 12
+}
+
 // 计算月柱
 const calculateMonthPillar = (date: Date, yearPillar: string): string => {
   const year = date.getFullYear()
   const month = date.getMonth() + 1
   const day = date.getDate()
   
-  const terms = [
-    getSolarTermDate(year, 0),   // 立春
-    getSolarTermDate(year, 1),   // 惊蛰
-    getSolarTermDate(year, 2),   // 清明
-    getSolarTermDate(year, 3),   // 立夏
-    getSolarTermDate(year, 4),   // 芒种
-    getSolarTermDate(year, 5),   // 小暑
-    getSolarTermDate(year, 6),   // 立秋
-    getSolarTermDate(year, 7),   // 白露
-    getSolarTermDate(year, 8),   // 寒露
-    getSolarTermDate(year, 9),   // 立冬
-    getSolarTermDate(year, 10),  // 大雪
-    getSolarTermDate(year, 11)   // 小寒
-  ]
+  // 获取节气月（农历月份，从立春开始为正月）
+  const jieqiMonth = getJieqiMonth(year, month, day)
   
-  const currentDate = new Date(year, month - 1, day)
-  let jieqiMonth = 0
+  // 月支：正月为寅，二月为卯，以此类推
+  // 正月对应寅（索引2），所以 jieqiMonth=1 时，月支索引应该是 2
+  const monthZhiIndex = (jieqiMonth + 1) % 12
+  const monthZhi = dizhi[monthZhiIndex]
   
-  for (let i = 0; i < 12; i++) {
-    if (currentDate >= terms[i]) {
-      jieqiMonth = i + 1
-    } else {
-      break
-    }
-  }
-  
+  // 月干：根据年干和月支计算（五虎遁）
+  // 甲己之年丙作首，乙庚之年戊为头，丙辛之年寻庚起，丁壬壬寅顺水流，若问戊癸何处起，甲寅之上好追求
   const yearGan = yearPillar[0]
   const yearGanIndex = tiangan.indexOf(yearGan)
   
   let monthGanIndex = 0
-  if (yearGanIndex === 0 || yearGanIndex === 5) {
-    monthGanIndex = (2 + jieqiMonth - 1) % 10
-  } else if (yearGanIndex === 1 || yearGanIndex === 6) {
-    monthGanIndex = (4 + jieqiMonth - 1) % 10
-  } else if (yearGanIndex === 2 || yearGanIndex === 7) {
-    monthGanIndex = (6 + jieqiMonth - 1) % 10
-  } else if (yearGanIndex === 3 || yearGanIndex === 8) {
-    monthGanIndex = (8 + jieqiMonth - 1) % 10
-  } else {
-    monthGanIndex = (0 + jieqiMonth - 1) % 10
+  if (yearGanIndex === 0 || yearGanIndex === 5) { // 甲或己
+    monthGanIndex = (2 + jieqiMonth - 1) % 10 // 丙作首，正月为丙
+  } else if (yearGanIndex === 1 || yearGanIndex === 6) { // 乙或庚
+    monthGanIndex = (4 + jieqiMonth - 1) % 10 // 戊为头
+  } else if (yearGanIndex === 2 || yearGanIndex === 7) { // 丙或辛
+    monthGanIndex = (6 + jieqiMonth - 1) % 10 // 寻庚起
+  } else if (yearGanIndex === 3 || yearGanIndex === 8) { // 丁或壬
+    monthGanIndex = (8 + jieqiMonth - 1) % 10 // 壬寅顺水流
+  } else { // 戊或癸
+    monthGanIndex = (0 + jieqiMonth - 1) % 10 // 甲寅之上
   }
   
   const monthGan = tiangan[monthGanIndex]
-  const monthZhi = dizhi[jieqiMonth - 1]
+  
   return monthGan + monthZhi
 }
 
