@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './CyberMerit.css'
+import muyuSound from '../video/muyu-2.mp3?url'
 
 interface CyberMeritProps {
   onBack?: () => void
@@ -28,6 +29,19 @@ function CyberMerit({ onBack }: CyberMeritProps) {
   const [releasingAnimal, setReleasingAnimal] = useState<{index: number, centerX: number, centerY: number, clickX: number, clickY: number, needFlip?: boolean} | null>(null)
   const [isBurning, setIsBurning] = useState(false)
   const [isPraying, setIsPraying] = useState(false)
+  const woodfishAudioRef = useRef<HTMLAudioElement | null>(null)
+
+  // 初始化音频
+  useEffect(() => {
+    woodfishAudioRef.current = new Audio(muyuSound)
+    woodfishAudioRef.current.preload = 'auto'
+    return () => {
+      if (woodfishAudioRef.current) {
+        woodfishAudioRef.current.pause()
+        woodfishAudioRef.current = null
+      }
+    }
+  }, [])
 
   // 从localStorage加载数据
   useEffect(() => {
@@ -211,7 +225,14 @@ function CyberMerit({ onBack }: CyberMeritProps) {
       
       return newCount
     })
-    playSound(80, 100, 'woodfish') // 低沉的木鱼声
+    
+    // 播放木鱼音频
+    if (woodfishAudioRef.current) {
+      woodfishAudioRef.current.currentTime = 0 // 从头开始播放
+      woodfishAudioRef.current.play().catch(e => {
+        console.log('音频播放失败', e)
+      })
+    }
   }
 
   // 赛博放生
