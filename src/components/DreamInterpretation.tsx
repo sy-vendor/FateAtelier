@@ -117,6 +117,11 @@ function DreamInterpretation({ onBack }: DreamInterpretationProps) {
   return (
     <div className="dream-interpretation">
       <div className="dream-header">
+        {onBack && (
+          <button className="dream-back-btn" onClick={onBack}>
+            ← 返回
+          </button>
+        )}
         <h2>💭 梦境解析</h2>
         <p className="dream-subtitle">记录你的梦境，探索潜意识的奥秘</p>
       </div>
