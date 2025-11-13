@@ -16,6 +16,7 @@ import Horoscope from './components/Horoscope'
 import Almanac from './components/Almanac'
 import CyberMerit from './components/CyberMerit'
 import BaziFortune from './components/BaziFortune'
+import DivinationDraw from './components/DivinationDraw'
 import { getCardIcon, getSuitIcon } from './utils/cardIcons'
 import { generateThreeCardReading } from './utils/readingInterpretation'
 import { downloadReading } from './utils/exportReading'
@@ -38,7 +39,7 @@ function App() {
   const [showReadingTypeSelector, setShowReadingTypeSelector] = useState(false)
   const [selectedReadingType, setSelectedReadingType] = useState<ReadingType>('general')
   const [customQuestion, setCustomQuestion] = useState<string | undefined>(undefined)
-  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac' | 'cybermerit' | 'bazi'>('tarot')
+  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac' | 'cybermerit' | 'bazi' | 'divination'>('tarot')
 
   // 从localStorage加载历史记录
   useEffect(() => {
@@ -259,7 +260,8 @@ function App() {
            currentPage === 'horoscope' ? '星座运势 · 娱乐参考' :
            currentPage === 'almanac' ? '今日黄历 · 传统历法' :
            currentPage === 'cybermerit' ? '赛博积德 · 功德无量' :
-           '八字算命 · 传统命理'}
+           currentPage === 'bazi' ? '八字算命 · 传统命理' :
+           '抽签求签 · 心诚则灵'}
         </p>
         <div className="header-nav">
           <button
@@ -298,6 +300,12 @@ function App() {
           >
             ☯ 八字算命
           </button>
+          <button
+            className={`nav-btn ${currentPage === 'divination' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('divination')}
+          >
+            🎋 抽签求签
+          </button>
         </div>
         {currentPage === 'tarot' && (
           <div className="header-actions">
@@ -319,6 +327,8 @@ function App() {
           <CyberMerit onBack={() => setCurrentPage('tarot')} />
         ) : currentPage === 'bazi' ? (
           <BaziFortune onBack={() => setCurrentPage('tarot')} />
+        ) : currentPage === 'divination' ? (
+          <DivinationDraw onBack={() => setCurrentPage('tarot')} />
         ) : (
           <>
         {/* 单张牌抽牌动画 */}
