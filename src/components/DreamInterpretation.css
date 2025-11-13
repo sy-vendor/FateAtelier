@@ -1,0 +1,473 @@
+.dream-interpretation {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.dream-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.dream-header h2 {
+  font-size: 2.5em;
+  margin: 0;
+  color: #2c3e50;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dream-subtitle {
+  font-size: 1.1em;
+  color: #7f8c8d;
+  margin-top: 10px;
+}
+
+.dream-input-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.dream-input-wrapper {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+}
+
+.dream-input-wrapper label {
+  display: block;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.dream-textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 1em;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.dream-textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.dream-textarea::placeholder {
+  color: #b0b0b0;
+}
+
+.dream-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.dream-interpret-btn,
+.dream-clear-btn,
+.dream-history-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dream-interpret-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  flex: 1;
+  min-width: 150px;
+}
+
+.dream-interpret-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.dream-interpret-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dream-clear-btn {
+  background: #e74c3c;
+  color: white;
+}
+
+.dream-clear-btn:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+.dream-history-btn {
+  background: #3498db;
+  color: white;
+}
+
+.dream-history-btn:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+}
+
+.dream-history-section {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dream-history-section h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+}
+
+.dream-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dream-history-item {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 15px;
+  border-left: 4px solid #667eea;
+  transition: all 0.3s;
+}
+
+.dream-history-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dream-history-content {
+  margin-bottom: 10px;
+}
+
+.dream-history-text {
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dream-history-date {
+  font-size: 0.85em;
+  color: #7f8c8d;
+}
+
+.dream-history-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dream-view-btn,
+.dream-delete-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.dream-view-btn {
+  background: #3498db;
+  color: white;
+}
+
+.dream-view-btn:hover {
+  background: #2980b9;
+}
+
+.dream-delete-btn {
+  background: #e74c3c;
+  color: white;
+}
+
+.dream-delete-btn:hover {
+  background: #c0392b;
+}
+
+.dream-empty-history {
+  text-align: center;
+  padding: 40px;
+  color: #7f8c8d;
+  background: white;
+  border-radius: 15px;
+  margin-bottom: 30px;
+}
+
+.dream-result-section {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dream-result-section h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 1.8em;
+  border-bottom: 3px solid #667eea;
+  padding-bottom: 10px;
+}
+
+.dream-overall {
+  margin-bottom: 30px;
+}
+
+.dream-overall-content {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 10px;
+  padding: 20px;
+  border-left: 5px solid #667eea;
+}
+
+.dream-overall-content p {
+  margin: 0;
+  font-size: 1.1em;
+  line-height: 1.8;
+  color: #2c3e50;
+}
+
+.dream-symbols {
+  margin-bottom: 30px;
+}
+
+.dream-symbols h4 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.3em;
+}
+
+.dream-symbols-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.dream-symbol-item {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 20px;
+  border-left: 4px solid #3498db;
+  transition: all 0.3s;
+}
+
+.dream-symbol-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.dream-symbol-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dream-symbol-keywords {
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.dream-symbol-category {
+  background: #3498db;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85em;
+}
+
+.dream-symbol-meaning {
+  line-height: 1.8;
+}
+
+.dream-symbol-meaning p {
+  margin: 8px 0;
+  color: #2c3e50;
+}
+
+.dream-symbol-meaning strong {
+  color: #2c3e50;
+}
+
+.dream-positive {
+  color: #27ae60;
+}
+
+.dream-negative {
+  color: #e74c3c;
+}
+
+.dream-advice {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-left: 5px solid #f39c12;
+}
+
+.dream-advice h4 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 1.2em;
+}
+
+.dream-advice p {
+  margin: 0;
+  font-size: 1.05em;
+  line-height: 1.8;
+  color: #2c3e50;
+}
+
+.dream-note {
+  background: #ecf0f1;
+  border-radius: 10px;
+  padding: 15px;
+  border-left: 4px solid #95a5a6;
+}
+
+.dream-note p {
+  margin: 0;
+  font-size: 0.95em;
+  color: #7f8c8d;
+  line-height: 1.6;
+}
+
+.dream-tips {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dream-tips h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+}
+
+.dream-tips ul {
+  list-style: none;
+  padding: 0;
+}
+
+.dream-tips li {
+  padding: 12px 0;
+  padding-left: 30px;
+  position: relative;
+  color: #2c3e50;
+  line-height: 1.6;
+}
+
+.dream-tips li::before {
+  content: '✨';
+  position: absolute;
+  left: 0;
+}
+
+.dream-tips li:not(:last-child) {
+  border-bottom: 1px solid #ecf0f1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .dream-interpretation {
+    padding: 15px;
+  }
+
+  .dream-header h2 {
+    font-size: 2em;
+  }
+
+  .dream-input-section {
+    padding: 20px;
+  }
+
+  .dream-input-wrapper {
+    padding: 20px;
+  }
+
+  .dream-actions {
+    flex-direction: column;
+  }
+
+  .dream-interpret-btn,
+  .dream-clear-btn,
+  .dream-history-btn {
+    width: 100%;
+  }
+
+  .dream-symbol-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dream-history-actions {
+    flex-direction: column;
+  }
+
+  .dream-view-btn,
+  .dream-delete-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dream-header h2 {
+    font-size: 1.5em;
+  }
+
+  .dream-subtitle {
+    font-size: 0.95em;
+  }
+
+  .dream-textarea {
+    font-size: 0.95em;
+  }
+
+  .dream-overall-content p,
+  .dream-advice p {
+    font-size: 1em;
+  }
+}
+
