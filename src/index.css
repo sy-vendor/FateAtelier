@@ -21,6 +21,12 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -37,9 +43,11 @@ body {
   line-height: 1.6;
   position: relative;
   overflow-x: hidden;
+  width: 100%;
   /* 优化移动端触摸 */
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  touch-action: pan-y pinch-zoom; /* 只允许垂直滚动和缩放，阻止水平滑动 */
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 移动端优化 */
@@ -98,5 +106,7 @@ code {
   flex-direction: column;
   position: relative;
   z-index: 1;
+  width: 100%;
+  overflow-x: hidden;
 }
 

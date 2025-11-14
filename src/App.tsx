@@ -48,6 +48,60 @@ function App() {
   const [touchEnd, setTouchEnd] = useState(0)
   const [transitionEffect, setTransitionEffect] = useState<string>('')
 
+  // 阻止手机端页面左右滑动
+  useEffect(() => {
+    const preventHorizontalScroll = (e: TouchEvent) => {
+      // 如果触摸点在轮播容器内，不阻止（让轮播正常工作）
+      const carousel = document.querySelector('.carousel-container')
+      if (carousel) {
+        const touch = e.touches[0] || e.changedTouches[0]
+        const rect = carousel.getBoundingClientRect()
+        if (
+          touch.clientX >= rect.left &&
+          touch.clientX <= rect.right &&
+          touch.clientY >= rect.top &&
+          touch.clientY <= rect.bottom
+        ) {
+          return // 在轮播容器内，不阻止
+        }
+      }
+      
+      // 检查是否是水平滑动
+      if (e.touches.length === 1) {
+        const touch = e.touches[0]
+        const startX = touch.clientX
+        const startY = touch.clientY
+        
+        const handleMove = (moveEvent: TouchEvent) => {
+          if (moveEvent.touches.length === 1) {
+            const moveTouch = moveEvent.touches[0]
+            const deltaX = Math.abs(moveTouch.clientX - startX)
+            const deltaY = Math.abs(moveTouch.clientY - startY)
+            
+            // 如果水平移动距离大于垂直移动距离，阻止默认行为
+            if (deltaX > deltaY && deltaX > 10) {
+              moveEvent.preventDefault()
+            }
+          }
+        }
+        
+        const handleEnd = () => {
+          document.removeEventListener('touchmove', handleMove)
+          document.removeEventListener('touchend', handleEnd)
+        }
+        
+        document.addEventListener('touchmove', handleMove, { passive: false })
+        document.addEventListener('touchend', handleEnd)
+      }
+    }
+    
+    document.addEventListener('touchstart', preventHorizontalScroll, { passive: false })
+    
+    return () => {
+      document.removeEventListener('touchstart', preventHorizontalScroll)
+    }
+  }, [])
+
   // 从localStorage加载历史记录
   useEffect(() => {
     const saved = localStorage.getItem('tarot-reading-history')
