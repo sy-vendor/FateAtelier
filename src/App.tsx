@@ -42,6 +42,11 @@ function App() {
   const [selectedReadingType, setSelectedReadingType] = useState<ReadingType>('general')
   const [customQuestion, setCustomQuestion] = useState<string | undefined>(undefined)
   const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac' | 'cybermerit' | 'bazi' | 'divination' | 'dream' | 'fengshui'>('tarot')
+  const [carouselIndex, setCarouselIndex] = useState(0)
+  const [carouselRotation, setCarouselRotation] = useState(0)
+  const [touchStart, setTouchStart] = useState(0)
+  const [touchEnd, setTouchEnd] = useState(0)
+  const [transitionEffect, setTransitionEffect] = useState<string>('')
 
   // 从localStorage加载历史记录
   useEffect(() => {
@@ -252,6 +257,46 @@ function App() {
     await shareReading(reading)
   }
 
+  // 获取所有功能列表
+  const getFilteredFeatures = () => {
+    return [
+      { page: 'tarot' as const, icon: '🔮', name: '塔罗占卜' },
+      { page: 'name' as const, icon: '✨', name: '智能取名' },
+      { page: 'horoscope' as const, icon: '♈', name: '星座运势' },
+      { page: 'almanac' as const, icon: '📅', name: '今日黄历' },
+      { page: 'cybermerit' as const, icon: '🙏', name: '赛博积德' },
+      { page: 'bazi' as const, icon: '☯', name: '八字算命' },
+      { page: 'divination' as const, icon: '🎋', name: '抽签求签' },
+      { page: 'dream' as const, icon: '💭', name: '梦境解析' },
+      { page: 'fengshui' as const, icon: '🧭', name: '风水罗盘' },
+    ]
+  }
+
+  // 当页面改变时，更新轮播索引和旋转角度
+  useEffect(() => {
+    const features = getFilteredFeatures()
+    const currentIndex = features.findIndex(f => f.page === currentPage)
+    if (currentIndex >= 0) {
+      const anglePerItem = 360 / features.length
+      const targetRotation = -currentIndex * anglePerItem
+      
+      // 计算最短路径，避免转一圈
+      let normalizedRotation = targetRotation
+      const currentNormalized = ((carouselRotation % 360) + 360) % 360
+      const targetNormalized = ((targetRotation % 360) + 360) % 360
+      
+      // 如果角度差大于180度，选择另一个方向
+      let diff = targetNormalized - currentNormalized
+      if (diff > 180) diff -= 360
+      if (diff < -180) diff += 360
+      
+      normalizedRotation = carouselRotation + diff
+      
+      setCarouselIndex(currentIndex)
+      setCarouselRotation(normalizedRotation)
+    }
+  }, [currentPage])
+
   return (
     <div className="app">
       <header className="app-header">
@@ -267,61 +312,201 @@ function App() {
            currentPage === 'dream' ? '梦境解析 · 探索潜意识' :
            '风水罗盘 · 方位吉凶'}
         </p>
-        <div className="header-nav">
-          <button
-            className={`nav-btn ${currentPage === 'tarot' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('tarot')}
-          >
-            🔮 塔罗占卜
-          </button>
-          <button
-            className={`nav-btn ${currentPage === 'name' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('name')}
-          >
-            ✨ 智能取名
-          </button>
-          <button
-            className={`nav-btn ${currentPage === 'horoscope' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('horoscope')}
-          >
-            ♈ 星座运势
-          </button>
-          <button
-            className={`nav-btn ${currentPage === 'almanac' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('almanac')}
-          >
-            📅 今日黄历
-          </button>
-          <button
-            className={`nav-btn ${currentPage === 'cybermerit' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('cybermerit')}
-          >
-            🙏 赛博积德
-          </button>
-          <button
-            className={`nav-btn ${currentPage === 'bazi' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('bazi')}
-          >
-            ☯ 八字算命
-          </button>
-          <button
-            className={`nav-btn ${currentPage === 'divination' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('divination')}
-          >
-            🎋 抽签求签
-          </button>
-          <button
-            className={`nav-btn ${currentPage === 'dream' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('dream')}
-          >
-            💭 梦境解析
-          </button>
-          <button
-            className={`nav-btn ${currentPage === 'fengshui' ? 'active' : ''}`}
-            onClick={() => setCurrentPage('fengshui')}
-          >
-            🧭 风水罗盘
-          </button>
+        {/* 3D旋转选择器 */}
+        <div 
+          className="carousel-container"
+          onTouchStart={(e) => {
+            e.preventDefault()
+            setTouchStart(e.targetTouches[0].clientX)
+          }}
+          onTouchMove={(e) => {
+            if (touchStart) {
+              e.preventDefault()
+              setTouchEnd(e.targetTouches[0].clientX)
+            }
+          }}
+          onTouchEnd={(e) => {
+            e.preventDefault()
+            if (!touchStart || !touchEnd) {
+              setTouchStart(0)
+              setTouchEnd(0)
+              return
+            }
+            const distance = touchStart - touchEnd
+            const minSwipeDistance = 50
+            const features = getFilteredFeatures()
+            const totalFeatures = features.length
+            const anglePerItem = 360 / totalFeatures
+
+            if (Math.abs(distance) > minSwipeDistance) {
+              // 随机选择一个切换效果
+              const effects = ['mystic', 'sparkle', 'glow', 'fade', 'swirl']
+              const randomEffect = effects[Math.floor(Math.random() * effects.length)]
+              setTransitionEffect(randomEffect)
+              
+              // 0.6秒后清除效果（与transition时间一致）
+              setTimeout(() => setTransitionEffect(''), 600)
+              
+              if (distance > 0) {
+                // 向左滑动，显示下一个（循环）
+                const newIndex = (carouselIndex + 1) % totalFeatures
+                let targetRotation = carouselRotation - anglePerItem
+                
+                // 归一化角度到 -180 到 180 度之间，让CSS走最短路径
+                while (targetRotation < -180) targetRotation += 360
+                while (targetRotation > 180) targetRotation -= 360
+                
+                setCarouselRotation(targetRotation)
+                setCarouselIndex(newIndex)
+                setCurrentPage(features[newIndex].page)
+              } else if (distance < 0) {
+                // 向右滑动，显示上一个（循环）
+                const newIndex = (carouselIndex - 1 + totalFeatures) % totalFeatures
+                let targetRotation = carouselRotation + anglePerItem
+                
+                // 归一化角度到 -180 到 180 度之间，让CSS走最短路径
+                while (targetRotation < -180) targetRotation += 360
+                while (targetRotation > 180) targetRotation -= 360
+                
+                setCarouselRotation(targetRotation)
+                setCarouselIndex(newIndex)
+                setCurrentPage(features[newIndex].page)
+              }
+            }
+            setTouchStart(0)
+            setTouchEnd(0)
+          }}
+          onMouseDown={(e) => {
+            e.preventDefault()
+            setTouchStart(e.clientX)
+          }}
+          onMouseMove={(e) => {
+            if (touchStart) {
+              setTouchEnd(e.clientX)
+            }
+          }}
+          onMouseUp={() => {
+            if (!touchStart || !touchEnd) {
+              setTouchStart(0)
+              setTouchEnd(0)
+              return
+            }
+            const distance = touchStart - touchEnd
+            const minSwipeDistance = 50
+            const features = getFilteredFeatures()
+            const totalFeatures = features.length
+            const anglePerItem = 360 / totalFeatures
+
+            if (Math.abs(distance) > minSwipeDistance) {
+              // 随机选择一个切换效果
+              const effects = ['mystic', 'sparkle', 'glow', 'fade', 'swirl']
+              const randomEffect = effects[Math.floor(Math.random() * effects.length)]
+              setTransitionEffect(randomEffect)
+              
+              // 0.6秒后清除效果（与transition时间一致）
+              setTimeout(() => setTransitionEffect(''), 600)
+              
+              if (distance > 0) {
+                // 向左滑动，显示下一个（循环）
+                const newIndex = (carouselIndex + 1) % totalFeatures
+                let targetRotation = carouselRotation - anglePerItem
+                
+                // 归一化角度到 -180 到 180 度之间，让CSS走最短路径
+                while (targetRotation < -180) targetRotation += 360
+                while (targetRotation > 180) targetRotation -= 360
+                
+                setCarouselRotation(targetRotation)
+                setCarouselIndex(newIndex)
+                setCurrentPage(features[newIndex].page)
+              } else if (distance < 0) {
+                // 向右滑动，显示上一个（循环）
+                const newIndex = (carouselIndex - 1 + totalFeatures) % totalFeatures
+                let targetRotation = carouselRotation + anglePerItem
+                
+                // 归一化角度到 -180 到 180 度之间，让CSS走最短路径
+                while (targetRotation < -180) targetRotation += 360
+                while (targetRotation > 180) targetRotation -= 360
+                
+                setCarouselRotation(targetRotation)
+                setCarouselIndex(newIndex)
+                setCurrentPage(features[newIndex].page)
+              }
+            }
+            setTouchStart(0)
+            setTouchEnd(0)
+          }}
+          onMouseLeave={() => {
+            setTouchStart(0)
+            setTouchEnd(0)
+          }}
+        >
+          <div className="carousel-wrapper">
+            {/* 切换特效层 */}
+            {transitionEffect && (
+              <div className={`transition-effect ${transitionEffect}`}>
+                <div className="effect-particles">
+                  {[...Array(20)].map((_, i) => {
+                    const randomX = Math.random()
+                    const randomY = Math.random()
+                    return (
+                      <div 
+                        key={i} 
+                        className="particle" 
+                        style={{
+                          left: '50%',
+                          top: '50%',
+                          '--random-x': randomX,
+                          '--random-y': randomY,
+                          animationDelay: `${Math.random() * 0.3}s`,
+                          animationDuration: `${0.6 + Math.random() * 0.4}s`
+                        } as React.CSSProperties}
+                      />
+                    )
+                  })}
+                </div>
+                <div className="effect-light" />
+              </div>
+            )}
+            <div 
+              className={`carousel-track ${transitionEffect ? `effect-${transitionEffect}` : ''}`}
+              style={{ transform: `translateZ(-400px) rotateY(${carouselRotation}deg)` }}
+            >
+              {getFilteredFeatures().map((feature, index) => {
+                const isCenter = index === carouselIndex
+                const angle = (360 / Math.max(1, getFilteredFeatures().length)) * index
+                return (
+                  <div
+                    key={feature.page}
+                    className={`carousel-item ${isCenter ? 'center' : ''}`}
+                    style={{
+                      transform: `rotateY(${angle}deg) translateZ(400px)`
+                    }}
+                    onClick={() => {
+                      const features = getFilteredFeatures()
+                      const anglePerItem = 360 / features.length
+                      
+                      // 如果点击的不是当前项，触发切换效果
+                      if (index !== carouselIndex) {
+                        const effects = ['mystic', 'sparkle', 'glow', 'fade', 'swirl']
+                        const randomEffect = effects[Math.floor(Math.random() * effects.length)]
+                        setTransitionEffect(randomEffect)
+                        setTimeout(() => setTransitionEffect(''), 600)
+                      }
+                      
+                      setCarouselRotation(-index * anglePerItem)
+                      setCarouselIndex(index)
+                      setCurrentPage(feature.page)
+                    }}
+                  >
+                    <div className="feature-card">
+                      <div className="feature-icon">{feature.icon}</div>
+                      <div className="feature-name">{feature.name}</div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
         </div>
         {currentPage === 'tarot' && (
           <div className="header-actions">

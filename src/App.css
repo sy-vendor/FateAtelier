@@ -61,37 +61,322 @@
   position: relative;
 }
 
-.header-nav {
+/* 分类选择器 */
+.category-selector {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  margin: 1.5rem 0;
-  flex-wrap: wrap;
+  margin: 1.5rem 0 1.5rem 0;
+  background: transparent !important;
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-.nav-btn {
-  padding: 0.75rem 2rem;
-  background: rgba(15, 52, 96, 0.5);
-  border: 2px solid var(--color-border);
+.category-select {
+  padding: 0.7rem 1.5rem;
+  background: rgba(15, 52, 96, 0.6) !important;
+  border: 2px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 25px;
-  color: var(--color-text);
+  color: var(--color-text) !important;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: rgba(15, 52, 96, 0.6) !important;
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+  padding-right: 3rem;
+  min-width: 180px;
+  backdrop-filter: blur(10px);
 }
 
-.nav-btn:hover {
-  background: rgba(15, 52, 96, 0.7);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+.category-select:hover {
+  background: rgba(15, 52, 96, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
 
-.nav-btn.active {
+.category-select:focus {
+  outline: none;
+  border-color: var(--color-accent) !important;
+  box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.2);
+  background: rgba(15, 52, 96, 0.7) !important;
+}
+
+.category-select:active {
+  background: rgba(15, 52, 96, 0.7) !important;
+}
+
+/* 下拉选项样式 */
+.category-select option {
+  background: rgba(15, 52, 96, 0.95) !important;
+  color: var(--color-text) !important;
+  padding: 0.5rem;
+  border: none;
+}
+
+/* 3D旋转选择器 */
+.carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3rem 0;
+  height: 300px;
+  perspective: 1000px;
+  touch-action: pan-y; /* 只允许垂直滚动，阻止水平滑动 */
+  -webkit-overflow-scrolling: touch;
+}
+
+.carousel-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  overflow: visible;
+}
+
+/* 切换特效层 */
+.transition-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+  overflow: visible;
+}
+
+.effect-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, rgba(233, 69, 96, 1) 0%, rgba(74, 144, 226, 0.8) 50%, transparent 100%);
+  border-radius: 50%;
+  animation: particleFloat 0.8s ease-out forwards;
+  box-shadow: 0 0 8px rgba(233, 69, 96, 0.8), 0 0 12px rgba(74, 144, 226, 0.6);
+  transform: translate(-50%, -50%);
+}
+
+@keyframes particleFloat {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+      calc(-50% + (var(--random-x, 0.5) - 0.5) * 300px),
+      calc(-50% + (var(--random-y, 0.5) - 0.5) * 300px)
+    ) scale(0) rotate(360deg);
+  }
+}
+
+.effect-light {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(233, 69, 96, 0.3) 0%,
+    rgba(74, 144, 226, 0.2) 30%,
+    transparent 70%
+  );
+  animation: lightPulse 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes lightPulse {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+/* 不同切换效果 */
+.carousel-track.effect-mystic {
+  filter: blur(2px);
+  animation: mysticGlow 0.6s ease-in-out;
+}
+
+@keyframes mysticGlow {
+  0%, 100% {
+    filter: blur(0px) brightness(1);
+  }
+  50% {
+    filter: blur(3px) brightness(1.3);
+  }
+}
+
+.carousel-track.effect-sparkle {
+  animation: sparkleShine 0.6s ease-in-out;
+}
+
+@keyframes sparkleShine {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 0 0 rgba(233, 69, 96, 0));
+  }
+  50% {
+    filter: brightness(1.4) drop-shadow(0 0 20px rgba(233, 69, 96, 0.8));
+  }
+}
+
+.carousel-track.effect-glow {
+  animation: glowPulse 0.6s ease-in-out;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(233, 69, 96, 0);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(233, 69, 96, 0.6), 0 0 80px rgba(74, 144, 226, 0.4);
+  }
+}
+
+.carousel-track.effect-fade {
+  animation: fadeTransition 0.6s ease-in-out;
+}
+
+@keyframes fadeTransition {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.carousel-track.effect-swirl {
+  animation: swirlRotate 0.6s ease-in-out;
+}
+
+@keyframes swirlRotate {
+  0%, 100% {
+    transform: scale(1) rotateZ(0deg);
+  }
+  50% {
+    transform: scale(1.05) rotateZ(5deg);
+  }
+}
+
+.carousel-track {
+  position: relative;
+  width: 280px;
+  height: 180px;
+  margin: 0 auto;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.carousel-track.no-transition {
+  transition: none;
+}
+
+.carousel-item {
+  position: absolute;
+  width: 280px;
+  height: 180px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.carousel-item.center .feature-card {
+  transform: scale(1.2);
   background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-major) 100%);
-  color: white;
   border-color: var(--color-accent);
-  box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+  box-shadow: 0 8px 30px rgba(233, 69, 96, 0.5);
+  z-index: 10;
+}
+
+.carousel-item:not(.center) .feature-card {
+  opacity: 0.6;
+  filter: blur(2px);
+}
+
+.carousel-container {
+  cursor: grab;
+  user-select: none;
+}
+
+.carousel-container:active {
+  cursor: grabbing;
+}
+
+/* 功能卡片 */
+.feature-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  background: rgba(15, 52, 96, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  backface-visibility: hidden;
+}
+
+.feature-card:hover {
+  background: rgba(15, 52, 96, 0.6);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.feature-card.active {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-major) 100%);
+  border-color: var(--color-accent);
+  box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+  transform: translateY(-2px);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.feature-card.active .feature-icon {
+  filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
+}
+
+.feature-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .header-actions {
@@ -578,14 +863,74 @@
     font-size: 1rem;
   }
 
-  .header-nav {
-    margin: 1rem 0;
-    gap: 0.75rem;
+  .category-selector {
+    margin: 1rem 0 1rem 0;
   }
 
-  .nav-btn {
+  .category-select {
+    padding: 0.6rem 1.2rem;
     font-size: 0.9rem;
-    padding: 0.65rem 1.5rem;
+    min-width: 160px;
+    padding-right: 2.5rem;
+  }
+
+  .carousel-container {
+    height: 250px;
+    margin: 2rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-track {
+    width: 220px;
+    height: 140px;
+    margin: 0 auto;
+  }
+
+  .carousel-item {
+    width: 220px;
+    height: 140px;
+  }
+
+  /* 切换特效移动端适配 */
+  .transition-effect {
+    width: 220px;
+    height: 140px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .particle {
+    width: 3px;
+    height: 3px;
+    --particle-distance: 200px;
+  }
+
+  .effect-light {
+    width: 150%;
+    height: 150%;
+  }
+
+  .feature-card {
+    padding: 1rem 0.5rem;
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .feature-name {
+    font-size: 0.8rem;
   }
 
   .header-actions {
@@ -670,6 +1015,90 @@
     padding: 0.75rem;
   }
 
+  .category-selector {
+    margin: 0.8rem 0 0.8rem 0;
+  }
+
+  .category-select {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    min-width: 140px;
+    padding-right: 2.2rem;
+  }
+
+  .carousel-container {
+    height: 200px;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel-track {
+    width: 180px;
+    height: 110px;
+    margin: 0 auto;
+  }
+
+  .carousel-item {
+    width: 180px;
+    height: 110px;
+  }
+
+  /* 切换特效小屏移动端适配 */
+  .transition-effect {
+    width: 180px;
+    height: 110px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .particle {
+    width: 2px;
+    height: 2px;
+    --particle-distance: 150px;
+  }
+
+  .effect-light {
+    width: 120%;
+    height: 120%;
+  }
+
+  .carousel-nav {
+    width: 35px;
+    height: 35px;
+    font-size: 1.2rem;
+  }
+
+  .carousel-nav-left {
+    left: 0.5rem;
+  }
+
+  .carousel-nav-right {
+    right: 0.5rem;
+  }
+
+  .feature-card {
+    padding: 0.8rem 0.4rem;
+  }
+
+  .feature-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .feature-name {
+    font-size: 0.7rem;
+  }
+
   .app-header {
     margin-bottom: 1.5rem;
     padding: 1rem 0;
@@ -684,15 +1113,19 @@
   }
 
   .header-nav {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.4rem;
     width: 100%;
-    gap: 0.5rem;
   }
 
   .nav-btn {
     width: 100%;
-    font-size: 0.85rem;
-    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .header-actions {
