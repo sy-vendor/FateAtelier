@@ -119,7 +119,7 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
           <select 
             value={selectedCategory} 
             onChange={(e) => setSelectedCategory(e.target.value)}
-            disabled={isShaking || showResult}
+            disabled={isShaking}
           >
             <option value="">全部</option>
             <option value="career">事业</option>

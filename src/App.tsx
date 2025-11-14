@@ -18,6 +18,7 @@ import CyberMerit from './components/CyberMerit'
 import BaziFortune from './components/BaziFortune'
 import DivinationDraw from './components/DivinationDraw'
 import DreamInterpretation from './components/DreamInterpretation'
+import FengshuiCompass from './components/FengshuiCompass'
 import { getCardIcon, getSuitIcon } from './utils/cardIcons'
 import { generateThreeCardReading } from './utils/readingInterpretation'
 import { downloadReading } from './utils/exportReading'
@@ -40,7 +41,7 @@ function App() {
   const [showReadingTypeSelector, setShowReadingTypeSelector] = useState(false)
   const [selectedReadingType, setSelectedReadingType] = useState<ReadingType>('general')
   const [customQuestion, setCustomQuestion] = useState<string | undefined>(undefined)
-  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac' | 'cybermerit' | 'bazi' | 'divination' | 'dream'>('tarot')
+  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac' | 'cybermerit' | 'bazi' | 'divination' | 'dream' | 'fengshui'>('tarot')
 
   // 从localStorage加载历史记录
   useEffect(() => {
@@ -263,7 +264,8 @@ function App() {
            currentPage === 'cybermerit' ? '赛博积德 · 功德无量' :
            currentPage === 'bazi' ? '八字算命 · 传统命理' :
            currentPage === 'divination' ? '抽签求签 · 心诚则灵' :
-           '梦境解析 · 探索潜意识'}
+           currentPage === 'dream' ? '梦境解析 · 探索潜意识' :
+           '风水罗盘 · 方位吉凶'}
         </p>
         <div className="header-nav">
           <button
@@ -314,6 +316,12 @@ function App() {
           >
             💭 梦境解析
           </button>
+          <button
+            className={`nav-btn ${currentPage === 'fengshui' ? 'active' : ''}`}
+            onClick={() => setCurrentPage('fengshui')}
+          >
+            🧭 风水罗盘
+          </button>
         </div>
         {currentPage === 'tarot' && (
           <div className="header-actions">
@@ -339,6 +347,8 @@ function App() {
           <DivinationDraw onBack={() => setCurrentPage('tarot')} />
         ) : currentPage === 'dream' ? (
           <DreamInterpretation onBack={() => setCurrentPage('tarot')} />
+        ) : currentPage === 'fengshui' ? (
+          <FengshuiCompass onBack={() => setCurrentPage('tarot')} />
         ) : (
           <>
         {/* 单张牌抽牌动画 */}

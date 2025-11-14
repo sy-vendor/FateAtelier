@@ -1,0 +1,578 @@
+.fengshui-compass {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.compass-header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.compass-back-btn {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(102, 126, 234, 0.2);
+  border: 2px solid rgba(102, 126, 234, 0.3);
+  color: #667eea;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.compass-back-btn:hover {
+  background: rgba(102, 126, 234, 0.3);
+  transform: translateX(-5px);
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
+.compass-header h2 {
+  font-size: 2.5em;
+  margin: 0;
+  color: #2c3e50;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.compass-subtitle {
+  font-size: 1.1em;
+  color: #7f8c8d;
+  margin-top: 10px;
+}
+
+.compass-container {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.compass-main {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  margin: 0 auto;
+}
+
+.compass-disk {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 8px solid #2c3e50;
+  position: relative;
+  cursor: grab;
+  transition: transform 0.1s ease-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.compass-disk:active {
+  cursor: grabbing;
+}
+
+.compass-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  z-index: 10;
+}
+
+.compass-center-dot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #2c3e50;
+  border: 3px solid white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.compass-center-line {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 60px;
+  background: white;
+  transform: translate(-50%, -50%) rotate(0deg);
+  transform-origin: top center;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+.compass-direction {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 5;
+}
+
+.compass-direction:hover {
+  z-index: 7;
+}
+
+.compass-direction.selected {
+  z-index: 8;
+}
+
+.compass-direction.selected .direction-marker {
+  background: #FFD700;
+  box-shadow: 0 0 15px #FFD700;
+}
+
+.compass-direction.auspicious .direction-marker {
+  background: #4CAF50;
+  box-shadow: 0 0 10px #4CAF50;
+}
+
+.compass-direction.inauspicious .direction-marker {
+  background: #F44336;
+  box-shadow: 0 0 10px #F44336;
+}
+
+.direction-marker {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: white;
+  margin: 0 auto 5px;
+  transition: all 0.3s;
+}
+
+.direction-label {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 5px 8px;
+  border-radius: 8px;
+  min-width: 60px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s;
+}
+
+.compass-direction:hover .direction-label {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: rotate(var(--rotation, 0deg)) scale(1.1);
+}
+
+.direction-name {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: #2c3e50;
+}
+
+.direction-symbol {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 2px 0;
+}
+
+.direction-wuxing {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
+.compass-bagua-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 280px;
+  height: 280px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+.bagua-item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 0 0;
+}
+
+.bagua-symbol {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #2c3e50;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.compass-tick {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  transform-origin: bottom center;
+  transform: translateX(-50%);
+}
+
+.compass-pointer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  pointer-events: none;
+}
+
+.pointer-north {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #F44336;
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pointer-arrow {
+  font-size: 2em;
+  color: #F44336;
+  text-shadow: 0 0 10px rgba(244, 67, 54, 0.5);
+}
+
+.compass-controls {
+  flex: 1;
+  min-width: 300px;
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.control-section {
+  margin-bottom: 25px;
+}
+
+.control-section:last-child {
+  margin-bottom: 0;
+}
+
+.control-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #2c3e50;
+  font-size: 1.2em;
+}
+
+.direction-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.direction-btn {
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 600;
+  transition: all 0.3s;
+  color: #2c3e50;
+}
+
+.direction-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.direction-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.direction-btn.auspicious {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.direction-btn.inauspicious {
+  border-color: #F44336;
+  background: rgba(244, 67, 54, 0.1);
+}
+
+.purpose-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.purpose-btn {
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.3s;
+  color: #2c3e50;
+}
+
+.purpose-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #667eea;
+}
+
+.purpose-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+}
+
+.reset-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.reset-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.today-directions {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.today-directions h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+}
+
+.direction-status {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.status-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-label {
+  font-weight: 600;
+  min-width: 60px;
+}
+
+.status-label.auspicious {
+  color: #4CAF50;
+}
+
+.status-label.inauspicious {
+  color: #F44336;
+}
+
+.status-label.neutral {
+  color: #7f8c8d;
+}
+
+.direction-detail {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  margin-bottom: 30px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.direction-detail h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+}
+
+.detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-label {
+  font-weight: 600;
+  min-width: 80px;
+  color: #2c3e50;
+}
+
+.detail-value {
+  color: #7f8c8d;
+}
+
+.detail-value.auspicious {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.detail-value.inauspicious {
+  color: #F44336;
+  font-weight: 600;
+}
+
+.detail-value.neutral {
+  color: #7f8c8d;
+}
+
+.detail-advice {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  border-radius: 10px;
+  padding: 15px;
+  border-left: 5px solid #667eea;
+  margin-top: 10px;
+}
+
+.detail-advice p {
+  margin: 0;
+  line-height: 1.6;
+  color: #2c3e50;
+}
+
+.compass-instructions {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.compass-instructions h3 {
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 10px;
+}
+
+.compass-instructions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.compass-instructions li {
+  padding: 10px 0;
+  padding-left: 30px;
+  position: relative;
+  color: #2c3e50;
+  line-height: 1.6;
+}
+
+.compass-instructions li::before {
+  content: '✨';
+  position: absolute;
+  left: 0;
+}
+
+.compass-instructions li:not(:last-child) {
+  border-bottom: 1px solid #ecf0f1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .fengshui-compass {
+    padding: 15px;
+  }
+
+  .compass-header h2 {
+    font-size: 2em;
+  }
+
+  .compass-container {
+    flex-direction: column;
+  }
+
+  .compass-main {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .compass-controls {
+    width: 100%;
+  }
+
+  .direction-buttons,
+  .purpose-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .compass-back-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .compass-header h2 {
+    font-size: 1.5em;
+  }
+
+  .compass-main {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .direction-buttons,
+  .purpose-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
