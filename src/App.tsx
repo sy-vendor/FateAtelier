@@ -20,6 +20,7 @@ import DivinationDraw from './components/DivinationDraw'
 import DreamInterpretation from './components/DreamInterpretation'
 import FengshuiCompass from './components/FengshuiCompass'
 import AuspiciousDate from './components/AuspiciousDate'
+import NumberEnergy from './components/NumberEnergy'
 import { getCardIcon, getSuitIcon } from './utils/cardIcons'
 import { generateThreeCardReading } from './utils/readingInterpretation'
 import { downloadReading } from './utils/exportReading'
@@ -42,7 +43,7 @@ function App() {
   const [showReadingTypeSelector, setShowReadingTypeSelector] = useState(false)
   const [selectedReadingType, setSelectedReadingType] = useState<ReadingType>('general')
   const [customQuestion, setCustomQuestion] = useState<string | undefined>(undefined)
-  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac' | 'cybermerit' | 'bazi' | 'divination' | 'dream' | 'fengshui' | 'auspicious'>('tarot')
+  const [currentPage, setCurrentPage] = useState<'tarot' | 'name' | 'horoscope' | 'almanac' | 'cybermerit' | 'bazi' | 'divination' | 'dream' | 'fengshui' | 'auspicious' | 'numberenergy'>('tarot')
   const [carouselIndex, setCarouselIndex] = useState(0)
   const [carouselRotation, setCarouselRotation] = useState(0)
   const [touchStart, setTouchStart] = useState(0)
@@ -325,6 +326,7 @@ function App() {
       { page: 'dream' as const, icon: '💭', name: '梦境解析' },
       { page: 'fengshui' as const, icon: '🧭', name: '风水罗盘' },
       { page: 'auspicious' as const, icon: '⏰', name: '择日吉时' },
+      { page: 'numberenergy' as const, icon: '🔢', name: '数字能量' },
     ]
   }
 
@@ -367,7 +369,9 @@ function App() {
            currentPage === 'divination' ? '抽签求签 · 心诚则灵' :
            currentPage === 'dream' ? '梦境解析 · 探索潜意识' :
            currentPage === 'fengshui' ? '风水罗盘 · 方位吉凶' :
-           '择日吉时 · 良辰吉日'}
+           currentPage === 'auspicious' ? '择日吉时 · 良辰吉日' :
+           currentPage === 'numberenergy' ? '数字能量 · 数字命理' :
+           '探索塔罗牌的奥秘'}
         </p>
         {/* 3D旋转选择器 */}
         <div 
@@ -593,6 +597,8 @@ function App() {
           <FengshuiCompass onBack={() => setCurrentPage('tarot')} />
         ) : currentPage === 'auspicious' ? (
           <AuspiciousDate onBack={() => setCurrentPage('tarot')} />
+        ) : currentPage === 'numberenergy' ? (
+          <NumberEnergy onBack={() => setCurrentPage('tarot')} />
         ) : (
           <>
         {/* 单张牌抽牌动画 */}

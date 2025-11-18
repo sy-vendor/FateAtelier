@@ -308,6 +308,12 @@
   transform-style: preserve-3d;
   cursor: pointer;
   transition: transform 0.3s ease;
+  z-index: 1;
+}
+
+.carousel-item.center {
+  z-index: 10;
+  isolation: isolate;
 }
 
 .carousel-item.center .feature-card {
@@ -316,11 +322,15 @@
   border-color: var(--color-accent);
   box-shadow: 0 8px 30px rgba(233, 69, 96, 0.5);
   z-index: 10;
+  position: relative;
+  isolation: isolate;
 }
 
 .carousel-item:not(.center) .feature-card {
   opacity: 0.6;
   filter: blur(2px);
+  z-index: 1;
+  position: relative;
 }
 
 .carousel-container {
