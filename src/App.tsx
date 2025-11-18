@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { tarotCards, TarotCard } from './data/tarotCards'
 import CardDisplay from './components/CardDisplay'
 import CardDrawer from './components/CardDrawer'
@@ -804,6 +805,7 @@ function App() {
           </div>
         </div>
       </footer>
+      <Analytics />
     </div>
   )
 }

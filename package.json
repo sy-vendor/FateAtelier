@@ -10,6 +10,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "@vercel/analytics": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -26,4 +27,3 @@
     "vite": "^5.0.8"
   }
 }
-
