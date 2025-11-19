@@ -56,17 +56,20 @@
   border-radius: 15px;
   margin-bottom: 30px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .category-selector label {
-  display: block;
-  margin-bottom: 10px;
   font-weight: bold;
   color: #333;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .category-selector select {
-  width: 100%;
+  flex: 1;
   padding: 12px;
   border: 2px solid #e0e0e0;
   border-radius: 8px;
@@ -394,6 +397,7 @@
 
 .detailed-content {
   animation: fadeIn 0.3s ease-out;
+  color: #333;
 }
 
 @keyframes fadeIn {
@@ -413,19 +417,20 @@
   background: #f8f9fa;
   border-radius: 10px;
   border-left: 4px solid #667eea;
+  color: #333;
 }
 
 .detail-label {
   font-weight: bold;
   font-size: 18px;
-  color: #667eea;
+  color: #667eea !important;
   margin-bottom: 10px;
 }
 
 .detail-text {
   font-size: 16px;
   line-height: 1.8;
-  color: #555;
+  color: #333 !important;
 }
 
 .poem-style {
@@ -435,7 +440,7 @@
   background: white;
   border-radius: 8px;
   font-size: 18px;
-  color: #333;
+  color: #333 !important;
 }
 
 .age-gender-grid {
@@ -449,11 +454,12 @@
   border-radius: 8px;
   font-size: 15px;
   line-height: 1.6;
+  color: #333 !important;
 }
 
 .age-label {
   font-weight: bold;
-  color: #667eea;
+  color: #667eea !important;
   margin-right: 8px;
 }
 
@@ -470,6 +476,7 @@
   font-size: 15px;
   line-height: 1.6;
   transition: all 0.2s ease;
+  color: #333 !important;
 }
 
 .interpretation-item:hover {
@@ -479,7 +486,7 @@
 
 .interpretation-key {
   font-weight: bold;
-  color: #667eea;
+  color: #667eea !important;
   margin-right: 8px;
   display: inline-block;
   min-width: 60px;

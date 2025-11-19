@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { divinationSticks, DivinationStick } from '../data/divinationSticks'
+import { optimizeStick } from '../utils/divinationOptimizer'
 import './DivinationDraw.css'
 
 interface DivinationDrawProps {
@@ -102,6 +103,12 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
     return stick.categories[category as keyof typeof stick.categories]
   }
 
+  // 优化签文解读，减少重复话术
+  const optimizedStick = useMemo(() => {
+    if (!drawnStick) return null
+    return optimizeStick(drawnStick)
+  }, [drawnStick])
+
   return (
     <div className="divination-draw">
       <div className="divination-header">
@@ -167,29 +174,29 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
         </div>
 
         {/* 抽签结果 */}
-        {showResult && drawnStick && (
+        {showResult && optimizedStick && (
           <div className="result-container">
-            <div className="result-card" style={{ borderColor: getLevelColor(drawnStick.level) }}>
+            <div className="result-card" style={{ borderColor: getLevelColor(optimizedStick.level) }}>
               <div className="result-header">
-                <div className="stick-number">第 {drawnStick.id} 签</div>
-                <div className="stick-level" style={{ color: getLevelColor(drawnStick.level) }}>
-                  {drawnStick.level}
+                <div className="stick-number">第 {optimizedStick.id} 签</div>
+                <div className="stick-level" style={{ color: getLevelColor(optimizedStick.level) }}>
+                  {optimizedStick.level}
                 </div>
               </div>
               
-              <div className="stick-title">{drawnStick.title}</div>
+              <div className="stick-title">{optimizedStick.title}</div>
               
               <div className="stick-poem">
                 <div className="poem-label">签诗：</div>
-                <div className="poem-content">{drawnStick.poem}</div>
+                <div className="poem-content">{optimizedStick.poem}</div>
               </div>
 
               <div className="stick-interpretation">
                 <div className="interpretation-label">解签：</div>
-                <div className="interpretation-content">{drawnStick.interpretation}</div>
+                <div className="interpretation-content">{optimizedStick.interpretation}</div>
               </div>
 
-              {selectedCategory && getCategoryAdvice(drawnStick, selectedCategory) && (
+              {selectedCategory && getCategoryAdvice(optimizedStick, selectedCategory) && (
                 <div className="category-advice">
                   <div className="advice-label">
                     {selectedCategory === 'career' ? '事业' :
@@ -199,18 +206,34 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
                      selectedCategory === 'travel' ? '出行' : '建议'}：
                   </div>
                   <div className="advice-content">
-                    {getCategoryAdvice(drawnStick, selectedCategory)}
+                    {getCategoryAdvice(optimizedStick, selectedCategory)}
                   </div>
                 </div>
               )}
 
               <div className="stick-advice">
                 <div className="advice-label">建议：</div>
-                <div className="advice-content">{drawnStick.advice}</div>
+                <div className="advice-content">{optimizedStick.advice}</div>
               </div>
 
-              {/* 详细解签 */}
-              {(drawnStick.story || drawnStick.dailyPoem || drawnStick.detailedInterpretations || drawnStick.ageGenderInterpretations) && (
+              {/* 戏文简介 - 直接显示 */}
+              {optimizedStick.story && (
+                <div className="detail-item">
+                  <div className="detail-label">📖 戏文简介：</div>
+                  <div className="detail-text">{optimizedStick.story}</div>
+                </div>
+              )}
+
+              {/* 日诗 - 直接显示 */}
+              {optimizedStick.dailyPoem && (
+                <div className="detail-item">
+                  <div className="detail-label">📜 日诗：</div>
+                  <div className="detail-text poem-style">{optimizedStick.dailyPoem}</div>
+                </div>
+              )}
+
+              {/* 详细解签 - 其他详细内容需要展开 */}
+              {(optimizedStick.detailedInterpretations || optimizedStick.ageGenderInterpretations) && (
                 <div className="detailed-section">
                   <button
                     className="toggle-detailed-btn"
@@ -221,55 +244,40 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
 
                   {showDetailed && (
                     <div className="detailed-content">
-                      {/* 戏文简介 */}
-                      {drawnStick.story && (
-                        <div className="detail-item">
-                          <div className="detail-label">📖 戏文简介：</div>
-                          <div className="detail-text">{drawnStick.story}</div>
-                        </div>
-                      )}
-
-                      {/* 日诗 */}
-                      {drawnStick.dailyPoem && (
-                        <div className="detail-item">
-                          <div className="detail-label">📜 日诗：</div>
-                          <div className="detail-text poem-style">{drawnStick.dailyPoem}</div>
-                        </div>
-                      )}
 
                       {/* 按年龄性别解读 */}
-                      {drawnStick.ageGenderInterpretations && (
+                      {optimizedStick.ageGenderInterpretations && (
                         <div className="detail-item">
                           <div className="detail-label">👥 按年龄性别：</div>
                           <div className="age-gender-grid">
-                            {drawnStick.ageGenderInterpretations.child && (
+                            {optimizedStick.ageGenderInterpretations.child && (
                               <div className="age-gender-item">
                                 <span className="age-label">小孩：</span>
-                                <span>{drawnStick.ageGenderInterpretations.child}</span>
+                                <span>{optimizedStick.ageGenderInterpretations.child}</span>
                               </div>
                             )}
-                            {drawnStick.ageGenderInterpretations.youngGirl && (
+                            {optimizedStick.ageGenderInterpretations.youngGirl && (
                               <div className="age-gender-item">
                                 <span className="age-label">小女：</span>
-                                <span>{drawnStick.ageGenderInterpretations.youngGirl}</span>
+                                <span>{optimizedStick.ageGenderInterpretations.youngGirl}</span>
                               </div>
                             )}
-                            {drawnStick.ageGenderInterpretations.youngBoy && (
+                            {optimizedStick.ageGenderInterpretations.youngBoy && (
                               <div className="age-gender-item">
                                 <span className="age-label">小儿：</span>
-                                <span>{drawnStick.ageGenderInterpretations.youngBoy}</span>
+                                <span>{optimizedStick.ageGenderInterpretations.youngBoy}</span>
                               </div>
                             )}
-                            {drawnStick.ageGenderInterpretations.male && (
+                            {optimizedStick.ageGenderInterpretations.male && (
                               <div className="age-gender-item">
                                 <span className="age-label">男：</span>
-                                <span>{drawnStick.ageGenderInterpretations.male}</span>
+                                <span>{optimizedStick.ageGenderInterpretations.male}</span>
                               </div>
                             )}
-                            {drawnStick.ageGenderInterpretations.female && (
+                            {optimizedStick.ageGenderInterpretations.female && (
                               <div className="age-gender-item">
                                 <span className="age-label">女：</span>
-                                <span>{drawnStick.ageGenderInterpretations.female}</span>
+                                <span>{optimizedStick.ageGenderInterpretations.female}</span>
                               </div>
                             )}
                           </div>
@@ -277,110 +285,110 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
                       )}
 
                       {/* 详细解读 */}
-                      {drawnStick.detailedInterpretations && (
+                      {optimizedStick.detailedInterpretations && (
                         <div className="detail-item">
                           <div className="detail-label">🔍 详细解读：</div>
                           <div className="interpretations-grid">
-                            {drawnStick.detailedInterpretations.home && (
+                            {optimizedStick.detailedInterpretations.home && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">家宅：</span>
-                                <span>{drawnStick.detailedInterpretations.home}</span>
+                                <span>{optimizedStick.detailedInterpretations.home}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.business && (
+                            {optimizedStick.detailedInterpretations.business && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">生意：</span>
-                                <span>{drawnStick.detailedInterpretations.business}</span>
+                                <span>{optimizedStick.detailedInterpretations.business}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.travel && (
+                            {optimizedStick.detailedInterpretations.travel && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">出行：</span>
-                                <span>{drawnStick.detailedInterpretations.travel}</span>
+                                <span>{optimizedStick.detailedInterpretations.travel}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.marriage && (
+                            {optimizedStick.detailedInterpretations.marriage && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">婚姻：</span>
-                                <span>{drawnStick.detailedInterpretations.marriage}</span>
+                                <span>{optimizedStick.detailedInterpretations.marriage}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.wealth && (
+                            {optimizedStick.detailedInterpretations.wealth && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">求财：</span>
-                                <span>{drawnStick.detailedInterpretations.wealth}</span>
+                                <span>{optimizedStick.detailedInterpretations.wealth}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.health && (
+                            {optimizedStick.detailedInterpretations.health && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">求医：</span>
-                                <span>{drawnStick.detailedInterpretations.health}</span>
+                                <span>{optimizedStick.detailedInterpretations.health}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.lawsuit && (
+                            {optimizedStick.detailedInterpretations.lawsuit && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">诉讼：</span>
-                                <span>{drawnStick.detailedInterpretations.lawsuit}</span>
+                                <span>{optimizedStick.detailedInterpretations.lawsuit}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.lostItem && (
+                            {optimizedStick.detailedInterpretations.lostItem && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">失物：</span>
-                                <span>{drawnStick.detailedInterpretations.lostItem}</span>
+                                <span>{optimizedStick.detailedInterpretations.lostItem}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.searchPerson && (
+                            {optimizedStick.detailedInterpretations.searchPerson && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">寻人：</span>
-                                <span>{drawnStick.detailedInterpretations.searchPerson}</span>
+                                <span>{optimizedStick.detailedInterpretations.searchPerson}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.relocation && (
+                            {optimizedStick.detailedInterpretations.relocation && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">移徙：</span>
-                                <span>{drawnStick.detailedInterpretations.relocation}</span>
+                                <span>{optimizedStick.detailedInterpretations.relocation}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.career && (
+                            {optimizedStick.detailedInterpretations.career && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">功名：</span>
-                                <span>{drawnStick.detailedInterpretations.career}</span>
+                                <span>{optimizedStick.detailedInterpretations.career}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.pregnancy && (
+                            {optimizedStick.detailedInterpretations.pregnancy && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">六甲：</span>
-                                <span>{drawnStick.detailedInterpretations.pregnancy}</span>
+                                <span>{optimizedStick.detailedInterpretations.pregnancy}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.livestock && (
+                            {optimizedStick.detailedInterpretations.livestock && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">六畜：</span>
-                                <span>{drawnStick.detailedInterpretations.livestock}</span>
+                                <span>{optimizedStick.detailedInterpretations.livestock}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.disputes && (
+                            {optimizedStick.detailedInterpretations.disputes && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">口舌：</span>
-                                <span>{drawnStick.detailedInterpretations.disputes}</span>
+                                <span>{optimizedStick.detailedInterpretations.disputes}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.illness && (
+                            {optimizedStick.detailedInterpretations.illness && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">病：</span>
-                                <span>{drawnStick.detailedInterpretations.illness}</span>
+                                <span>{optimizedStick.detailedInterpretations.illness}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.transaction && (
+                            {optimizedStick.detailedInterpretations.transaction && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">交易：</span>
-                                <span>{drawnStick.detailedInterpretations.transaction}</span>
+                                <span>{optimizedStick.detailedInterpretations.transaction}</span>
                               </div>
                             )}
-                            {drawnStick.detailedInterpretations.traveler && (
+                            {optimizedStick.detailedInterpretations.traveler && (
                               <div className="interpretation-item">
                                 <span className="interpretation-key">行人：</span>
-                                <span>{drawnStick.detailedInterpretations.traveler}</span>
+                                <span>{optimizedStick.detailedInterpretations.traveler}</span>
                               </div>
                             )}
                           </div>
