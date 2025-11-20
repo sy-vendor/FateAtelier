@@ -22,8 +22,11 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
   const [drawHistory, setDrawHistory] = useState<DrawHistory[]>([])
   const [showHistory, setShowHistory] = useState(false)
   const [showDetailed, setShowDetailed] = useState(false)
+  const [favorites, setFavorites] = useState<Set<number>>(new Set())
+  const [copied, setCopied] = useState(false)
+  const [historySearch, setHistorySearch] = useState('')
 
-  // 从localStorage加载历史记录
+  // 从localStorage加载历史记录和收藏
   useEffect(() => {
     const saved = localStorage.getItem('divination-draw-history')
     if (saved) {
@@ -31,6 +34,15 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
         setDrawHistory(JSON.parse(saved))
       } catch (e) {
         console.error('Failed to load draw history', e)
+      }
+    }
+    
+    const savedFavorites = localStorage.getItem('divination-favorites')
+    if (savedFavorites) {
+      try {
+        setFavorites(new Set(JSON.parse(savedFavorites)))
+      } catch (e) {
+        console.error('Failed to load favorites', e)
       }
     }
   }, [])
@@ -41,6 +53,13 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
       localStorage.setItem('divination-draw-history', JSON.stringify(drawHistory))
     }
   }, [drawHistory])
+
+  // 保存收藏到localStorage
+  useEffect(() => {
+    if (favorites.size > 0) {
+      localStorage.setItem('divination-favorites', JSON.stringify(Array.from(favorites)))
+    }
+  }, [favorites])
 
   // 抽签动画
   const drawStick = () => {
@@ -108,6 +127,96 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
     if (!drawnStick) return null
     return optimizeStick(drawnStick)
   }, [drawnStick])
+
+  // 切换收藏
+  const toggleFavorite = (stickId: number) => {
+    setFavorites(prev => {
+      const newFavorites = new Set(prev)
+      if (newFavorites.has(stickId)) {
+        newFavorites.delete(stickId)
+      } else {
+        newFavorites.add(stickId)
+      }
+      return newFavorites
+    })
+  }
+
+  // 复制签文内容
+  const copyToClipboard = () => {
+    if (!optimizedStick) return
+    
+    const text = `第 ${optimizedStick.id} 签 - ${optimizedStick.title} (${optimizedStick.level})
+
+签诗：
+${optimizedStick.poem}
+
+解签：
+${optimizedStick.interpretation}
+
+建议：
+${optimizedStick.advice}${optimizedStick.story ? `\n\n戏文简介：\n${optimizedStick.story}` : ''}${optimizedStick.dailyPoem ? `\n\n日诗：\n${optimizedStick.dailyPoem}` : ''}
+
+来自 FateAtelier 抽签求签`
+    
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }).catch(err => {
+      console.error('Failed to copy:', err)
+    })
+  }
+
+  // 分享签文
+  const shareStick = async () => {
+    if (!optimizedStick) return
+    
+    const text = `第 ${optimizedStick.id} 签 - ${optimizedStick.title} (${optimizedStick.level})\n\n签诗：${optimizedStick.poem}\n\n解签：${optimizedStick.interpretation}\n\n来自 FateAtelier 抽签求签`
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `第 ${optimizedStick.id} 签 - ${optimizedStick.title}`,
+          text: text
+        })
+      } catch (err) {
+        console.error('Share failed:', err)
+      }
+    } else {
+      // 降级到复制
+      copyToClipboard()
+    }
+  }
+
+  // 导出历史记录
+  const exportHistory = () => {
+    const data = JSON.stringify(drawHistory, null, 2)
+    const blob = new Blob([data], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `抽签历史记录_${new Date().toISOString().split('T')[0]}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  // 清空历史记录
+  const clearHistory = () => {
+    if (window.confirm('确定要清空所有历史记录吗？此操作不可恢复。')) {
+      setDrawHistory([])
+      localStorage.removeItem('divination-draw-history')
+    }
+  }
+
+  // 筛选历史记录
+  const filteredHistory = useMemo(() => {
+    if (!historySearch) return drawHistory
+    const search = historySearch.toLowerCase()
+    return drawHistory.filter(item => 
+      item.stick.title.toLowerCase().includes(search) ||
+      item.stick.poem.toLowerCase().includes(search) ||
+      item.stick.id.toString().includes(search)
+    )
+  }, [drawHistory, historySearch])
 
   return (
     <div className="divination-draw">
@@ -399,59 +508,121 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
                 </div>
               )}
 
-              <button
-                className="draw-again-btn"
-                onClick={() => {
-                  setShowResult(false)
-                  setDrawnStick(null)
-                  setShowDetailed(false)
-                }}
-              >
-                再抽一签
-              </button>
+              <div className="result-actions">
+                <button
+                  className={`action-btn favorite-btn1 ${optimizedStick && favorites.has(optimizedStick.id) ? 'active' : ''}`}
+                  onClick={() => optimizedStick && toggleFavorite(optimizedStick.id)}
+                  title={optimizedStick && favorites.has(optimizedStick.id) ? '取消收藏' : '收藏'}
+                >
+                  {optimizedStick && favorites.has(optimizedStick.id) ? '⭐' : '☆'} 收藏
+                </button>
+                <button
+                  className="action-btn copy-btn1"
+                  onClick={copyToClipboard}
+                  title="复制签文"
+                >
+                  {copied ? '✓ 已复制' : '📋 复制'}
+                </button>
+                <button
+                  className="action-btn share-btn"
+                  onClick={shareStick}
+                  title="分享签文"
+                >
+                  📤 分享
+                </button>
+                <button
+                  className="draw-again-btn"
+                  onClick={() => {
+                    setShowResult(false)
+                    setDrawnStick(null)
+                    setShowDetailed(false)
+                    setCopied(false)
+                  }}
+                >
+                  再抽一签
+                </button>
+              </div>
             </div>
           </div>
         )}
 
         {/* 历史记录 */}
         <div className="history-section">
-          <button
-            className="history-toggle-btn"
-            onClick={() => setShowHistory(!showHistory)}
-          >
-            {showHistory ? '隐藏' : '显示'}历史记录 ({drawHistory.length})
-          </button>
+          <div className="history-header-controls">
+            <button
+              className="history-toggle-btn"
+              onClick={() => setShowHistory(!showHistory)}
+            >
+              {showHistory ? '隐藏' : '显示'}历史记录 ({drawHistory.length})
+            </button>
+            {showHistory && drawHistory.length > 0 && (
+              <div className="history-actions">
+                <button className="history-action-btn" onClick={exportHistory}>
+                  📥 导出
+                </button>
+                <button className="history-action-btn" onClick={clearHistory}>
+                  🗑️ 清空
+                </button>
+              </div>
+            )}
+          </div>
 
           {showHistory && drawHistory.length > 0 && (
-            <div className="history-list">
-              {drawHistory.map((item) => (
-                <div key={item.id} className="history-item">
-                  <div className="history-header">
-                    <span className="history-number">第 {item.stick.id} 签</span>
-                    <span 
-                      className="history-level"
-                      style={{ color: getLevelColor(item.stick.level) }}
-                    >
-                      {item.stick.level}
-                    </span>
-                    <span className="history-title">{item.stick.title}</span>
-                    <span className="history-time">
-                      {new Date(item.timestamp).toLocaleString('zh-CN')}
-                    </span>
-                  </div>
-                  <button
-                    className="view-detail-btn"
-                    onClick={() => {
-                      setDrawnStick(item.stick)
-                      setShowResult(true)
-                      setSelectedCategory(item.category || '')
-                    }}
-                  >
-                    查看详情
-                  </button>
-                </div>
-              ))}
-            </div>
+            <>
+              <div className="history-search">
+                <input
+                  type="text"
+                  placeholder="搜索历史记录..."
+                  value={historySearch}
+                  onChange={(e) => setHistorySearch(e.target.value)}
+                  className="history-search-input"
+                />
+              </div>
+              <div className="history-list">
+                {filteredHistory.length > 0 ? (
+                  filteredHistory.map((item) => {
+                    const isFavorite = favorites.has(item.stick.id)
+                    return (
+                      <div key={item.id} className="history-item">
+                        <div className="history-header">
+                          <span className="history-number">第 {item.stick.id} 签</span>
+                          <span 
+                            className="history-level"
+                            style={{ color: getLevelColor(item.stick.level) }}
+                          >
+                            {item.stick.level}
+                          </span>
+                          <span className="history-title">{item.stick.title}</span>
+                          <span className="history-time">
+                            {new Date(item.timestamp).toLocaleString('zh-CN')}
+                          </span>
+                          <button
+                            className={`history-favorite-btn ${isFavorite ? 'active' : ''}`}
+                            onClick={() => toggleFavorite(item.stick.id)}
+                            title={isFavorite ? '取消收藏' : '收藏'}
+                          >
+                            {isFavorite ? '⭐' : '☆'}
+                          </button>
+                        </div>
+                        <button
+                          className="view-detail-btn"
+                          onClick={() => {
+                            setDrawnStick(item.stick)
+                            setShowResult(true)
+                            setSelectedCategory(item.category || '')
+                            setShowDetailed(false)
+                          }}
+                        >
+                          查看详情
+                        </button>
+                      </div>
+                    )
+                  })
+                ) : (
+                  <div className="history-empty">没有找到匹配的历史记录</div>
+                )}
+              </div>
+            </>
           )}
         </div>
       </div>
