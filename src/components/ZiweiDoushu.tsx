@@ -102,10 +102,11 @@ const placeTianfuStars = (tianfuPos: number): { [key: number]: string[] } => {
   return stars
 }
 
-// 安辅星（完整算法，根据年干、年支、日干、日支等）
+// 安辅星（完整算法，根据年干、年支、日干、日支、农历年份等）
 const placeMinorStars = (
   yearPillar: string,
-  _dayPillar: string
+  _dayPillar: string,
+  lunarYear: number
 ): { [key: number]: string[] } => {
   const stars: { [key: number]: string[] } = {}
   const yearGan = yearPillar[0]
@@ -113,6 +114,9 @@ const placeMinorStars = (
   
   const yearGanIndex = tiangan.indexOf(yearGan)
   const yearZhiIndex = dizhi.indexOf(yearZhi)
+  
+  // 根据农历年份计算年支索引（用于某些特殊星曜，如天德、月德等）
+  const lunarYearZhiIndex = (lunarYear - 4) % 12
   
   // 左辅：根据年干
   const zuofuPos = (yearGanIndex + 1) % 12
@@ -203,6 +207,37 @@ const placeMinorStars = (
   const tianyaoPos = (yearZhiIndex + 9) % 12
   if (!stars[tianyaoPos]) stars[tianyaoPos] = []
   stars[tianyaoPos].push('天姚')
+  
+  // 根据农历年份计算的特殊星曜（使用农历年份的年支）
+  // 天德：根据农历年份（年支）
+  const tiandePos = (lunarYearZhiIndex + 5) % 12
+  if (!stars[tiandePos]) stars[tiandePos] = []
+  stars[tiandePos].push('天德')
+  
+  // 月德：根据农历年份（年支）
+  const yuedePos = (lunarYearZhiIndex + 9) % 12
+  if (!stars[yuedePos]) stars[yuedePos] = []
+  stars[yuedePos].push('月德')
+  
+  // 天德合：根据农历年份（年支）
+  const tiandehePos = (lunarYearZhiIndex + 11) % 12
+  if (!stars[tiandehePos]) stars[tiandehePos] = []
+  stars[tiandehePos].push('天德合')
+  
+  // 月德合：根据农历年份（年支）
+  const yuedehePos = (lunarYearZhiIndex + 3) % 12
+  if (!stars[yuedehePos]) stars[yuedehePos] = []
+  stars[yuedehePos].push('月德合')
+  
+  // 天医：根据农历年份（年支）
+  const tianyiPos = (lunarYearZhiIndex + 4) % 12
+  if (!stars[tianyiPos]) stars[tianyiPos] = []
+  stars[tianyiPos].push('天医')
+  
+  // 解神：根据农历年份（年支）
+  const jieshenPos = (lunarYearZhiIndex + 6) % 12
+  if (!stars[jieshenPos]) stars[jieshenPos] = []
+  stars[jieshenPos].push('解神')
   
   return stars
 }
@@ -461,8 +496,6 @@ function ZiweiDoushu({ onBack }: ZiweiDoushuProps) {
     const yearGan = yearPillar[0]
 
     // 计算命宫和身宫（使用农历月份和时辰）
-    // 注意：_actualLunarYear 保留以备将来扩展使用（如某些特殊星曜的计算）
-    void _actualLunarYear // 标记为已使用，避免 TypeScript 警告
     const mingGong = calculateMingGong(actualLunarMonth, birthTime)
     const shenGong = calculateShenGong(actualLunarMonth, birthTime)
 
@@ -481,8 +514,8 @@ function ZiweiDoushu({ onBack }: ZiweiDoushuProps) {
       ]
     }
     
-    // 安辅星
-    const minorStarsMap = placeMinorStars(yearPillar, dayPillar)
+    // 安辅星（使用农历年份计算特殊星曜）
+    const minorStarsMap = placeMinorStars(yearPillar, dayPillar, _actualLunarYear)
     
     // 计算四化
     const sihua = calculateSihua(yearGan)
