@@ -389,7 +389,8 @@ function ZiweiDoushu({ onBack }: ZiweiDoushuProps) {
     let date: Date | null = null
     let actualLunarMonth = 1
     let actualLunarDay = 1
-    let actualLunarYear = 2000
+    // 保留农历年份以备将来扩展使用（如某些特殊星曜的计算）
+    let _actualLunarYear = 2000
     let isLeapMonth = false
 
     if (calendarType === 'solar') {
@@ -409,7 +410,7 @@ function ZiweiDoushu({ onBack }: ZiweiDoushuProps) {
         alert('阳历转农历失败，请检查输入的日期是否正确（支持1900-2100年）')
         return
       }
-      actualLunarYear = lunar.year
+      _actualLunarYear = lunar.year
       actualLunarMonth = lunar.month
       actualLunarDay = lunar.day
       isLeapMonth = lunar.isLeapMonth
@@ -433,7 +434,7 @@ function ZiweiDoushu({ onBack }: ZiweiDoushuProps) {
         return
       }
 
-      actualLunarYear = year
+      _actualLunarYear = year
       actualLunarMonth = month
       actualLunarDay = day
       isLeapMonth = isLunarLeapMonth
@@ -460,7 +461,8 @@ function ZiweiDoushu({ onBack }: ZiweiDoushuProps) {
     const yearGan = yearPillar[0]
 
     // 计算命宫和身宫（使用农历月份和时辰）
-    // 注意：actualLunarYear 保留以备将来扩展使用（如某些特殊星曜的计算）
+    // 注意：_actualLunarYear 保留以备将来扩展使用（如某些特殊星曜的计算）
+    void _actualLunarYear // 标记为已使用，避免 TypeScript 警告
     const mingGong = calculateMingGong(actualLunarMonth, birthTime)
     const shenGong = calculateShenGong(actualLunarMonth, birthTime)
 
