@@ -36,6 +36,8 @@ import { DrawnCard } from './types'
 import { ReadingType } from './types/reading'
 import './App.css'
 
+const CAROUSEL_EFFECTS = ['mystic', 'sparkle', 'glow', 'fade', 'swirl', 'zoom', 'flip', 'warp'] as const
+
 function App() {
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
   const [selectedCard, setSelectedCard] = useState<DrawnCard | null>(null)
@@ -417,8 +419,7 @@ function App() {
 
             if (Math.abs(distance) > minSwipeDistance) {
               // 随机选择一个切换效果
-              const effects = ['mystic', 'sparkle', 'glow', 'fade', 'swirl']
-              const randomEffect = effects[Math.floor(Math.random() * effects.length)]
+              const randomEffect = CAROUSEL_EFFECTS[Math.floor(Math.random() * CAROUSEL_EFFECTS.length)]
               setTransitionEffect(randomEffect)
               
               // 0.6秒后清除效果（与transition时间一致）
@@ -476,8 +477,7 @@ function App() {
 
             if (Math.abs(distance) > minSwipeDistance) {
               // 随机选择一个切换效果
-              const effects = ['mystic', 'sparkle', 'glow', 'fade', 'swirl']
-              const randomEffect = effects[Math.floor(Math.random() * effects.length)]
+              const randomEffect = CAROUSEL_EFFECTS[Math.floor(Math.random() * CAROUSEL_EFFECTS.length)]
               setTransitionEffect(randomEffect)
               
               // 0.6秒后清除效果（与transition时间一致）
@@ -546,7 +546,10 @@ function App() {
             )}
             <div 
               className={`carousel-track ${transitionEffect ? `effect-${transitionEffect}` : ''}`}
-              style={{ transform: `translateZ(-400px) rotateY(${carouselRotation}deg)` }}
+              style={{
+                transform: `translateZ(-400px) rotateY(${carouselRotation}deg)`,
+                '--carousel-rotation': `${carouselRotation}deg`,
+              } as React.CSSProperties}
             >
               {getFilteredFeatures().map((feature, index) => {
                 const isCenter = index === carouselIndex
@@ -566,8 +569,7 @@ function App() {
                       
                       // 如果点击的不是当前项，触发切换效果
                       if (index !== carouselIndex) {
-                        const effects = ['mystic', 'sparkle', 'glow', 'fade', 'swirl']
-                        const randomEffect = effects[Math.floor(Math.random() * effects.length)]
+                        const randomEffect = CAROUSEL_EFFECTS[Math.floor(Math.random() * CAROUSEL_EFFECTS.length)]
                         setTransitionEffect(randomEffect)
                         setTimeout(() => setTransitionEffect(''), 600)
                       }

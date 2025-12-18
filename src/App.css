@@ -280,10 +280,70 @@
 
 @keyframes swirlRotate {
   0%, 100% {
-    transform: scale(1) rotateZ(0deg);
+    transform: translateZ(-400px) rotateY(var(--carousel-rotation)) scale(1) rotateZ(0deg);
   }
   50% {
-    transform: scale(1.05) rotateZ(5deg);
+    transform: translateZ(-410px) rotateY(var(--carousel-rotation)) scale(1.05) rotateZ(5deg);
+  }
+}
+
+.carousel-track.effect-zoom {
+  animation: zoomTransition 0.6s ease-in-out;
+}
+
+@keyframes zoomTransition {
+  0% {
+    transform: translateZ(-420px) rotateY(var(--carousel-rotation)) scale(0.9);
+    filter: blur(2px);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateZ(-380px) rotateY(var(--carousel-rotation)) scale(1.05);
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateZ(-400px) rotateY(var(--carousel-rotation)) scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
+
+.carousel-track.effect-flip {
+  animation: flipTransition 0.6s ease-in-out;
+}
+
+@keyframes flipTransition {
+  0% {
+    transform: translateZ(-400px) rotateY(calc(var(--carousel-rotation) - 45deg));
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateZ(-380px) rotateY(calc(var(--carousel-rotation) + 10deg));
+    opacity: 1;
+  }
+  100% {
+    transform: translateZ(-400px) rotateY(var(--carousel-rotation));
+    opacity: 1;
+  }
+}
+
+.carousel-track.effect-warp {
+  animation: warpTransition 0.6s ease-in-out;
+}
+
+@keyframes warpTransition {
+  0% {
+    transform: translateZ(-380px) rotateY(var(--carousel-rotation)) skewX(8deg);
+    filter: blur(1px);
+  }
+  50% {
+    transform: translateZ(-430px) rotateY(var(--carousel-rotation)) skewX(-4deg);
+    filter: blur(2px);
+  }
+  100% {
+    transform: translateZ(-400px) rotateY(var(--carousel-rotation)) skewX(0deg);
+    filter: blur(0);
   }
 }
 
