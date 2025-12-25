@@ -404,6 +404,100 @@ interface HoroscopeProps {
   onBack?: () => void
 }
 
+// 星座配对分析函数
+function analyzeZodiacPairing(signIndex1: number, signIndex2: number) {
+  if (signIndex1 === signIndex2) {
+    return {
+      relationships: ['相同'],
+      score: 55,
+      compatibility: '中等',
+      analysis: '相同星座的配对，双方性格相似，容易理解彼此，但也可能因为过于相似而缺乏互补性。需要更多的沟通和包容来维持关系。'
+    }
+  }
+
+  const element1 = signIndexToElement[signIndex1]
+  const element2 = signIndexToElement[signIndex2]
+  
+  const relationships: string[] = []
+  let score = 50 // 基础分数
+  let compatibility = '中等'
+
+  // 检查同象（相同元素）
+  if (element1 === element2) {
+    relationships.push('同象')
+    score += 20
+    if (compatibility === '中等') {
+      compatibility = '良好'
+    }
+  }
+
+  // 检查对宫（180度，相差6个位置）
+  const diff = Math.abs(signIndex1 - signIndex2)
+  if (diff === 6) {
+    relationships.push('对宫')
+    score -= 25
+    compatibility = '较差'
+  }
+
+  // 检查三合（120度，相差4个位置）
+  if (diff === 4 || diff === 8) {
+    relationships.push('三合')
+    score += 25
+    if (compatibility !== '较差') {
+      compatibility = '良好'
+    }
+  }
+
+  // 检查六合（60度，相差2个位置）
+  if (diff === 2 || diff === 10) {
+    relationships.push('六合')
+    score += 30
+    compatibility = '极佳'
+  }
+
+  // 检查相刑（90度，相差3个位置）
+  if (diff === 3 || diff === 9) {
+    relationships.push('相刑')
+    score -= 15
+    if (compatibility === '极佳' || compatibility === '良好') {
+      compatibility = '一般'
+    } else if (compatibility === '中等') {
+      compatibility = '较差'
+    }
+  }
+
+  // 如果没有特殊关系
+  if (relationships.length === 0) {
+    relationships.push('普通')
+  }
+
+  // 限制分数范围
+  score = Math.max(0, Math.min(100, score))
+
+  // 生成详细分析
+  let analysis = ''
+  if (relationships.includes('六合')) {
+    analysis = '六合是最佳的配对关系，代表和谐、互补，双方性格相投，容易产生默契，是星座配对中最为理想的组合。'
+  } else if (relationships.includes('三合')) {
+    analysis = '三合是良好的配对关系，代表三合局，双方能够互相支持，共同成长，关系稳定和谐。'
+  } else if (relationships.includes('同象')) {
+    analysis = '同象星座的配对，双方性格相似，容易理解彼此，有共同的话题和兴趣，但需要注意避免过于相似带来的单调。'
+  } else if (relationships.includes('对宫')) {
+    analysis = '对宫代表对立冲突，双方性格差异较大，容易产生矛盾和争执，需要更多的理解和包容。但若能互补，也能形成强大的吸引力。'
+  } else if (relationships.includes('相刑')) {
+    analysis = '相刑代表相互制约，双方在相处中可能会有一些摩擦和冲突，需要更多的耐心和理解。'
+  } else {
+    analysis = '普通配对关系，双方没有明显的相合或相冲，关系发展主要取决于个人的性格和相处方式。'
+  }
+
+  return {
+    relationships,
+    score,
+    compatibility,
+    analysis
+  }
+}
+
 function Horoscope({ onBack: _onBack }: HoroscopeProps) {
   const [period, setPeriod] = useState<Period>('today')
   const [signIndex, setSignIndex] = useState<number>(0)
@@ -413,6 +507,15 @@ function Horoscope({ onBack: _onBack }: HoroscopeProps) {
   const [birthDay, setBirthDay] = useState('')
   const [showBirthInput, setShowBirthInput] = useState(false)
   const [isLunarLeapMonth, setIsLunarLeapMonth] = useState(false)
+  const [showPairing, setShowPairing] = useState(false)
+  const [pairingSign1, setPairingSign1] = useState<number | null>(null)
+  const [pairingSign2, setPairingSign2] = useState<number | null>(null)
+  const [pairingResult, setPairingResult] = useState<{
+    relationships: string[]
+    score: number
+    compatibility: string
+    analysis: string
+  } | null>(null)
 
   const today = new Date()
 
@@ -615,6 +718,119 @@ function Horoscope({ onBack: _onBack }: HoroscopeProps) {
       <div className="advice-card">
         <h3>今日建议</h3>
         <p>{result.advice}</p>
+      </div>
+
+      {/* 星座配对功能 */}
+      <div className="zodiac-pairing-section">
+        <button 
+          className="pairing-toggle-btn"
+          onClick={() => setShowPairing(!showPairing)}
+        >
+          {showPairing ? '收起' : '💕 星座配对'}
+        </button>
+        
+        {showPairing && (
+          <div className="pairing-panel">
+            <h3>选择两个星座进行配对分析</h3>
+            
+            <div className="pairing-selectors">
+              <div className="pairing-selector-group">
+                <label>第一个星座</label>
+                <div className="zodiac-pairing-grid">
+                  {zodiacSigns.map((z, idx) => (
+                    <button
+                      key={z.id}
+                      className={`zodiac-pairing-btn ${pairingSign1 === idx ? 'active' : ''}`}
+                      onClick={() => setPairingSign1(idx)}
+                    >
+                      <span className="zodiac-pairing-icon">{z.icon}</span>
+                      <span className="zodiac-pairing-name">{z.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pairing-selector-group">
+                <label>第二个星座</label>
+                <div className="zodiac-pairing-grid">
+                  {zodiacSigns.map((z, idx) => (
+                    <button
+                      key={z.id}
+                      className={`zodiac-pairing-btn ${pairingSign2 === idx ? 'active' : ''}`}
+                      onClick={() => setPairingSign2(idx)}
+                    >
+                      <span className="zodiac-pairing-icon">{z.icon}</span>
+                      <span className="zodiac-pairing-name">{z.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <button 
+              className="analyze-pairing-btn"
+              onClick={() => {
+                if (pairingSign1 !== null && pairingSign2 !== null) {
+                  const result = analyzeZodiacPairing(pairingSign1, pairingSign2)
+                  setPairingResult(result)
+                } else {
+                  alert('请选择两个星座')
+                }
+              }}
+            >
+              开始配对分析
+            </button>
+
+            {pairingResult && (
+              <div className="pairing-result-card">
+                <div className="pairing-result-header">
+                  <h4>配对结果</h4>
+                  <div 
+                    className="pairing-compatibility-badge"
+                    style={{
+                      backgroundColor: pairingResult.compatibility === '极佳' ? '#4CAF50' :
+                                      pairingResult.compatibility === '良好' ? '#8BC34A' :
+                                      pairingResult.compatibility === '中等' ? '#FFC107' :
+                                      pairingResult.compatibility === '一般' ? '#FF9800' : '#F44336'
+                    }}
+                  >
+                    {pairingResult.compatibility}
+                  </div>
+                </div>
+
+                <div className="pairing-score-circle">
+                  <div className="pairing-score-value">{pairingResult.score}</div>
+                  <div className="pairing-score-label">配对指数</div>
+                </div>
+
+                <div className="pairing-relationships">
+                  <h5>配对关系</h5>
+                  <div className="pairing-relationship-tags">
+                    {pairingResult.relationships.map((rel, idx) => (
+                      <span
+                        key={idx}
+                        className="pairing-relationship-tag"
+                        style={{
+                          backgroundColor: rel === '六合' || rel === '三合' ? '#4CAF50' :
+                                          rel === '同象' ? '#2196F3' :
+                                          rel === '对宫' || rel === '相刑' ? '#F44336' :
+                                          rel === '相同' ? '#9C27B0' : '#757575'
+                        }}
+                      >
+                        {rel}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pairing-analysis">
+                  <h5>详细分析</h5>
+                  <p>{pairingResult.analysis}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
