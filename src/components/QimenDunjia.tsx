@@ -1,5 +1,8 @@
 import { useState, useMemo } from 'react'
 import './QimenDunjia.css'
+import { calculateDayPillar, calculateHourPillar } from '../utils/bazi'
+import { getSolarTermDate } from '../utils/lunarCalendar'
+import { tiangan, dizhi } from '../utils/constants'
 
 interface QimenDunjiaProps {
   onBack?: () => void
@@ -68,19 +71,333 @@ const palacePositions = [
   { row: 2, col: 2, name: '乾宫', direction: '西北' }
 ]
 
-// 计算时干支
-function calculateShiGanZhi(year: number, month: number, day: number, hour: number): string {
-  const tiangan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
-  const dizhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+// 计算24节气的完整日期（基于天文算法）
+function getAllSolarTerms(year: number): Date[] {
+  const terms: Date[] = []
+  // 24节气：立春、雨水、惊蛰、春分、清明、谷雨、立夏、小满、芒种、夏至、小暑、大暑、立秋、处暑、白露、秋分、寒露、霜降、立冬、小雪、大雪、冬至、小寒、大寒
+  // getSolarTermDate 支持12个主要节气，我们需要计算完整的24个
   
-  // 简化计算：使用日期和时辰的组合
-  const dateValue = year * 10000 + month * 100 + day
-  const hourIndex = Math.floor(hour / 2) % 12
+  // 先计算12个主要节气
+  for (let i = 0; i < 12; i++) {
+    terms.push(getSolarTermDate(year, i))
+  }
   
-  const ganIndex = (dateValue % 10 + hourIndex) % 10
-  const zhiIndex = hourIndex
+  // 计算另外12个节气（通过插值）
+  // 每个节气间隔约15.2天
+  const daysPerTerm = 365.2422 / 24
   
-  return tiangan[ganIndex] + dizhi[zhiIndex]
+  // 从立春开始计算所有24个节气
+  const lichun = getSolarTermDate(year, 0) // 立春
+  const allTerms: Date[] = []
+  
+  for (let i = 0; i < 24; i++) {
+    const termDate = new Date(lichun)
+    termDate.setDate(termDate.getDate() + Math.round(i * daysPerTerm))
+    allTerms.push(termDate)
+  }
+  
+  return allTerms
+}
+
+// 确定用局（根据具体节气日期）
+function getYongJu(year: number, month: number, day: number): number {
+  const currentDate = new Date(year, month - 1, day)
+  
+  // 计算当前年份和下一年份的24节气
+  const thisYearTerms = getAllSolarTerms(year)
+  const nextYearTerms = getAllSolarTerms(year + 1)
+  
+  // 24节气索引：0=立春, 1=雨水, 2=惊蛰, 3=春分, 4=清明, 5=谷雨, 6=立夏, 7=小满, 8=芒种, 9=夏至, 10=小暑, 11=大暑, 12=立秋, 13=处暑, 14=白露, 15=秋分, 16=寒露, 17=霜降, 18=立冬, 19=小雪, 20=大雪, 21=冬至, 22=小寒, 23=大寒
+  
+  // 找到当前日期所在的节气区间
+  let termIndex = -1
+  
+  // 检查当前年份的节气
+  for (let i = 0; i < 24; i++) {
+    const termDate = thisYearTerms[i]
+    const nextTermDate = i < 23 ? thisYearTerms[i + 1] : nextYearTerms[0]
+    
+    if (currentDate >= termDate && currentDate < nextTermDate) {
+      termIndex = i
+      break
+    }
+  }
+  
+  // 如果没找到，检查是否在上一年的冬至到立春之间
+  if (termIndex === -1) {
+    const prevYearTerms = getAllSolarTerms(year - 1)
+    const dongzhi = prevYearTerms[21] // 冬至
+    const lichun = thisYearTerms[0] // 立春
+    
+    if (currentDate >= dongzhi && currentDate < lichun) {
+      // 在冬至到立春之间，需要判断是小寒还是大寒
+      const xiaohan = prevYearTerms[22] // 小寒
+      const dahan = prevYearTerms[23] // 大寒
+      
+      if (currentDate >= dongzhi && currentDate < xiaohan) {
+        termIndex = 21 // 冬至
+      } else if (currentDate >= xiaohan && currentDate < dahan) {
+        termIndex = 22 // 小寒
+      } else {
+        termIndex = 23 // 大寒
+      }
+    }
+  }
+  
+  // 根据节气索引确定用局
+  let ju = 1
+  
+  if (termIndex === -1) {
+    // 如果无法确定，使用默认值
+    return 1
+  }
+  
+  // 阳遁：冬至(21)到夏至(9)前
+  if (termIndex >= 21 || termIndex < 9) {
+    // 冬至(21)、小寒(22)：阳遁1局
+    if (termIndex === 21 || termIndex === 22) {
+      ju = 1
+    }
+    // 大寒(23)、立春(0)：阳遁3局
+    else if (termIndex === 23 || termIndex === 0) {
+      ju = 3
+    }
+    // 雨水(1)、惊蛰(2)：阳遁9局
+    else if (termIndex === 1 || termIndex === 2) {
+      ju = 9
+    }
+    // 春分(3)、清明(4)：阳遁3局
+    else if (termIndex === 3 || termIndex === 4) {
+      ju = 3
+    }
+    // 谷雨(5)、立夏(6)：阳遁4局
+    else if (termIndex === 5 || termIndex === 6) {
+      ju = 4
+    }
+    // 小满(7)、芒种(8)：阳遁5局
+    else if (termIndex === 7 || termIndex === 8) {
+      ju = 5
+    }
+  }
+  // 阴遁：夏至(9)到冬至(21)前
+  else {
+    // 夏至(9)、小暑(10)：阴遁9局
+    if (termIndex === 9 || termIndex === 10) {
+      ju = 9
+    }
+    // 大暑(11)、立秋(12)：阴遁3局
+    else if (termIndex === 11 || termIndex === 12) {
+      ju = 3
+    }
+    // 处暑(13)、白露(14)：阴遁6局
+    else if (termIndex === 13 || termIndex === 14) {
+      ju = 6
+    }
+    // 秋分(15)、寒露(16)：阴遁6局
+    else if (termIndex === 15 || termIndex === 16) {
+      ju = 6
+    }
+    // 霜降(17)、立冬(18)：阴遁6局
+    else if (termIndex === 17 || termIndex === 18) {
+      ju = 6
+    }
+    // 小雪(19)、大雪(20)：阴遁6局
+    else if (termIndex === 19 || termIndex === 20) {
+      ju = 6
+    }
+  }
+  
+  return ju
+}
+
+// 确定值符（根据时干）
+function getZhiFu(shiGan: string): number {
+  const ganIndex = tiangan.indexOf(shiGan)
+  // 值符对应九星：甲-天蓬(0), 乙-天芮(1), 丙-天冲(2), 丁-天辅(3), 戊-天禽(4), 己-天心(5), 庚-天柱(6), 辛-天任(7), 壬-天英(8), 癸-天蓬(0)
+  const zhiFuMap = [0, 1, 2, 3, 4, 5, 6, 7, 8, 0]
+  return zhiFuMap[ganIndex]
+}
+
+// 确定值使（根据时干）
+function getZhiShi(shiGan: string): number {
+  const ganIndex = tiangan.indexOf(shiGan)
+  // 值使对应八门：甲-休门(0), 乙-死门(1), 丙-伤门(2), 丁-杜门(3), 戊-开门(5), 己-惊门(6), 庚-生门(7), 辛-景门(8), 壬-休门(0), 癸-死门(1)
+  const zhiShiMap = [0, 1, 2, 3, 5, 6, 7, 8, 0, 1]
+  return zhiShiMap[ganIndex]
+}
+
+// 排九星（根据用局、值符和时支）
+function placeJiuxing(yongJu: number, zhiFu: number, shiZhi: string): string[] {
+  const result: string[] = new Array(9).fill('')
+  
+  // 天禽固定在中宫
+  result[4] = jiuxing[4] // 天禽
+  
+  // 九宫顺序（代码索引）：0=巽, 1=离, 2=坤, 3=震, 4=中, 5=兑, 6=乾, 7=坎, 8=艮
+  // 传统九宫顺序：1=坎, 2=坤, 3=震, 4=巽, 5=中, 6=乾, 7=兑, 8=艮, 9=离
+  // 映射关系：传统1(坎)->代码7, 传统2(坤)->代码2, 传统3(震)->代码3, 传统4(巽)->代码0, 
+  //           传统6(乾)->代码6, 传统7(兑)->代码5, 传统8(艮)->代码8, 传统9(离)->代码1
+  const traditionalToCode: { [key: number]: number } = {
+    1: 7, // 坎
+    2: 2, // 坤
+    3: 3, // 震
+    4: 0, // 巽
+    5: 4, // 中
+    6: 6, // 乾
+    7: 5, // 兑
+    8: 8, // 艮
+    9: 1  // 离
+  }
+  
+  // 根据用局确定阳遁/阴遁
+  const isYangDun = yongJu <= 6
+  
+  // 根据时支确定时干所在宫位（值符跟随时干）
+  const shiZhiIndex = dizhi.indexOf(shiZhi)
+  // 时支对应传统九宫：子(0)-坎(1), 丑(1)-艮(8), 寅(2)-震(3), 卯(3)-震(3), 
+  // 辰(4)-巽(4), 巳(5)-离(9), 午(6)-离(9), 未(7)-坤(2), 申(8)-兑(7), 
+  // 酉(9)-兑(7), 戌(10)-乾(6), 亥(11)-坎(1)
+  const zhiToTraditionalPalace = [1, 8, 3, 3, 4, 9, 9, 2, 7, 7, 6, 1]
+  const shiGanTraditionalPalace = zhiToTraditionalPalace[shiZhiIndex]
+  const shiGanPalace = traditionalToCode[shiGanTraditionalPalace]
+  
+  // 值符星跟随时干，所以值符星在时干宫位
+  if (shiGanPalace !== 4) {
+    result[shiGanPalace] = jiuxing[zhiFu]
+  }
+  
+  // 根据用局确定九星的初始排列
+  // 用局对应的初始宫位（传统九宫编号）
+  let startTraditionalPalace = 0
+  if (isYangDun) {
+    startTraditionalPalace = yongJu // 阳遁：用局数就是起始宫位
+  } else {
+    startTraditionalPalace = 10 - yongJu // 阴遁：10-用局数
+  }
+  const startPalace = traditionalToCode[startTraditionalPalace]
+  
+  // 计算从起始宫位到时干宫位的偏移（用于确定值符星在初始局中的位置）
+  let offset = 0
+  if (isYangDun) {
+    // 阳遁顺排
+    if (shiGanPalace >= startPalace) {
+      offset = shiGanPalace - startPalace
+    } else {
+      offset = (9 - startPalace) + shiGanPalace
+      if (offset >= 9) offset -= 9
+    }
+  } else {
+    // 阴遁逆排
+    if (shiGanPalace <= startPalace) {
+      offset = startPalace - shiGanPalace
+    } else {
+      offset = startPalace + (9 - shiGanPalace)
+      if (offset >= 9) offset -= 9
+    }
+  }
+  
+  // 从值符星开始，按照阳遁/阴遁规则排列其他星
+  // 九星顺序：天蓬(0), 天芮(1), 天冲(2), 天辅(3), 天禽(4), 天心(5), 天柱(6), 天任(7), 天英(8)
+  let starIdx = 0
+  
+  // 从值符星的位置开始排列
+  for (let i = 0; i < 9; i++) {
+    if (i === 4) continue // 中宫已确定
+    
+    // 计算目标宫位
+    let targetPalace = 0
+    if (isYangDun) {
+      // 阳遁顺排：从时干宫位开始顺时针
+      targetPalace = (shiGanPalace + i) % 9
+      if (targetPalace === 4) {
+        targetPalace = (targetPalace + 1) % 9 // 跳过中宫
+      }
+    } else {
+      // 阴遁逆排：从时干宫位开始逆时针
+      targetPalace = (shiGanPalace - i + 9) % 9
+      if (targetPalace === 4) {
+        targetPalace = (targetPalace - 1 + 9) % 9 // 跳过中宫
+      }
+    }
+    
+    // 如果目标宫位已有星（值符星），跳过
+    if (result[targetPalace]) continue
+    
+    // 找到下一个未使用的星（跳过值符星和天禽）
+    while (starIdx === zhiFu || starIdx === 4) {
+      starIdx = (starIdx + 1) % 9
+    }
+    
+    result[targetPalace] = jiuxing[starIdx]
+    starIdx = (starIdx + 1) % 9
+  }
+  
+  return result
+}
+
+// 排八门（根据值使和时支）
+function placeBamen(zhiShi: number, shiZhi: string): string[] {
+  const positions: string[] = new Array(9).fill('')
+  
+  // 中宫无门
+  positions[4] = ''
+  
+  // 根据时支确定值使所在宫位
+  const shiZhiIndex = dizhi.indexOf(shiZhi)
+  // 时支对应宫位：子(0)-坎(1), 丑(1)-艮(8), 寅(2)-震(3), 卯(3)-震(3), 辰(4)-巽(0), 巳(5)-离(4), 午(6)-离(4), 未(7)-坤(2), 申(8)-兑(6), 酉(9)-兑(6), 戌(10)-乾(7), 亥(11)-坎(1)
+  const zhiToPalace = [1, 8, 3, 3, 0, 4, 4, 2, 6, 6, 7, 1]
+  const zhiShiPalace = zhiToPalace[shiZhiIndex]
+  
+  // 八门顺序：休(0), 死(1), 伤(2), 杜(3), 开(5), 惊(6), 生(7), 景(8)
+  const menOrder = [0, 1, 2, 3, 5, 6, 7, 8]
+  
+  // 值使在对应宫位
+  if (zhiShiPalace !== 4) {
+    positions[zhiShiPalace] = bamen[zhiShi]
+  }
+  
+  // 其他门按顺序排列
+  let menIdx = 0
+  for (let i = 0; i < 9; i++) {
+    if (i === 4) continue // 中宫
+    if (positions[i]) continue
+    
+    while (menOrder[menIdx] === zhiShi || menOrder[menIdx] === 4) {
+      menIdx = (menIdx + 1) % 8
+    }
+    positions[i] = bamen[menOrder[menIdx]]
+    menIdx = (menIdx + 1) % 8
+  }
+  
+  return positions
+}
+
+// 排八神（根据值符）
+function placeBashen(zhiFu: number): string[] {
+  const positions: string[] = new Array(9).fill('')
+  
+  // 值符在中宫
+  positions[4] = bashen[0] // 值符
+  
+  // 八神顺序：值符(0), 腾蛇(1), 太阴(2), 六合(3), 白虎(4), 玄武(5), 九地(6), 九天(7)
+  // 值符所在宫位对应值符星所在宫位
+  const zhiFuPalace = (zhiFu + 1) % 9
+  if (zhiFuPalace !== 4) {
+    positions[zhiFuPalace] = bashen[0] // 值符
+  }
+  
+  // 其他神按顺序排列
+  let shenIdx = 1
+  for (let i = 0; i < 9; i++) {
+    if (i === 4) continue // 中宫已确定
+    if (positions[i]) continue
+    
+    positions[i] = bashen[shenIdx]
+    shenIdx = (shenIdx + 1) % 8
+    if (shenIdx === 0) shenIdx = 1 // 跳过值符
+  }
+  
+  return positions
 }
 
 // 计算奇门遁甲盘
@@ -104,34 +421,43 @@ function calculateQimenPan(
   directionAnalysis: string
   timeAnalysis: string
 } {
-  const shiGanZhi = calculateShiGanZhi(year, month, day, hour)
+  const date = new Date(year, month - 1, day, hour)
   
-  // 基于时间和方位的确定性计算
-  const seed = year * 1000000 + month * 10000 + day * 100 + hour
-  const directionIndex = directions.indexOf(direction)
+  // 计算准确的时干支
+  const dayPillar = calculateDayPillar(date)
+  const hourPillar = calculateHourPillar(dayPillar, hour)
   
-  // 计算八门位置（简化算法）
-  const bamenStart = (seed % 8 + directionIndex) % 8
-  const bamenPositions = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => {
-    if (i === 4) return '' // 中宫无门
-    const bamenIdx = (bamenStart + i) % 8
-    return bamen[bamenIdx]
-  })
+  let shiGanZhi: string
+  if (!hourPillar) {
+    // 如果计算失败，使用简化方法
+    const hourIndex = Math.floor((hour + 1) / 2) % 12
+    const shiZhi = dizhi[hourIndex]
+    const dayGanIndex = tiangan.indexOf(dayPillar[0])
+    const shiGanIndex = (dayGanIndex * 2 + hourIndex) % 10
+    const shiGan = tiangan[shiGanIndex]
+    shiGanZhi = shiGan + shiZhi
+  } else {
+    shiGanZhi = hourPillar
+  }
   
-  // 计算九星位置
-  const jiuxingStart = (seed * 3 % 9 + directionIndex) % 9
-  const jiuxingPositions = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => {
-    const jiuxingIdx = (jiuxingStart + i) % 9
-    return jiuxing[jiuxingIdx]
-  })
+  const shiGan = shiGanZhi[0]
+  const shiZhi = shiGanZhi[1]
   
-  // 计算八神位置（八神循环，中宫用值符）
-  const bashenStart = (seed * 5 % 8 + directionIndex) % 8
-  const bashenPositions = [0, 1, 2, 3, 4, 5, 6, 7, 8].map(i => {
-    if (i === 4) return '值符' // 中宫用值符
-    const bashenIdx = (bashenStart + i) % 8
-    return bashen[bashenIdx]
-  })
+  // 确定用局
+  const yongJu = getYongJu(year, month, day)
+  
+  // 确定值符和值使
+  const zhiFu = getZhiFu(shiGan)
+  const zhiShi = getZhiShi(shiGan)
+  
+  // 排九星
+  const jiuxingPositions = placeJiuxing(yongJu, zhiFu, shiZhi)
+  
+  // 排八门
+  const bamenPositions = placeBamen(zhiShi, shiZhi)
+  
+  // 排八神
+  const bashenPositions = placeBashen(zhiFu)
   
   // 生成九宫格数据
   const palaces = palacePositions.map((pos, index) => {
@@ -176,7 +502,7 @@ function calculateQimenPan(
     : `${direction}方位为凶，${targetPalace.bamen ? `遇${targetPalace.bamen}，` : ''}${targetPalace.jiuxing}临，${targetPalace.bashen}现，不宜${direction}方行动。`
   
   // 时间分析
-  const timeAnalysis = `时干支：${shiGanZhi}。此时${targetPalace.auspicious ? '吉' : '凶'}，${targetPalace.bamen ? `${targetPalace.bamen}主${bamenMeanings[targetPalace.bamen]?.meaning}，` : ''}${targetPalace.jiuxing}主${jiuxingMeanings[targetPalace.jiuxing]?.meaning}，${targetPalace.bashen}主${bashenMeanings[targetPalace.bashen]?.meaning}。`
+  const timeAnalysis = `时干支：${shiGanZhi}，用局：${yongJu}局。此时${targetPalace.auspicious ? '吉' : '凶'}，${targetPalace.bamen ? `${targetPalace.bamen}主${bamenMeanings[targetPalace.bamen]?.meaning}，` : ''}${targetPalace.jiuxing}主${jiuxingMeanings[targetPalace.jiuxing]?.meaning}，${targetPalace.bashen}主${bashenMeanings[targetPalace.bashen]?.meaning}。`
   
   // 整体分析
   const auspiciousCount = palaces.filter(p => p.auspicious).length
@@ -426,4 +752,5 @@ function QimenDunjia({ onBack: _onBack }: QimenDunjiaProps) {
 }
 
 export default QimenDunjia
+
 
