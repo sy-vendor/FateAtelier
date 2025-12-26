@@ -12,6 +12,7 @@ import Favorites from './components/Favorites'
 import CardDrawAnimation from './components/CardDrawAnimation'
 import ThreeCardDrawAnimation from './components/ThreeCardDrawAnimation'
 import ReadingTypeSelector from './components/ReadingTypeSelector'
+import SnowEffect from './components/SnowEffect'
 // 动态导入大型功能组件
 const NameGenerator = lazy(() => import('./components/NameGenerator'))
 const Horoscope = lazy(() => import('./components/Horoscope'))
@@ -58,6 +59,11 @@ function App() {
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
   const [transitionEffect, setTransitionEffect] = useState<string>('')
+  const [snowEnabled, setSnowEnabled] = useState(() => {
+    // 根据月份自动启用（11月-2月）
+    const month = new Date().getMonth() + 1
+    return month === 11 || month === 12 || month === 1 || month === 2
+  })
 
   // 阻止手机端页面左右滑动
   useEffect(() => {
@@ -371,6 +377,9 @@ function App() {
 
   return (
     <div className="app">
+      {/* 雪花效果 */}
+      <SnowEffect enabled={snowEnabled} intensity="medium" />
+      
       <header className="app-header">
         <h1>🔮 命运工坊</h1>
         <p className="subtitle">
@@ -595,6 +604,13 @@ function App() {
             <CardBrowser onSelectCard={handleSelectCardFromBrowser} />
             <Favorites onSelectCard={handleSelectCardFromBrowser} />
             <HelpGuide />
+            <button
+              className="snow-toggle-btn"
+              onClick={() => setSnowEnabled(!snowEnabled)}
+              title={snowEnabled ? '关闭雪花' : '开启雪花'}
+            >
+              {snowEnabled ? '❄️' : '🌨️'}
+            </button>
           </div>
         )}
       </header>

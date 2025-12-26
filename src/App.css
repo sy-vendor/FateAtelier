@@ -462,6 +462,7 @@
 .header-actions {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1rem;
   margin-top: 1.5rem;
   flex-wrap: wrap;
@@ -1314,5 +1315,37 @@
   50% {
     opacity: 0.5;
   }
+}
+
+/* 雪花开关按钮 */
+.snow-toggle-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+  /* 确保与其他按钮对齐 */
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.snow-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(135, 206, 250, 0.5);
+}
+
+.snow-toggle-btn:active {
+  transform: scale(0.95);
 }
 
