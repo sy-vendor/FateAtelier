@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './NameGenerator.css'
 import { toast } from '../utils/toast'
+import { logger } from '../utils/logger'
 
 interface NameGeneratorProps {
   onBack: () => void
@@ -55,11 +56,11 @@ function NameGenerator({ onBack }: NameGeneratorProps) {
       if (names && names.length > 0) {
         setGeneratedNames(names)
       } else {
-        console.warn('生成的名字列表为空')
+        logger.warn('生成的名字列表为空')
         toast.error('生成名字失败，请重试')
       }
     } catch (error) {
-      console.error('生成名字失败:', error)
+      logger.error('生成名字失败:', error)
       toast.error('生成名字失败，请重试')
       // 确保即使出错也重置状态
       setGeneratedNames([])

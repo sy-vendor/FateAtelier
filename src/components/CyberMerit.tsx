@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './CyberMerit.css'
 import muyuSound from '../video/muyu-2.mp3?url'
+import { logger } from '../utils/logger'
 
 interface CyberMeritProps {
   onBack?: () => void
@@ -192,7 +193,7 @@ function CyberMerit({ onBack: _onBack }: CyberMeritProps) {
         oscillator.stop(audioContext.currentTime + duration / 1000)
       }
     } catch (e) {
-      console.log('音频播放失败', e)
+      logger.warn('音频播放失败', e)
     }
   }
 
@@ -230,7 +231,7 @@ function CyberMerit({ onBack: _onBack }: CyberMeritProps) {
     if (woodfishAudioRef.current) {
       woodfishAudioRef.current.currentTime = 0 // 从头开始播放
       woodfishAudioRef.current.play().catch(e => {
-        console.log('音频播放失败', e)
+        logger.warn('音频播放失败', e)
       })
     }
   }

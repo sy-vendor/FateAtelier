@@ -8,16 +8,21 @@ const urlsToCache = [
   '/src/App.css'
 ]
 
+// 日志函数（Service Worker 中简化版本）
+const isDev = self.location?.hostname === 'localhost' || self.location?.hostname === '127.0.0.1'
+const log = (...args) => { if (isDev) console.log(...args) }
+const logError = (...args) => { if (isDev) console.error(...args) }
+
 // 安装 Service Worker
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Service Worker: 缓存已打开')
+        log('Service Worker: 缓存已打开')
         return cache.addAll(urlsToCache)
       })
       .catch((error) => {
-        console.error('Service Worker: 缓存失败', error)
+        logError('Service Worker: 缓存失败', error)
       })
   )
   self.skipWaiting()
@@ -30,7 +35,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Service Worker: 删除旧缓存', cacheName)
+            log('Service Worker: 删除旧缓存', cacheName)
             return caches.delete(cacheName)
           }
         })

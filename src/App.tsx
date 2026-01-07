@@ -38,6 +38,7 @@ import { downloadAllData } from './utils/exportData'
 import { DrawnCard } from './types'
 import { ReadingType } from './types/reading'
 import { toast } from './utils/toast'
+import { logger } from './utils/logger'
 import './App.css'
 
 // const CAROUSEL_EFFECTS = ['mystic', 'sparkle', 'glow', 'fade', 'swirl', 'zoom', 'flip', 'warp'] as const
@@ -131,7 +132,7 @@ function App() {
       try {
         setReadingHistory(JSON.parse(saved))
       } catch (e) {
-        console.error('Failed to load reading history', e)
+        logger.error('Failed to load reading history', e)
       }
     }
   }, [])

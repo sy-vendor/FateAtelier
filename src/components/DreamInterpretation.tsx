@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { interpretDream, DreamSymbol } from '../data/dreamSymbols'
 import './DreamInterpretation.css'
 import { toast } from '../utils/toast'
+import { logger } from '../utils/logger'
 
 interface DreamInterpretationProps {
   onBack?: () => void
@@ -36,7 +37,7 @@ function DreamInterpretation({ onBack }: DreamInterpretationProps) {
       try {
         setHistory(JSON.parse(saved))
       } catch (e) {
-        console.error('Failed to load dream history', e)
+        logger.error('Failed to load dream history', e)
       }
     }
   }, [])

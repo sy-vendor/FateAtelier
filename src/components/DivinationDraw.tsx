@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { divinationSticks, DivinationStick } from '../data/divinationSticks'
 import { optimizeStick } from '../utils/divinationOptimizer'
 import './DivinationDraw.css'
+import { logger } from '../utils/logger'
 
 interface DivinationDrawProps {
   onBack?: () => void
@@ -33,7 +34,7 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
       try {
         setDrawHistory(JSON.parse(saved))
       } catch (e) {
-        console.error('Failed to load draw history', e)
+        logger.error('Failed to load draw history', e)
       }
     }
     
@@ -42,7 +43,7 @@ function DivinationDraw({ onBack }: DivinationDrawProps) {
       try {
         setFavorites(new Set(JSON.parse(savedFavorites)))
       } catch (e) {
-        console.error('Failed to load favorites', e)
+        logger.error('Failed to load favorites', e)
       }
     }
   }, [])
@@ -162,7 +163,7 @@ ${optimizedStick.advice}${optimizedStick.story ? `\n\n戏文简介：\n${optimiz
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }).catch(err => {
-      console.error('Failed to copy:', err)
+      logger.error('Failed to copy:', err)
     })
   }
 
@@ -179,7 +180,7 @@ ${optimizedStick.advice}${optimizedStick.story ? `\n\n戏文简介：\n${optimiz
           text: text
         })
       } catch (err) {
-        console.error('Share failed:', err)
+        logger.error('Share failed:', err)
       }
     } else {
       // 降级到复制

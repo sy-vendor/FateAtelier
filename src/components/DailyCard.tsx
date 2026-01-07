@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { TarotCard } from '../data/tarotCards'
 import { tarotCards } from '../data/tarotCards'
 import CardDisplay from './CardDisplay'
+import { logger } from '../utils/logger'
 import './DailyCard.css'
 
 interface DailyCardProps {
@@ -43,7 +44,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
           setIsReversed(data.isReversed || reversed)
         }
       } catch (e) {
-        console.error('Failed to load daily card state', e)
+        logger.error('Failed to load daily card state', e)
       }
     }
   }, [])

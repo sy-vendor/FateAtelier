@@ -1,5 +1,6 @@
 import { ReadingRecord } from '../components/ReadingHistory'
 import { getFavorites } from './favorites'
+import { logger } from './logger'
 
 export interface ExportData {
   version: string
@@ -40,7 +41,7 @@ export const importData = (jsonString: string): { favorites: number[], readingHi
       readingHistory: data.readingHistory || []
     }
   } catch (e) {
-    console.error('Failed to import data', e)
+    logger.error('Failed to import data', e)
     return null
   }
 }
