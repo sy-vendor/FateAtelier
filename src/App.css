@@ -910,6 +910,36 @@
   letter-spacing: 2px;
 }
 
+.footer-contact {
+  margin-top: 0.5rem;
+}
+
+.contact-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-email:hover {
+  color: var(--color-accent);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contact-email:active {
+  transform: translateY(0);
+}
+
 /* 平板样式 (768px - 1024px) */
 @media (max-width: 1024px) and (min-width: 769px) {
   .app {
@@ -1306,6 +1336,11 @@
 
   .team-name {
     font-size: 1rem;
+  }
+
+  .contact-email {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
   }
 }
 

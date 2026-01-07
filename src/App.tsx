@@ -941,6 +941,15 @@ function App() {
             <p className="team-label">Made with ❤️ by</p>
             <p className="team-name">默默团队</p>
           </div>
+          <div className="footer-contact">
+            <a 
+              href="mailto:sytourist@gmail.com" 
+              className="contact-email"
+              aria-label="联系默默团队"
+            >
+              📧 sytourist@gmail.com
+            </a>
+          </div>
         </div>
       </footer>
       <ToastContainer />
