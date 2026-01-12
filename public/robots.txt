@@ -1,0 +1,31 @@
+# robots.txt for 命运工坊
+User-agent: *
+Allow: /
+
+# 禁止爬取 API 和内部路径
+Disallow: /api/
+Disallow: /_next/
+Disallow: /.well-known/
+
+# 允许爬取所有功能页面
+Allow: /tarot
+Allow: /name
+Allow: /horoscope
+Allow: /almanac
+Allow: /bazi
+Allow: /divination
+Allow: /dream
+Allow: /fengshui
+Allow: /auspicious
+Allow: /numberenergy
+Allow: /luckycolor
+Allow: /qimen
+Allow: /nametest
+Allow: /ziwei
+Allow: /shengxiao
+
+# Sitemap 位置
+Sitemap: https://www.fateatelier.cloud/sitemap.xml
+
+# 爬取延迟（可选，对服务器友好）
+Crawl-delay: 1
