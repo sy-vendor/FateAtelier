@@ -32,6 +32,7 @@ const NameTest = lazy(() => import('./components/NameTest'))
 const ZiweiDoushu = lazy(() => import('./components/ZiweiDoushu'))
 const ShengxiaoPairing = lazy(() => import('./components/ShengxiaoPairing'))
 import { getCardIcon, getSuitIcon } from './utils/cardIcons'
+import { isFavorite, toggleFavorite } from './utils/favorites'
 import { generateThreeCardReading } from './utils/readingInterpretation'
 import { downloadReading } from './utils/exportReading'
 import { shareReading } from './utils/shareReading'
@@ -63,6 +64,7 @@ function App() {
   const [carouselRotation, setCarouselRotation] = useState(0)
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
+  const [, setFavoritesVersion] = useState(0)
   // const [transitionEffect, setTransitionEffect] = useState<string>('')
   // const [weatherType, setWeatherType] = useState<WeatherType>(() => {
   //   // 根据月份自动选择天气（11月-2月：雪花，3-5月：小雨，6-8月：太阳，9-10月：多云）
@@ -125,6 +127,13 @@ function App() {
     return () => {
       document.removeEventListener('touchstart', preventHorizontalScroll)
     }
+  }, [])
+
+  // 收藏变化时重新渲染，使单张牌展示的收藏按钮状态更新
+  useEffect(() => {
+    const handleFavoritesChange = () => setFavoritesVersion(v => v + 1)
+    window.addEventListener('favorites-changed', handleFavoritesChange)
+    return () => window.removeEventListener('favorites-changed', handleFavoritesChange)
   }, [])
 
   // 从localStorage加载历史记录
@@ -901,6 +910,8 @@ function App() {
               card={selectedCard.card}
               isReversed={selectedCard.isReversed}
               onFlip={() => updateCardReversed(selectedCard.card.id, !selectedCard.isReversed)}
+              isFavorite={isFavorite(selectedCard.card.id)}
+              onToggleFavorite={(card) => toggleFavorite(card.id)}
             />
           </div>
         )}

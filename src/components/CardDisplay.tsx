@@ -7,9 +7,12 @@ interface CardDisplayProps {
   isReversed: boolean
   onFlip: () => void
   compact?: boolean
+  /** 是否显示收藏按钮；传入 onToggleFavorite 时显示 */
+  isFavorite?: boolean
+  onToggleFavorite?: (card: TarotCard) => void
 }
 
-function CardDisplay({ card, isReversed, onFlip, compact = false }: CardDisplayProps) {
+function CardDisplay({ card, isReversed, onFlip, compact = false, isFavorite = false, onToggleFavorite }: CardDisplayProps) {
   const getCardColor = () => {
     if (card.type === 'major') return 'var(--color-major)'
     return getSuitColor(card.suit)
@@ -78,9 +81,22 @@ function CardDisplay({ card, isReversed, onFlip, compact = false }: CardDisplayP
             <p className="description-text">{card.description}</p>
           </div>
 
-          <button className="flip-button" onClick={onFlip}>
-            {isReversed ? '转为正位' : '转为逆位'}
-          </button>
+          <div className="card-actions">
+            <button className="flip-button" onClick={onFlip}>
+              {isReversed ? '转为正位' : '转为逆位'}
+            </button>
+            {onToggleFavorite && (
+              <button
+                type="button"
+                className={`favorite-button ${isFavorite ? 'is-favorite' : ''}`}
+                onClick={(e) => { e.stopPropagation(); onToggleFavorite(card) }}
+                title={isFavorite ? '取消收藏' : '收藏'}
+                aria-label={isFavorite ? '取消收藏' : '收藏'}
+              >
+                {isFavorite ? '⭐' : '☆'} {isFavorite ? '已收藏' : '收藏'}
+              </button>
+            )}
+          </div>
         </div>
       )}
 
