@@ -6,9 +6,8 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!assets/|manifest\\.json|sw\\.js|vite\\.svg)(.*))",
       "destination": "/index.html"
     }
   ]
 }
-
