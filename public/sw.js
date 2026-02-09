@@ -1,5 +1,5 @@
-const CACHE_NAME = 'fate-atelier-v1'
-const CACHE_VERSION = '1.0.0'
+const CACHE_NAME = 'fate-atelier-v2'
+const CACHE_VERSION = '1.0.1'
 
 // 日志函数（Service Worker 中简化版本）
 const isDev = self.location?.hostname === 'localhost' || self.location?.hostname === '127.0.0.1'
@@ -168,12 +168,12 @@ self.addEventListener('fetch', (event) => {
           return networkResponse
         }
         
-        // 检查是否应该缓存
-        if (shouldCache(request)) {
-          // 克隆响应（因为响应流只能读取一次）
+        // 检查是否应该缓存（避免把 HTML 当 JS/CSS 缓存导致 MIME 错误）
+        const contentType = networkResponse.headers.get('content-type') || ''
+        const isJsOrCss = /\.(js|css)(\?|$)/i.test(url.pathname)
+        const wrongMime = isJsOrCss && contentType.includes('text/html')
+        if (!wrongMime && shouldCache(request)) {
           const responseToCache = networkResponse.clone()
-          
-          // 异步缓存，不阻塞响应
           cache?.put(request, responseToCache).catch(error => {
             logError(`Failed to cache ${url.pathname}:`, error)
           })
