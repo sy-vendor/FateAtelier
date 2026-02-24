@@ -91,12 +91,8 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
             onFlip={() => {
               const newReversed = !isReversed
               setIsReversed(newReversed)
-              // 保存翻转状态
               const todayKey = getTodayKey()
-              localStorage.setItem(DAILY_CARD_STORAGE_KEY, JSON.stringify({
-                date: todayKey,
-                isReversed: newReversed
-              }))
+              setStorageItem(DAILY_CARD_STORAGE_KEY, { date: todayKey, isReversed: newReversed })
             }}
             compact={false}
           />
