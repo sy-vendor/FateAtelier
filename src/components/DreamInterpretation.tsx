@@ -211,6 +211,7 @@ function DreamInterpretation({ onBack }: DreamInterpretationProps) {
       {showHistory && history.length === 0 && (
         <div className="dream-empty-history">
           <p>暂无历史记录</p>
+          <p className="dream-empty-hint">解析过的梦境会显示在这里。</p>
         </div>
       )}
 

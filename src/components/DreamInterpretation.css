@@ -242,6 +242,12 @@
   margin-bottom: 30px;
 }
 
+.dream-empty-history .dream-empty-hint {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  opacity: 0.85;
+}
+
 .dream-result-section {
   background: white;
   border-radius: 15px;

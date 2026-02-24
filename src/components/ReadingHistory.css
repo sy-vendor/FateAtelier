@@ -12,6 +12,12 @@
   color: var(--color-text-secondary);
 }
 
+.reading-history.empty .empty-hint {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+}
+
 .history-header-section {
   display: flex;
   justify-content: space-between;
