@@ -141,6 +141,19 @@
   animation: fadeIn 0.5s ease-in;
 }
 
+.daily-tip {
+  width: 100%;
+  max-width: 520px;
+  padding: 0.9rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-text);
+  line-height: 1.6;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
