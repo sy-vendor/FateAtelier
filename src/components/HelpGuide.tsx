@@ -22,6 +22,10 @@ function HelpGuide() {
 
         <div className="help-content">
           <section className="help-section">
+            <h3>🏠 首页入口</h3>
+            <p>首页轮播中每个图标对应一个功能（塔罗、取名、星座、黄历、抽签等），点击即可进入；进入后按页面提示操作即可。</p>
+          </section>
+          <section className="help-section">
             <h3>🎴 单牌占卜</h3>
             <p>点击"抽取一张牌"按钮，随机抽取一张塔罗牌。每张牌都有正位和逆位两种含义，点击卡片可以翻转查看。</p>
           </section>

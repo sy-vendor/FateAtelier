@@ -47,6 +47,7 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
     return (
       <div className="reading-history empty">
         <p>暂无占卜记录</p>
+        <p className="empty-hint">完成一次塔罗占卜（单牌或三牌）后，记录会显示在这里。</p>
       </div>
     )
   }
