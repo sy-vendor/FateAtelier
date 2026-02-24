@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
-import { TarotCard } from '../data/tarotCards'
-import { tarotCards } from '../data/tarotCards'
+import { useState, useEffect, useMemo } from 'react'
+import { tarotCards, TarotCard } from '../data/tarotCards'
 import CardDisplay from './CardDisplay'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import './DailyCard.css'
@@ -12,7 +11,9 @@ interface DailyCardProps {
 const DAILY_CARD_STORAGE_KEY = 'tarot-daily-card'
 const getTodayKey = () => {
   const today = new Date()
-  return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
+  const mm = String(today.getMonth() + 1).padStart(2, '0')
+  const dd = String(today.getDate()).padStart(2, '0')
+  return `${today.getFullYear()}-${mm}-${dd}`
 }
 
 function DailyCard({ onSelectCard }: DailyCardProps) {
@@ -20,6 +21,20 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
   const [isReversed, setIsReversed] = useState(false)
   const [showCard, setShowCard] = useState(false)
   const [hasViewedToday, setHasViewedToday] = useState(false)
+
+  const dailyTip = useMemo(() => {
+    if (!dailyCard) return ''
+    const raw = isReversed ? dailyCard.meaning.reversed : dailyCard.meaning.upright
+    const first = raw.split(/[，。；;,.]/)[0] || raw
+    const keywords = first
+      .split(/[、\s/]/)
+      .map(s => s.trim())
+      .filter(Boolean)
+      .slice(0, 3)
+      .join('、')
+    if (!keywords) return ''
+    return isReversed ? `今日提示：放慢节奏，留意「${keywords}」` : `今日提示：顺势而为，把握「${keywords}」`
+  }, [dailyCard, isReversed])
 
   useEffect(() => {
     // 根据日期生成每日一牌
@@ -96,6 +111,11 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
             }}
             compact={false}
           />
+          {dailyTip && (
+            <div className="daily-tip" role="note" aria-label="今日提示">
+              {dailyTip}
+            </div>
+          )}
           <button 
             className="view-detail-btn"
             onClick={() => onSelectCard(dailyCard)}
