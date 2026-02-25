@@ -974,11 +974,13 @@ function App() {
           </div>
           <div className="footer-contact">
             <a 
-              href="mailto:sytourist@gmail.com" 
+              href="https://github.com/sy-vendor/FateAtelier" 
               className="contact-email"
-              aria-label="联系默默团队"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="命运工坊 GitHub 仓库"
             >
-              📧 sytourist@gmail.com
+              GitHub - FateAtelier
             </a>
           </div>
         </div>
