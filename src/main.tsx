@@ -29,18 +29,12 @@ if (typeof window !== 'undefined' && window.location.search.includes('clearCache
   })
 } else if ('serviceWorker' in navigator) {
   if (import.meta.env.PROD) {
+    // 生产环境：注册「清理型」sw.js，老用户下次访问时会自动替换旧 SW、清缓存并自注销，无需用户手动清理
     window.addEventListener('load', () => {
-      navigator.serviceWorker
-        .register('/sw.js')
-        .then((registration) => {
-          logger.log('Service Worker 注册成功:', registration.scope)
-        })
-        .catch((error) => {
-          logger.error('Service Worker 注册失败:', error)
-        })
+      navigator.serviceWorker.register('/sw.js').catch(() => {})
     })
   } else {
-    // DEV：每次加载都强制清理 SW 与全部缓存，避免 localhost:5173 影响其它项目
+    // 开发环境：每次加载都强制清理 SW 与全部缓存，避免 localhost:5173 影响其它项目
     forceClearSwAndCache()
   }
 }

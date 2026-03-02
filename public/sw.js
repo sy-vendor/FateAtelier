@@ -22,16 +22,6 @@ self.addEventListener('activate', (event) => {
       } catch (e) {
         // 忽略卸载异常
       }
-
-      // 让所有已打开的客户端刷新到最新版本（可选）
-      try {
-        const clients = await self.clients.matchAll({ type: 'window' })
-        for (const client of clients) {
-          client.navigate(client.url)
-        }
-      } catch (e) {
-        // 忽略刷新异常
-      }
     })()
   )
 })
