@@ -1,6 +1,13 @@
-import type { CSSProperties } from 'react'
+import { useRef, type CSSProperties } from 'react'
 import type { AppFeature } from '../../constants/appFeatures'
 import type { AppPage } from '../../types/appPage'
+
+function normalizeCarouselRotation(rotation: number): number {
+  let r = rotation
+  while (r < -180) r += 360
+  while (r > 180) r -= 360
+  return r
+}
 
 export interface AppCarouselProps {
   features: AppFeature[]
@@ -27,6 +34,8 @@ function AppCarousel({
   setTouchEnd,
   setCurrentPage,
 }: AppCarouselProps) {
+  const trackRef = useRef<HTMLDivElement>(null)
+
   return (
     <div
       className="carousel-container"
@@ -55,18 +64,12 @@ function AppCarousel({
         if (Math.abs(distance) > minSwipeDistance) {
           if (distance > 0) {
             const newIndex = (carouselIndex + 1) % totalFeatures
-            let targetRotation = carouselRotation - anglePerItem
-            while (targetRotation < -180) targetRotation += 360
-            while (targetRotation > 180) targetRotation -= 360
-            setCarouselRotation(targetRotation)
+            setCarouselRotation(normalizeCarouselRotation(carouselRotation - anglePerItem))
             setCarouselIndex(newIndex)
             setCurrentPage(features[newIndex].page)
           } else if (distance < 0) {
             const newIndex = (carouselIndex - 1 + totalFeatures) % totalFeatures
-            let targetRotation = carouselRotation + anglePerItem
-            while (targetRotation < -180) targetRotation += 360
-            while (targetRotation > 180) targetRotation -= 360
-            setCarouselRotation(targetRotation)
+            setCarouselRotation(normalizeCarouselRotation(carouselRotation + anglePerItem))
             setCarouselIndex(newIndex)
             setCurrentPage(features[newIndex].page)
           }
@@ -84,9 +87,9 @@ function AppCarousel({
 
         setTouchStart(startX)
 
-        const carouselTrack = document.querySelector('.carousel-track')
-        if (carouselTrack) {
-          carouselTrack.classList.add('no-transition')
+        const trackEl = trackRef.current
+        if (trackEl) {
+          trackEl.classList.add('no-transition')
         }
 
         const handleMouseMove = (moveEvent: MouseEvent) => {
@@ -101,10 +104,7 @@ function AppCarousel({
           const anglePerItem = 360 / totalFeatures
           const sensitivity = 0.4
           const rotationDelta = (deltaX / 100) * anglePerItem * sensitivity
-          let newRotation = startRotation - rotationDelta
-
-          while (newRotation < -180) newRotation += 360
-          while (newRotation > 180) newRotation -= 360
+          const newRotation = normalizeCarouselRotation(startRotation - rotationDelta)
 
           setCarouselRotation(newRotation)
         }
@@ -112,10 +112,10 @@ function AppCarousel({
         const handleMouseUp = () => {
           isDraggingActive = false
 
-          const track = document.querySelector('.carousel-track')
-          if (track) {
+          const trackUp = trackRef.current
+          if (trackUp) {
             setTimeout(() => {
-              track.classList.remove('no-transition')
+              trackUp.classList.remove('no-transition')
             }, 0)
           }
 
@@ -127,18 +127,12 @@ function AppCarousel({
           if (Math.abs(finalDistance) > minSwipeDistance) {
             if (finalDistance > 0) {
               const newIndex = (currentIndex + 1) % totalFeatures
-              let targetRotation = startRotation - anglePerItem
-              while (targetRotation < -180) targetRotation += 360
-              while (targetRotation > 180) targetRotation -= 360
-              setCarouselRotation(targetRotation)
+              setCarouselRotation(normalizeCarouselRotation(startRotation - anglePerItem))
               setCarouselIndex(newIndex)
               setCurrentPage(features[newIndex].page)
             } else if (finalDistance < 0) {
               const newIndex = (currentIndex - 1 + totalFeatures) % totalFeatures
-              let targetRotation = startRotation + anglePerItem
-              while (targetRotation < -180) targetRotation += 360
-              while (targetRotation > 180) targetRotation -= 360
-              setCarouselRotation(targetRotation)
+              setCarouselRotation(normalizeCarouselRotation(startRotation + anglePerItem))
               setCarouselIndex(newIndex)
               setCurrentPage(features[newIndex].page)
             }
@@ -159,6 +153,7 @@ function AppCarousel({
     >
       <div className="carousel-wrapper">
         <div
+          ref={trackRef}
           className="carousel-track"
           style={{
             transform: `translateZ(-400px) rotateY(${carouselRotation}deg)`,
