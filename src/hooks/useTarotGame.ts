@@ -14,7 +14,6 @@ export function useTarotGame() {
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
   const [selectedCard, setSelectedCard] = useState<DrawnCard | null>(null)
   const [threeCardReading, setThreeCardReading] = useState<DrawnCard[] | null>(null)
-  const [readingHistory, setReadingHistory] = useState<ReadingRecord[]>([])
   const [viewingHistoryReading, setViewingHistoryReading] = useState<ReadingRecord | null>(null)
   const [drawingCard, setDrawingCard] = useState<{ card: TarotCard; isReversed: boolean } | null>(null)
   const [showDrawAnimation, setShowDrawAnimation] = useState(false)
@@ -24,14 +23,18 @@ export function useTarotGame() {
   const [selectedReadingType, setSelectedReadingType] = useState<ReadingType>('general')
   const [customQuestion, setCustomQuestion] = useState<string | undefined>(undefined)
 
-  useEffect(() => {
+  const [readingHistory, setReadingHistory] = useState<ReadingRecord[]>(() => {
     const result = getStorageItem<ReadingRecord[]>('tarot-reading-history', [])
-    if (result.success && result.data) {
-      setReadingHistory(result.data)
-    } else if (result.error) {
-      toast.error('加载历史记录失败')
+    if (result.error) {
+      requestAnimationFrame(() => {
+        toast.error('加载历史记录失败')
+      })
     }
-  }, [])
+    if (result.success && result.data !== undefined && Array.isArray(result.data)) {
+      return result.data
+    }
+    return []
+  })
 
   useEffect(() => {
     const result = setStorageItem('tarot-reading-history', readingHistory)

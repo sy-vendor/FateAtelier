@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import CardBrowser from './components/CardBrowser'
 import HelpGuide from './components/HelpGuide'
@@ -21,8 +21,9 @@ function App() {
   const [carouselRotation, setCarouselRotation] = useState(0)
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
+  const carouselContainerRef = useRef<HTMLDivElement>(null)
   const tarot = useTarotGame()
-  usePreventHorizontalScroll()
+  usePreventHorizontalScroll(carouselContainerRef)
 
   const features = APP_FEATURES
 
@@ -66,6 +67,7 @@ function App() {
         <p className="subtitle">{getPageSubtitle(currentPage)}</p>
 
         <AppCarousel
+          ref={carouselContainerRef}
           features={features}
           carouselIndex={carouselIndex}
           setCarouselIndex={setCarouselIndex}
@@ -93,7 +95,7 @@ function App() {
 
       <footer className="app-footer">
         <div className="footer-content">
-          <p className="footer-copyright">© 2025 命运工坊 - 仅供娱乐参考</p>
+          <p className="footer-copyright">© {new Date().getFullYear()} 命运工坊 - 仅供娱乐参考</p>
           <div className="footer-team">
             <p className="team-label">Made with ❤️ by</p>
             <p className="team-name">默默团队</p>
