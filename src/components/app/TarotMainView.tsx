@@ -5,56 +5,28 @@ import ReadingTypeSelector from '../ReadingTypeSelector'
 import DailyCard from '../DailyCard'
 import CardDrawer from '../CardDrawer'
 import CardDisplay from '../CardDisplay'
-import ReadingHistory, { ReadingRecord } from '../ReadingHistory'
+import ReadingHistory from '../ReadingHistory'
 import Statistics from '../Statistics'
 import { getCardIcon, getSuitIcon } from '../../utils/cardIcons'
 import { isFavorite, toggleFavorite } from '../../utils/favorites'
 import { downloadAllData } from '../../utils/exportData'
-import { TarotCard } from '../../data/tarotCards'
 import { DrawnCard } from '../../types'
-import { ReadingType } from '../../types/reading'
-import type { ReadingInterpretation } from '../../utils/readingInterpretation'
+import type { TarotGameApi } from '../../types/tarotGameApi'
 
-export interface TarotMainViewProps {
-  showDrawAnimation: boolean
-  drawingCard: { card: TarotCard; isReversed: boolean } | null
-  onDrawAnimationComplete: () => void
-  showReadingTypeSelector: boolean
-  onReadingTypeSelected: (type: ReadingType, question?: string) => void
-  onCancelReadingType: () => void
-  showThreeCardAnimation: boolean
-  drawingThreeCards: Array<{ card: TarotCard; isReversed: boolean }> | null
-  onThreeCardAnimationComplete: () => void
-  onSelectCardFromBrowser: (card: TarotCard) => void
-  drawCard: () => void
-  drawThreeCards: () => void
-  reset: () => void
-  drawnCards: DrawnCard[]
-  threeCardReading: DrawnCard[] | null
-  readingInterpretation: ReadingInterpretation | null
-  viewingHistoryReading: ReadingRecord | null
-  updateCardReversed: (cardId: number, isReversed: boolean) => void
-  handleExportReading: (reading: ReadingRecord) => void
-  handleShareReading: (reading: ReadingRecord) => Promise<void>
-  selectedCard: DrawnCard | null
-  selectCard: (drawnCard: DrawnCard) => void
-  readingHistory: ReadingRecord[]
-  onViewHistoryReading: (reading: ReadingRecord) => void
-  onDeleteHistoryReading: (id: string) => Promise<void>
-}
+export type TarotMainViewProps = TarotGameApi
 
 function TarotMainViewInner(props: TarotMainViewProps) {
   const {
     showDrawAnimation,
     drawingCard,
-    onDrawAnimationComplete,
+    handleDrawAnimationComplete,
     showReadingTypeSelector,
-    onReadingTypeSelected,
-    onCancelReadingType,
+    handleReadingTypeSelected,
+    cancelReadingTypeSelector,
     showThreeCardAnimation,
     drawingThreeCards,
-    onThreeCardAnimationComplete,
-    onSelectCardFromBrowser,
+    handleThreeCardAnimationComplete,
+    handleSelectCardFromBrowser,
     drawCard,
     drawThreeCards,
     reset,
@@ -68,8 +40,8 @@ function TarotMainViewInner(props: TarotMainViewProps) {
     selectedCard,
     selectCard,
     readingHistory,
-    onViewHistoryReading,
-    onDeleteHistoryReading,
+    handleViewHistoryReading,
+    handleDeleteHistoryReading,
   } = props
 
   return (
@@ -78,25 +50,25 @@ function TarotMainViewInner(props: TarotMainViewProps) {
         <CardDrawAnimation
           card={drawingCard.card}
           isReversed={drawingCard.isReversed}
-          onComplete={onDrawAnimationComplete}
+          onComplete={handleDrawAnimationComplete}
         />
       )}
 
       {showReadingTypeSelector && (
         <ReadingTypeSelector
-          onSelect={onReadingTypeSelected}
-          onCancel={onCancelReadingType}
+          onSelect={handleReadingTypeSelected}
+          onCancel={cancelReadingTypeSelector}
         />
       )}
 
       {showThreeCardAnimation && drawingThreeCards && (
         <ThreeCardDrawAnimation
           cards={drawingThreeCards}
-          onComplete={onThreeCardAnimationComplete}
+          onComplete={handleThreeCardAnimationComplete}
         />
       )}
 
-      <DailyCard onSelectCard={onSelectCardFromBrowser} />
+      <DailyCard onSelectCard={handleSelectCardFromBrowser} />
 
       <div className="controls">
         <CardDrawer
@@ -257,8 +229,8 @@ function TarotMainViewInner(props: TarotMainViewProps) {
 
       <ReadingHistory
         readings={readingHistory}
-        onViewReading={onViewHistoryReading}
-        onDeleteReading={onDeleteHistoryReading}
+        onViewReading={handleViewHistoryReading}
+        onDeleteReading={handleDeleteHistoryReading}
         onExportAll={() => downloadAllData(readingHistory)}
       />
 

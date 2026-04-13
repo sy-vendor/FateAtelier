@@ -1,8 +1,5 @@
-import { useState, useMemo, useRef } from 'react'
+import { useState, useRef, lazy, Suspense } from 'react'
 import { Analytics } from '@vercel/analytics/react'
-import CardBrowser from './components/CardBrowser'
-import HelpGuide from './components/HelpGuide'
-import Favorites from './components/Favorites'
 import ToastContainer from './components/ToastContainer'
 import ConfirmDialogContainer from './components/ConfirmDialogContainer'
 import AppCarousel from './components/app/AppCarousel'
@@ -14,6 +11,10 @@ import { useTarotGame } from './hooks/useTarotGame'
 import { usePreventHorizontalScroll } from './hooks/usePreventHorizontalScroll'
 import { useSyncCarouselToPage } from './hooks/useSyncCarouselToPage'
 import './App.css'
+
+const CardBrowser = lazy(() => import('./components/CardBrowser'))
+const Favorites = lazy(() => import('./components/Favorites'))
+const HelpGuide = lazy(() => import('./components/HelpGuide'))
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('tarot')
@@ -28,37 +29,6 @@ function App() {
   const features = APP_FEATURES
 
   useSyncCarouselToPage(currentPage, features, setCarouselIndex, setCarouselRotation)
-
-  const tarotProps = useMemo(
-    () => ({
-      showDrawAnimation: tarot.showDrawAnimation,
-      drawingCard: tarot.drawingCard,
-      onDrawAnimationComplete: tarot.handleDrawAnimationComplete,
-      showReadingTypeSelector: tarot.showReadingTypeSelector,
-      onReadingTypeSelected: tarot.handleReadingTypeSelected,
-      onCancelReadingType: tarot.cancelReadingTypeSelector,
-      showThreeCardAnimation: tarot.showThreeCardAnimation,
-      drawingThreeCards: tarot.drawingThreeCards,
-      onThreeCardAnimationComplete: tarot.handleThreeCardAnimationComplete,
-      onSelectCardFromBrowser: tarot.handleSelectCardFromBrowser,
-      drawCard: tarot.drawCard,
-      drawThreeCards: tarot.drawThreeCards,
-      reset: tarot.reset,
-      drawnCards: tarot.drawnCards,
-      threeCardReading: tarot.threeCardReading,
-      readingInterpretation: tarot.readingInterpretation,
-      viewingHistoryReading: tarot.viewingHistoryReading,
-      updateCardReversed: tarot.updateCardReversed,
-      handleExportReading: tarot.handleExportReading,
-      handleShareReading: tarot.handleShareReading,
-      selectedCard: tarot.selectedCard,
-      selectCard: tarot.selectCard,
-      readingHistory: tarot.readingHistory,
-      onViewHistoryReading: tarot.handleViewHistoryReading,
-      onDeleteHistoryReading: tarot.handleDeleteHistoryReading,
-    }),
-    [tarot]
-  )
 
   return (
     <div className="app">
@@ -81,16 +51,28 @@ function App() {
         />
 
         {currentPage === 'tarot' && (
-          <div className="header-actions">
-            <CardBrowser onSelectCard={tarot.handleSelectCardFromBrowser} />
-            <Favorites onSelectCard={tarot.handleSelectCardFromBrowser} />
-            <HelpGuide />
-          </div>
+          <Suspense
+            fallback={
+              <div
+                className="header-actions"
+                style={{ minHeight: '2.75rem' }}
+                role="status"
+                aria-live="polite"
+                aria-label="加载操作栏"
+              />
+            }
+          >
+            <div className="header-actions">
+              <CardBrowser onSelectCard={tarot.handleSelectCardFromBrowser} />
+              <Favorites onSelectCard={tarot.handleSelectCardFromBrowser} />
+              <HelpGuide />
+            </div>
+          </Suspense>
         )}
       </header>
 
       <main className="app-main">
-        <AppFeatureRoutes currentPage={currentPage} tarotProps={tarotProps} />
+        <AppFeatureRoutes currentPage={currentPage} tarot={tarot} />
       </main>
 
       <footer className="app-footer">

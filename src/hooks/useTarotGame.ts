@@ -9,6 +9,7 @@ import { ReadingType } from '../types/reading'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
 import { getStorageItem, setStorageItem } from '../utils/storage'
+import type { TarotGameApi } from '../types/tarotGameApi'
 
 export function useTarotGame() {
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
@@ -240,7 +241,7 @@ export function useTarotGame() {
   }, [])
 
   return useMemo(
-    () => ({
+    (): TarotGameApi => ({
       drawnCards,
       selectedCard,
       threeCardReading,
