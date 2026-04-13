@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import CardBrowser from './components/CardBrowser'
 import HelpGuide from './components/HelpGuide'
@@ -12,6 +12,7 @@ import type { AppPage } from './types/appPage'
 import { getPageSubtitle } from './utils/appSubtitles'
 import { useTarotGame } from './hooks/useTarotGame'
 import { usePreventHorizontalScroll } from './hooks/usePreventHorizontalScroll'
+import { useSyncCarouselToPage } from './hooks/useSyncCarouselToPage'
 import './App.css'
 
 function App() {
@@ -20,39 +21,12 @@ function App() {
   const [carouselRotation, setCarouselRotation] = useState(0)
   const [touchStart, setTouchStart] = useState(0)
   const [touchEnd, setTouchEnd] = useState(0)
-  const [, setFavoritesVersion] = useState(0)
-
   const tarot = useTarotGame()
   usePreventHorizontalScroll()
 
-  useEffect(() => {
-    const handleFavoritesChange = () => setFavoritesVersion(v => v + 1)
-    window.addEventListener('favorites-changed', handleFavoritesChange)
-    return () => window.removeEventListener('favorites-changed', handleFavoritesChange)
-  }, [])
-
   const features = APP_FEATURES
 
-  useEffect(() => {
-    const currentIndex = features.findIndex(f => f.page === currentPage)
-    if (currentIndex >= 0) {
-      const anglePerItem = 360 / features.length
-      const targetRotation = -currentIndex * anglePerItem
-
-      let normalizedRotation = targetRotation
-      const currentNormalized = ((carouselRotation % 360) + 360) % 360
-      const targetNormalized = ((targetRotation % 360) + 360) % 360
-
-      let diff = targetNormalized - currentNormalized
-      if (diff > 180) diff -= 360
-      if (diff < -180) diff += 360
-
-      normalizedRotation = carouselRotation + diff
-
-      setCarouselIndex(currentIndex)
-      setCarouselRotation(normalizedRotation)
-    }
-  }, [currentPage, features, carouselRotation])
+  useSyncCarouselToPage(currentPage, features, setCarouselIndex, setCarouselRotation)
 
   const tarotProps = useMemo(
     () => ({

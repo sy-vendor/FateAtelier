@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
 import LoadingFallback from '../LoadingFallback'
 import type { AppPage } from '../../types/appPage'
 import TarotMainView, { type TarotMainViewProps } from './TarotMainView'
@@ -19,47 +19,44 @@ const NameTest = lazy(() => import('../NameTest'))
 const ZiweiDoushu = lazy(() => import('../ZiweiDoushu'))
 const ShengxiaoPairing = lazy(() => import('../ShengxiaoPairing'))
 
+type NonTarotPage = Exclude<AppPage, 'tarot'>
+type LazyFeature = LazyExoticComponent<ComponentType>
+
+const LAZY_BY_PAGE: Record<NonTarotPage, LazyFeature> = {
+  name: NameGenerator,
+  horoscope: Horoscope,
+  almanac: Almanac,
+  cybermerit: CyberMerit,
+  bazi: BaziFortune,
+  divination: DivinationDraw,
+  dream: DreamInterpretation,
+  fengshui: FengshuiCompass,
+  auspicious: AuspiciousDate,
+  numberenergy: NumberEnergy,
+  luckycolor: LuckyColor,
+  qimen: QimenDunjia,
+  nametest: NameTest,
+  ziwei: ZiweiDoushu,
+  shengxiao: ShengxiaoPairing,
+}
+
 export interface AppFeatureRoutesProps {
   currentPage: AppPage
   tarotProps: TarotMainViewProps
 }
 
-function AppFeatureRoutes({ currentPage, tarotProps }: AppFeatureRoutesProps) {
+function FeatureSwitch({ currentPage, tarotProps }: AppFeatureRoutesProps) {
+  if (currentPage === 'tarot') {
+    return <TarotMainView {...tarotProps} />
+  }
+  const Feature = LAZY_BY_PAGE[currentPage]
+  return <Feature />
+}
+
+function AppFeatureRoutes(props: AppFeatureRoutesProps) {
   return (
     <Suspense fallback={<LoadingFallback />}>
-      {currentPage === 'name' ? (
-        <NameGenerator />
-      ) : currentPage === 'horoscope' ? (
-        <Horoscope />
-      ) : currentPage === 'almanac' ? (
-        <Almanac />
-      ) : currentPage === 'cybermerit' ? (
-        <CyberMerit />
-      ) : currentPage === 'bazi' ? (
-        <BaziFortune />
-      ) : currentPage === 'divination' ? (
-        <DivinationDraw />
-      ) : currentPage === 'dream' ? (
-        <DreamInterpretation />
-      ) : currentPage === 'fengshui' ? (
-        <FengshuiCompass />
-      ) : currentPage === 'auspicious' ? (
-        <AuspiciousDate />
-      ) : currentPage === 'numberenergy' ? (
-        <NumberEnergy />
-      ) : currentPage === 'luckycolor' ? (
-        <LuckyColor />
-      ) : currentPage === 'qimen' ? (
-        <QimenDunjia />
-      ) : currentPage === 'nametest' ? (
-        <NameTest />
-      ) : currentPage === 'ziwei' ? (
-        <ZiweiDoushu />
-      ) : currentPage === 'shengxiao' ? (
-        <ShengxiaoPairing />
-      ) : (
-        <TarotMainView {...tarotProps} />
-      )}
+      <FeatureSwitch {...props} />
     </Suspense>
   )
 }
