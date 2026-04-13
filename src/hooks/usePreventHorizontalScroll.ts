@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, type RefObject } from 'react'
 
-/** 在轮播外区域抑制水平滑动，避免移动端整页左右晃 */
-export function usePreventHorizontalScroll() {
+/** 在轮播外区域抑制水平滑动，避免移动端整页左右晃（触摸落在 carouselRef 内时不拦截） */
+export function usePreventHorizontalScroll(carouselRef: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const preventHorizontalScroll = (e: TouchEvent) => {
-      const carousel = document.querySelector('.carousel-container')
+      const carousel = carouselRef.current
       if (carousel) {
         const touch = e.touches[0] || e.changedTouches[0]
         const rect = carousel.getBoundingClientRect()
@@ -48,5 +48,5 @@ export function usePreventHorizontalScroll() {
     return () => {
       document.removeEventListener('touchstart', preventHorizontalScroll)
     }
-  }, [])
+  }, [carouselRef])
 }
