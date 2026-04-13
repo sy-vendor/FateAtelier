@@ -1,4 +1,4 @@
-import { useState, useRef, lazy, Suspense } from 'react'
+import { useState, useRef, lazy, Suspense, useEffect } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import ToastContainer from './components/ToastContainer'
 import ConfirmDialogContainer from './components/ConfirmDialogContainer'
@@ -29,6 +29,13 @@ function App() {
   const features = APP_FEATURES
 
   useSyncCarouselToPage(currentPage, features, setCarouselIndex, setCarouselRotation)
+
+  useEffect(() => {
+    void import('./components/app/TarotMainView')
+    void import('./components/CardBrowser')
+    void import('./components/Favorites')
+    void import('./components/HelpGuide')
+  }, [])
 
   return (
     <div className="app">

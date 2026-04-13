@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { divinationSticks, DivinationStick } from '../data/divinationSticks'
 import { optimizeStick } from '../utils/divinationOptimizer'
 import './DivinationDraw.css'
@@ -13,52 +13,74 @@ interface DrawHistory {
   category?: string
 }
 
+const DIVINATION_STORAGE_DEBOUNCE_MS = 400
+
 function DivinationDraw() {
   const [isShaking, setIsShaking] = useState(false)
   const [drawnStick, setDrawnStick] = useState<DivinationStick | null>(null)
   const [showResult, setShowResult] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [drawHistory, setDrawHistory] = useState<DrawHistory[]>([])
+  const [drawHistory, setDrawHistory] = useState<DrawHistory[]>(() => {
+    const historyResult = getStorageItem<DrawHistory[]>('divination-draw-history', [])
+    if (historyResult.error) {
+      requestAnimationFrame(() => toast.error('加载历史记录失败'))
+    }
+    if (historyResult.success && historyResult.data !== undefined && Array.isArray(historyResult.data)) {
+      return historyResult.data
+    }
+    return []
+  })
   const [showHistory, setShowHistory] = useState(false)
   const [showDetailed, setShowDetailed] = useState(false)
-  const [favorites, setFavorites] = useState<Set<number>>(new Set())
+  const [favorites, setFavorites] = useState<Set<number>>(() => {
+    const favoritesResult = getStorageItem<number[]>('divination-favorites', [])
+    if (favoritesResult.error) {
+      requestAnimationFrame(() => toast.error('加载收藏失败'))
+    }
+    if (favoritesResult.success && favoritesResult.data !== undefined && Array.isArray(favoritesResult.data)) {
+      return new Set(favoritesResult.data)
+    }
+    return new Set()
+  })
   const [copied, setCopied] = useState(false)
   const [historySearch, setHistorySearch] = useState('')
 
-  // 从localStorage加载历史记录和收藏
+  const drawHistoryRef = useRef(drawHistory)
+  drawHistoryRef.current = drawHistory
+  const favoritesRef = useRef(favorites)
+  favoritesRef.current = favorites
+
   useEffect(() => {
-    const historyResult = getStorageItem<DrawHistory[]>('divination-draw-history', [])
-    if (historyResult.success && historyResult.data) {
-      setDrawHistory(historyResult.data)
-    } else if (historyResult.error) {
-      toast.error('加载历史记录失败')
-    }
-    
-    const favoritesResult = getStorageItem<number[]>('divination-favorites', [])
-    if (favoritesResult.success && favoritesResult.data) {
-      setFavorites(new Set(favoritesResult.data))
-    } else if (favoritesResult.error) {
-      toast.error('加载收藏失败')
+    const id = window.setTimeout(() => {
+      const result = setStorageItem('divination-draw-history', drawHistoryRef.current)
+      if (!result.success && result.error) {
+        toast.warning(result.error || '保存历史记录失败')
+      }
+    }, DIVINATION_STORAGE_DEBOUNCE_MS)
+    return () => clearTimeout(id)
+  }, [drawHistory])
+
+  useEffect(() => {
+    return () => {
+      void setStorageItem('divination-draw-history', drawHistoryRef.current)
     }
   }, [])
 
-  // 保存历史记录到localStorage
   useEffect(() => {
-    // 始终保存，包括空数组（用于删除所有记录的情况）
-    const result = setStorageItem('divination-draw-history', drawHistory)
-    if (!result.success && result.error) {
-      toast.warning(result.error || '保存历史记录失败')
-    }
-  }, [drawHistory])
-
-  // 保存收藏到localStorage
-  useEffect(() => {
-    // 始终保存，包括空集合（用于清空收藏的情况）
-    const result = setStorageItem('divination-favorites', Array.from(favorites))
-    if (!result.success && result.error) {
-      toast.warning(result.error || '保存收藏失败')
-    }
+    const id = window.setTimeout(() => {
+      const result = setStorageItem('divination-favorites', Array.from(favoritesRef.current))
+      if (!result.success && result.error) {
+        toast.warning(result.error || '保存收藏失败')
+      }
+    }, DIVINATION_STORAGE_DEBOUNCE_MS)
+    return () => clearTimeout(id)
   }, [favorites])
+
+  useEffect(() => {
+    return () => {
+      void setStorageItem('divination-favorites', Array.from(favoritesRef.current))
+    }
+  }, [])
 
   // 抽签动画
   const drawStick = () => {

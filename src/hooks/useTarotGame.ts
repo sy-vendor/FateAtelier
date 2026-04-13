@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react'
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { tarotCards, TarotCard } from '../data/tarotCards'
 import type { ReadingRecord } from '../components/ReadingHistory'
 import { generateThreeCardReading } from '../utils/readingInterpretation'
@@ -10,6 +10,8 @@ import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import type { TarotGameApi } from '../types/tarotGameApi'
+
+const READING_HISTORY_SAVE_DEBOUNCE_MS = 400
 
 export function useTarotGame() {
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
@@ -37,12 +39,24 @@ export function useTarotGame() {
     return []
   })
 
+  const readingHistoryRef = useRef(readingHistory)
+  readingHistoryRef.current = readingHistory
+
   useEffect(() => {
-    const result = setStorageItem('tarot-reading-history', readingHistory)
-    if (!result.success && result.error) {
-      toast.warning(result.error || '保存历史记录失败')
-    }
+    const id = window.setTimeout(() => {
+      const result = setStorageItem('tarot-reading-history', readingHistoryRef.current)
+      if (!result.success && result.error) {
+        toast.warning(result.error || '保存历史记录失败')
+      }
+    }, READING_HISTORY_SAVE_DEBOUNCE_MS)
+    return () => clearTimeout(id)
   }, [readingHistory])
+
+  useEffect(() => {
+    return () => {
+      void setStorageItem('tarot-reading-history', readingHistoryRef.current)
+    }
+  }, [])
 
   const readingInterpretation = useMemo(() => {
     if (threeCardReading && threeCardReading.length === 3) {

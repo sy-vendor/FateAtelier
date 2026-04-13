@@ -5,6 +5,8 @@ import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 
+const DREAM_HISTORY_SAVE_DEBOUNCE_MS = 400
+
 interface DreamRecord {
   id: string
   content: string
@@ -23,7 +25,18 @@ function DreamInterpretation() {
     overall: string
     advice: string
   } | null>(null)
-  const [history, setHistory] = useState<DreamRecord[]>([])
+  const [history, setHistory] = useState<DreamRecord[]>(() => {
+    const result = getStorageItem<DreamRecord[]>('dream-interpretation-history', [])
+    if (result.error) {
+      requestAnimationFrame(() => {
+        toast.error('加载历史记录失败')
+      })
+    }
+    if (result.success && result.data !== undefined && Array.isArray(result.data)) {
+      return result.data
+    }
+    return []
+  })
   const [showHistory, setShowHistory] = useState(false)
   const [isInterpreting, setIsInterpreting] = useState(false)
   const resultSectionRef = useRef<HTMLDivElement>(null)
@@ -34,24 +47,24 @@ function DreamInterpretation() {
     })
   }, [])
 
-  // 从localStorage加载历史记录
+  const historyRef = useRef(history)
+  historyRef.current = history
+
   useEffect(() => {
-    const result = getStorageItem<DreamRecord[]>('dream-interpretation-history', [])
-    if (result.success && result.data) {
-      setHistory(result.data)
-    } else if (result.error) {
-      toast.error('加载历史记录失败')
+    const id = window.setTimeout(() => {
+      const result = setStorageItem('dream-interpretation-history', historyRef.current)
+      if (!result.success && result.error) {
+        toast.warning(result.error || '保存历史记录失败')
+      }
+    }, DREAM_HISTORY_SAVE_DEBOUNCE_MS)
+    return () => clearTimeout(id)
+  }, [history])
+
+  useEffect(() => {
+    return () => {
+      void setStorageItem('dream-interpretation-history', historyRef.current)
     }
   }, [])
-
-  // 保存历史记录到localStorage
-  useEffect(() => {
-    // 始终保存，包括空数组（用于删除所有记录的情况）
-    const result = setStorageItem('dream-interpretation-history', history)
-    if (!result.success && result.error) {
-      toast.warning(result.error || '保存历史记录失败')
-    }
-  }, [history])
 
   const handleInterpret = () => {
     if (!dreamContent.trim()) {
