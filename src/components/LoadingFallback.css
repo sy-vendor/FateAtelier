@@ -1,0 +1,35 @@
+.route-loading-fallback {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 280px;
+  padding: 2rem;
+}
+
+.route-loading-fallback-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.75));
+}
+
+.route-loading-fallback-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(233, 69, 96, 0.25);
+  border-top-color: var(--color-accent, #e94560);
+  border-radius: 50%;
+  animation: loading-fallback-spin 0.85s linear infinite;
+}
+
+.route-loading-fallback-text {
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+@keyframes loading-fallback-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
