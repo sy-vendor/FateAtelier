@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { interpretDream, DreamSymbol } from '../data/dreamSymbols'
 import './DreamInterpretation.css'
 import { toast } from '../utils/toast'
@@ -26,6 +26,13 @@ function DreamInterpretation() {
   const [history, setHistory] = useState<DreamRecord[]>([])
   const [showHistory, setShowHistory] = useState(false)
   const [isInterpreting, setIsInterpreting] = useState(false)
+  const resultSectionRef = useRef<HTMLDivElement>(null)
+
+  const scrollToResult = useCallback(() => {
+    requestAnimationFrame(() => {
+      resultSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }, [])
 
   // 从localStorage加载历史记录
   useEffect(() => {
@@ -69,13 +76,7 @@ function DreamInterpretation() {
       setHistory([record, ...history].slice(0, 50)) // 最多保存50条
       
       setIsInterpreting(false)
-      // 滚动到结果区域
-      setTimeout(() => {
-        const resultElement = document.getElementById('dream-result')
-        if (resultElement) {
-          resultElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }
-      }, 100)
+      setTimeout(scrollToResult, 100)
     }, 800)
   }
 
@@ -88,12 +89,7 @@ function DreamInterpretation() {
     setDreamContent(record.content)
     setInterpretation(record.interpretation)
     setShowHistory(false)
-    setTimeout(() => {
-      const resultElement = document.getElementById('dream-result')
-      if (resultElement) {
-        resultElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-    }, 100)
+    setTimeout(scrollToResult, 100)
   }
 
   const handleDeleteHistory = async (id: string) => {
@@ -207,7 +203,7 @@ function DreamInterpretation() {
       )}
 
       {interpretation && (
-        <div id="dream-result" className="dream-result-section">
+        <div ref={resultSectionRef} className="dream-result-section">
           <h3>✨ 解析结果</h3>
           
           <div className="dream-overall">

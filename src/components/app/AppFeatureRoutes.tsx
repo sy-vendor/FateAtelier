@@ -1,8 +1,9 @@
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
 import LoadingFallback from '../LoadingFallback'
 import type { AppPage } from '../../types/appPage'
-import TarotMainView, { type TarotMainViewProps } from './TarotMainView'
+import type { TarotGameApi } from '../../types/tarotGameApi'
 
+const TarotMainView = lazy(() => import('./TarotMainView'))
 const NameGenerator = lazy(() => import('../NameGenerator'))
 const Horoscope = lazy(() => import('../Horoscope'))
 const Almanac = lazy(() => import('../Almanac'))
@@ -42,12 +43,12 @@ const LAZY_BY_PAGE: Record<NonTarotPage, LazyFeature> = {
 
 export interface AppFeatureRoutesProps {
   currentPage: AppPage
-  tarotProps: TarotMainViewProps
+  tarot: TarotGameApi
 }
 
-function FeatureSwitch({ currentPage, tarotProps }: AppFeatureRoutesProps) {
+function FeatureSwitch({ currentPage, tarot }: AppFeatureRoutesProps) {
   if (currentPage === 'tarot') {
-    return <TarotMainView {...tarotProps} />
+    return <TarotMainView {...tarot} />
   }
   const Feature = LAZY_BY_PAGE[currentPage]
   return <Feature />
