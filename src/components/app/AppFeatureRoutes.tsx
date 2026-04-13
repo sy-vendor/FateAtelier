@@ -21,43 +21,42 @@ const ShengxiaoPairing = lazy(() => import('../ShengxiaoPairing'))
 
 export interface AppFeatureRoutesProps {
   currentPage: AppPage
-  onBackToTarot: () => void
   tarotProps: TarotMainViewProps
 }
 
-function AppFeatureRoutes({ currentPage, onBackToTarot, tarotProps }: AppFeatureRoutesProps) {
+function AppFeatureRoutes({ currentPage, tarotProps }: AppFeatureRoutesProps) {
   return (
     <Suspense fallback={<LoadingFallback />}>
       {currentPage === 'name' ? (
-        <NameGenerator onBack={onBackToTarot} />
+        <NameGenerator />
       ) : currentPage === 'horoscope' ? (
-        <Horoscope onBack={onBackToTarot} />
+        <Horoscope />
       ) : currentPage === 'almanac' ? (
-        <Almanac onBack={onBackToTarot} />
+        <Almanac />
       ) : currentPage === 'cybermerit' ? (
-        <CyberMerit onBack={onBackToTarot} />
+        <CyberMerit />
       ) : currentPage === 'bazi' ? (
-        <BaziFortune onBack={onBackToTarot} />
+        <BaziFortune />
       ) : currentPage === 'divination' ? (
-        <DivinationDraw onBack={onBackToTarot} />
+        <DivinationDraw />
       ) : currentPage === 'dream' ? (
-        <DreamInterpretation onBack={onBackToTarot} />
+        <DreamInterpretation />
       ) : currentPage === 'fengshui' ? (
-        <FengshuiCompass onBack={onBackToTarot} />
+        <FengshuiCompass />
       ) : currentPage === 'auspicious' ? (
-        <AuspiciousDate onBack={onBackToTarot} />
+        <AuspiciousDate />
       ) : currentPage === 'numberenergy' ? (
-        <NumberEnergy onBack={onBackToTarot} />
+        <NumberEnergy />
       ) : currentPage === 'luckycolor' ? (
-        <LuckyColor onBack={onBackToTarot} />
+        <LuckyColor />
       ) : currentPage === 'qimen' ? (
-        <QimenDunjia onBack={onBackToTarot} />
+        <QimenDunjia />
       ) : currentPage === 'nametest' ? (
-        <NameTest onBack={onBackToTarot} />
+        <NameTest />
       ) : currentPage === 'ziwei' ? (
-        <ZiweiDoushu onBack={onBackToTarot} />
+        <ZiweiDoushu />
       ) : currentPage === 'shengxiao' ? (
-        <ShengxiaoPairing onBack={onBackToTarot} />
+        <ShengxiaoPairing />
       ) : (
         <TarotMainView {...tarotProps} />
       )}

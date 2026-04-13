@@ -401,10 +401,6 @@ function lunarToSolar(lunarYear: number, lunarMonth: number, lunarDay: number): 
   return solarDate
 }
 
-interface HoroscopeProps {
-  onBack?: () => void
-}
-
 // 星座配对分析函数
 function analyzeZodiacPairing(signIndex1: number, signIndex2: number) {
   if (signIndex1 === signIndex2) {
@@ -499,7 +495,7 @@ function analyzeZodiacPairing(signIndex1: number, signIndex2: number) {
   }
 }
 
-function Horoscope({ onBack: _onBack }: HoroscopeProps) {
+function Horoscope() {
   const [period, setPeriod] = useState<Period>('today')
   const [signIndex, setSignIndex] = useState<number>(0)
   const [calendarType, setCalendarType] = useState<CalendarType>('solar')

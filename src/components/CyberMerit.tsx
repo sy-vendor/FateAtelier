@@ -4,10 +4,6 @@ import muyuSound from '../video/muyu-2.mp3?url'
 import { logger } from '../utils/logger'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 
-interface CyberMeritProps {
-  onBack?: () => void
-}
-
 type GameType = 'woodfish' | 'release' | 'incense' | 'prayer'
 
 interface FloatingText {
@@ -18,7 +14,7 @@ interface FloatingText {
   type: 'merit' | 'message' | 'milestone'
 }
 
-function CyberMerit({ onBack: _onBack }: CyberMeritProps) {
+function CyberMerit() {
   const [activeGame, setActiveGame] = useState<GameType>('woodfish')
   const [woodfishCount, setWoodfishCount] = useState(0)
   const [releaseCount, setReleaseCount] = useState(0)

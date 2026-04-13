@@ -341,11 +341,7 @@ function generateAlmanac(date: Date) {
   }
 }
 
-interface AlmanacProps {
-  onBack?: () => void
-}
-
-function Almanac({ onBack: _onBack }: AlmanacProps) {
+function Almanac() {
   const today = new Date()
   const almanac = useMemo(() => generateAlmanac(today), [])
   

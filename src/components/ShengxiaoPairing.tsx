@@ -2,10 +2,6 @@ import { useState } from 'react'
 import './ShengxiaoPairing.css'
 import { toast } from '../utils/toast'
 
-interface ShengxiaoPairingProps {
-  onBack?: () => void
-}
-
 // 生肖列表
 const shengxiaoList = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪']
 
@@ -168,7 +164,7 @@ function analyzePairing(shengxiao1: string, shengxiao2: string) {
   }
 }
 
-function ShengxiaoPairing({ onBack }: ShengxiaoPairingProps) {
+function ShengxiaoPairing() {
   const [shengxiao1, setShengxiao1] = useState<string>('')
   const [shengxiao2, setShengxiao2] = useState<string>('')
   const [result, setResult] = useState<{
@@ -226,9 +222,6 @@ function ShengxiaoPairing({ onBack }: ShengxiaoPairingProps) {
   return (
     <div className="shengxiao-pairing">
       <div className="pairing-header">
-        <button className="back-btn" onClick={onBack}>
-          ← 返回
-        </button>
         <h1>🐲 生肖配对</h1>
         <p className="subtitle">选择两个生肖，分析配对指数</p>
       </div>

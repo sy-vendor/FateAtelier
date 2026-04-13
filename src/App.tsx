@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import CardBrowser from './components/CardBrowser'
 import HelpGuide from './components/HelpGuide'
@@ -53,10 +53,6 @@ function App() {
       setCarouselRotation(normalizedRotation)
     }
   }, [currentPage, features, carouselRotation])
-
-  const handleBackToTarot = useCallback(() => {
-    setCurrentPage('tarot')
-  }, [])
 
   const tarotProps = useMemo(
     () => ({
@@ -118,11 +114,7 @@ function App() {
       </header>
 
       <main className="app-main">
-        <AppFeatureRoutes
-          currentPage={currentPage}
-          onBackToTarot={handleBackToTarot}
-          tarotProps={tarotProps}
-        />
+        <AppFeatureRoutes currentPage={currentPage} tarotProps={tarotProps} />
       </main>
 
       <footer className="app-footer">

@@ -11,26 +11,6 @@
   position: relative;
 }
 
-.back-btn {
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.3s;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.back-btn:hover {
-  background: white;
-  transform: translateX(-3px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
 .pairing-header h1 {
   font-size: 2.5em;
   margin: 20px 0 10px;
@@ -289,11 +269,6 @@
 
   .pairing-header h1 {
     font-size: 2em;
-  }
-
-  .back-btn {
-    position: relative;
-    margin-bottom: 20px;
   }
 
   .shengxiao-grid {

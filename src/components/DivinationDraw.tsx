@@ -6,10 +6,6 @@ import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
 
-interface DivinationDrawProps {
-  onBack?: () => void
-}
-
 interface DrawHistory {
   id: string
   stick: DivinationStick
@@ -17,7 +13,7 @@ interface DrawHistory {
   category?: string
 }
 
-function DivinationDraw({ onBack }: DivinationDrawProps) {
+function DivinationDraw() {
   const [isShaking, setIsShaking] = useState(false)
   const [drawnStick, setDrawnStick] = useState<DivinationStick | null>(null)
   const [showResult, setShowResult] = useState(false)
@@ -231,9 +227,6 @@ ${optimizedStick.advice}${optimizedStick.story ? `\n\n戏文简介：\n${optimiz
   return (
     <div className="divination-draw">
       <div className="divination-header">
-        <button className="back-btn" onClick={onBack}>
-          ← 返回
-        </button>
         <h1>🎋 抽签求签</h1>
         <p className="subtitle">心诚则灵，抽签问事</p>
       </div>

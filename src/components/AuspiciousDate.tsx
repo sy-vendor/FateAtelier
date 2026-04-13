@@ -1,10 +1,6 @@
 import { useState, useMemo } from 'react'
 import './AuspiciousDate.css'
 
-interface AuspiciousDateProps {
-  onBack: () => void
-}
-
 // 事件类型
 type EventType = 'marriage' | 'move' | 'open' | 'travel' | 'sign' | 'ceremony' | 'other'
 
@@ -172,7 +168,7 @@ function getAuspiciousShichens(date: Date, eventType: EventType): Array<{
   return results.sort((a, b) => b.result.score - a.result.score)
 }
 
-function AuspiciousDate({ onBack }: AuspiciousDateProps) {
+function AuspiciousDate() {
   const [selectedDate, setSelectedDate] = useState<string>(() => {
     const today = new Date()
     return today.toISOString().split('T')[0]
@@ -201,9 +197,6 @@ function AuspiciousDate({ onBack }: AuspiciousDateProps) {
   return (
     <div className="auspicious-date">
       <div className="auspicious-header">
-        <button className="back-button" onClick={onBack}>
-          ← 返回
-        </button>
         <h1>📆 择日吉时</h1>
         <p className="subtitle">选择良辰吉日，趋吉避凶</p>
       </div>

@@ -2,11 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { directions, getTodayAuspiciousDirections, getDirectionInterpretation, recommendDirectionForPurpose, bagua } from '../data/fengshuiCompass'
 import './FengshuiCompass.css'
 
-interface FengshuiCompassProps {
-  onBack?: () => void
-}
-
-function FengshuiCompass({ onBack }: FengshuiCompassProps) {
+function FengshuiCompass() {
   const [rotation, setRotation] = useState(0)
   const [selectedDirection, setSelectedDirection] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -101,11 +97,6 @@ function FengshuiCompass({ onBack }: FengshuiCompassProps) {
   return (
     <div className="fengshui-compass">
       <div className="compass-header">
-        {onBack && (
-          <button className="compass-back-btn" onClick={onBack}>
-            ← 返回
-          </button>
-        )}
         <h2>🧭 风水罗盘</h2>
         <p className="compass-subtitle">探索方位吉凶，把握风水运势</p>
       </div>

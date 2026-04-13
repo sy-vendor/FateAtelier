@@ -5,10 +5,6 @@ import { lunarToSolar } from '../utils/lunarCalendar'
 import { toast } from '../utils/toast'
 import { calculateYearPillar, calculateMonthPillar, calculateDayPillar, analyzeWuxingFromBazi } from '../utils/bazi'
 
-interface LuckyColorProps {
-  onBack?: () => void
-}
-
 interface ColorInfo {
   name: string
   hex: string
@@ -459,7 +455,7 @@ function getSecondaryColor(mainColor: ColorInfo): ColorInfo {
   return found || mainColor
 }
 
-function LuckyColor({ onBack: _onBack }: LuckyColorProps) {
+function LuckyColor() {
   const today = new Date()
   const [selectedDate, setSelectedDate] = useState<Date>(today)
   const [dateInput, setDateInput] = useState<string>('')

@@ -11,27 +11,6 @@
   position: relative;
 }
 
-.dream-back-btn {
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: rgba(102, 126, 234, 0.2);
-  border: 2px solid rgba(102, 126, 234, 0.3);
-  color: #667eea;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.dream-back-btn:hover {
-  background: rgba(102, 126, 234, 0.3);
-  transform: translateX(-5px);
-  border-color: rgba(102, 126, 234, 0.5);
-}
-
 .dream-header h2 {
   font-size: 2.5em;
   margin: 0;
@@ -446,11 +425,6 @@
 
   .dream-header h2 {
     font-size: 2em;
-  }
-
-  .dream-back-btn {
-    padding: 8px 16px;
-    font-size: 14px;
   }
 
   .dream-input-section {

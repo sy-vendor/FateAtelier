@@ -5,10 +5,6 @@ import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 
-interface DreamInterpretationProps {
-  onBack?: () => void
-}
-
 interface DreamRecord {
   id: string
   content: string
@@ -20,7 +16,7 @@ interface DreamRecord {
   timestamp: number
 }
 
-function DreamInterpretation({ onBack }: DreamInterpretationProps) {
+function DreamInterpretation() {
   const [dreamContent, setDreamContent] = useState('')
   const [interpretation, setInterpretation] = useState<{
     symbols: DreamSymbol[]
@@ -127,11 +123,6 @@ function DreamInterpretation({ onBack }: DreamInterpretationProps) {
   return (
     <div className="dream-interpretation">
       <div className="dream-header">
-        {onBack && (
-          <button className="dream-back-btn" onClick={onBack}>
-            ← 返回
-          </button>
-        )}
         <h2>💭 梦境解析</h2>
         <p className="dream-subtitle">记录你的梦境，探索潜意识的奥秘</p>
       </div>

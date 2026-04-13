@@ -4,10 +4,6 @@ import { calculateDayPillar, calculateHourPillar } from '../utils/bazi'
 import { getSolarTermDate } from '../utils/lunarCalendar'
 import { tiangan, dizhi } from '../utils/constants'
 
-interface QimenDunjiaProps {
-  onBack?: () => void
-}
-
 // 八门
 const bamen = ['休门', '死门', '伤门', '杜门', '', '开门', '惊门', '生门', '景门']
 const bamenNames = ['休', '死', '伤', '杜', '', '开', '惊', '生', '景']
@@ -518,7 +514,7 @@ function calculateQimenPan(
   }
 }
 
-function QimenDunjia({ onBack: _onBack }: QimenDunjiaProps) {
+function QimenDunjia() {
   const today = new Date()
   const [selectedYear, setSelectedYear] = useState(today.getFullYear())
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1)

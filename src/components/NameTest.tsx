@@ -3,10 +3,6 @@ import { getStrokeCount, getTotalStrokeCount } from '../data/strokeCount'
 import './NameTest.css'
 import { toast } from '../utils/toast'
 
-interface NameTestProps {
-  onBack?: () => void
-}
-
 // 五格数理配置
 interface FiveGrids {
   tianGe: number // 天格
@@ -134,7 +130,7 @@ const wuxingKe: { [key in Wuxing]: Wuxing } = {
   '水': '火'
 }
 
-function NameTest({ onBack }: NameTestProps) {
+function NameTest() {
   const [surname, setSurname] = useState('')
   const [givenName, setGivenName] = useState('')
   const [result, setResult] = useState<{
@@ -319,9 +315,6 @@ function NameTest({ onBack }: NameTestProps) {
   return (
     <div className="name-test">
       <div className="name-test-header">
-        <button className="back-btn" onClick={onBack}>
-          ← 返回
-        </button>
         <h1>📝 姓名测试</h1>
         <p className="subtitle">五格数理、三才配置、姓名评分</p>
       </div>

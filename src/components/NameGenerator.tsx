@@ -3,11 +3,7 @@ import './NameGenerator.css'
 import { toast } from '../utils/toast'
 import { logger } from '../utils/logger'
 
-interface NameGeneratorProps {
-  onBack: () => void
-}
-
-function NameGenerator({ onBack }: NameGeneratorProps) {
+function NameGenerator() {
   const [surname, setSurname] = useState('')
   const [gender, setGender] = useState<'male' | 'female' | ''>('')
   const [birthDate, setBirthDate] = useState('')
@@ -1430,9 +1426,6 @@ function NameGenerator({ onBack }: NameGeneratorProps) {
   return (
     <div className="name-generator-page">
       <div className="name-generator-header">
-        <button className="back-button" onClick={onBack}>
-          ← 返回
-        </button>
         <h1>✨ 智能取名</h1>
         <p className="subtitle">根据您的信息，为您推荐合适的名字</p>
       </div>

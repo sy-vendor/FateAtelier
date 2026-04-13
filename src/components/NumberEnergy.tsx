@@ -2,10 +2,6 @@ import { useState, useMemo } from 'react'
 import './NumberEnergy.css'
 import { toast } from '../utils/toast'
 
-interface NumberEnergyProps {
-  onBack: () => void
-}
-
 // 数字类型
 type NumberType = 'phone' | 'plate' | 'id' | 'other'
 
@@ -442,7 +438,7 @@ function analyzeNumberEnergy(input: string, type: NumberType) {
   }
 }
 
-function NumberEnergy({ onBack }: NumberEnergyProps) {
+function NumberEnergy() {
   const [input, setInput] = useState('')
   const [selectedType, setSelectedType] = useState<NumberType>('phone')
   const [showDetails, setShowDetails] = useState<{ [key: string]: boolean }>({})
@@ -490,10 +486,6 @@ function NumberEnergy({ onBack }: NumberEnergyProps) {
 
   return (
     <div className="number-energy">
-      <button className="back-button" onClick={onBack}>
-        ← 返回
-      </button>
-
       <div className="number-energy-header">
         <h1>🔢 数字能量</h1>
         <p className="subtitle">分析数字的能量，解读数字背后的含义</p>

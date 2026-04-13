@@ -5,10 +5,6 @@ import { calculateYearPillar, calculateDayPillar } from '../utils/bazi'
 import { tiangan, dizhi } from '../utils/constants'
 import { toast } from '../utils/toast'
 
-interface ZiweiDoushuProps {
-  onBack?: () => void
-}
-
 // 12宫位名称（固定顺序：子丑寅卯辰巳午未申酉戌亥）
 const palaceNames = [
   '命宫', '兄弟', '夫妻', '子女', '财帛', '疾厄',
@@ -438,7 +434,7 @@ const analyzePalace = (palaceIndex: number, mainStars: string[], minorStars: str
 }
 
 
-function ZiweiDoushu({ onBack }: ZiweiDoushuProps) {
+function ZiweiDoushu() {
   const [calendarType, setCalendarType] = useState<'solar' | 'lunar'>('lunar')
   const [birthDate, setBirthDate] = useState('')
   const [lunarYear, setLunarYear] = useState('')
@@ -611,10 +607,6 @@ function ZiweiDoushu({ onBack }: ZiweiDoushuProps) {
 
   return (
     <div className="ziwei-doushu-container">
-      <button className="back-button" onClick={onBack}>
-        ← 返回
-      </button>
-      
       <div className="ziwei-header">
         <h1>⭐ 紫微斗数</h1>
         <p className="subtitle">传统命理学 · 分析命宫、财帛宫、事业宫等</p>

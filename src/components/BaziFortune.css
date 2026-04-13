@@ -5,26 +5,6 @@
   position: relative;
 }
 
-.back-button {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  padding: 0.5rem 1rem;
-  background: rgba(15, 52, 96, 0.5);
-  border: 2px solid var(--color-border);
-  border-radius: 20px;
-  color: var(--color-text);
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 10;
-}
-
-.back-button:hover {
-  background: rgba(15, 52, 96, 0.7);
-  transform: translateX(-3px);
-}
-
 .bazi-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -438,12 +418,6 @@
     grid-template-columns: 1fr;
   }
 
-  .back-button {
-    position: relative;
-    top: auto;
-    left: auto;
-    margin-bottom: 1rem;
-  }
 }
 
 @media (max-width: 480px) {

@@ -15,25 +15,6 @@
   font-size: 24px;
 }
 
-.back-btn {
-  position: absolute;
-  left: 0;
-  top: 0;
-  background: rgba(15, 52, 96, 0.5);
-  color: var(--color-text, #eee);
-  border: 1px solid var(--color-border, #444);
-  padding: 0.75rem 1.5rem;
-  border-radius: 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.back-btn:hover {
-  background: rgba(15, 52, 96, 0.7);
-  transform: translateX(-5px);
-}
-
 .horoscope-controls {
   display: flex;
   flex-direction: column;
@@ -360,12 +341,6 @@
 
   .horoscope-header h2 {
     font-size: 18px;
-  }
-
-  .back-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    margin-bottom: 0.75rem;
   }
 
   .signs-scroll {

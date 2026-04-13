@@ -2,10 +2,6 @@ import { useState } from 'react'
 import './BaziFortune.css'
 import { toast } from '../utils/toast'
 
-interface BaziFortuneProps {
-  onBack?: () => void
-}
-
 // 天干地支
 const tiangan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
 const dizhi = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
@@ -648,7 +644,7 @@ function lunarToSolar(lunarYear: number, lunarMonth: number, lunarDay: number): 
   return solarDate
 }
 
-function BaziFortune({ onBack }: BaziFortuneProps) {
+function BaziFortune() {
   const [calendarType, setCalendarType] = useState<'solar' | 'lunar'>('solar')
   const [birthDate, setBirthDate] = useState('')
   const [lunarYear, setLunarYear] = useState('')
@@ -754,10 +750,6 @@ function BaziFortune({ onBack }: BaziFortuneProps) {
 
   return (
     <div className="bazi-fortune-container">
-      <button className="back-button" onClick={onBack}>
-        ← 返回
-      </button>
-
       <div className="bazi-header">
         <h1>🔮 八字算命</h1>
         <p className="subtitle">通过生辰八字分析您的性格、事业、财运、健康和感情</p>
