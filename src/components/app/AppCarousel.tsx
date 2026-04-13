@@ -1,4 +1,4 @@
-import { useRef, type CSSProperties } from 'react'
+import { forwardRef, useRef, type CSSProperties } from 'react'
 import type { AppFeature } from '../../constants/appFeatures'
 import type { AppPage } from '../../types/appPage'
 
@@ -22,22 +22,26 @@ export interface AppCarouselProps {
   setCurrentPage: (page: AppPage) => void
 }
 
-function AppCarousel({
-  features,
-  carouselIndex,
-  setCarouselIndex,
-  carouselRotation,
-  setCarouselRotation,
-  touchStart,
-  setTouchStart,
-  touchEnd,
-  setTouchEnd,
-  setCurrentPage,
-}: AppCarouselProps) {
+const AppCarousel = forwardRef<HTMLDivElement, AppCarouselProps>(function AppCarousel(
+  {
+    features,
+    carouselIndex,
+    setCarouselIndex,
+    carouselRotation,
+    setCarouselRotation,
+    touchStart,
+    setTouchStart,
+    touchEnd,
+    setTouchEnd,
+    setCurrentPage,
+  },
+  ref
+) {
   const trackRef = useRef<HTMLDivElement>(null)
 
   return (
     <div
+      ref={ref}
       className="carousel-container"
       onTouchStart={(e) => {
         e.preventDefault()
@@ -201,6 +205,6 @@ function AppCarousel({
       </div>
     </div>
   )
-}
+})
 
 export default AppCarousel
