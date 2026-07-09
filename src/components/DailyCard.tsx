@@ -1,20 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
-import { tarotCards, TarotCard } from '../data/tarotCards'
+import { TarotCard } from '../data/tarotCards'
 import CardDisplay from './CardDisplay'
 import { TarotCardVisual } from './tarot/TarotCardVisual'
-import { getStorageItem, setStorageItem } from '../utils/storage'
+import { getDailyTarotDraw, saveDailyTarotDraw } from '../utils/dailyTarotCard'
 import { Panel, Button } from './ui'
 
 interface DailyCardProps {
   onSelectCard: (card: TarotCard, isReversed?: boolean) => void
-}
-
-const DAILY_CARD_STORAGE_KEY = 'tarot-daily-card'
-const getTodayKey = () => {
-  const today = new Date()
-  const mm = String(today.getMonth() + 1).padStart(2, '0')
-  const dd = String(today.getDate()).padStart(2, '0')
-  return `${today.getFullYear()}-${mm}-${dd}`
 }
 
 function DailyCard({ onSelectCard }: DailyCardProps) {
@@ -30,23 +22,12 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
   }, [dailyCard, isReversed])
 
   useEffect(() => {
-    const today = new Date()
-    const dayOfYear = Math.floor(
-      (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 86400000
-    )
-    const cardIndex = dayOfYear % tarotCards.length
-    const card = tarotCards[cardIndex]
-    const reversed = dayOfYear % 2 === 0
-
+    const { card, isReversed: reversed, revealed } = getDailyTarotDraw()
     setDailyCard(card)
     setIsReversed(reversed)
-
-    const todayKey = getTodayKey()
-    const result = getStorageItem<{ date: string; isReversed: boolean }>(DAILY_CARD_STORAGE_KEY)
-    if (result.success && result.data && result.data.date === todayKey) {
+    if (revealed) {
       setShowCard(true)
       setHasViewedToday(true)
-      setIsReversed(result.data.isReversed || reversed)
     }
   }, [])
 
@@ -59,11 +40,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
     setTimeout(() => {
       setShowCard(true)
       setHasViewedToday(true)
-      const todayKey = getTodayKey()
-      setStorageItem(DAILY_CARD_STORAGE_KEY, {
-        date: todayKey,
-        isReversed: isReversed,
-      })
+      saveDailyTarotDraw(dailyCard.id, isReversed)
     }, 400)
   }
 
@@ -113,10 +90,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
               onFlip={() => {
                 const newReversed = !isReversed
                 setIsReversed(newReversed)
-                setStorageItem(DAILY_CARD_STORAGE_KEY, {
-                  date: getTodayKey(),
-                  isReversed: newReversed,
-                })
+                saveDailyTarotDraw(dailyCard.id, newReversed)
               }}
               compact
             />
