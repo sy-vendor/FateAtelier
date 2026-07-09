@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "build:sticks": "node scripts/build-divination-sticks.mjs",
-    "build:tarot": "node scripts/build-tarot-cards.mjs"
+    "build:tarot": "node scripts/build-tarot-cards.mjs",
+    "build:dream": "node scripts/build-dream-symbols.mjs"
   },
   "dependencies": {
     "@cometpisces/tarot-kit-images": "^0.2.0",

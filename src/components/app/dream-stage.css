@@ -464,6 +464,29 @@
   font-weight: 600;
 }
 
+.dream-symbol-card__subtitle {
+  font-weight: 400;
+  color: var(--ds-text-muted);
+  font-size: 0.82rem;
+}
+
+.dream-symbol-card__themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--ds-space-sm);
+}
+
+.dream-theme-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--ds-radius-sm);
+  font-size: 0.72rem;
+  color: var(--ds-text-secondary);
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border);
+}
+
 .dream-history-card {
   padding: var(--ds-space-md) var(--ds-space-lg);
   border-radius: var(--ds-radius-lg);

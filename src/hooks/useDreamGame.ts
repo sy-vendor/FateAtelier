@@ -5,7 +5,7 @@ import {
   getMoodLabel,
   type DreamPhase,
 } from '../utils/dreamData'
-import { interpretDreamWithMood, type DreamInterpretation } from '../utils/dreamEngine'
+import { interpretDreamWithMood, normalizeDreamInterpretation, type DreamInterpretation } from '../utils/dreamEngine'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
@@ -116,7 +116,7 @@ export function useDreamGame() {
     (record: DreamRecord) => {
       setDreamContent(record.content)
       setSelectedMood(record.mood)
-      setInterpretation(record.interpretation)
+      setInterpretation(normalizeDreamInterpretation(record.interpretation as DreamInterpretation & { overall?: string }))
       setShowHistory(false)
       setPhase('revealed')
       window.setTimeout(scrollToResult, 100)

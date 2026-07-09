@@ -199,9 +199,24 @@ function DreamMainView() {
             )}
           </div>
 
-          <Panel title="综合解读">
-            <p className="prose">{interpretation.overall}</p>
+          <Panel title="梦意总览">
+            <p className="prose">{interpretation.overview}</p>
+            {interpretation.emotionalTone && (
+              <p className="callout" style={{ marginTop: 12 }}>{interpretation.emotionalTone}</p>
+            )}
           </Panel>
+
+          {interpretation.themes && (
+            <Panel title="主题脉络">
+              <p className="prose">{interpretation.themes}</p>
+            </Panel>
+          )}
+
+          {interpretation.symbolNarrative && (
+            <Panel title="符号串联">
+              <p className="prose">{interpretation.symbolNarrative}</p>
+            </Panel>
+          )}
 
           {interpretation.symbols.length > 0 && (
             <Panel title="梦境符号">
@@ -210,8 +225,8 @@ function DreamMainView() {
                   <article key={index} className="dream-symbol-card">
                     <div className="dream-symbol-card__head">
                       <span className="dream-symbol-card__title">
-                        {symbol.keywords.slice(0, 3).join('、')}
-                        {symbol.keywords.length > 3 && '…'}
+                        {symbol.matchedKeyword}
+                        <span className="dream-symbol-card__subtitle"> · {symbol.meaning}</span>
                       </span>
                       <span
                         className="dream-category-tag"
@@ -220,22 +235,24 @@ function DreamMainView() {
                         {symbol.category}
                       </span>
                     </div>
-                    <p className="dream-symbol-card__text">
-                      <strong>含义：</strong>
-                      {symbol.meaning}
+                    <p className="dream-symbol-card__text">{symbol.interpretation}</p>
+                    <p className="dream-symbol-card__text" style={{ color: 'rgba(34, 197, 94, 0.95)' }}>
+                      <strong>吉象：</strong>
+                      {symbol.positive}
                     </p>
-                    {symbol.positive && (
-                      <p className="dream-symbol-card__text" style={{ color: 'rgba(34, 197, 94, 0.95)' }}>
-                        <strong>正面：</strong>
-                        {symbol.positive}
-                      </p>
-                    )}
-                    {symbol.negative && (
-                      <p className="dream-symbol-card__text" style={{ color: 'rgba(239, 68, 68, 0.95)' }}>
-                        <strong>留意：</strong>
-                        {symbol.negative}
-                      </p>
-                    )}
+                    <p className="dream-symbol-card__text" style={{ color: 'rgba(239, 68, 68, 0.95)' }}>
+                      <strong>留意：</strong>
+                      {symbol.negative}
+                    </p>
+                    <p className="dream-symbol-card__text">
+                      <strong>建议：</strong>
+                      {symbol.advice}
+                    </p>
+                    <div className="dream-symbol-card__themes">
+                      {symbol.themes.map((theme) => (
+                        <span key={theme} className="dream-theme-tag">{theme}</span>
+                      ))}
+                    </div>
                   </article>
                 ))}
               </div>
@@ -244,6 +261,10 @@ function DreamMainView() {
 
           <Panel title="启示建议">
             <p className="prose">{interpretation.advice}</p>
+          </Panel>
+
+          <Panel title="反思手记">
+            <p className="prose">{interpretation.reflection}</p>
           </Panel>
 
           <p className="callout">
