@@ -558,6 +558,69 @@
   font-style: italic;
 }
 
+.divination-poem--daily {
+  margin-top: var(--ds-space-md);
+  font-size: 0.92rem;
+  color: var(--ds-text-secondary);
+  opacity: 0.9;
+}
+
+.divination-reading__poem-insight {
+  white-space: pre-line;
+}
+
+.divination-aspects {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-md);
+}
+
+.divination-aspect {
+  padding: var(--ds-space-md);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border);
+  background: rgba(90, 160, 120, 0.06);
+}
+
+.divination-aspect__title {
+  margin: 0 0 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #8fd4a8;
+}
+
+.divination-aspect__text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--ds-text-secondary);
+}
+
+.divination-yiji {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ds-space-md);
+}
+
+.divination-yiji__list {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--ds-text-secondary);
+}
+
+.divination-yiji__list--good li::marker {
+  color: #6dbf7a;
+}
+
+.divination-yiji__list--warn li::marker {
+  color: #e89a3c;
+}
+
 .divination-result__actions {
   display: flex;
   flex-wrap: wrap;
@@ -599,6 +662,10 @@
     grid-template-columns: 1fr;
     text-align: center;
     justify-items: center;
+  }
+
+  .divination-yiji {
+    grid-template-columns: 1fr;
   }
 
   .stick-tube-body {

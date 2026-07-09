@@ -3,9 +3,11 @@ import {
   DIVINATION_BRAND,
   DIVINATION_BRAND_EN,
   CATEGORY_OPTIONS,
-  getCategoryLabel,
+  DETAIL_FIELD_LABELS,
   getLevelColor,
+  type DetailField,
 } from '../../utils/divinationData'
+import { cleanRepetitiveText } from '../../utils/divinationEngine'
 import { useDivinationGame } from '../../hooks/useDivinationGame'
 import { DivinationLogoMark } from '../divination/DivinationLogoMark'
 import { DivinationRitualBar } from '../divination/DivinationRitualBar'
@@ -29,11 +31,10 @@ function DivinationMainView() {
     copied,
     historySearch,
     setHistorySearch,
-    optimizedStick,
+    stickReading,
     filteredHistory,
     drawStick,
     toggleFavorite,
-    getCategoryAdvice,
     copyToClipboard,
     shareStick,
     exportHistory,
@@ -41,6 +42,8 @@ function DivinationMainView() {
     resetDraw,
     viewHistoryItem,
   } = useDivinationGame()
+
+  const stick = stickReading?.stick
 
   return (
     <div className="divination-stage">
@@ -59,7 +62,7 @@ function DivinationMainView() {
 
       <section className="divination-picker">
         <h2 className="divination-picker__title">所问何事</h2>
-        <p className="divination-picker__sub">选择类别后，签文会侧重该方向解读</p>
+        <p className="divination-picker__sub">选择类别后，解签会侧重该方向展开分项详批</p>
         <div style={{ opacity: isShaking ? 0.6 : 1, pointerEvents: isShaking ? 'none' : 'auto' }}>
           <Segmented
             block
@@ -126,70 +129,111 @@ function DivinationMainView() {
         </div>
       </section>
 
-      {showResult && optimizedStick && (
+      {showResult && stickReading && stick && (
         <section className="divination-result" aria-label="签文结果">
           <div className="divination-result__banner">
-            <div className="divination-result__num">第{optimizedStick.id}签</div>
+            <div className="divination-result__num">第{stick.id}签</div>
             <div>
-              <h2 className="divination-result__title">{optimizedStick.title}</h2>
-              <p className="divination-result__sub">签文已示，静心体悟</p>
+              <h2 className="divination-result__title">{stick.title}</h2>
+              <p className="divination-result__sub">{stickReading.timing}</p>
             </div>
             <span
               className="divination-level-tag"
-              style={{ background: getLevelColor(optimizedStick.level) }}
+              style={{ background: getLevelColor(stick.level) }}
             >
-              {optimizedStick.level}
+              {stick.level}
             </span>
           </div>
 
           <Panel title="签诗">
-            <p className="divination-poem">{optimizedStick.poem}</p>
+            <p className="divination-poem">{stick.poem}</p>
+            {stick.dailyPoem && stick.dailyPoem !== stick.poem && (
+              <p className="divination-poem divination-poem--daily">{stick.dailyPoem}</p>
+            )}
           </Panel>
 
-          <Panel title="解签">
-            <p className="prose" style={{ whiteSpace: 'pre-line' }}>
-              {optimizedStick.interpretation}
-            </p>
+          <Panel title="签意总览">
+            <p className="prose">{stickReading.overview}</p>
           </Panel>
 
-          {selectedCategory && getCategoryAdvice(optimizedStick, selectedCategory) && (
-            <Panel title={getCategoryLabel(selectedCategory)}>
-              <p className="prose" style={{ whiteSpace: 'pre-line' }}>
-                {getCategoryAdvice(optimizedStick, selectedCategory)}
-              </p>
+          <Panel title="签诗白话">
+            <p className="prose divination-reading__poem-insight">{stickReading.poemInsight}</p>
+          </Panel>
+
+          {stickReading.categoryGuidance && stickReading.categoryLabel && (
+            <Panel title={`所问 · ${stickReading.categoryLabel}`}>
+              <p className="prose callout">{stickReading.categoryGuidance}</p>
             </Panel>
           )}
 
-          <Panel title="建议">
-            <p className="prose" style={{ whiteSpace: 'pre-line' }}>
-              {optimizedStick.advice}
-            </p>
+          {stickReading.aspects.length > 0 && (
+            <Panel title="分项详批" description="结合签意，就相关事项逐一参详">
+              <div className="divination-aspects">
+                {stickReading.aspects.map((aspect) => (
+                  <article key={aspect.label} className="divination-aspect">
+                    <h3 className="divination-aspect__title">{aspect.label}</h3>
+                    <p className="divination-aspect__text">{aspect.text}</p>
+                  </article>
+                ))}
+              </div>
+            </Panel>
+          )}
+
+          <div className="divination-yiji">
+            <Panel title="宜">
+              <ul className="divination-yiji__list divination-yiji__list--good">
+                {stickReading.auspicious.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </Panel>
+            <Panel title="忌">
+              <ul className="divination-yiji__list divination-yiji__list--warn">
+                {stickReading.cautions.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </Panel>
+          </div>
+
+          <Panel title="行事建议">
+            <p className="prose">{stickReading.advice}</p>
           </Panel>
 
-          {optimizedStick.story && (
-            <Panel title="戏文简介">
-              <p className="prose">{optimizedStick.story}</p>
+          {stickReading.storyNote && (
+            <Panel title="典故启发">
+              <p className="prose">{stickReading.storyNote}</p>
             </Panel>
           )}
 
-          {optimizedStick.dailyPoem && (
-            <Panel title="日诗">
-              <p className="divination-poem" style={{ fontSize: '0.95rem' }}>
-                {optimizedStick.dailyPoem}
-              </p>
-            </Panel>
-          )}
-
-          {(optimizedStick.detailedInterpretations || optimizedStick.ageGenderInterpretations) && (
+          {stick.detailedInterpretations && (
             <Collapsible
               open={showDetailed}
               onToggle={() => setShowDetailed(!showDetailed)}
-              label="展开详细解签"
-              labelOpen="收起详细解签"
+              label="展开更多分项详批"
+              labelOpen="收起更多分项详批"
             >
-              {optimizedStick.ageGenderInterpretations && (
-                <div className="aspect-grid">
-                  {Object.entries(optimizedStick.ageGenderInterpretations).map(([key, text]) => {
+              <div className="aspect-grid">
+                {Object.entries(stick.detailedInterpretations).map(([key, text]) => {
+                  if (typeof text !== 'string' || !text) return null
+                  const cleaned = cleanRepetitiveText(text, stick.title)
+                  const shown = stickReading.aspects.some(
+                    (a) => a.text === cleaned || a.text.startsWith(cleaned.slice(0, 12)),
+                  )
+                  if (shown) return null
+                  const label = DETAIL_FIELD_LABELS[key as DetailField] ?? key
+                  return (
+                    <article key={key} className="aspect">
+                      <p className="aspect__title">{label}</p>
+                      <p className="aspect__text">{cleaned}</p>
+                    </article>
+                  )
+                })}
+              </div>
+
+              {stick.ageGenderInterpretations && (
+                <div className="aspect-grid" style={{ marginTop: 'var(--ds-space-md)' }}>
+                  {Object.entries(stick.ageGenderInterpretations).map(([key, text]) => {
                     const labels: Record<string, string> = {
                       child: '小孩',
                       youngGirl: '小女',
@@ -201,40 +245,7 @@ function DivinationMainView() {
                     return (
                       <article key={key} className="aspect">
                         <p className="aspect__title">{labels[key] ?? key}</p>
-                        <p className="aspect__text">{text}</p>
-                      </article>
-                    )
-                  })}
-                </div>
-              )}
-
-              {optimizedStick.detailedInterpretations && (
-                <div className="aspect-grid" style={{ marginTop: 'var(--ds-space-md)' }}>
-                  {Object.entries(optimizedStick.detailedInterpretations).map(([key, text]) => {
-                    const labels: Record<string, string> = {
-                      home: '家宅',
-                      business: '生意',
-                      travel: '出行',
-                      marriage: '婚姻',
-                      wealth: '求财',
-                      health: '求医',
-                      lawsuit: '诉讼',
-                      lostItem: '失物',
-                      searchPerson: '寻人',
-                      relocation: '移徙',
-                      career: '功名',
-                      pregnancy: '六甲',
-                      livestock: '六畜',
-                      disputes: '口舌',
-                      illness: '病',
-                      transaction: '交易',
-                      traveler: '行人',
-                    }
-                    if (typeof text !== 'string' || !text) return null
-                    return (
-                      <article key={key} className="aspect">
-                        <p className="aspect__title">{labels[key] ?? key}</p>
-                        <p className="aspect__text">{text}</p>
+                        <p className="aspect__text">{cleanRepetitiveText(text, stick.title)}</p>
                       </article>
                     )
                   })}
@@ -244,12 +255,8 @@ function DivinationMainView() {
           )}
 
           <div className="divination-result__actions">
-            <Button
-              variant="ghost"
-              small
-              onClick={() => toggleFavorite(optimizedStick.id)}
-            >
-              {favorites.has(optimizedStick.id) ? '已收藏' : '收藏'}
+            <Button variant="ghost" small onClick={() => toggleFavorite(stick.id)}>
+              {favorites.has(stick.id) ? '已收藏' : '收藏'}
             </Button>
             <Button variant="ghost" small onClick={copyToClipboard}>
               {copied ? '已复制' : '复制'}
@@ -307,11 +314,7 @@ function DivinationMainView() {
                         >
                           {item.stick.level}
                         </span>
-                        <Button
-                          variant="ghost"
-                          small
-                          onClick={() => toggleFavorite(item.stick.id)}
-                        >
+                        <Button variant="ghost" small onClick={() => toggleFavorite(item.stick.id)}>
                           {favorites.has(item.stick.id) ? '已收藏' : '收藏'}
                         </Button>
                       </div>

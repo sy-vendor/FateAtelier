@@ -13,29 +13,27 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // 将大型功能组件分组
           'fortune-telling': [
-            './src/components/BaziFortune',
-            './src/components/ZiweiDoushu',
-            './src/components/QimenDunjia',
-            './src/components/NameTest',
+            './src/components/app/BaziMainView',
+            './src/components/app/ZiweiMainView',
+            './src/components/app/QimenMainView',
+            './src/components/app/NameTestMainView',
           ],
           'divination': [
-            './src/components/DivinationDraw',
-            './src/components/DreamInterpretation',
-            './src/components/AuspiciousDate',
+            './src/components/app/DivinationMainView',
+            './src/components/app/DreamMainView',
+            './src/components/app/AuspiciousMainView',
           ],
           'tools': [
-            './src/components/NameGenerator',
             './src/components/app/HoroscopeMainView',
-            './src/components/Almanac',
-            './src/components/NumberEnergy',
-            './src/components/LuckyColor',
+            './src/components/app/AlmanacMainView',
+            './src/components/app/NumberEnergyMainView',
+            './src/components/app/LuckyColorMainView',
           ],
           'other': [
-            './src/components/CyberMerit',
-            './src/components/FengshuiCompass',
-            './src/components/ShengxiaoPairing',
+            './src/components/app/CyberMeritMainView',
+            './src/components/app/FengshuiMainView',
+            './src/components/app/ShengxiaoMainView',
           ],
         },
       },

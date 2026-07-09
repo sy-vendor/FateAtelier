@@ -8,7 +8,6 @@ export interface AppFeature {
 
 export const APP_FEATURES: AppFeature[] = [
   { page: 'tarot', icon: '🔮', name: '塔罗占卜' },
-  // { page: 'name', icon: '✨', name: '智能取名' }, // 暂时屏蔽
   { page: 'horoscope', icon: '✦', name: '星座运势' },
   { page: 'almanac', icon: '📅', name: '今日黄历' },
   { page: 'cybermerit', icon: '🙏', name: '赛博积德' },

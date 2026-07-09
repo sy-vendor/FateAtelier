@@ -1,13 +1,9 @@
 import { useMemo, useState } from 'react'
-import { parseSolarParts } from '../utils/birthDateUtils'
+import { digitsOnly, parseSolarParts } from '../utils/birthDateUtils'
 import {
   type EventType,
 } from '../utils/auspiciousData'
 import { calculateDayPillar, getAuspiciousShichens } from '../utils/auspiciousEngine'
-
-function digitsOnly(value: string, maxLength: number): string {
-  return value.replace(/\D/g, '').slice(0, maxLength)
-}
 
 export function useAuspiciousGame() {
   const today = new Date()

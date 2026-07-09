@@ -12,8 +12,10 @@ export const exportReadingToText = (reading: ReadingRecord): string => {
     const card = reading.cards[0]
     text += `抽取的牌: ${card.card.name} (${card.card.nameEn})\n`
     text += `位置: ${card.isReversed ? '逆位' : '正位'}\n\n`
-    text += `牌意:\n${card.isReversed ? card.card.meaning.reversed : card.card.meaning.upright}\n\n`
-    text += `描述:\n${card.card.description}\n`
+    text += `关键词:\n${card.isReversed ? card.card.meaning.reversed : card.card.meaning.upright}\n\n`
+    text += `牌面要义:\n${card.card.description}\n\n`
+    text += `牌意解读:\n${card.isReversed ? card.card.interpretation.reversed : card.card.interpretation.upright}\n\n`
+    text += `行动建议:\n${card.isReversed ? card.card.advice.reversed : card.card.advice.upright}\n`
   } else {
     text += '三牌占卜结果:\n\n'
     reading.cards.forEach((card, index) => {

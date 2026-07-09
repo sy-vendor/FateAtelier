@@ -1,6 +1,5 @@
 export type AppPage =
   | 'tarot'
-  | 'name'
   | 'horoscope'
   | 'almanac'
   | 'cybermerit'

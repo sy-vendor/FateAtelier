@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react'
 import {
   ALMANAC_BRAND,
   ALMANAC_BRAND_EN,
@@ -7,33 +6,23 @@ import {
   formatAlmanacDate,
   getShichenAdvice,
 } from '../../utils/almanacData'
-import { generateAlmanac, shichenTagClass } from '../../utils/almanacEngine'
+import { shichenTagClass } from '../../utils/almanacEngine'
+import { useAlmanacGame } from '../../hooks/useAlmanacGame'
 import { AlmanacLogoMark } from '../almanac/AlmanacLogoMark'
 import { AlmanacRitualBar } from '../almanac/AlmanacRitualBar'
 import { Panel } from '../ui'
 import './almanac-stage.css'
 
 function AlmanacMainView() {
-  const today = new Date()
-  const almanac = useMemo(() => generateAlmanac(today), [])
-  const [engaged, setEngaged] = useState(false)
-  const [selectedShichen, setSelectedShichen] = useState<string | null>(null)
-
-  const selectedShichenItem = useMemo(
-    () => almanac.shichenJixiong.find((item) => item.shichen === selectedShichen) ?? null,
-    [almanac.shichenJixiong, selectedShichen],
-  )
-
-  const ritualStep = useMemo((): 1 | 2 | 3 | 4 => {
-    if (selectedShichen) return 4
-    if (engaged) return 3
-    return 2
-  }, [selectedShichen, engaged])
-
-  const handleShichenSelect = (shichen: string) => {
-    setSelectedShichen(shichen)
-    setEngaged(true)
-  }
+  const {
+    today,
+    almanac,
+    setEngaged,
+    selectedShichen,
+    selectedShichenItem,
+    ritualStep,
+    handleShichenSelect,
+  } = useAlmanacGame()
 
   return (
     <div className="almanac-stage">

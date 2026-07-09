@@ -26,18 +26,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
 
   const dailyTip = useMemo(() => {
     if (!dailyCard) return ''
-    const raw = isReversed ? dailyCard.meaning.reversed : dailyCard.meaning.upright
-    const first = raw.split(/[，。；;,.]/)[0] || raw
-    const keywords = first
-      .split(/[、\s/]/)
-      .map((s) => s.trim())
-      .filter(Boolean)
-      .slice(0, 3)
-      .join('、')
-    if (!keywords) return ''
-    return isReversed
-      ? `今日提示：放慢节奏，留意「${keywords}」`
-      : `今日提示：顺势而为，把握「${keywords}」`
+    return isReversed ? dailyCard.advice.reversed : dailyCard.advice.upright
   }, [dailyCard, isReversed])
 
   useEffect(() => {
@@ -131,7 +120,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
               }}
               compact
             />
-            {dailyTip && <p className="tarot-daily__tip callout">{dailyTip}</p>}
+            {dailyTip && <p className="tarot-daily__tip callout">今日指引：{dailyTip}</p>}
             <div className="tarot-daily__actions">
               <Button variant="primary" onClick={() => onSelectCard(dailyCard, isReversed)}>
                 查看牌义详情

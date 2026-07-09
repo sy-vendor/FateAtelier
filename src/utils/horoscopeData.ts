@@ -46,3 +46,9 @@ export const PERIOD_OPTIONS: { value: HoroscopePeriod; label: string }[] = [
   { value: 'week', label: '本周' },
   { value: 'month', label: '本月' },
 ]
+
+export const PERIOD_HEADLINE: Record<HoroscopePeriod, string> = {
+  today: '今日星象',
+  week: '本周星轨',
+  month: '本月天象',
+}

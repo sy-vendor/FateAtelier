@@ -1,10 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
+import { digitsOnly } from '../utils/birthDateUtils'
 import { DIRECTION_ANGLES, QIMEN_PHASE_STEP, type QimenPhase } from '../utils/qimenData'
 import { calculateQimenPan } from '../utils/qimenEngine'
-
-function digitsOnly(value: string, maxLength: number): string {
-  return value.replace(/\D/g, '').slice(0, maxLength)
-}
 
 function parseDateParts(year: string, month: string, day: string, hour: string) {
   const y = parseInt(year, 10)

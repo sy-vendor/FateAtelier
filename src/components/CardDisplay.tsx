@@ -37,15 +37,29 @@ function CardDisplay({
       {!compact && (
         <div className="card-meaning">
           <div className="meaning-section">
-            <h3>牌意</h3>
+            <h3>关键词</h3>
             <p className="meaning-text">
               {isReversed ? card.meaning.reversed : card.meaning.upright}
             </p>
           </div>
 
           <div className="description-section">
-            <h3>描述</h3>
+            <h3>牌面要义</h3>
             <p className="description-text">{card.description}</p>
+          </div>
+
+          <div className="interpretation-section">
+            <h3>牌意解读</h3>
+            <p className="interpretation-text">
+              {isReversed ? card.interpretation.reversed : card.interpretation.upright}
+            </p>
+          </div>
+
+          <div className="advice-section">
+            <h3>行动建议</h3>
+            <p className="advice-text">
+              {isReversed ? card.advice.reversed : card.advice.upright}
+            </p>
           </div>
 
           <div className="card-actions">
@@ -73,12 +87,12 @@ function CardDisplay({
       {compact && (
         <div className="card-meaning-compact">
           <div className="meaning-compact">
-            <h4>牌意</h4>
-            <p>{isReversed ? card.meaning.reversed : card.meaning.upright}</p>
+            <h4>牌意解读</h4>
+            <p>{isReversed ? card.interpretation.reversed : card.interpretation.upright}</p>
           </div>
           <div className="description-compact">
-            <h4>描述</h4>
-            <p>{card.description}</p>
+            <h4>行动建议</h4>
+            <p>{isReversed ? card.advice.reversed : card.advice.upright}</p>
           </div>
           <button type="button" className="flip-button-compact" onClick={onFlip}>
             {isReversed ? '转为正位' : '转为逆位'}

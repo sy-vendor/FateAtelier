@@ -20,14 +20,6 @@
     <priority>0.9</priority>
   </url>
   
-  <!-- 智能取名 -->
-  <url>
-    <loc>https://www.fateatelier.cloud/#name</loc>
-    <lastmod>2025-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
   <!-- 星座运势 -->
   <url>
     <loc>https://www.fateatelier.cloud/#horoscope</loc>

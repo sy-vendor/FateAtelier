@@ -4,7 +4,6 @@ import type { AppPage } from '../../types/appPage'
 import type { TarotGameApi } from '../../types/tarotGameApi'
 
 const TarotMainView = lazy(() => import('./TarotMainView'))
-const NameGenerator = lazy(() => import('../NameGenerator'))
 const HoroscopeMainView = lazy(() => import('./HoroscopeMainView'))
 const AlmanacMainView = lazy(() => import('./AlmanacMainView'))
 const CyberMeritMainView = lazy(() => import('./CyberMeritMainView'))
@@ -24,7 +23,6 @@ type NonTarotPage = Exclude<AppPage, 'tarot'>
 type LazyFeature = LazyExoticComponent<ComponentType>
 
 const LAZY_BY_PAGE: Record<NonTarotPage, LazyFeature> = {
-  name: NameGenerator,
   horoscope: HoroscopeMainView,
   almanac: AlmanacMainView,
   cybermerit: CyberMeritMainView,

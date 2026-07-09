@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { divinationSticks, type DivinationStick } from '../data/divinationSticks'
-import { optimizeStick } from '../utils/divinationOptimizer'
+import { buildStickReading, type StickReading } from '../utils/divinationEngine'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
@@ -139,10 +139,10 @@ export function useDivinationGame() {
     return () => window.removeEventListener('devicemotion', onMotion)
   }, [phase, drawStick])
 
-  const optimizedStick = useMemo(() => {
+  const stickReading = useMemo((): StickReading | null => {
     if (!drawnStick) return null
-    return optimizeStick(drawnStick)
-  }, [drawnStick])
+    return buildStickReading(drawnStick, selectedCategory || undefined)
+  }, [drawnStick, selectedCategory])
 
   const toggleFavorite = useCallback((stickId: number) => {
     setFavorites((prev) => {
@@ -153,27 +153,36 @@ export function useDivinationGame() {
     })
   }, [])
 
-  const getCategoryAdvice = useCallback(
-    (stick: DivinationStick, category: string) => {
-      if (!category) return null
-      return stick.categories[category as keyof typeof stick.categories]
-    },
-    [],
-  )
-
   const copyToClipboard = useCallback(() => {
-    if (!optimizedStick) return
+    if (!stickReading) return
 
-    const text = `第 ${optimizedStick.id} 签 - ${optimizedStick.title} (${optimizedStick.level})
+    const { stick, overview, poemInsight, categoryGuidance, categoryLabel, aspects, advice, auspicious, cautions, timing } =
+      stickReading
+
+    const aspectBlock = aspects.map((a) => `【${a.label}】${a.text}`).join('\n')
+
+    const text = `第 ${stick.id} 签 - ${stick.title} (${stick.level})
 
 签诗：
-${optimizedStick.poem}
+${stick.poem}
 
-解签：
-${optimizedStick.interpretation}
+签意总览：
+${overview}
 
-建议：
-${optimizedStick.advice}${optimizedStick.story ? `\n\n戏文简介：\n${optimizedStick.story}` : ''}${optimizedStick.dailyPoem ? `\n\n日诗：\n${optimizedStick.dailyPoem}` : ''}
+签诗白话：
+${poemInsight}
+${categoryGuidance ? `\n所问${categoryLabel}：\n${categoryGuidance}` : ''}
+
+分项详批：
+${aspectBlock}
+
+行事建议：
+${advice}
+
+宜：${auspicious.join('；')}
+忌：${cautions.join('；')}
+时运：${timing}
+${stick.story ? `\n典故：\n${stick.story}` : ''}
 
 来自 命运工坊 · 竹语灵签`
 
@@ -183,17 +192,18 @@ ${optimizedStick.advice}${optimizedStick.story ? `\n\n戏文简介：\n${optimiz
     }).catch(() => {
       toast.error('复制失败')
     })
-  }, [optimizedStick])
+  }, [stickReading])
 
   const shareStick = useCallback(async () => {
-    if (!optimizedStick) return
+    if (!stickReading) return
 
-    const text = `第 ${optimizedStick.id} 签 - ${optimizedStick.title} (${optimizedStick.level})\n\n签诗：${optimizedStick.poem}\n\n解签：${optimizedStick.interpretation}\n\n来自 命运工坊 · 竹语灵签`
+    const { stick, overview, categoryGuidance } = stickReading
+    const text = `第 ${stick.id} 签 - ${stick.title} (${stick.level})\n\n签诗：${stick.poem}\n\n${overview}${categoryGuidance ? `\n\n${categoryGuidance}` : ''}\n\n来自 命运工坊 · 竹语灵签`
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `第 ${optimizedStick.id} 签 - ${optimizedStick.title}`,
+          title: `第 ${stick.id} 签 - ${stick.title}`,
           text,
         })
         return
@@ -202,7 +212,7 @@ ${optimizedStick.advice}${optimizedStick.story ? `\n\n戏文简介：\n${optimiz
       }
     }
     copyToClipboard()
-  }, [optimizedStick, copyToClipboard])
+  }, [stickReading, copyToClipboard])
 
   const exportHistory = useCallback(() => {
     const data = JSON.stringify(drawHistoryRef.current, null, 2)
@@ -272,11 +282,10 @@ ${optimizedStick.advice}${optimizedStick.story ? `\n\n戏文简介：\n${optimiz
     copied,
     historySearch,
     setHistorySearch,
-    optimizedStick,
+    stickReading,
     filteredHistory,
     drawStick,
     toggleFavorite,
-    getCategoryAdvice,
     copyToClipboard,
     shareStick,
     exportHistory,

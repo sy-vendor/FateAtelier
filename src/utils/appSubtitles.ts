@@ -2,7 +2,6 @@ import type { AppPage } from '../types/appPage'
 
 const SUBTITLES: Record<AppPage, string> = {
   tarot: '星穹秘典 · 静心抽牌，解读命运',
-  name: '智能取名服务',
   horoscope: '星轨观测站 · 十二宫运势指引',
   almanac: '岁时纪历 · 顺天时察宜忌',
   cybermerit: '赛博积德 · 电子福田积功德',

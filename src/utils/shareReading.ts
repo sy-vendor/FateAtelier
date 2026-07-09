@@ -30,7 +30,8 @@ const generateShareText = (reading: ReadingRecord): string => {
     const card = reading.cards[0]
     text += `抽取的牌: ${card.card.name}\n`
     text += `位置: ${card.isReversed ? '逆位' : '正位'}\n`
-    text += `牌意: ${card.isReversed ? card.card.meaning.reversed : card.card.meaning.upright}\n`
+    text += `牌意: ${card.isReversed ? card.card.interpretation.reversed : card.card.interpretation.upright}\n`
+    text += `建议: ${card.isReversed ? card.card.advice.reversed : card.card.advice.upright}\n`
   } else {
     text += '三牌占卜结果:\n'
     reading.cards.forEach((card, index) => {

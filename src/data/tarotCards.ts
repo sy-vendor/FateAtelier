@@ -1,29 +1,74 @@
+// 塔罗牌数据 - 78张（由 scripts/build-tarot-cards.mjs 生成）
+export interface TarotCategoryReading {
+  upright: string
+  reversed: string
+}
+
 export interface TarotCard {
-  id: number;
-  name: string;
-  nameEn: string;
-  type: 'major' | 'minor';
-  suit?: 'wands' | 'cups' | 'swords' | 'pentacles';
-  number?: number;
+  id: number
+  name: string
+  nameEn: string
+  type: 'major' | 'minor'
+  suit?: 'wands' | 'cups' | 'swords' | 'pentacles'
+  number?: number
   meaning: {
-    upright: string;
-    reversed: string;
-  };
-  description: string;
+    upright: string
+    reversed: string
+  }
+  description: string
+  interpretation: {
+    upright: string
+    reversed: string
+  }
+  advice: {
+    upright: string
+    reversed: string
+  }
+  categories: {
+    love: TarotCategoryReading
+    career: TarotCategoryReading
+    wealth: TarotCategoryReading
+    health: TarotCategoryReading
+  }
 }
 
 export const tarotCards: TarotCard[] = [
-  // 大阿卡纳 (Major Arcana) - 22张
   {
     id: 0,
     name: '愚者',
     nameEn: 'The Fool',
     type: 'major',
     meaning: {
-      upright: '新的开始、冒险、自由、纯真、自发性',
-      reversed: '鲁莽、缺乏计划、幼稚、风险'
+      upright: '新启程、天真、自由、跃入未知、原初灵性',
+      reversed: '脚步虚浮、逃避责任、莽撞冒进、迟迟不敢启程',
     },
-    description: '愚者代表新的开始，拥有自由的精神，敢于冒险，但有时也显得天真和缺乏计划。'
+    description: '愚者立于悬崖边，白狗在侧、行囊轻简，象征灵魂尚未被世俗规训的原初状态。他是大阿卡纳的零号，既是终点亦是起点，代表以全然信任跃入生命旅程的勇气。',
+    interpretation: {
+      upright: '正位愚者示你正站在一段崭新旅程的门槛，不必备齐万全之策，只需保有一颗开放而纯粹的心。牌中那只白狗提醒你：天真并非无知，而是未被恐惧污染的直觉仍在你身侧护行。',
+      reversed: '逆位愚者并非单纯否定新开始，而是警示脚步与心念尚未对齐——或冒进如坠崖，或明明该动却困在原地反复盘算。此时宜先厘清：你是为自由而出发，还是为逃避而流浪。',
+    },
+    advice: {
+      upright: '信任直觉迈出第一步，轻装上阵，把未知当作邀请而非威胁。',
+      reversed: '先为脚下找一块实土，再谈远行；若迟迟不敢动，不妨从最小的一步开始。',
+    },
+    categories: {
+      love: {
+        upright: '新恋情如春风初至，不必预设结局，以真诚相遇即可。',
+        reversed: '感情里或有一方逃避承诺，或凭一时冲动投入却未想清楚要什么。',
+      },
+      career: {
+        upright: '转职、创业、跨界皆有机缘，敢试者先得风气之先。',
+        reversed: '跳槽勿草率，创业忌无计划；若久陷停滞，需问自己是怕失败还是怕改变。',
+      },
+      wealth: {
+        upright: '小额尝试可开新财源，但忌把全部身家押在一次冒险上。',
+        reversed: '冲动消费或投机易失手，宜先理清收支再谈扩张。',
+      },
+      health: {
+        upright: '身心轻盈，适合户外运动与新的养生习惯，但悬崖边亦需留神。',
+        reversed: '作息紊乱或忽视小恙，莽撞熬夜、过度节食皆需收敛。',
+      },
+    },
   },
   {
     id: 1,
@@ -31,10 +76,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Magician',
     type: 'major',
     meaning: {
-      upright: '意志力、创造力、技能、行动、专注',
-      reversed: '缺乏方向、意志薄弱、技能不足'
+      upright: '意志力、显化、四元素、专注、开创',
+      reversed: '才华空转、欺瞒、意志涣散、工具误用',
     },
-    description: '魔术师拥有将想法转化为现实的能力，代表行动、创造力和专注的意志。'
+    description: '魔术师一手指天、一手指地，桌上置杖杯剑币四器，象征「如其在上，如其在下」的显化法则。他是将灵感化为行动的原型，代表专注意志与资源整合的力量。',
+    interpretation: {
+      upright: '正位魔术师示你手中已握有所需的一切：技能、资源与时机，只待一念专注将其贯通。四元素齐备，表明天地人三才已在你这一端汇聚，此刻的关键不在等待，而在行动。',
+      reversed: '逆位时魔术师的权杖可能指向虚妄——才华用错方向、承诺大于能力，或以话术掩盖准备不足。亦可能表意志涣散，样样皆通却样样不精，显化之力因此泄于无形。',
+    },
+    advice: {
+      upright: '集中火力于一事，把想法落成可见的第一步，你已具备成事之器。',
+      reversed: '先练内功再示人，忌夸大其词；若感散乱，砍掉一半目标只留最要的那一件。',
+    },
+    categories: {
+      love: {
+        upright: '主动表达、精心安排约会，你的诚意与创意能让关系升温。',
+        reversed: '花言巧语难久，或一方操控欲强，需看行动是否与言语一致。',
+      },
+      career: {
+        upright: '提案、谈判、展示才华的窗口已开，宜把握舞台一举成名。',
+        reversed: '简历注水、项目夸大或团队内斗，恐损专业信誉。',
+      },
+      wealth: {
+        upright: '凭技能与信息差可获利，副业、咨询、内容创作皆有机会。',
+        reversed: '高回报话术背后或有陷阱，签约前务必核实对方资质。',
+      },
+      health: {
+        upright: '自律与运动计划易坚持，身心协调度佳，可尝试新的训练方式。',
+        reversed: '过度依赖补剂或偏方，忽视基础作息，本末倒置。',
+      },
+    },
   },
   {
     id: 2,
@@ -42,10 +113,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The High Priestess',
     type: 'major',
     meaning: {
-      upright: '直觉、潜意识、神秘、内在智慧',
-      reversed: '缺乏内在声音、压抑直觉、秘密'
+      upright: '直觉、潜意识、静默智慧、月之神秘',
+      reversed: '直觉被堵、秘密泄露、表层喧嚣淹没内心',
     },
-    description: '女祭司代表直觉和内在智慧，连接着潜意识和神秘的知识。'
+    description: '女祭司端坐于黑白柱之间，膝上经卷半掩，身后是隐与显的帷幕。她不通外求，而守内在神谕，象征潜意识、梦境与未言明真理的守护者。',
+    interpretation: {
+      upright: '正位女祭司邀请你暂停对外喧哗，转向内在静听。她膝上半掩的经卷并非要你立刻解读，而是提醒你：有些答案尚未到揭晓之时，须在沉默与梦境中慢慢浮现。',
+      reversed: '逆位时帷幕被粗暴扯开——秘密外泄、直觉被理性或社交噪音淹没，或你刻意压抑内在声音以迎合他人。亦可能陷入疑神疑鬼，把想象当真相，需在静与动之间重新找平衡。',
+    },
+    advice: {
+      upright: '少言多观，记录梦境与直觉，重要决定可再等一等，让暗处的智慧浮上来。',
+      reversed: '减少信息过载，别用别人的标准覆盖内心；若疑云密布，先区分事实与恐惧。',
+    },
+    categories: {
+      love: {
+        upright: '默契渐深，不必急于表白，静水流深的陪伴正滋养彼此。',
+        reversed: '隐瞒或猜忌滋生，一方可能口是心非，需坦诚或给彼此空间。',
+      },
+      career: {
+        upright: '研究、写作、幕后策划有利，不宜高调张扬，深耕专业即可。',
+        reversed: '办公室流言或机密外泄，亦可能因犹豫错失内部消息带来的机会。',
+      },
+      wealth: {
+        upright: '不宜频繁操作，静守与研究型投资比跟风更合此牌。',
+        reversed: '财务隐私外泄，或凭小道消息入市反被套牢。',
+      },
+      health: {
+        upright: '关注内分泌与睡眠，冥想、瑜伽有助于调和身心。',
+        reversed: '忽视身体细微信号，或焦虑引发失眠、周期紊乱。',
+      },
+    },
   },
   {
     id: 3,
@@ -53,10 +150,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Empress',
     type: 'major',
     meaning: {
-      upright: '丰饶、母性、自然、创造力、富足',
-      reversed: '依赖、缺乏成长、创造力受阻'
+      upright: '丰饶、母性、自然养育、感官之美',
+      reversed: '过度护持、创造力枯竭、依附外在滋养',
     },
-    description: '皇后代表丰饶、母性和自然的创造力，象征着富足和成长。'
+    description: '皇后安坐于麦浪与森林之间，金星符号闪耀，象征大地母亲的丰饶与感官世界的滋养。她是创造、孕育与美的化身，让生命得以生长、开花、结果。',
+    interpretation: {
+      upright: '正位皇后示丰盛之流正向你涌来——不一定是巨富，而是关系、创意与身体感知的全面滋长。她提醒你在给予之前先让自己被大地、艺术与美所喂养，丰饶始于接纳。',
+      reversed: '逆位皇后可能过度溺爱或控制，以「为你好」窒息他人成长；亦可能创造力干涸，因长期忽视自身需求而枯竭。有时亦示依赖外在认可或物质来填补内心空洞。',
+    },
+    advice: {
+      upright: '允许自己享受美与舒适，滋养身心后再去滋养他人与项目。',
+      reversed: '松开掌控，别用物质或情绪勒索换亲密；若灵感枯竭，先回自然里充电。',
+    },
+    categories: {
+      love: {
+        upright: '温情脉脉、体贴入微，适合谈婚论嫁或孕育新生命。',
+        reversed: '过度依赖或控制欲伤感情，或一方感觉被「照顾」到窒息。',
+      },
+      career: {
+        upright: '创意、设计、教育、母婴相关领域易有成果，团队氛围和谐。',
+        reversed: '项目因过度干预而停滞，或团队内有人只索取不贡献。',
+      },
+      wealth: {
+        upright: '正财稳进，宜投资与生活品质相关的长期资产。',
+        reversed: '为面子挥霍，或把财务决策权完全交给他人。',
+      },
+      health: {
+        upright: '气血充盈，适宜调养、备孕或恢复性休息。',
+        reversed: '过度饮食或节食，妇科、消化问题需关注。',
+      },
+    },
   },
   {
     id: 4,
@@ -64,10 +187,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Emperor',
     type: 'major',
     meaning: {
-      upright: '权威、结构、控制、稳定、父亲',
-      reversed: '专制、僵化、缺乏纪律、控制欲'
+      upright: '权威、结构、秩序、父性守护',
+      reversed: '暴政、僵化、以控制代关怀',
     },
-    description: '皇帝代表权威、结构和控制，象征着稳定和秩序。'
+    description: '皇帝坐于石座，手持权杖，身披铠甲，脚下是稳固的山峦与公羊。他代表世俗秩序、规则与父性权威，以结构守护疆土，亦可能因刚愎而失人心。',
+    interpretation: {
+      upright: '正位皇帝示你需要或已具备建立秩序的能力——定规矩、划边界、做决断。他是乱世中的柱石，提醒成功不仅靠灵感，更靠制度、纪律与对资源的统筹。',
+      reversed: '逆位时龙椅变成牢笼：专制、刚愎、以控制掩盖不安全感，或规则沦为压迫。亦可能示缺乏自律，无人掌舵时方向四散，需在权威与弹性之间重新校准。',
+    },
+    advice: {
+      upright: '制定清晰规则并率先遵守，以稳定与担当赢得信任。',
+      reversed: '倾听下属或家人声音，规则为人服务而非人为规则所役。',
+    },
+    categories: {
+      love: {
+        upright: '成熟稳重的一方带来安全感，适合共建家庭与长远规划。',
+        reversed: '大男子主义或冷战控制伤感情，缺乏商量只剩命令。',
+      },
+      career: {
+        upright: '晋升、管理岗、制度搭建有利，宜展现领导力与执行力。',
+        reversed: '上司事必躬亲、过度干预，或团队各自为政，需沟通边界与分工。',
+      },
+      wealth: {
+        upright: '稳健理财、房产与长期规划可保财富根基。',
+        reversed: '独断投资或家族财务纠纷，宜引入第三方意见。',
+      },
+      health: {
+        upright: '规律作息与力量训练有益，注意骨骼与血压。',
+        reversed: '压力导致肩颈僵硬、失眠，勿以工作硬撑。',
+      },
+    },
   },
   {
     id: 5,
@@ -75,10 +224,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Hierophant',
     type: 'major',
     meaning: {
-      upright: '传统、精神指导、学习、仪式',
-      reversed: '反传统、个人信仰、非传统方法'
+      upright: '传统、传承、灵性导师、仪式规范',
+      reversed: '教条束缚、信仰私化、反出体制寻道',
     },
-    description: '教皇代表传统和精神指导，象征着学习和遵循既定的道路。'
+    description: '教皇端坐于两根圣柱之间，为信徒授职，钥匙交予侍从。他象征庙堂传承、师徒道统与可见的信仰体系，是集体价值与礼仪的守护者。',
+    interpretation: {
+      upright: '正位教皇示你或可从传统、师长、经典中找到路径——不必重造一切，站在前人肩上往往更快。婚礼、入学、入职等仪式性时刻亦在此牌护佑之下。',
+      reversed: '逆位并非简单反传统，而是教条与心灵脱节：形式主义、道德绑架，或你需离开不适合的群体另觅信仰。有时亦示私下质疑权威却不敢言，内在信仰正在重组。',
+    },
+    advice: {
+      upright: '虚心向有经验者请教，遵循正当程序，集体智慧可助你一程。',
+      reversed: '若体制已违本心，勇敢问「这规则为谁而设」；信仰可在体制外重建。',
+    },
+    categories: {
+      love: {
+        upright: '家长认可、婚礼筹备或经由介绍结缘，传统路径走得通。',
+        reversed: '家族干涉或「应该结婚」的压力与真实感情脱节。',
+      },
+      career: {
+        upright: '考公、升学、拜师、入行培训皆利，合规路线稳健。',
+        reversed: '公司文化压抑创新，或你需跳出行业常规另辟蹊径。',
+      },
+      wealth: {
+        upright: '银行、保险、信托等正规渠道宜优先，忌走灰色地带。',
+        reversed: '迷信「大师荐股」或传销式理财，需回归常识。',
+      },
+      health: {
+        upright: '遵医嘱、定期体检，传统医学与西医结合可奏效。',
+        reversed: '病急乱投医，或讳疾忌医只信偏方。',
+      },
+    },
   },
   {
     id: 6,
@@ -86,10 +261,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Lovers',
     type: 'major',
     meaning: {
-      upright: '爱情、和谐、关系、选择、价值观',
-      reversed: '不平衡、价值观冲突、糟糕的选择'
+      upright: '抉择、契合、价值观统一、伊甸之约',
+      reversed: '貌合神离、诱惑分心、择错而难回',
     },
-    description: '恋人代表爱情和和谐的关系，也象征着重要的选择和价值观。'
+    description: '恋人牌中亚当夏娃立于天使之下，背后分岔两树，象征自由意志下的重大选择。它不仅是浪漫之爱，更是灵魂与价值观是否对齐的试金石。',
+    interpretation: {
+      upright: '正位恋人示你面临关乎身份与价值的选择——选 A 或 B 不仅是利弊，更是「你将成为谁」。天使在上，表明天地见证此择，唯有心与志一致，关系与道路才能长久。',
+      reversed: '逆位时伊甸园起风：三角关系、价值观撕裂，或为短期诱惑背离本心。亦可能示逃避选择，以暧昧或拖延维持表面和谐，实则貌合神离。',
+    },
+    advice: {
+      upright: '诚实面对内心所值，选与你灵魂同频之路，不必讨好所有人。',
+      reversed: '若关系已名存实亡，宜直面而非拖延；诱惑来时问：一年后我会后悔吗？',
+    },
+    categories: {
+      love: {
+        upright: '灵魂伴侣之象，表白、订婚、复合若出于真心皆吉。',
+        reversed: '三角恋、价值观冲突或一方脚踏两船，需厘清去留。',
+      },
+      career: {
+        upright: '合作、合伙需志同道合，择团队如择伴侣。',
+        reversed: '为高薪背叛原则，或合伙方各怀心思恐生裂隙。',
+      },
+      wealth: {
+        upright: '与信任之人合资可成，合同宜明列权责。',
+        reversed: '人情债与金钱纠缠，或贪念导致选错投资伙伴。',
+      },
+      health: {
+        upright: '身心和谐，适度亲密与社交有益情绪。',
+        reversed: '感情压力引发焦虑、失眠或免疫力下降。',
+      },
+    },
   },
   {
     id: 7,
@@ -97,10 +298,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Chariot',
     type: 'major',
     meaning: {
-      upright: '控制、意志力、胜利、决心',
-      reversed: '缺乏控制、方向不明、失败'
+      upright: '意志驱动、双兽驾驭、凯旋',
+      reversed: '方向失据、内耗倾覆、胜却难久',
     },
-    description: '战车代表通过意志力和决心取得胜利，象征着控制和成功。'
+    description: '战车手驭黑白二狮，无缰而前，城在身后。他以意志统合相反之力，象征在冲突中仍向目标推进的胜利者，但胜利需方向正确方能持久。',
+    interpretation: {
+      upright: '正位战车示你已具备冲破阻碍的动能——矛盾、竞争、内外的拉扯皆可被意志整合。黑白二兽同向，表明天平两端被你驾驭，此刻宜乘胜追击，但勿忘为何而战。',
+      reversed: '逆位时战车倾覆：方向迷失、情绪与理智内斗，或勉强胜利却身心俱疲。有时示外在顺遂内在空转，赢了局面却失却初心，需停鞭问路。',
+    },
+    advice: {
+      upright: '锁定目标全力推进，以纪律统合分歧，胜利在望。',
+      reversed: '先统一内在冲突再加速，问清「我要去哪里」比「跑多快」更重要。',
+    },
+    categories: {
+      love: {
+        upright: '主动追求或克服异地、家庭阻力，坚持可成。',
+        reversed: '一方强势一方逃避，或争赢道理却输了关系。',
+      },
+      career: {
+        upright: '竞标、竞聘、项目冲刺有利，宜展现魄力。',
+        reversed: '办公室政治内耗，或盲目扩张导致后继乏力。',
+      },
+      wealth: {
+        upright: '积极开拓市场、出差拓客可带来收入增长。',
+        reversed: '为冲业绩过度杠杆，或方向错误越努力越亏。',
+      },
+      health: {
+        upright: '运动竞技、康复训练进展佳，但忌过劳。',
+        reversed: '慢性压力未解，头痛、高血压需警惕。',
+      },
+    },
   },
   {
     id: 8,
@@ -108,10 +335,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'Strength',
     type: 'major',
     meaning: {
-      upright: '内在力量、耐心、控制、同情',
-      reversed: '软弱、内在冲突、缺乏自信'
+      upright: '柔克刚、内在勇气、灵性与兽性调和',
+      reversed: '自我怀疑、以蛮力硬撑、恐惧反噬',
     },
-    description: '力量代表内在的力量和耐心，通过温柔和同情来克服困难。'
+    description: '力量牌中女子轻抚狮口，无限符号在顶，非以蛮力而以至柔至刚驯服兽性。她象征勇气、耐心与自我整合，是心灵对本能的温柔主宰。',
+    interpretation: {
+      upright: '正位力量示真正的强大不在压制，而在包容与持续——你能与恐惧、愤怒、欲望对话而非消灭它们。狮口被抚，表明天性与灵性可共存，以耐心赢得长久。',
+      reversed: '逆位时狮子反噬：自我怀疑、情绪失控，或以硬碰硬掩盖脆弱。亦可能示滥用权力欺负弱者，或内在自我批评过于严苛导致行动瘫痪。',
+    },
+    advice: {
+      upright: '以温和而坚定的方式面对挑战，耐心与自我慈悲即是力量。',
+      reversed: '别与情绪对抗，先承认害怕再行动；若已伤人，先修复再谈强。',
+    },
+    categories: {
+      love: {
+        upright: '以包容化解矛盾，激情可转化为深层信任。',
+        reversed: '一方情绪勒索或冷暴力，或自卑导致不敢表达需求。',
+      },
+      career: {
+        upright: '难缠客户、复杂项目可凭耐心与专业逐步攻克。',
+        reversed: '与上司硬刚或自我否定不敢争取，皆需调整姿态。',
+      },
+      wealth: {
+        upright: '长期持有、定投比频繁交易更合此牌，忌贪快。',
+        reversed: '恐慌抛售或赌性大发，被恐惧或贪婪牵着走。',
+      },
+      health: {
+        upright: '心理调适、温和运动、艺术疗愈皆有益。',
+        reversed: '焦虑未处理引发躯体化，或过度训练伤体。',
+      },
+    },
   },
   {
     id: 9,
@@ -119,10 +372,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Hermit',
     type: 'major',
     meaning: {
-      upright: '内省、寻找、指导、孤独',
-      reversed: '孤立、迷失、缺乏方向'
+      upright: '向内求索、独处照灯、智慧沉淀',
+      reversed: '避世过深、拒绝指引、迷失于孤独迷雾',
     },
-    description: '隐者代表内省和寻找内在真理，象征着精神上的指导。'
+    description: '隐者执灯登山，身披灰袍，远离尘世喧嚣。他是内在真理的追寻者，以孤独换取洞见，灯光虽只照一步，却足以在暗途中引路。',
+    interpretation: {
+      upright: '正位隐者示退隐、反思、独自摸索的时节已到——答案不在人群喧哗处，而在你提灯而上的那条路。此牌鼓励暂时退出竞争，以沉淀换深度，慢即是快。',
+      reversed: '逆位时灯光被风吹灭：过度孤立、拒绝他人善意，或在「寻找自我」中迷失方向。亦可能示该出山仍躲藏，以灵性之名逃避现实责任。',
+    },
+    advice: {
+      upright: '给自己一段无打扰的独处，读书、行走、写日记，灯自会亮。',
+      reversed: '若已闭门过久，试着接受一位可信的引路人；孤独应是选择而非牢笼。',
+    },
+    categories: {
+      love: {
+        upright: '单身者宜先完善自我，有伴者需要空间与深度交流。',
+        reversed: '冷暴力式疏离或一方拒绝沟通，关系如隔重山。',
+      },
+      career: {
+        upright: '研究、写作、进修、远程独立工作有利。',
+        reversed: '与团队脱节或拒绝师长意见，错失成长。',
+      },
+      wealth: {
+        upright: '保守理财、减少社交开销，静修期宜守不宜攻。',
+        reversed: '因信息闭塞错过机会，或孤僻导致合作难成。',
+      },
+      health: {
+        upright: '静养、冥想、早睡，适合排查慢性隐患。',
+        reversed: '抑郁倾向或过度封闭，宜寻求专业或亲友支持。',
+      },
+    },
   },
   {
     id: 10,
@@ -130,10 +409,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'Wheel of Fortune',
     type: 'major',
     meaning: {
-      upright: '变化、周期、命运、转折点',
-      reversed: '坏运气、缺乏控制、阻力'
+      upright: '流转无常、因果相接、时运更迭',
+      reversed: '抗拒转轮、坏运滞留、只见起落不见规律',
     },
-    description: '命运之轮代表生活的变化和周期，象征着命运的转折点。'
+    description: '命运之轮转动，斯芬克斯在上、蛇与阿努比斯在下，四象限符号流转。它象征循环往复的宇宙法则——升降有时，无人能永驻顶点，亦无人能永困谷底。',
+    interpretation: {
+      upright: '正位命运之轮示转机已至——可能是好运上扬，亦可能是必要的变化降临。它提醒你：此刻局面是更大周期中的一环，顺势而为比硬抗更智慧，因果之线正在收紧。',
+      reversed: '逆位时轮子卡滞：抗拒必然的改变、重复同样错误导致坏运循环，或把起落全归运气而不思自身选择。有时示短暂停滞，实则是下一轮启动前的蓄力。',
+    },
+    advice: {
+      upright: '接受变化，好运时备粮，低潮时守本，相信周期终将转向。',
+      reversed: '检视是否在重复旧模式，主动改变一个习惯即可松动齿轮。',
+    },
+    categories: {
+      love: {
+        upright: '缘分天定之感，旧情复燃或新遇皆可能，随流而动。',
+        reversed: '分分合合循环不止，或把问题全推给「没缘分」。',
+      },
+      career: {
+        upright: '行业轮动、岗位变动带来机遇，宜灵活应变。',
+        reversed: '抵触组织变革，或时运不佳时仍孤注一掷。',
+      },
+      wealth: {
+        upright: '偏财、意外之财可能出现，亦宜见好就收。',
+        reversed: '赌运不佳仍加码，或忽视周期规律盲目抄底。',
+      },
+      health: {
+        upright: '病情或体质进入新阶段，顺应节律调养。',
+        reversed: '旧疾反复，或与情绪周期相关的波动需正视。',
+      },
+    },
   },
   {
     id: 11,
@@ -141,10 +446,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'Justice',
     type: 'major',
     meaning: {
-      upright: '正义、公平、真相、责任',
-      reversed: '不公正、缺乏责任、不公平'
+      upright: '平衡天秤、因果清算、理性裁断',
+      reversed: '偏私自欺、逃避责任、尺度失衡',
     },
-    description: '正义代表公平和真相，象征着责任和平衡。'
+    description: '正义女神持剑与秤，双目直视，不偏不倚。剑裁断虚假，秤衡量得失，象征业力平衡、法律与道德层面的真相显形。',
+    interpretation: {
+      upright: '正位正义示因果即将清算——你种什么得什么，合同、诉讼、道德抉择都将得到公允结果。它要求诚实面对事实，以理性而非情绪做裁断，平衡方可恢复。',
+      reversed: '逆位时秤盘倾斜：自欺、双重标准、逃避应负之责，或遭遇不公却无力申诉。亦可能示过度苛刻，以「正义」之名伤人，需辨清原则与偏执。',
+    },
+    advice: {
+      upright: '以诚待人、以法办事，主动承担该负之责，天平自会归正。',
+      reversed: '先审视自己是否双标，若遇不公，收集证据理性维权而非泄愤。',
+    },
+    categories: {
+      love: {
+        upright: '关系进入坦诚阶段，谈婚论嫁宜把条件与期待摆明。',
+        reversed: '隐瞒、出轨或一方付出失衡，信任裂痕待修复。',
+      },
+      career: {
+        upright: '合同、评审、申诉有利，据理力争可胜。',
+        reversed: '职场不公或自身违规隐患，宜自查而非侥幸。',
+      },
+      wealth: {
+        upright: '税务、债务、分配合法清晰，宜按章处理。',
+        reversed: '财务记录混乱或灰色收入恐有后患。',
+      },
+      health: {
+        upright: '诊断清晰，遵医嘱可逐步恢复平衡。',
+        reversed: '忽视体检结果，或身心失衡久拖成疾。',
+      },
+    },
   },
   {
     id: 12,
@@ -152,10 +483,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Hanged Man',
     type: 'major',
     meaning: {
-      upright: '暂停、牺牲、等待、新视角',
-      reversed: '拖延、抗拒、不必要的牺牲'
+      upright: '悬置视角、甘愿牺牲、顿悟待发',
+      reversed: '无谓受苦、拖延观望、牺牲变苦役',
     },
-    description: '倒吊人代表暂停和牺牲，通过不同的视角来看待问题。'
+    description: '倒吊人单足悬挂，神情安详，头下脚上，光环在顶。他以自愿的暂停换取全新视角，象征放下、等待与颠倒视角中的灵性智慧。',
+    interpretation: {
+      upright: '正位倒吊人示主动停步比盲目前进更明智——有些事需悬置、让步或换个角度看，方能顿悟。他的牺牲是自愿的，为更高理解而暂时让渡控制。',
+      reversed: '逆位时悬挂变成惩罚：拖延、做无谓牺牲、以「我在等」逃避行动，或殉道者心态令身边人疲惫。亦可能示该放手却仍紧抓不放，苦役自招。',
+    },
+    advice: {
+      upright: '若路不通，不妨停下来换视角，有时退即是进。',
+      reversed: '区分「有意义的等待」与「逃避的拖延」，该行动时勿再以牺牲自矜。',
+    },
+    categories: {
+      love: {
+        upright: '暂时冷战或距离可让彼此看清真心，耐心终有回报。',
+        reversed: '一方单方面付出或耗在无回应的关系里，宜设期限。',
+      },
+      career: {
+        upright: '项目搁置、转岗等待期可用来充电与反思方向。',
+        reversed: '因怕决策而无限拖延，或白忙一场却未换得成长。',
+      },
+      wealth: {
+        upright: '资金暂时冻结，宜守现金流，不宜强行扩张。',
+        reversed: '为面子硬撑亏损项目，或错过该止损的时机。',
+      },
+      health: {
+        upright: '静养、倒立瑜伽、理疗等「颠倒」疗法可能有帮助。',
+        reversed: '久病乱投医，或消极养病拖长康复。',
+      },
+    },
   },
   {
     id: 13,
@@ -163,10 +520,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'Death',
     type: 'major',
     meaning: {
-      upright: '结束、转变、过渡、放手',
-      reversed: '抗拒变化、停滞、拖延'
+      upright: '终结转化、旧壳脱落、涅槃之门',
+      reversed: '假死不变、恐惧蜕皮、紧抓残骸',
     },
-    description: '死神代表结束和转变，象征着必要的过渡和放手。'
+    description: '死神骑白马持旗，国王、孩童、主教皆在其前，旗帜上五瓣玫瑰。它并非物理死亡，而是重大终结与重生的使者，旧我必死，新我方生。',
+    interpretation: {
+      upright: '正位死神示一段章节必然落幕——工作、关系、信念或习惯须彻底结束，方有空间迎接新生。旗帜上的玫瑰提醒：毁灭中仍藏重生之种，拥抱变化比抗拒少痛苦。',
+      reversed: '逆位时蜕变停滞：半死不活的关系、赖着不走的工作、口称改变行为依旧。恐惧让旧壳腐烂仍不肯蜕，拖延只延长阵痛，需辨清「结束」与「失败」之别。',
+    },
+    advice: {
+      upright: '体面告别该逝之物，清理、断舍、仪式性结束，为新生命腾位。',
+      reversed: '若早已心死，勇敢承认并行动；拖泥带水于双方皆是折磨。',
+    },
+    categories: {
+      love: {
+        upright: '分手、离婚或关系模式彻底重构，结束后反有新生。',
+        reversed: '名存实亡却不愿放手，或复合后旧问题依旧。',
+      },
+      career: {
+        upright: '离职、转行、业务关停是转型而非绝路。',
+        reversed: '厌恶现状却不敢离职，或裁员危机下仍无预案。',
+      },
+      wealth: {
+        upright: '坏账核销、资产置换，结束亏损投资即是止损。',
+        reversed: '沉没成本谬误，越亏越补，不肯认赔离场。',
+      },
+      health: {
+        upright: '手术、戒断、疗程结束旧状态，康复期即是新生。',
+        reversed: '讳疾忌医，或旧习（烟、酒）反复戒断失败。',
+      },
+    },
   },
   {
     id: 14,
@@ -174,10 +557,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'Temperance',
     type: 'major',
     meaning: {
-      upright: '平衡、适度、耐心、目的',
-      reversed: '不平衡、过度、缺乏长期愿景'
+      upright: '天使调和、适中流动、炼金融合',
+      reversed: '极端失衡、急躁调和、表里不一',
     },
-    description: '节制代表平衡和适度，通过耐心和目的来调和不同的力量。'
+    description: '节制天使一足水一足陆，双杯间水流循环，象征炼金术式的融合——对立元素在耐心与目的下达成和谐，不急不缓，方得至味。',
+    interpretation: {
+      upright: '正位节制示调和之时——工作与生活、理性与感性、快与慢需找到黄金比例。天使的倒水非一次灌满，而是持续微调，提醒你中庸不是平庸，而是高难度的平衡艺术。',
+      reversed: '逆位时水流溅溢：纵欲、极端节食、情绪大起大落，或表面和谐内里撕裂。亦可能示急于求成，欲一步炼成金反而失败，需回到耐心与节奏。',
+    },
+    advice: {
+      upright: '循序渐进，每日微调一处，融合优于对抗。',
+      reversed: '识别生活中的极端习惯，从一个小小平衡点改起，勿求一夜蜕变。',
+    },
+    categories: {
+      love: {
+        upright: '互补型伴侣渐融，沟通温和可化解旧怨。',
+        reversed: '一方成瘾或情绪极端，或「调和」只是掩盖未解之结。',
+      },
+      career: {
+        upright: '跨部门协作、折中方案可成，宜做长期整合。',
+        reversed: '加班过劳或摸鱼极端，团队节奏紊乱。',
+      },
+      wealth: {
+        upright: '分散配置、定期定额，收支渐趋平衡。',
+        reversed: '报复性消费或过度抠门，财务节奏失当。',
+      },
+      health: {
+        upright: '饮食运动适度，中西医结合、康复训练宜稳步。',
+        reversed: '暴饮暴食与节食交替，或用药不按疗程。',
+      },
+    },
   },
   {
     id: 15,
@@ -185,10 +594,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Devil',
     type: 'major',
     meaning: {
-      upright: '束缚、成瘾、物质主义、限制',
-      reversed: '释放、独立、摆脱束缚'
+      upright: '欲望锁链、物质缚身、阴影直面',
+      reversed: '枷锁自解、认清诱惑、破除幻象',
     },
-    description: '恶魔代表束缚和成瘾，象征着物质主义和自我限制。'
+    description: '恶魔牌中男女颈系轻链却未挣脱，潘角恶魔端座，火炬倒悬。链可脱而人未觉，象征成瘾、执念与将恐惧外化为「不得不」的自我捆绑。',
+    interpretation: {
+      upright: '正位恶魔示你或困于某种「自愿的束缚」——成瘾、有毒关系、物欲、权力欲，链环松垮却无人离开。它邀请直面阴影：你真正害怕失去的是什么？认清即解缚之始。',
+      reversed: '逆位时锁链落地——觉醒、戒断、离开有毒环境，或识破操控。亦可能示诱惑仍强但已见真相，只差最后一步勇气；有时警告勿以为挣脱即可高枕，旧习会反扑。',
+    },
+    advice: {
+      upright: '诚实列出「我无法离开」之事，问：链是他人加还是自系？',
+      reversed: '趁觉醒窗口彻底切断触发源，寻求支持系统，防旧瘾回潮。',
+    },
+    categories: {
+      love: {
+        upright: '激情变执念、控制欲或三角关系，需辨爱占有欲。',
+        reversed: '脱离有毒关系，或看清对方并非唯一选择。',
+      },
+      career: {
+        upright: '高薪陷阱、灰色业务或职场精神控制，慎签卖身契。',
+        reversed: '跳槽脱离压榨，或拒绝不当利益诱惑。',
+      },
+      wealth: {
+        upright: '赌博、超前消费、传销式投资，物欲牵鼻走。',
+        reversed: '债务重组、戒赌戒贷，重获财务自主。',
+      },
+      health: {
+        upright: '成瘾、纵欲过度损害身心，宜专业干预。',
+        reversed: '戒断反应期需陪伴，康复之路已启。',
+      },
+    },
   },
   {
     id: 16,
@@ -196,10 +631,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Tower',
     type: 'major',
     meaning: {
-      upright: '突然变化、启示、破坏、解放',
-      reversed: '避免灾难、抗拒变化、内在动荡'
+      upright: '雷火崩毁、旧信念崩塌、天启骤降',
+      reversed: '隐患内爆、缓释变局、拒醒而滞',
     },
-    description: '塔代表突然的变化和启示，通过破坏来带来解放。'
+    description: '高塔被雷击中，皇冠坠落，二人坠亡。它象征骤然天启——虚假结构在一瞬崩塌，虽震骇，却清除建在沙上的幻象，为真实让路。',
+    interpretation: {
+      upright: '正位高塔示剧变将至或已至——谎言揭穿、项目崩盘、关系破裂，皆如雷击不可避。皇冠落地象征旧权威失效，痛苦之后是解脱：你终于站在真实的地基上重建。',
+      reversed: '逆位时塔未倒但裂缝蔓延：否认危机、小修小补，或变革被延迟导致更大爆发。有时示内在地震——信念崩塌却对外强撑，需允许自己崩溃再重组。',
+    },
+    advice: {
+      upright: '接受崩塌，远离危塔，在废墟上诚实重建，勿恋旧顶。',
+      reversed: '主动排查隐患，小爆炸胜过等大雷；若已震后，别假装无事。',
+    },
+    categories: {
+      love: {
+        upright: '隐瞒爆发、激烈争吵或突然分手，震后需看清真相。',
+        reversed: '问题积压未爆，或分离后仍纠缠不清。',
+      },
+      career: {
+        upright: '公司裁员、项目失败、政策突变，宜另谋出路。',
+        reversed: '业务隐患视而不见，或变革阻力导致更大损失。',
+      },
+      wealth: {
+        upright: '投资暴雷、诈骗曝光，宜保全剩余资产。',
+        reversed: '风险资产仍重仓，或小损不补终成大患。',
+      },
+      health: {
+        upright: '突发不适是身体警报，宜立即就医排查。',
+        reversed: '慢性隐患未治，或压力内爆引发急症。',
+      },
+    },
   },
   {
     id: 17,
@@ -207,10 +668,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Star',
     type: 'major',
     meaning: {
-      upright: '希望、信仰、目的、更新',
-      reversed: '缺乏信仰、绝望、断开连接'
+      upright: '希望灌注、疗愈清泉、星空指引',
+      reversed: '信念动摇、远景模糊、迟于补水',
     },
-    description: '星星代表希望和信仰，象征着目的和精神的更新。'
+    description: '裸女跪于池边，一足水一足陆，双壶倾注，八星在上。星星是创伤后的希望，象征信念、灵感与向更高目的缓慢恢复的疗愈。',
+    interpretation: {
+      upright: '正位星星示暗夜将尽——经历塔之震荡后，温柔希望重新灌注。它不承诺即刻成功，却保证方向正确：像涓涓细流润喉，疗愈需要时间，但星光已现。',
+      reversed: '逆位时水壶空悬：乐观成空、目标模糊、创意受阻，或不信自己配得美好。亦可能示迟于行动——明知该补水却仍干渴，需把希望化为每日一小步。',
+    },
+    advice: {
+      upright: '保持信念，做微小而确定的善功，星光会引路。',
+      reversed: '若陷绝望，先求专业或社群支持；把远大愿景拆成今日可做的一件小事。',
+    },
+    categories: {
+      love: {
+        upright: '疗愈旧伤后迎新缘，或关系进入温柔修复期。',
+        reversed: '对爱情失望、不敢再信，或理想化伴侣脱离现实。',
+      },
+      career: {
+        upright: '长期项目见曙光，创意、公益、艺术领域灵感涌现。',
+        reversed: '目标飘忽、频繁换方向，或精力耗竭未愈硬撑。',
+      },
+      wealth: {
+        upright: '缓慢回升，宜长线布局而非急财。',
+        reversed: '财务计划空洞，或灾后重建资金未到位仍挥霍。',
+      },
+      health: {
+        upright: '康复期、心理疗愈、温泉休养皆受益。',
+        reversed: '忽视心理健康，或疗程中断前功尽弃。',
+      },
+    },
   },
   {
     id: 18,
@@ -218,10 +705,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Moon',
     type: 'major',
     meaning: {
-      upright: '幻觉、恐惧、焦虑、潜意识',
-      reversed: '释放恐惧、压抑、内在混乱'
+      upright: '潜意识浪潮、迷途幻景、月影幽径',
+      reversed: '迷雾渐散、恐惧命名、幻觉退潮',
     },
-    description: '月亮代表幻觉和恐惧，连接着潜意识和未知的领域。'
+    description: '月亮下犬狼对月而吠，螯虾从池出，小径蜿蜒入远山。它象征幻象、恐惧与潜意识——所见未必真实，需在不确定中仍向前行。',
+    interpretation: {
+      upright: '正位月亮示你行于雾中——直觉与妄想交织，旧事、梦境、隐秘动机浮现。它不要求立刻看清全貌，但提醒慢走、标记路标，勿把阴影当怪物，亦勿把怪物当阴影。',
+      reversed: '逆位时雾散一线：真相渐明、恐惧被命名后威力大减，或从妄想中醒来。亦可能示仍自欺，用神秘学逃避现实；有时警告幻觉退潮后需面对平淡真实。',
+    },
+    advice: {
+      upright: '记录梦境与不安，重要决定待信息更明，结伴而行胜过独闯夜路。',
+      reversed: '把最害怕的事写下来并验证，往往没那么可怕；若已清晰，就按日光下的真实行动。',
+    },
+    categories: {
+      love: {
+        upright: '暧昧不明、猜忌或旧情阴影干扰，需时间看清。',
+        reversed: '误会澄清，或发现对方并非想象中那般。',
+      },
+      career: {
+        upright: '信息不全、办公室政治暗流，忌轻信谣言。',
+        reversed: '内幕曝光，或从迷惘中理清职责。',
+      },
+      wealth: {
+        upright: '财务透明度低，投资需穿透底层资产。',
+        reversed: '骗局识破，或账目终于理清。',
+      },
+      health: {
+        upright: '睡眠紊乱、焦虑、妇科周期与情绪相关，宜调神。',
+        reversed: '经诊断后疑病减轻，或睡眠节律改善。',
+      },
+    },
   },
   {
     id: 19,
@@ -229,10 +742,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The Sun',
     type: 'major',
     meaning: {
-      upright: '快乐、成功、庆祝、积极',
-      reversed: '过度乐观、缺乏成功、内在阴影'
+      upright: '稚子骑狮、明朗真我、生命欢庆',
+      reversed: '阴影未融、乐极生悲、童光蒙尘',
     },
-    description: '太阳代表快乐和成功，象征着庆祝和积极的生活态度。'
+    description: '太阳下孩童骑白狮，向日葵盛开，墙后世界可见。它是大阿卡纳中最明亮的牌，象征生命力、成功与自觉的喜悦——阴影在光下暂退，真我如童般敞开。',
+    interpretation: {
+      upright: '正位太阳示胜利、认可、纯粹喜悦——努力被看见，身心充溢活力。孩童不掩饰，狮子不伤人，提醒你成功时仍保天真与慷慨，光要分享才更暖。',
+      reversed: '逆位时云遮日：表面乐观内里空虚、庆贺成表演，或成功后迷失下一步。亦可能示忽视阴影——强行积极导致情绪压抑，需允许偶尔阴天。',
+    },
+    advice: {
+      upright: '庆贺正当之时，分享喜悦，以光明带动身边人。',
+      reversed: '若快乐感虚假，追问「我在证明什么」；成功时亦预留阴影对话的空间。',
+    },
+    categories: {
+      love: {
+        upright: '公开恋情、婚礼、备孕，关系明朗温暖。',
+        reversed: '秀恩爱掩盖问题，或一方情绪仍被旧伤笼罩。',
+      },
+      career: {
+        upright: '项目成功、晋升、曝光度升，宜趁热打铁。',
+        reversed: '高处不胜寒，或成功后骄傲导致失误。',
+      },
+      wealth: {
+        upright: '收入上扬、奖金到账，宜适度享受并储蓄。',
+        reversed: '挥霍庆祝，或收入不稳却过度乐观。',
+      },
+      health: {
+        upright: '阳气足、恢复快，户外运动极吉。',
+        reversed: '忽视防晒与休息，或过劳后强撑欢颜。',
+      },
+    },
   },
   {
     id: 20,
@@ -240,10 +779,36 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'Judgement',
     type: 'major',
     meaning: {
-      upright: '反思、评估、觉醒、宽恕',
-      reversed: '缺乏自我意识、自我怀疑、拒绝自我评估'
+      upright: '号角唤醒、业报浮现、重生抉择',
+      reversed: '自我审判过苛、迟于回应召唤、旧业缠身',
     },
-    description: '审判代表反思和评估，象征着觉醒和宽恕。'
+    description: '大天使加百列吹号，棺中之人复活，海山之间。审判象征灵性觉醒、问责与第二次机会——过去被召唤至光下，以宽恕与选择完成重生。',
+    interpretation: {
+      upright: '正位审判示灵魂层面的召唤——旧业清算、迟来的真相、觉醒时刻。号角响时，你可以选择回应：承认过去、请求宽恕、以新身份活，这是重生而非终审。',
+      reversed: '逆位时号角喑哑：自我批判过苛、拒绝原谅自己或他人，或明明该变仍装睡。亦可能示旧业未了反复出现，直到你正面应答；有时警告勿以「审判」之名困于受害者叙事。',
+    },
+    advice: {
+      upright: '听见内在召唤，诚实回顾并选择释放与重生，宽恕是钥匙。',
+      reversed: '停止无限自责，亦勿拒斥成长；若召唤已至，拖延只增重量。',
+    },
+    categories: {
+      love: {
+        upright: '旧爱复盘、复合需真诚改变，或关系升华至新阶段。',
+        reversed: '翻旧账伤人，或拒绝给彼此第二次机会。',
+      },
+      career: {
+        upright: '考核、答辩、公众评价，过往努力将被看见。',
+        reversed: '配得感缺失或拒评反馈，错失晋升。',
+      },
+      wealth: {
+        upright: '遗产、理赔、旧账结清，财务迎来阶段性清算。',
+        reversed: '逃避债务或税务，旧账拖成新祸。',
+      },
+      health: {
+        upright: '体检结果促生活方式彻底改变，康复转机。',
+        reversed: '知错不改，或过度焦虑体检指标。',
+      },
+    },
   },
   {
     id: 21,
@@ -251,134 +816,2203 @@ export const tarotCards: TarotCard[] = [
     nameEn: 'The World',
     type: 'major',
     meaning: {
-      upright: '完成、成就、实现、旅行',
-      reversed: '缺乏完成、停滞、未实现的目标'
+      upright: '圆满舞蹈、四元素合一、一圈终始',
+      reversed: '差最后一里、闭环未竟、成就悬空',
     },
-    description: '世界代表完成和成就，象征着目标的实现和圆满。'
+    description: '世界牌中舞者环以月桂，四角落权杖杯剑币，象征旅程完成与宇宙整合。愚者所启之环在此闭合，灵魂已历炼金，可庆贺亦可再出发。',
+    interpretation: {
+      upright: '正位世界示大周期圆满——目标达成、学位、移民、项目收官，四元素在你生命中各得其所。舞者非静止，暗示完成亦是新开始之母，圆满里已藏下一圈种子。',
+      reversed: '逆位时环差一线：99% 未完成、证书拖延、移民手续卡关，或成就无法内化仍觉空虚。有时示害怕结束——怕完成后失去方向，故潜意识拖尾。',
+    },
+    advice: {
+      upright: '庆贺全程，标记里程碑，然后带着整合后的自己开启新章。',
+      reversed: '找出卡住最后一环的具体事项，逐项攻克；若已达成却空虚，问下一愿景何在。',
+    },
+    categories: {
+      love: {
+        upright: '修成正果、跨国团聚、关系进入稳定圆满期。',
+        reversed: '婚礼延期、长期异地未决，或形式上在一起内心仍缺一环。',
+      },
+      career: {
+        upright: '项目交付、毕业、创业阶段性成功，可放眼全球。',
+        reversed: '收尾工作拖延，或成功后不知下一步，宜规划。',
+      },
+      wealth: {
+        upright: '财务目标达成，资产配置进入成熟阶段。',
+        reversed: '临门一脚的资金或手续未齐，勿在终点前松懈。',
+      },
+      health: {
+        upright: '疗程完成、体态达标，身心进入整合稳定期。',
+        reversed: '康复最后阶段松懈，或全面健康仍差生活习惯一环。',
+      },
+    },
   },
-  // 小阿卡纳 - 权杖 (Wands)
-  ...Array.from({ length: 14 }, (_, i) => {
-    const numbers = ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Page', 'Knight', 'Queen', 'King'];
-    const names = ['权杖王牌', '权杖二', '权杖三', '权杖四', '权杖五', '权杖六', '权杖七', '权杖八', '权杖九', '权杖十', '权杖侍从', '权杖骑士', '权杖皇后', '权杖国王'];
-    const meanings = [
-      { upright: '新项目、灵感、潜力、机会', reversed: '缺乏方向、延迟、缺乏灵感' },
-      { upright: '计划、未来规划、等待', reversed: '缺乏计划、恐惧、缺乏方向' },
-      { upright: '探索、扩张、领导力', reversed: '缺乏方向、延迟、限制' },
-      { upright: '庆祝、和谐、关系、社区', reversed: '缺乏和谐、过渡、不完整' },
-      { upright: '冲突、竞争、分歧', reversed: '避免冲突、竞争、分歧' },
-      { upright: '胜利、成功、公众认可', reversed: '缺乏认可、失败、自我怀疑' },
-      { upright: '挑战、竞争、坚持', reversed: '放弃、缺乏自信、压倒' },
-      { upright: '快速行动、移动、进展', reversed: '速度、延迟、耐心' },
-      { upright: '弹性、持久、最后努力', reversed: '疲惫、放弃、过度防御' },
-      { upright: '负担、责任、努力', reversed: '过度承诺、缺乏方向、负担' },
-      { upright: '探索、热情、自由精神', reversed: '缺乏方向、拖延、缺乏热情' },
-      { upright: '行动、冒险、冲动', reversed: '愤怒、冲动、缺乏方向' },
-      { upright: '勇气、自信、独立', reversed: '自私、鲁莽、缺乏纪律' },
-      { upright: '自然领导者、远见、企业家', reversed: '过度控制、缺乏方向、不灵活' }
-    ];
-    return {
-      id: 22 + i,
-      name: names[i],
-      nameEn: `Wands ${numbers[i]}`,
-      type: 'minor' as const,
-      suit: 'wands' as const,
-      number: i < 10 ? i + 1 : undefined,
-      meaning: meanings[i],
-      description: `权杖${i < 10 ? i + 1 : ['侍从', '骑士', '皇后', '国王'][i - 10]}代表行动、创造力和热情。`
-    };
-  }),
-  // 小阿卡纳 - 圣杯 (Cups)
-  ...Array.from({ length: 14 }, (_, i) => {
-    const numbers = ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Page', 'Knight', 'Queen', 'King'];
-    const names = ['圣杯王牌', '圣杯二', '圣杯三', '圣杯四', '圣杯五', '圣杯六', '圣杯七', '圣杯八', '圣杯九', '圣杯十', '圣杯侍从', '圣杯骑士', '圣杯皇后', '圣杯国王'];
-    const meanings = [
-      { upright: '新感觉、精神体验、直觉', reversed: '情感不稳定、缺乏联系、失去直觉' },
-      { upright: '统一、伙伴关系、吸引力', reversed: '不平衡、破裂、缺乏和谐' },
-      { upright: '友谊、社区、快乐', reversed: '过度放纵、流言蜚语、三方关系' },
-      { upright: '冥想、沉思、重新评估', reversed: '沉思、错过机会、不满足' },
-      { upright: '损失、遗憾、失望', reversed: '接受、宽恕、前进' },
-      { upright: '重新审视、怀旧、记忆', reversed: '生活在过去、抓住记忆、前进' },
-      { upright: '选择、寻找目的、幻想', reversed: '缺乏目的、分散、选择困难' },
-      { upright: '离开、放弃、寻找深度', reversed: '避免承诺、恐惧、徘徊' },
-      { upright: '满足、情感满足、愿望实现', reversed: '缺乏满足、贪婪、物质主义' },
-      { upright: '情感完成、和谐、对齐', reversed: '分离、缺乏和谐、不完整' },
-      { upright: '情感消息、直觉、创造力', reversed: '情感不稳定、缺乏创造力、压抑' },
-      { upright: '跟随心、理想主义、浪漫', reversed: '理想主义、不切实际、情绪化' },
-      { upright: '同情、关怀、直觉', reversed: '内在空虚、情绪化、依赖' },
-      { upright: '情感平衡、同情、外交', reversed: '情绪化、操纵、冷漠' }
-    ];
-    return {
-      id: 36 + i,
-      name: names[i],
-      nameEn: `Cups ${numbers[i]}`,
-      type: 'minor' as const,
-      suit: 'cups' as const,
-      number: i < 10 ? i + 1 : undefined,
-      meaning: meanings[i],
-      description: `圣杯${i < 10 ? i + 1 : ['侍从', '骑士', '皇后', '国王'][i - 10]}代表情感、直觉和关系。`
-    };
-  }),
-  // 小阿卡纳 - 宝剑 (Swords)
-  ...Array.from({ length: 14 }, (_, i) => {
-    const numbers = ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Page', 'Knight', 'Queen', 'King'];
-    const names = ['宝剑王牌', '宝剑二', '宝剑三', '宝剑四', '宝剑五', '宝剑六', '宝剑七', '宝剑八', '宝剑九', '宝剑十', '宝剑侍从', '宝剑骑士', '宝剑皇后', '宝剑国王'];
-    const meanings = [
-      { upright: '新想法、清晰、突破', reversed: '混乱、缺乏清晰、突破' },
-      { upright: '困难选择、僵局、平衡', reversed: '选择困难、没有方向、混乱' },
-      { upright: '心碎、情感痛苦、悲伤', reversed: '恢复、释放痛苦、向前看' },
-      { upright: '休息、恢复、冥想', reversed: '休息、疲惫、重新进入世界' },
-      { upright: '不道德、损失、失败', reversed: '恢复、接受、学习' },
-      { upright: '过渡、离开、移动', reversed: '卡住、无法前进、逃避' },
-      { upright: '欺骗、策略、计划', reversed: '欺骗、缺乏计划、不诚实' },
-      { upright: '限制、自我限制、束缚', reversed: '新视角、释放、自由' },
-      { upright: '焦虑、担忧、恐惧', reversed: '内在动荡、深度恐惧、抑郁' },
-      { upright: '背叛、损失、危机', reversed: '恢复、再生、释放' },
-      { upright: '新想法、好奇心、沟通', reversed: '缺乏方向、混乱、沟通不良' },
-      { upright: '行动、冲动、缺乏方向', reversed: '缺乏方向、不成熟、计划不周' },
-      { upright: '清晰的思想、直接沟通、诚实', reversed: '过度思考、冷酷、不敏感' },
-      { upright: '心理清晰、真理、权威', reversed: '操纵、残酷、不诚实' }
-    ];
-    return {
-      id: 50 + i,
-      name: names[i],
-      nameEn: `Swords ${numbers[i]}`,
-      type: 'minor' as const,
-      suit: 'swords' as const,
-      number: i < 10 ? i + 1 : undefined,
-      meaning: meanings[i],
-      description: `宝剑${i < 10 ? i + 1 : ['侍从', '骑士', '皇后', '国王'][i - 10]}代表思想、沟通和冲突。`
-    };
-  }),
-  // 小阿卡纳 - 星币 (Pentacles)
-  ...Array.from({ length: 14 }, (_, i) => {
-    const numbers = ['Ace', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Page', 'Knight', 'Queen', 'King'];
-    const names = ['星币王牌', '星币二', '星币三', '星币四', '星币五', '星币六', '星币七', '星币八', '星币九', '星币十', '星币侍从', '星币骑士', '星币皇后', '星币国王'];
-    const meanings = [
-      { upright: '新机会、资源、富足', reversed: '错失机会、缺乏计划、不稳定' },
-      { upright: '平衡、优先事项、时间管理', reversed: '不平衡、优先事项、组织不良' },
-      { upright: '团队合作、协作、学习', reversed: '缺乏团队合作、不协调、缺乏学习' },
-      { upright: '控制、安全、保守', reversed: '控制、不安全、吝啬' },
-      { upright: '需要、贫困、不安全感', reversed: '恢复、慈善、精神贫困' },
-      { upright: '给予、接受、分享财富', reversed: '自私、不平衡、权力游戏' },
-      { upright: '评估、反思、计算', reversed: '缺乏进步、拖延、缺乏奖励' },
-      { upright: '技能、质量、努力', reversed: '缺乏质量、缺乏动力、不完美' },
-      { upright: '奖励、奢侈、自给自足', reversed: '自我价值、过度放纵、缺乏纪律' },
-      { upright: '财富、安全、家庭', reversed: '财务失败、缺乏稳定性、家庭冲突' },
-      { upright: '新机会、想法、灵感', reversed: '缺乏方向、缺乏承诺、优先事项' },
-      { upright: '努力、生产力、例行公事', reversed: '缺乏目标、懒惰、缺乏纪律' },
-      { upright: '实用性、安全感、物质世界', reversed: '自我价值、物质主义、不安全' },
-      { upright: '财务安全、控制、领导', reversed: '财务不安全感、缺乏控制、贪婪' }
-    ];
-    return {
-      id: 64 + i,
-      name: names[i],
-      nameEn: `Pentacles ${numbers[i]}`,
-      type: 'minor' as const,
-      suit: 'pentacles' as const,
-      number: i < 10 ? i + 1 : undefined,
-      meaning: meanings[i],
-      description: `星币${i < 10 ? i + 1 : ['侍从', '骑士', '皇后', '国王'][i - 10]}代表物质、工作和资源。`
-    };
-  })
-];
-
+  {
+    id: 22,
+    name: '权杖1',
+    nameEn: 'Wands Ace',
+    type: 'minor',
+    suit: 'wands',
+    number: 1,
+    meaning: {
+      upright: '新起点、灵感、潜力、创业契机',
+      reversed: '延迟启动、方向模糊、热情消退、错失良机',
+    },
+    description: '权杖王牌如手中初燃的火焰，象征行动力的源头与创造力的第一束光。正位时新计划、新热情正待你亲手点燃。',
+    interpretation: {
+      upright: '一张充满火元素的起点之牌，灵感与机会同时降临。你内心已有答案，只差迈出第一步，把潜能化为可见的行动。',
+      reversed: '热情尚未真正点燃，或计划反复搁置。并非没有可能，而是时机、信心或准备尚不足，需先厘清真正想做的事。',
+    },
+    advice: {
+      upright: '抓住此刻的灵感，立刻做一件最小可行的行动，让火焰先烧起来。',
+      reversed: '暂停盲目开工，先确认方向与动机，再选择值得投入的项目。',
+    },
+    categories: {
+      love: {
+        upright: '新恋情或关系升温的火花正在萌发，主动表达心意易有回应。',
+        reversed: '感情动力不足，或一时冲动却缺乏后续，宜先弄清自己的真心。',
+      },
+      career: {
+        upright: '新项目、新职位或创业契机浮现，适合展示创意与行动力。',
+        reversed: '计划搁置或方向摇摆，不宜仓促跳槽或启动大项目。',
+      },
+      wealth: {
+        upright: '新的收入渠道或投资机会值得试探，小额起步可验可行性。',
+        reversed: '财务冲动需克制，未成熟的项目暂不宜投入重金。',
+      },
+      health: {
+        upright: '精力回升，适合开启运动或养生新习惯，火元素助你恢复活力。',
+        reversed: '易因拖延或倦怠忽视身体，先从小目标重建日常节奏。',
+      },
+    },
+  },
+  {
+    id: 23,
+    name: '权杖2',
+    nameEn: 'Wands Two',
+    type: 'minor',
+    suit: 'wands',
+    number: 2,
+    meaning: {
+      upright: '规划蓝图、远景展望、等待时机、掌控局面',
+      reversed: '缺乏规划、畏缩不前、视野受限、错失窗口',
+    },
+    description: '权杖二描绘手持地球仪的决策者，火元素在此化为远见与布局。正位时你正站在选择的分叉口，眺望更远的未来。',
+    interpretation: {
+      upright: '你已具备一定资源与视野，正在权衡下一步往何处扩张。这是规划与等待并行的阶段，不必急于行动，但需明确方向。',
+      reversed: '对未来感到不安，或选择过多反而寸步难行。可能因恐惧未知而迟迟不动，或计划脱离现实、缺乏可执行的步骤。',
+    },
+    advice: {
+      upright: '把远景拆成可执行的阶段性目标，选定一条路后稳步推进。',
+      reversed: '缩小选择范围，先完成眼前最小决策，再谈宏大布局。',
+    },
+    categories: {
+      love: {
+        upright: '关系进入审慎评估期，可考虑共同未来，但不必急于定终身。',
+        reversed: '对感情前景犹豫或逃避承诺，需诚实面对是否愿意继续投入。',
+      },
+      career: {
+        upright: '适合制定中长期职业计划，海外、跨界或扩张值得纳入考量。',
+        reversed: '职业方向模糊，或眼高手低，宜先夯实当前岗位的基本盘。',
+      },
+      wealth: {
+        upright: '财务规划宜放眼长远，分散布局比孤注一掷更稳妥。',
+        reversed: '投资计划空泛或畏首畏尾，需补做功课再作决定。',
+      },
+      health: {
+        upright: '制定可持续的健康目标，预防胜于事后补救。',
+        reversed: '忽视长期保养，或对健康计划三分钟热度，宜从一项习惯坚持起。',
+      },
+    },
+  },
+  {
+    id: 24,
+    name: '权杖3',
+    nameEn: 'Wands Three',
+    type: 'minor',
+    suit: 'wands',
+    number: 3,
+    meaning: {
+      upright: '探索扩张、远见领导、成果在望、团队协作',
+      reversed: '进展受阻、预期落空、协调失灵、操之过急',
+    },
+    description: '权杖三展现眺望海平线的旅者，火元素推动视野向外延伸。正位象征计划已启动，成果正在远方显现。',
+    interpretation: {
+      upright: '前期努力开始见到回报，合作与扩张的窗口已打开。你的领导力与远见正被他人看见，适合把事业或项目推向更大舞台。',
+      reversed: '扩张遇阻，或团队沟通不畅导致延误。可能过于乐观低估障碍，或尚未准备好就急于放大规模。',
+    },
+    advice: {
+      upright: '主动联络盟友与资源，把已有成果展示出去，争取更大合作。',
+      reversed: '复盘瓶颈所在，调整节奏与分工，勿因挫折放弃整体方向。',
+    },
+    categories: {
+      love: {
+        upright: '异地或跨圈层的缘分有机会发展，敞开心扉能增进理解。',
+        reversed: '距离、时差或价值观差异造成摩擦，需更多耐心沟通。',
+      },
+      career: {
+        upright: '项目进入收获期，晋升、外派或业务拓展前景明朗。',
+        reversed: '合作方掉链子或市场反馈不及预期，宜灵活调整策略。',
+      },
+      wealth: {
+        upright: '长期投资或副业开始显现回报，可适度加码优质标的。',
+        reversed: '回款延迟或扩张成本超预期，现金流管理须放首位。',
+      },
+      health: {
+        upright: '户外活动、旅行或团体运动有益身心，状态稳步向上。',
+        reversed: '过度劳累或行程过满，记得在扩张之余留出恢复时间。',
+      },
+    },
+  },
+  {
+    id: 25,
+    name: '权杖4',
+    nameEn: 'Wands Four',
+    type: 'minor',
+    suit: 'wands',
+    number: 4,
+    meaning: {
+      upright: '庆祝团聚、家庭和谐、稳定根基、社区归属',
+      reversed: '根基动摇、过渡不安、庆祝推迟、归属感缺失',
+    },
+    description: '权杖四以花环门庭象征稳固与欢庆，火元素在此化为温暖的人际纽带。正位时值得为阶段性成果举杯。',
+    interpretation: {
+      upright: '一段努力迎来值得庆祝的时刻，家庭、团队或社区关系和谐。这是建立稳定根基、享受归属感的好时机。',
+      reversed: '表面平静下或有隐忧，搬家、人事变动或关系裂痕使稳定感受损。庆祝可缓，先处理悬而未决的根基问题。',
+    },
+    advice: {
+      upright: '与重要的人分享喜悦，巩固支持你的关系网络与物理根基。',
+      reversed: '先修补家庭或团队中的裂痕，再图庆祝；过渡期间保持耐心。',
+    },
+    categories: {
+      love: {
+        upright: '谈婚论嫁、见家长或同居契机佳，关系进入稳定甜蜜期。',
+        reversed: '家庭意见不合或婚礼筹备生变，需双方同心化解外部压力。',
+      },
+      career: {
+        upright: '项目阶段性完工，团队士气高，适合团建或表彰。',
+        reversed: '办公室政治或架构调整扰动稳定，宜低调应对、以和为贵。',
+      },
+      wealth: {
+        upright: '置产、装修或家庭共同财务规划可提上日程。',
+        reversed: '大宗支出遇阻或家庭财务分歧，重大决定宜充分商议。',
+      },
+      health: {
+        upright: '身心处于相对平衡，家庭关怀与规律生活有助康复。',
+        reversed: '环境变动或压力影响睡眠与情绪，先营造安稳的休息空间。',
+      },
+    },
+  },
+  {
+    id: 26,
+    name: '权杖5',
+    nameEn: 'Wands Five',
+    type: 'minor',
+    suit: 'wands',
+    number: 5,
+    meaning: {
+      upright: '竞争角力、意见分歧、内部摩擦、活力碰撞',
+      reversed: '冲突缓和、内耗止息、求同存异、避免无谓争斗',
+    },
+    description: '权杖五呈现众人各执权杖的角力场面，火元素碰撞出竞争与分歧。正位未必为凶，有时是激发潜能的磨合。',
+    interpretation: {
+      upright: '多方利益或观点正在交锋，职场、团队或家庭中或有明争暗斗。冲突虽消耗精力，也可能逼出更好的方案，关键在能否把竞争导向建设性。',
+      reversed: '激烈对抗趋于平息，或你主动选择退出无意义的争斗。内耗减少，但需警惕把问题压抑而非真正解决。',
+    },
+    advice: {
+      upright: '明确核心目标，在竞争中守底线，必要时引入第三方协调。',
+      reversed: '停止卷入无谓争执，把精力转向真正重要的事。',
+    },
+    categories: {
+      love: {
+        upright: '情侣或家人易因小事争执，实为在乎的表现，但需控制言辞。',
+        reversed: '冷战结束或决定不再纠缠旧怨，给彼此一点冷静空间。',
+      },
+      career: {
+        upright: '职场竞争激烈，项目抢单或内部资源争夺，凭实力与沟通取胜。',
+        reversed: '恶性竞争降温，可寻求合作替代对抗，化敌为友。',
+      },
+      wealth: {
+        upright: '市场博弈加剧，比价、竞价中需守住利润底线。',
+        reversed: '财务纠纷有望协商解决，不宜再激化矛盾。',
+      },
+      health: {
+        upright: '压力与争执影响睡眠与肝火，宜运动泄压、避免熬夜。',
+        reversed: '身心紧张缓解，适合瑜伽、冥想等舒缓练习。',
+      },
+    },
+  },
+  {
+    id: 27,
+    name: '权杖6',
+    nameEn: 'Wands Six',
+    type: 'minor',
+    suit: 'wands',
+    number: 6,
+    meaning: {
+      upright: '凯旋归来、公众认可、自信高光、领导威望',
+      reversed: '名誉受损、期待落空、隐性竞争、胜利感缺失',
+    },
+    description: '权杖六如凯旋游行，火元素燃烧成可见的荣耀。正位时你的努力被看见，自信与威望同步提升。',
+    interpretation: {
+      upright: '努力获得回报，上级、同侪或公众给予认可。这是享受胜利、巩固领导力的时刻，但亦需保持谦逊以免树敌。',
+      reversed: '预期中的认可迟迟未到，或成功引发嫉妒与暗中阻挠。自我怀疑可能抬头，需区分外界噪音与真实评价。',
+    },
+    advice: {
+      upright: '坦然接受掌声，同时回馈团队与支持者，让胜利成为新的起点。',
+      reversed: '不必追逐虚名，专注把事情做好；若遇排挤，用实力回应。',
+    },
+    categories: {
+      love: {
+        upright: '你在关系中更具吸引力与主导力，表白或公开关系时机佳。',
+        reversed: '对方态度暧昧或外界不看好，别用炫耀代替真诚沟通。',
+      },
+      career: {
+        upright: '晋升、获奖或项目成功概率高，适合争取曝光与话语权。',
+        reversed: '功劳被抢或考核不公，保留证据，必要时向上澄清。',
+      },
+      wealth: {
+        upright: '因业绩或口碑带来奖金、分红，财运随名望上升。',
+        reversed: '收入与付出不匹配，或高调消费引来不必要的关注。',
+      },
+      health: {
+        upright: '精神状态佳，成就感驱动你保持活力，但忌过度兴奋。',
+        reversed: '因失意影响情绪与免疫，需从微小胜利重建信心。',
+      },
+    },
+  },
+  {
+    id: 28,
+    name: '权杖7',
+    nameEn: 'Wands Seven',
+    type: 'minor',
+    suit: 'wands',
+    number: 7,
+    meaning: {
+      upright: '坚守阵地、以少敌多、竞争压力、不屈斗志',
+      reversed: '防线崩溃、不堪重负、放弃抵抗、信心动摇',
+    },
+    description: '权杖七描绘一人持杖抵御上方来敌，火元素化为孤勇与坚持。正位时你虽处劣势，仍有守住阵地的意志。',
+    interpretation: {
+      upright: '挑战来自多方，你可能感到以一敌众。但牌面显示你占着有利位置，只要坚持原则、守住底线，仍有翻盘空间。',
+      reversed: '长期抗压导致身心俱疲，或开始怀疑是否值得继续。可能因过度防御而错失转圜，需评估是坚守还是策略性撤退。',
+    },
+    advice: {
+      upright: '聚焦核心战场，不必回应所有攻击；寻求盟友，分担压力。',
+      reversed: '诚实评估胜算，必要时调整策略或暂时退让以保存实力。',
+    },
+    categories: {
+      love: {
+        upright: '感情面临外界反对或第三者干扰，坚定立场并坦诚沟通。',
+        reversed: '防御心过重或争吵耗尽热情，需分辨该守还是该放。',
+      },
+      career: {
+        upright: '岗位竞争、考核或项目保卫战，凭专业与毅力可过关。',
+        reversed: '工作负荷过重或孤立无援，宜求助或重新分配任务。',
+      },
+      wealth: {
+        upright: '守住既有资产与现金流，抵御市场波动或恶意竞价。',
+        reversed: '财务压力逼近极限，避免硬撑高杠杆，及时止损。',
+      },
+      health: {
+        upright: '慢性问题需长期管理，坚持治疗与作息，勿中途放弃。',
+        reversed: '透支明显，必须休息与减负，否则防线易崩。',
+      },
+    },
+  },
+  {
+    id: 29,
+    name: '权杖8',
+    nameEn: 'Wands Eight',
+    type: 'minor',
+    suit: 'wands',
+    number: 8,
+    meaning: {
+      upright: '迅速推进、消息飞来、行程加速、势如破竹',
+      reversed: '延误停滞、沟通混乱、欲速不达、节奏失控',
+    },
+    description: '权杖八如八支权杖破空飞行，火元素化作速度与动量。正位时事态快速推进，迟来的消息即将抵达。',
+    interpretation: {
+      upright: '拖延已久的事务突然加速，旅行、沟通、项目进展皆提速。适合乘势追击，但亦需确保细节跟上节奏。',
+      reversed: '计划反复延期，或消息混乱导致误判。可能因急躁而忙中出错，需重新校准时间表与沟通渠道。',
+    },
+    advice: {
+      upright: '抓住窗口期快速行动，同时确认关键信息无误再签字落地。',
+      reversed: '放慢半步，理清优先级；重要决定不宜在混乱中做出。',
+    },
+    categories: {
+      love: {
+        upright: '恋情急速升温，表白、复合或异地见面有望很快发生。',
+        reversed: '误会因沟通太快而产生，或对方态度忽冷忽热，宜确认心意。',
+      },
+      career: {
+        upright: '项目期限临近但可完成，出差、调岗或录用通知来得突然。',
+        reversed: '流程卡住、邮件遗漏或同事掉链子，预留缓冲时间。',
+      },
+      wealth: {
+        upright: '款项快速到账，短线机会稍纵即逝，果断但勿贪。',
+        reversed: '回款拖延或交易因手续问题搁置，耐心跟进单据。',
+      },
+      health: {
+        upright: '康复加速，但运动强度突增需循序渐进，防意外。',
+        reversed: '作息紊乱或旅途劳顿，注意交通与运动安全。',
+      },
+    },
+  },
+  {
+    id: 30,
+    name: '权杖9',
+    nameEn: 'Wands Nine',
+    type: 'minor',
+    suit: 'wands',
+    number: 9,
+    meaning: {
+      upright: '伤痕累累仍坚守、最后关头、韧性考验、边界防御',
+      reversed: '精疲力竭、过度戒备、放弃前功、创伤未愈',
+    },
+    description: '权杖九如受伤仍持杖守望的战士，火元素烧尽仍余残焰。正位象征接近终点前的最后一次考验。',
+    interpretation: {
+      upright: '你已历经多轮挑战，身心俱疲但仍未放弃。胜利近在咫尺，需的是最后一搏的韧性与对边界的守护。',
+      reversed: '长期警戒导致疑神疑鬼与身心俱疲，或旧伤未愈便再次硬撑。可能因过度防御而拒绝必要帮助。',
+    },
+    advice: {
+      upright: '坚持住，终点不远；适度接受支援，别把所有重量独自扛起。',
+      reversed: '允许自己休息与疗愈，放下不必要的戒备，重建信任。',
+    },
+    categories: {
+      love: {
+        upright: '受过伤仍愿再给机会，关系在考验中走向更深承诺。',
+        reversed: '猜忌与心墙阻碍亲密，或重复旧模式，需心理咨询或坦诚对谈。',
+      },
+      career: {
+        upright: '项目收尾阶段，加班冲刺可成，但注意团队士气。',
+        reversed: '职业倦怠明显，考虑休假或调整职责，避免带病硬撑。',
+      },
+      wealth: {
+        upright: '守成阶段，谨慎理财以渡过最后一段紧缩期。',
+        reversed: '因焦虑做出错误防御性决策，如过早清仓或拒贷良机。',
+      },
+      health: {
+        upright: '旧疾反复但可控，遵医嘱完成疗程，勿自行停药。',
+        reversed: '慢性疲劳与失眠需系统调理，警惕免疫力下滑。',
+      },
+    },
+  },
+  {
+    id: 31,
+    name: '权杖10',
+    nameEn: 'Wands Ten',
+    type: 'minor',
+    suit: 'wands',
+    number: 10,
+    meaning: {
+      upright: '责任重压、事必躬亲、使命在肩、负荷过重',
+      reversed: '卸下重担、拒绝过载、学会分派、方向迷失',
+    },
+    description: '权杖十如一人背负十杖前行，火元素燃尽成责任与义务。正位时成就伴随沉重负荷，需审视是否过度承担。',
+    interpretation: {
+      upright: '你几乎包揽所有事务，责任与压力达到峰值。目标可达，但若继续独扛，恐因过劳而功亏一篑。',
+      reversed: '开始意识到负担不合理，有机会分派任务或学会拒绝。亦可能因承担过多而迷失初衷，需重新排序优先级。',
+    },
+    advice: {
+      upright: '把任务分出去，专注最关键的一环；完成比完美更重要。',
+      reversed: '主动减负，取消非必要承诺，找回为何出发的初心。',
+    },
+    categories: {
+      love: {
+        upright: '你为家庭或伴侣付出过多，需对方分担，避免积怨。',
+        reversed: '决定不再一人扛起所有，或从过度付出的关系中抽身。',
+      },
+      career: {
+        upright: '身兼多职、期限堆叠，宜与上级沟通资源与优先级。',
+        reversed: '转岗、离职或推掉项目以恢复可持续的工作节奏。',
+      },
+      wealth: {
+        upright: '养家、还贷压力集中，宜做预算、削减非刚需支出。',
+        reversed: '甩掉不良债务或停止无效投资，减轻财务包袱。',
+      },
+      health: {
+        upright: '肩颈、腰背劳损风险高，必须休息与拉伸，忌硬扛。',
+        reversed: '从过度劳作中恢复，建立可持续的生活节律。',
+      },
+    },
+  },
+  {
+    id: 32,
+    name: '权杖侍从',
+    nameEn: 'Wands Page',
+    type: 'minor',
+    suit: 'wands',
+    meaning: {
+      upright: '好奇探索、热情信使、创意萌芽、自由精神',
+      reversed: '三分钟热度、消息延误、怯于行动、创意阻塞',
+    },
+    description: '权杖侍从如手持萌芽权杖的少年，火元素初燃，充满好奇与试探。正位带来新消息、新兴趣与学习的冲动。',
+    interpretation: {
+      upright: '一张充满少年气的牌，你可能收到令人兴奋的消息，或对某领域产生强烈兴趣。适合以玩心探索，不必一开始就追求结果。',
+      reversed: '热情来得快去得也快，或有好点子却迟迟不动。也可能消息延迟、沟通不畅，需检查是否因恐惧失败而不敢开始。',
+    },
+    advice: {
+      upright: '像初学者一样保持好奇，小步试错，让热情引导你尝试新事物。',
+      reversed: '选定一件事坚持两周以上，把灵感落实为可见的小成果。',
+    },
+    categories: {
+      love: {
+        upright: '暧昧讯息或新桃花带来悸动，轻松约会胜过沉重承诺。',
+        reversed: '暧昧无下文，或暗恋不敢表白，宜降低心理门槛。',
+      },
+      career: {
+        upright: '实习、培训、跨界学习机会出现，适合积累新技能。',
+        reversed: '工作敷衍或频繁跳槽，需培养定力和基本专业素养。',
+      },
+      wealth: {
+        upright: '小额试水新理财方式或副业，以学习心态参与。',
+        reversed: '冲动消费或投机未成，建立记账习惯约束开支。',
+      },
+      health: {
+        upright: '尝试新运动或饮食方式，年轻人般的好奇有助养成习惯。',
+        reversed: '作息不规律、熬夜打游戏，需家长式自律拉回正轨。',
+      },
+    },
+  },
+  {
+    id: 33,
+    name: '权杖骑士',
+    nameEn: 'Wands Knight',
+    type: 'minor',
+    suit: 'wands',
+    meaning: {
+      upright: '雷厉风行、冒险进取、激情行动、追风骑士',
+      reversed: '鲁莽冲动、虎头蛇尾、暴怒失控、方向乱冲',
+    },
+    description: '权杖骑士策马疾驰，火元素化为行动力与冒险欲。正位时势如破竹，但亦需警惕失控的火焰。',
+    interpretation: {
+      upright: '能量与决心达到高峰，适合出差、追爱、启动高难度项目。你比平常更敢赌、更敢冲，成与败都在速度与决断之间。',
+      reversed: '冲动惹祸、承诺难兑现，或暴怒破坏关系与计划。可能开始很多却完成很少，需学会给火焰加上刹车。',
+    },
+    advice: {
+      upright: '行动前先定底线与退出条件，把冲劲用在已验证的方向。',
+      reversed: '暂停重大决定24小时，用运动或书写释放多余火能量。',
+    },
+    categories: {
+      love: {
+        upright: '热烈追求、闪恋或激情旅行，火花四溅但需确认彼此节奏。',
+        reversed: '争吵、冷战或始乱终弃，控制脾气，别用伤害证明在乎。',
+      },
+      career: {
+        upright: '外派、创业、竞标适合快攻，果断可占先机。',
+        reversed: '因冲动辞职或得罪客户，重大变更务必冷静评估。',
+      },
+      wealth: {
+        upright: '短线、创业投资可搏，但只用可承受损失的资金。',
+        reversed: '赌博式消费或投资惨败，立即止损并复盘冲动触发点。',
+      },
+      health: {
+        upright: '高强度运动释放能量，注意热身与心率，防运动损伤。',
+        reversed: '上火、炎症、意外磕碰风险升，忌熬夜与酗酒。',
+      },
+    },
+  },
+  {
+    id: 34,
+    name: '权杖皇后',
+    nameEn: 'Wands Queen',
+    type: 'minor',
+    suit: 'wands',
+    meaning: {
+      upright: '自信魅力、独立女性、热情领导、创造力绽放',
+      reversed: '专横嫉妒、外强中干、热情耗尽、控制欲过强',
+    },
+    description: '权杖皇后坐于火元素王座，象征成熟而温暖的领导力。正位时你既有魅力又有执行力，能点燃周围人。',
+    interpretation: {
+      upright: '自信、独立与感染力并存，你在事业与关系中皆能主导却不失温度。创造力与社交魅力处于高峰，适合公开表达与带领团队。',
+      reversed: '可能因嫉妒、控制或过度强势而伤人伤己，或外表自信内心空虚。热情若缺乏边界，会烧尽自己与他人。',
+    },
+    advice: {
+      upright: '用魅力与能力赋能他人，自信而不需压制谁。',
+      reversed: '检视是否把不安全感投射为控制，学会柔软与自我滋养。',
+    },
+    categories: {
+      love: {
+        upright: '你在关系中光彩照人，吸引优质对象，亦适合主动经营亲密。',
+        reversed: '占有欲或比较心破坏信任，给伴侣空间也给自己充电。',
+      },
+      career: {
+        upright: '适合担任负责人、主讲或品牌门面，个人影响力价值凸显。',
+        reversed: '团队矛盾或因抢功失和，领导风格宜由命令转为激励。',
+      },
+      wealth: {
+        upright: '靠个人品牌、创意或副业增收，社交资源可变现。',
+        reversed: '为面子过度消费，或投资受情绪驱动，回归理性预算。',
+      },
+      health: {
+        upright: '活力充沛，注意防晒与补水，火元素旺时别忽视阴柔平衡。',
+        reversed: '倦怠与妇科、内分泌问题需关注，安排真正休息。',
+      },
+    },
+  },
+  {
+    id: 35,
+    name: '权杖国王',
+    nameEn: 'Wands King',
+    type: 'minor',
+    suit: 'wands',
+    meaning: {
+      upright: '远见领袖、企业家精神、权威担当、点燃愿景',
+      reversed: '独断专行、好高骛远、失道寡助、权杖失焦',
+    },
+    description: '权杖国王是火元素的最高形态，象征成熟领袖与战略家。正位时能以远见统合资源，把愿景化为可执行的宏图。',
+    interpretation: {
+      upright: '你具备天然的领导资质与商业嗅觉，适合拍板方向、整合资源。诚信与魄力并重时，能带动众人向同一目标燃烧。',
+      reversed: '可能刚愎自用、只听顺耳的话，或愿景脱离团队能力与时代。权威若沦为控制，终将失去追随者。',
+    },
+    advice: {
+      upright: '设定清晰愿景并分派权责，做领袖而非事必躬亲的苦行僧。',
+      reversed: '倾听不同意见，调整战略；权力越大，越需自我制衡。',
+    },
+    categories: {
+      love: {
+        upright: '成熟稳重的对象或关系进入承诺期，对方能给你方向与保护。',
+        reversed: '大男子主义或情感冷漠，避免把伴侣当下属对待。',
+      },
+      career: {
+        upright: '创业、管理层、战略决策得心应手，宜扩大影响力。',
+        reversed: '决策失误或团队离心，需重建信任与透明沟通。',
+      },
+      wealth: {
+        upright: '大宗投资、并购或事业扩张可成，前提是风控到位。',
+        reversed: '过度扩张或担保他人致财务风险，收缩战线保核心资产。',
+      },
+      health: {
+        upright: '整体状态稳健，注意心血管与压力管理，定期体检。',
+        reversed: '长期高压引发心火旺、失眠，必须强制休假并学会放权。',
+      },
+    },
+  },
+  {
+    id: 36,
+    name: '圣杯1',
+    nameEn: 'Cups Ace',
+    type: 'minor',
+    suit: 'cups',
+    number: 1,
+    meaning: {
+      upright: '情感新生、直觉开启、心灵滋养、爱之源涌',
+      reversed: '情感封闭、直觉失灵、爱流阻塞、内心干涸',
+    },
+    description: '圣杯王牌如自云中倾泻的第一杯水，水元素象征情感与直觉的源头。正位时心灵之杯满溢，新的感受正悄然萌发。',
+    interpretation: {
+      upright: '情感、灵感或灵性体验迎来全新开端。你更易感知他人与自身的真实需要，适合敞开心扉、接受爱与美好。',
+      reversed: '情感表达受阻，或久未感受到被爱与连结。可能因过往伤害而关闭心门，需先温柔地重新与自己对话。',
+    },
+    advice: {
+      upright: '允许自己被感动、被照顾，也勇敢表达一份真诚的情感。',
+      reversed: '从自我关怀做起，小步重建对人与世界的信任。',
+    },
+    categories: {
+      love: {
+        upright: '新恋情、复合契机或关系进入更深层的情感交流，表白易有回应。',
+        reversed: '冷感、拒人千里或旧伤未愈，不宜勉强开始新关系。',
+      },
+      career: {
+        upright: '从事创意、疗愈、服务类工作灵感充沛，团队氛围温暖。',
+        reversed: '对工作失去热情，或创意枯竭，需找回初心与意义感。',
+      },
+      wealth: {
+        upright: '因口碑与人缘带来机会，宜以真诚合作而非投机获利。',
+        reversed: '情绪化消费或投资，财务决定需等心情平复后再做。',
+      },
+      health: {
+        upright: '补水与情绪平衡改善整体状态，适合水疗、冥想。',
+        reversed: '情绪压抑影响睡眠与消化，宜倾诉或寻求心理支持。',
+      },
+    },
+  },
+  {
+    id: 37,
+    name: '圣杯2',
+    nameEn: 'Cups Two',
+    type: 'minor',
+    suit: 'cups',
+    number: 2,
+    meaning: {
+      upright: '两心相悦、平等伙伴、灵魂吸引、契约之杯',
+      reversed: '关系失衡、貌合神离、吸引减弱、承诺动摇',
+    },
+    description: '圣杯二描绘两人举杯相视，水元素在此化为平等交流的情感连结。正位象征互选、互敬的伙伴关系。',
+    interpretation: {
+      upright: '一段关系建立在相互吸引与平等之上，无论是爱情、友谊或商业伙伴，皆有默契与尊重。适合正式确立关系或深化承诺。',
+      reversed: '一方付出过多或沟通错位，表面和谐下或有裂痕。可能因价值观差异而渐行渐远，需诚实面对是否仍同频。',
+    },
+    advice: {
+      upright: '珍惜这份双向奔赴，用平等与倾听让关系走得更稳。',
+      reversed: '开诚布公谈需求与边界，失衡的关系需要调整而非硬撑。',
+    },
+    categories: {
+      love: {
+        upright: '情侣关系甜蜜对等，订婚、结婚或确定关系的好时机。',
+        reversed: '一方冷淡或脚踏两条船，需确认彼此是否仍愿同行。',
+      },
+      career: {
+        upright: '合伙、签约、一对一合作顺利，互信是最大资产。',
+        reversed: '合作条款不公或伙伴失信，合同细节务必厘清。',
+      },
+      wealth: {
+        upright: '共同理财、合资项目可成，利益分配宜事先约定。',
+        reversed: '财务上被伙伴拖累或隐瞒，及时止损并保留证据。',
+      },
+      health: {
+        upright: '伴侣或好友的陪伴有助康复，双人运动、散步皆佳。',
+        reversed: '关系压力影响身心，必要时暂离消耗你的环境。',
+      },
+    },
+  },
+  {
+    id: 38,
+    name: '圣杯3',
+    nameEn: 'Cups Three',
+    type: 'minor',
+    suit: 'cups',
+    number: 3,
+    meaning: {
+      upright: '欢聚庆祝、友谊社群、共享喜悦、情感丰收',
+      reversed: '过度放纵、流言是非、三角关系、热闹后的空虚',
+    },
+    description: '圣杯三如三女举杯欢庆，水元素汇成友谊与社群的暖流。正位时值得与众人分享成果与欢笑。',
+    interpretation: {
+      upright: '社交、团聚、庆典带来真切的快乐，友谊与支持网络处于活跃期。适合团建、聚会、庆功，情感在共享中放大。',
+      reversed: '狂欢之后或感空虚，或闲言碎语、三角关系破坏信任。可能用酒精、派对逃避问题，需区分真实连结与表面热闹。',
+    },
+    advice: {
+      upright: '与好友共度时光，庆祝时也记得感谢一路相伴的人。',
+      reversed: '减少无意义的应酬，远离是非圈，把精力留给真心朋友。',
+    },
+    categories: {
+      love: {
+        upright: '单身者易在聚会中遇缘，有伴者适合与好友结伴约会增温。',
+        reversed: '第三者插足或朋友介入感情，边界需划清。',
+      },
+      career: {
+        upright: '团队凝聚力强，项目庆功、行业交流可拓展人脉。',
+        reversed: '办公室八卦或小团体排挤，专注工作少掺和是非。',
+      },
+      wealth: {
+        upright: '团购、众筹或亲友引荐带来实惠机会。',
+        reversed: '人情消费、酒局破财，应酬开支宜设上限。',
+      },
+      health: {
+        upright: '心情开朗提升免疫，适度社交有益心理健康。',
+        reversed: '纵酒、熬夜聚会伤身，狂欢后记得补眠与护肝。',
+      },
+    },
+  },
+  {
+    id: 39,
+    name: '圣杯4',
+    nameEn: 'Cups Four',
+    type: 'minor',
+    suit: 'cups',
+    number: 4,
+    meaning: {
+      upright: '内省沉思、情感倦怠、重新评估、静观其变',
+      reversed: '走出封闭、把握机缘、拒绝沉溺、重燃热情',
+    },
+    description: '圣杯四描绘对眼前三杯视而不见的人，水元素在此转为内省与餍足。正位时你可能处于情感上的停顿，需重新评估所求。',
+    interpretation: {
+      upright: '对现状感到不满足或倦怠，但并非无选择，而是尚未看见已提供的机缘。适合冥想、独处，弄清真正渴望的是什么。',
+      reversed: '走出情感麻木，开始接受新的机会或邀约。可能有人或事正递来第四只杯，关键在于你是否愿意伸手。',
+    },
+    advice: {
+      upright: '暂停抱怨，列出你已拥有的支持与选项，再决定是否改变。',
+      reversed: '当机会敲门时别再推却，从一个小小的「好」开始重启热情。',
+    },
+    categories: {
+      love: {
+        upright: '对感情或追求者感到无感，需弄清是暂时倦怠还是真的不合。',
+        reversed: '结束冷战或单身僵局，有人值得你再给一次机会。',
+      },
+      career: {
+        upright: '工作进入平台期，宜进修、转岗思考，而非盲目跳槽。',
+        reversed: '新录用或内部机会出现，别再因惯性错过。',
+      },
+      wealth: {
+        upright: '对现有收入不满但尚未行动，先做技能与储蓄盘点。',
+        reversed: '副业、理财新渠道值得尝试，别困在「够用就好」。',
+      },
+      health: {
+        upright: '轻度抑郁或动力不足，规律作息与轻度运动有助。',
+        reversed: '状态回升，可尝试新疗法或更换运动方式。',
+      },
+    },
+  },
+  {
+    id: 40,
+    name: '圣杯5',
+    nameEn: 'Cups Five',
+    type: 'minor',
+    suit: 'cups',
+    number: 5,
+    meaning: {
+      upright: '失落遗憾、聚焦悲伤、情感挫折、杯已倾覆',
+      reversed: '看见剩余、宽恕释怀、走出悲伤、重建希望',
+    },
+    description: '圣杯五如黑衣人只看见打翻的三杯，水元素在此化为悲恸与悔恨。正位时允许悲伤，但牌面仍留两杯在身后。',
+    interpretation: {
+      upright: '失去、分手、失败带来真实的痛，你可能正聚焦在「没了什么」。悲伤需要被承认，但别忘记身后仍有未倾的资源与支持。',
+      reversed: '开始从打击中抬头，看见仍拥有的关系与可能性。宽恕自己与他人的时机到了，可以带着教训向前走。',
+    },
+    advice: {
+      upright: '允许哭泣与哀悼，同时留意仍站在你身边的人与机会。',
+      reversed: '主动转身看「剩下的两杯」，用感恩与行动重建生活。',
+    },
+    categories: {
+      love: {
+        upright: '分手、背叛或失望感强烈，先疗愈再谈新开始。',
+        reversed: '走出情伤，复合或新缘皆有可能，心门渐开。',
+      },
+      career: {
+        upright: '项目失败、被裁或期望落空，情绪低谷属正常反应。',
+        reversed: '从失败中提炼经验，新机会已在酝酿。',
+      },
+      wealth: {
+        upright: '投资亏损或意外支出，先止损再复盘，忌报复性操作。',
+        reversed: '财务渐稳，小额重建储蓄与信心。',
+      },
+      health: {
+        upright: '哀恸影响食欲与睡眠，寻求亲友或专业支持。',
+        reversed: '身心逐步恢复，适合轻量社交与户外活动。',
+      },
+    },
+  },
+  {
+    id: 41,
+    name: '圣杯6',
+    nameEn: 'Cups Six',
+    type: 'minor',
+    suit: 'cups',
+    number: 6,
+    meaning: {
+      upright: '怀旧温情、童年记忆、旧友重逢、单纯之美',
+      reversed: '沉溺过去、拒绝成长、美化旧情、逃避当下',
+    },
+    description: '圣杯六如孩童互赠花杯，水元素化为怀旧与纯真情感。正位带来旧人旧事的美好回响，亦提醒珍惜单纯。',
+    interpretation: {
+      upright: '童年、故乡、旧友或初恋的记忆浮现，可能带来温暖重逢或礼物。适合重连根源，从过去汲取力量服务当下。',
+      reversed: '过度美化旧日、无法放下旧爱或童年创伤，用回忆逃避成人责任。需区分健康怀旧与困守过去。',
+    },
+    advice: {
+      upright: '联系一位老朋友或回访有意义的地方，让温情滋养现在。',
+      reversed: '感谢过去，但把主要精力投入当下的关系与目标。',
+    },
+    categories: {
+      love: {
+        upright: '旧爱重逢、青梅竹马再燃或家人介绍知根知底的对象。',
+        reversed: '沉溺旧情或比较现任与过去，阻碍新关系发展。',
+      },
+      career: {
+        upright: '老同事、老东家或母校资源可帮上忙，怀旧项目易成。',
+        reversed: '拒绝适应新环境，总拿「以前更好」抱怨，需更新技能。',
+      },
+      wealth: {
+        upright: '家族资助、遗产或旧物变现带来意外之喜。',
+        reversed: '为怀旧乱花钱，或凭感情投旧项目，宜理性。',
+      },
+      health: {
+        upright: '回忆温暖事件有助情绪疗愈，适合陪伴长辈。',
+        reversed: '沉湎游戏、剧集逃避现实，作息紊乱需纠正。',
+      },
+    },
+  },
+  {
+    id: 42,
+    name: '圣杯7',
+    nameEn: 'Cups Seven',
+    type: 'minor',
+    suit: 'cups',
+    number: 7,
+    meaning: {
+      upright: '众多选择、幻想缤纷、欲望浮现、寻道迷途',
+      reversed: '目标清晰、落地抉择、告别空想、聚焦其一',
+    },
+    description: '圣杯七如云中七杯盛满各异幻象，水元素在此化为想象与诱惑。正位时选项众多，需辨认真欲与幻觉。',
+    interpretation: {
+      upright: '梦想、诱惑、多种可能性同时浮现，令人眼花缭乱。这是创意与欲望的高峰期，但若只停留在幻想，终将一事无成。',
+      reversed: '从迷雾中走出，选定一至两个真正重要的方向。幻想让位于行动，你更清楚什么值得投入。',
+    },
+    advice: {
+      upright: '把七个选项写下来，用现实标准筛至两三个再深入规划。',
+      reversed: '砍掉枝节，全力执行已选路径，别再用新幻想逃避。',
+    },
+    categories: {
+      love: {
+        upright: '桃花多、暧昧多，或理想型与现实脱节，需辨认真心。',
+        reversed: '决定专一或明确拒绝不合适对象，结束骑墙状态。',
+      },
+      career: {
+        upright: '多个方向并行想象，宜做可行性分析再定主线。',
+        reversed: '聚焦主业或单一副业，分散精力是最大敌人。',
+      },
+      wealth: {
+        upright: '各类投资神话诱惑，忌贪多求全，先搞懂再投。',
+        reversed: '精简持仓与消费，执行已制定的预算计划。',
+      },
+      health: {
+        upright: '易被养生谣言、神奇疗法吸引，咨询专业后再试。',
+        reversed: '选定一套可持续的作息与饮食，坚持即可。',
+      },
+    },
+  },
+  {
+    id: 43,
+    name: '圣杯8',
+    nameEn: 'Cups Eight',
+    type: 'minor',
+    suit: 'cups',
+    number: 8,
+    meaning: {
+      upright: '转身离去、追寻更深、放弃浅层、灵性求索',
+      reversed: '犹豫徘徊、恐惧承诺、原地踏步、不敢离开',
+    },
+    description: '圣杯八如一人夜行离去，留下叠好的八杯，水元素在此化为离去以寻更深意义。正位象征主动离开不再满足之物。',
+    interpretation: {
+      upright: '即使表面安稳，你内心已知需离开某人、某工作或某种生活方式，去追寻更契合灵魂的方向。离开需要勇气，却是成长的必经之路。',
+      reversed: '明知该走却迟迟不动，或因恐惧未知而留在舒适区。也可能在离开与留下之间反复，消耗大量情绪能量。',
+    },
+    advice: {
+      upright: '诚实面对「缺了什么」，规划好下一步后再优雅告别。',
+      reversed: '列出留下与离开的代价，设定决定期限，避免无限拖延。',
+    },
+    categories: {
+      love: {
+        upright: '结束不再滋养的关系，或暂别以弄清自己真正要什么。',
+        reversed: '在糟糕关系中硬撑，或恐单身而不敢分手。',
+      },
+      career: {
+        upright: '辞职进修、转行或暂歇寻求意义，长期看利大于弊。',
+        reversed: '厌恶现状却不敢动，可先骑驴找马再正式离职。',
+      },
+      wealth: {
+        upright: '放弃亏损无底洞项目，把资源转向更可持续的配置。',
+        reversed: '因恐惧贫困死守错误投资，需专业意见辅助决策。',
+      },
+      health: {
+        upright: '更换不适合的疗法或环境，寻求更深层的身心整合。',
+        reversed: '逃避体检或拒绝改变生活习惯，问题会累积。',
+      },
+    },
+  },
+  {
+    id: 44,
+    name: '圣杯9',
+    nameEn: 'Cups Nine',
+    type: 'minor',
+    suit: 'cups',
+    number: 9,
+    meaning: {
+      upright: '心愿满足、情感丰盈、自足喜悦、美梦成真',
+      reversed: '贪心不足、虚荣空壳、愿望变味、内在仍缺',
+    },
+    description: '圣杯九如抱杯而笑的满足者，水元素在此化为知足与愿望实现。正位时情感与物质皆达相对圆满，值得享受。',
+    interpretation: {
+      upright: '俗称「愿望牌」，所求多能如愿，尤其情感与享受层面。你感到自足、被生活善待，适合感恩与适度庆祝。',
+      reversed: '得到想要的却仍不快乐，或成功建立在虚荣与比较上。可能贪念升级，忘了最初为何而求。',
+    },
+    advice: {
+      upright: '享受当下拥有，并与分享喜悦的人一起庆祝。',
+      reversed: '追问「还要什么才够」，回到内在而非无尽外求。',
+    },
+    categories: {
+      love: {
+        upright: '恋情甜蜜、求婚成功或单身者自信魅力吸引优质对象。',
+        reversed: '关系表面完美内心空虚，或挑剔破坏已有幸福。',
+      },
+      career: {
+        upright: '目标达成、考核优异，个人成就感处于高峰。',
+        reversed: '为头衔或面子硬撑，倦怠被成就感掩盖。',
+      },
+      wealth: {
+        upright: '收入满意、物质享受提升，宜储蓄而非炫耀性消费。',
+        reversed: '攀比消费、赌博式投资，财务满意度反而下降。',
+      },
+      health: {
+        upright: '身心愉悦，适度美食与美眠，状态佳。',
+        reversed: '纵欲过度或忽视潜在问题，体检别因「感觉好」而跳过。',
+      },
+    },
+  },
+  {
+    id: 45,
+    name: '圣杯10',
+    nameEn: 'Cups Ten',
+    type: 'minor',
+    suit: 'cups',
+    number: 10,
+    meaning: {
+      upright: '情感圆满、家庭和谐、幸福归宿、十杯同辉',
+      reversed: '家庭裂痕、期望过高、表面和谐、价值错位',
+    },
+    description: '圣杯十如彩虹下的一家人，水元素达情感之圆满。正位象征关系、家庭与内在价值的一致，是圣杯之路的美满终点。',
+    interpretation: {
+      upright: '情感生活趋向完整，家庭、伴侣与自我感受和谐一致。适合谈婚论嫁、育儿、置家，或任何追求「归属感」的目标。',
+      reversed: '家庭矛盾、理想家庭形象与现实不符，或为维持表面和谐压抑真实需求。需正视根本价值是否一致。',
+    },
+    advice: {
+      upright: '投资时间与爱在最重要的人身上，共建可持续的幸福。',
+      reversed: '开家庭会议谈真实感受，修补裂痕比维持假象更重要。',
+    },
+    categories: {
+      love: {
+        upright: '婚姻美满、家庭计划顺利，是承诺与共建的佳期。',
+        reversed: '婆媳、育儿或价值观冲突，需第三方调解或边界。',
+      },
+      career: {
+        upright: '工作与生活平衡良好，支持家庭的稳定职业选择佳。',
+        reversed: '加班牺牲家庭，或职业选择与家人期望严重冲突。',
+      },
+      wealth: {
+        upright: '家庭共同财富增长，置产、教育基金规划可成。',
+        reversed: '为面子维持高消费家庭形象，财务与情感双压。',
+      },
+      health: {
+        upright: '家庭支持促进康复，亲子、伴侣互动有益心理健康。',
+        reversed: '家庭压力致身心俱疲，必要时寻求家庭治疗。',
+      },
+    },
+  },
+  {
+    id: 46,
+    name: '圣杯侍从',
+    nameEn: 'Cups Page',
+    type: 'minor',
+    suit: 'cups',
+    meaning: {
+      upright: '情感讯息、直觉信使、创意灵感、温柔试探',
+      reversed: '情绪不稳、创意阻塞、讯息延误、敏感过度',
+    },
+    description: '圣杯侍从如捧杯窥鱼的少年，水元素初显直觉与创意讯息。正位带来令人心动的消息、梦境或艺术冲动。',
+    interpretation: {
+      upright: '一张敏感而诗意的牌，可能收到表白、道歉或创意邀约。直觉特别活跃，适合写日记、艺术表达或温柔地探索感受。',
+      reversed: '情绪起伏大、玻璃心，或有好消息却迟迟未到。可能因不安全感而误读他人意图，创意亦可能停留在脑中。',
+    },
+    advice: {
+      upright: '记录梦境与灵感，对温柔的机会保持开放与好奇。',
+      reversed: '先稳定情绪再回讯息，别把每个细节都个人化。',
+    },
+    categories: {
+      love: {
+        upright: '暗恋讯息、情书或害羞的表白可能出现，纯真爱意。',
+        reversed: '情绪化试探、已读不回或误会对方友好为爱情。',
+      },
+      career: {
+        upright: '实习、艺术、心理相关录用或前辈的鼓励到来。',
+        reversed: '职场玻璃心、拖延交稿，需建立情绪与专业边界。',
+      },
+      wealth: {
+        upright: '小额创意变现或礼物、红包之类惊喜。',
+        reversed: '为情绪购物，或轻信甜蜜话术的投资骗局。',
+      },
+      health: {
+        upright: '艺术疗愈、音乐、游泳等舒缓活动有益。',
+        reversed: '焦虑、过敏或激素波动，规律作息为先。',
+      },
+    },
+  },
+  {
+    id: 47,
+    name: '圣杯骑士',
+    nameEn: 'Cups Knight',
+    type: 'minor',
+    suit: 'cups',
+    meaning: {
+      upright: '浪漫追求、理想主义、跟随内心、诗意邀约',
+      reversed: '空想承诺、情绪操控、逃避现实、爱情泡沫',
+    },
+    description: '圣杯骑士如策马持杯的浪漫旅者，水元素化为浪漫与理想。正位带来追求、告白或富有艺术感的人生提案。',
+    interpretation: {
+      upright: '有人以浪漫、诗意的方式靠近，或你正被召唤去跟随内心。适合求婚、约会、艺术之旅，但需确认对方是否同样真诚。',
+      reversed: '承诺多于行动，或白马王子实为逃避责任的空想家。可能陷入有毒恋情，用幻想掩盖危险信号。',
+    },
+    advice: {
+      upright: '享受浪漫，同时观察对方是否以一贯行动支撑言语。',
+      reversed: '区分诗意与可靠，别为空头承诺放弃踏实选择。',
+    },
+    categories: {
+      love: {
+        upright: '白马王子式追求、异地恋见面或艺术型对象吸引你。',
+        reversed: '渣男式甜言蜜语、玩消失或三角关系，及时止损。',
+      },
+      career: {
+        upright: '创意、传媒、公益领域的机会带着理想色彩。',
+        reversed: '画大饼的老板或项目，合同与薪资务必落纸。',
+      },
+      wealth: {
+        upright: '因审美、品牌故事消费，适度即可；创意投资看长期。',
+        reversed: '为虚幻未来乱花钱，防情感营销与传销。',
+      },
+      health: {
+        upright: '恋爱心情提升状态，但别因约会熬夜伤体。',
+        reversed: '为情所困致寝食难安，需情绪支持与边界。',
+      },
+    },
+  },
+  {
+    id: 48,
+    name: '圣杯皇后',
+    nameEn: 'Cups Queen',
+    type: 'minor',
+    suit: 'cups',
+    meaning: {
+      upright: '慈悲直觉、情感滋养、温柔力量、深层共情',
+      reversed: '情绪泛滥、过度牺牲、内在空虚、依赖他人',
+    },
+    description: '圣杯皇后坐于水元素王座，象征成熟的慈悲与灵性稳定。正位时你是他人的情感锚点，直觉精准而温柔。',
+    interpretation: {
+      upright: '高度共情与直觉力，适合倾听、疗愈、照顾他人，亦需同样温柔地对待自己。创造力与情感深度并存，关系中的「定海神针」。',
+      reversed: '可能过度吸收他人情绪而耗尽自己，或以牺牲换取爱。内在空虚时用照顾别人填补，需重建自爱与边界。',
+    },
+    advice: {
+      upright: '用你的温柔与智慧支持他人，但每日留时间补满自己的杯。',
+      reversed: '设立情感边界，先填满自己的圣杯，再谈给予。',
+    },
+    categories: {
+      love: {
+        upright: '成熟温柔、善解人意的伴侣或你扮演滋养角色，关系稳定。',
+        reversed: '过度付出、圣母情结或情绪绑架，需双向奔赴的爱。',
+      },
+      career: {
+        upright: '咨询、教育、护理、艺术领域表现佳，直觉助决策。',
+        reversed: '职场情感劳动过重，学会拒绝与分派任务。',
+      },
+      wealth: {
+        upright: '因口碑与关怀得贵人，宜从事与人相关的可持续收入。',
+        reversed: '为家人朋友无限买单，财务边界须建立。',
+      },
+      health: {
+        upright: '身心疗愈力强，冥想、水疗、艺术表达极佳。',
+        reversed: '共情过载致焦虑、失眠，需断联独处与休息。',
+      },
+    },
+  },
+  {
+    id: 49,
+    name: '圣杯国王',
+    nameEn: 'Cups King',
+    type: 'minor',
+    suit: 'cups',
+    meaning: {
+      upright: '情感平衡、成熟外交、慈悲领导、静水深流',
+      reversed: '情绪压抑、冷暴力、操纵人心、外冷内崩',
+    },
+    description: '圣杯国王是水元素的最高形态，象征在风暴中仍持杯不倾的成熟情感智慧。正位时以冷静与同理领导。',
+    interpretation: {
+      upright: '情感成熟、善于调解冲突，能在理性与感性间走中道。适合担任导师、仲裁式角色，或以圆融手腕处理复杂关系。',
+      reversed: '表面冷静内里火山，或用冷暴力、愧疚感操控他人。可能成瘾或情感不诚实，被掩盖在「我很理性」之下。',
+    },
+    advice: {
+      upright: '以稳重的情感智慧做决策，成为他人可依靠的定心之人。',
+      reversed: '承认并表达真实感受，停止用冷漠或操纵维持控制感。',
+    },
+    categories: {
+      love: {
+        upright: '成熟稳重、情绪稳定的伴侣，或关系进入相互尊重的长期阶段。',
+        reversed: '冷暴力、刻意收回情感回应或隐藏关系问题，需深度对话。',
+      },
+      career: {
+        upright: '管理、法务、外交、心理督导类角色得心应手，以柔克刚。',
+        reversed: '办公室政治中用情绪操控，或倦怠却强撑「没问题」。',
+      },
+      wealth: {
+        upright: '理性配置兼顾社会责任，长期稳健增值。',
+        reversed: '隐藏债务、成瘾或家庭财务隐瞒需曝光处理。',
+      },
+      health: {
+        upright: '情绪管理佳，适合游泳、太极等水平衡类活动。',
+        reversed: '压抑情绪致高血压、酗酒等，宜心理咨询与体检。',
+      },
+    },
+  },
+  {
+    id: 50,
+    name: '宝剑1',
+    nameEn: 'Swords Ace',
+    type: 'minor',
+    suit: 'swords',
+    number: 1,
+    meaning: {
+      upright: '心智清明、真相洞见、思维突破、公正决断',
+      reversed: '思绪混乱、误判形势、言辞伤人、迟迟不决',
+    },
+    description: '宝剑王牌象征风元素初启，一柄利剑刺破迷雾，代表思想的锋芒与真相的降临。',
+    interpretation: {
+      upright: '正位时心智格外清明，你能看穿表象直达核心，是做出重大决定、厘清方向的好时机。新的理念或计划已具雏形，果断表达与行动可带来突破。',
+      reversed: '逆位暗示思路打结、信息失真，或真相被情绪遮蔽。言语可能过于尖锐伤及他人，亦或在关键抉择前反复犹豫，迟迟无法落剑定音。',
+    },
+    advice: {
+      upright: '趁头脑最清醒时写下结论，以事实与逻辑说话，勿让情绪稀释锋芒。',
+      reversed: '先暂停争辩，整理信息与情绪；待看清全貌再开口，比急于表态更重要。',
+    },
+    categories: {
+      love: {
+        upright: '感情中宜坦诚沟通，把心底话说清，误会可因此化解。',
+        reversed: '冷战或尖锐言辞易伤感情，先缓和语气再谈实质问题。',
+      },
+      career: {
+        upright: '适合签约、答辩、谈判或启动新项目，逻辑与证据是你的利器。',
+        reversed: '合同条款、口头承诺需反复核实，勿因急躁签下不利条件。',
+      },
+      wealth: {
+        upright: '财务决策宜理性分析，依据数据而非传闻做判断。',
+        reversed: '投资信息可能含混，暂缓大额支出，先厘清账目与风险。',
+      },
+      health: {
+        upright: '精神状态佳，适合体检或制定作息计划，头脑与身体同步调养。',
+        reversed: '思虑过重影响睡眠，宜减少信息摄入，让大脑真正休息。',
+      },
+    },
+  },
+  {
+    id: 51,
+    name: '宝剑2',
+    nameEn: 'Swords Two',
+    type: 'minor',
+    suit: 'swords',
+    number: 2,
+    meaning: {
+      upright: '两难抉择、僵持不下、内心权衡、暂时回避',
+      reversed: '僵局松动、看清真相、果断取舍、走出迷雾',
+    },
+    description: '蒙眼持双剑的女子立于水畔，象征在情感与理性之间艰难平衡，尚未看清全局。',
+    interpretation: {
+      upright: '你正面对不愿直面的选择，以拖延或中立维持表面平静，实则内心拉扯。此刻不宜仓促决定，但亦不可无限期逃避。',
+      reversed: '僵持开始松动，被遮蔽的信息逐渐浮现，你终于能辨明利弊。是时候摘下眼罩，做出明确取舍并承担后果。',
+    },
+    advice: {
+      upright: '列出选项的得失，向可信赖的人倾诉，不必独自扛下所有纠结。',
+      reversed: '信息已够充分，越拖越耗神；选定方向后便坚定前行，莫再反复。',
+    },
+    categories: {
+      love: {
+        upright: '感情陷入进退两难，或许需要更多时间厘清自己的真实心意。',
+        reversed: '暧昧或犹豫将告一段落，坦诚表态可让关系进入新阶段。',
+      },
+      career: {
+        upright: '两条职业路径各有利弊，暂缓跳槽或签约，先补足关键信息。',
+        reversed: '观望期结束，可正式做出职业抉择并付诸行动。',
+      },
+      wealth: {
+        upright: '财务上左右为难，大额投资宜再观察，小额试水即可。',
+        reversed: '理财方向渐明，可调整资产配置，结束摇摆状态。',
+      },
+      health: {
+        upright: '身心在紧绷与放松间摇摆，宜减少刺激，保持规律作息。',
+        reversed: '找到适合自己的调养节奏，身体与情绪逐渐回归平衡。',
+      },
+    },
+  },
+  {
+    id: 52,
+    name: '宝剑3',
+    nameEn: 'Swords Three',
+    type: 'minor',
+    suit: 'swords',
+    number: 3,
+    meaning: {
+      upright: '心碎之痛、悲伤离别、言语伤害、情感重创',
+      reversed: '疗愈开始、释怀过往、痛后重生、宽恕自己',
+    },
+    description: '三柄剑穿心而过，风雨背景下的宝剑三，是情感世界里最直接的一记伤痛。',
+    interpretation: {
+      upright: '你正经历或即将面对深刻的失落——分手、背叛、噩耗或一句无法收回的话。悲伤真实而沉重，允许自己哭泣，不必强撑坚强。',
+      reversed: '最痛的阶段正在过去，你开始能够回望而不被完全淹没。宽恕与放下虽不易，却是走向新生的必经之路。',
+    },
+    advice: {
+      upright: '向亲友倾诉或书写情绪，勿将痛苦独自封存；时间不会抹去一切，但会教你与之共处。',
+      reversed: '把注意力转向疗愈与自我照顾，旧事可思不可执，前方仍有值得珍惜的人和事。',
+    },
+    categories: {
+      love: {
+        upright: '感情受挫或分离在即，心碎真实，给自己哀悼与疗愈的空间。',
+        reversed: '走出情伤尚需时日，但已能看见复合或新缘的可能性。',
+      },
+      career: {
+        upright: '职场人际或项目失利带来挫败感，先处理情绪再谈对策。',
+        reversed: '从失败中汲取教训，调整心态后可重新出发。',
+      },
+      wealth: {
+        upright: '意外损失令人懊恼，宜止损复盘，勿在情绪中追加投入。',
+        reversed: '财务创伤渐愈，小额稳健布局可重建信心。',
+      },
+      health: {
+        upright: '悲伤与压力可能影响胃口与睡眠，需格外关照身心。',
+        reversed: '身心修复进行中，适度运动与社交有助于走出低谷。',
+      },
+    },
+  },
+  {
+    id: 53,
+    name: '宝剑4',
+    nameEn: 'Swords Four',
+    type: 'minor',
+    suit: 'swords',
+    number: 4,
+    meaning: {
+      upright: '静养休整、冥想沉思、暂时退隐、蓄力待时',
+      reversed: '焦躁难安、被迫复出、休息不足、逃避现实',
+    },
+    description: '彩绘玻璃窗下的卧者将剑置于身侧，象征从战场抽身，在静默中恢复元气。',
+    interpretation: {
+      upright: '此刻宜放慢脚步，从纷争与忙碌中退出，给身心一段真正的空白。沉思与睡眠不是懈怠，而是为下一阶段储备力量。',
+      reversed: '你难以真正休息，或因外界压力被迫提前复出，内心仍被焦虑驱动。亦可能以「静养」之名逃避本该面对的事务。',
+    },
+    advice: {
+      upright: '安排一段无干扰的休整，断联片刻反而能看清来路。',
+      reversed: '检视是身体需要休息还是心理在逃避；前者安心养，后者则需逐步回归现实。',
+    },
+    categories: {
+      love: {
+        upright: '感情宜保持距离与冷静，独处有助于想清楚关系的去留。',
+        reversed: '冷战不宜拖太久，适时主动沟通，避免隔阂固化。',
+      },
+      career: {
+        upright: '适合请假休整、复盘项目，暂不接手高压新任务。',
+        reversed: '休息期将尽，逐步恢复工作节奏，勿一下子压满行程。',
+      },
+      wealth: {
+        upright: '财务上以守为主，减少交易频率，安心持有即可。',
+        reversed: '停滞期结束，可重新评估投资，但忌报复性冒险。',
+      },
+      health: {
+        upright: '身体发出休息信号，遵医嘱、早睡、少劳神最为紧要。',
+        reversed: '若久卧仍不安，宜排查是否焦虑作祟，必要时寻求专业帮助。',
+      },
+    },
+  },
+  {
+    id: 54,
+    name: '宝剑5',
+    nameEn: 'Swords Five',
+    type: 'minor',
+    suit: 'swords',
+    number: 5,
+    meaning: {
+      upright: '冲突胜负、得不偿失、口角纷争、赢了局面输了心',
+      reversed: '和解契机、放下争斗、吸取教训、修复关系',
+    },
+    description: '胜者拾剑离去，败者黯然离场，宝剑五揭示争赢之后未必有真正的胜利。',
+    interpretation: {
+      upright: '一场争执可能以你占优告终，但人情与信誉受损，得不偿失。此时要扪心自问：这场胜利是否值得？',
+      reversed: '对抗的锋芒渐敛，双方或愿坐下来谈和。从冲突中吸取教训，修补关系比继续较劲更有长远价值。',
+    },
+    advice: {
+      upright: '争胜之前先问代价，能退一步海阔天空时，不必争到最后一句。',
+      reversed: '主动示好或道歉并不丢人，化干戈为玉帛方为上策。',
+    },
+    categories: {
+      love: {
+        upright: '争吵中占上风却伤了感情，赢了道理可能输掉亲密。',
+        reversed: '矛盾有望缓和，诚恳沟通可重建信任。',
+      },
+      career: {
+        upright: '职场争斗激烈，短期获利或伴随口碑下滑，宜留后路。',
+        reversed: '对手或转为合作，既往不咎有利于日后共事。',
+      },
+      wealth: {
+        upright: '为小利争执可能错失大局，财务决策忌意气用事。',
+        reversed: '从亏损合作中抽身，调整策略比纠缠旧账更明智。',
+      },
+      health: {
+        upright: '长期紧张与争执耗损精力，情绪压力需及时疏导。',
+        reversed: '身心从对抗中松弛下来，宜配合放松练习。',
+      },
+    },
+  },
+  {
+    id: 55,
+    name: '宝剑6',
+    nameEn: 'Swords Six',
+    type: 'minor',
+    suit: 'swords',
+    number: 6,
+    meaning: {
+      upright: '渡向平静、告别伤痛、缓慢过渡、远行疗愈',
+      reversed: '原地徘徊、无法释怀、逃避改变、旅途受阻',
+    },
+    description: '一人乘小舟载着六剑驶向对岸，水面渐趋平缓，象征带着过往伤痕缓缓驶向更安宁的彼岸。',
+    interpretation: {
+      upright: '你正从困境中抽身，过程或许缓慢，但方向是朝向平静。搬家、换环境或心理层面的「离开」，都有助于疗愈。',
+      reversed: '明知应离开却迟迟不动，或途中再生枝节，旧痛反复牵扯。需要检视是什么让你无法扬帆。',
+    },
+    advice: {
+      upright: '接受过渡期的平淡与不适，持续向前，彼岸的宁静值得这段航程。',
+      reversed: '找出阻碍前行的执念或恐惧，小步挪动也比原地打转强。',
+    },
+    categories: {
+      love: {
+        upright: '走出旧情或异地维系渐稳，感情进入平缓修复期。',
+        reversed: '放不下前任或害怕开始新关系，需正视内心的不舍与恐惧。',
+      },
+      career: {
+        upright: '转岗、离职或项目交接进展顺利，宜耐心完成过渡。',
+        reversed: '跳槽计划搁浅或新环境水土不服，需调整预期与节奏。',
+      },
+      wealth: {
+        upright: '财务状况缓慢改善，宜保守过渡，不急于求成。',
+        reversed: '债务或周转问题拖延未解，应主动寻求变通方案。',
+      },
+      health: {
+        upright: '康复期平稳推进，遵医嘱逐步恢复日常活动。',
+        reversed: '旧疾反复或疗养中断，勿因急躁而透支身体。',
+      },
+    },
+  },
+  {
+    id: 56,
+    name: '宝剑7',
+    nameEn: 'Swords Seven',
+    type: 'minor',
+    suit: 'swords',
+    number: 7,
+    meaning: {
+      upright: '谋略机变、迂回行事、信息不全、暗中取势',
+      reversed: '东窗事发、良心不安、计划露馅、坦诚为上',
+    },
+    description: '持剑潜行者回首张望，象征以非常手段达成目的，亦暗示欺瞒与风险的并存。',
+    interpretation: {
+      upright: '局势复杂，你可能选择低调布局、迂回推进，甚至保留部分底牌。策略本身无过，但要清楚道德与法律的边界。',
+      reversed: '隐瞒难以为继，谎言或投机行为面临曝光。是时候坦白或调整做法，否则代价将远大于收益。',
+    },
+    advice: {
+      upright: '谋定后动，保护核心利益，但勿以欺诈为常态手段。',
+      reversed: '主动澄清误会、纠正不当做法，诚实虽难，却能免去后患。',
+    },
+    categories: {
+      love: {
+        upright: '关系中或有隐瞒与试探，宜观察对方真实意图再投入。',
+        reversed: '秘密浮出水面，坦诚相对是修复或决断的前提。',
+      },
+      career: {
+        upright: '职场需灵活应变，保护创意与成果，留意信息泄露。',
+        reversed: '小动作或违规风险暴露，及时止损并回归正道。',
+      },
+      wealth: {
+        upright: '财务操作宜低调审慎，警惕来路不明的「捷径」。',
+        reversed: '投机或灰色收入可能惹祸，尽快规范账目与来源。',
+      },
+      health: {
+        upright: '若有隐疾宜早查，勿因侥幸拖延就医。',
+        reversed: '长期压抑的焦虑浮出水面，正视它比继续伪装更重要。',
+      },
+    },
+  },
+  {
+    id: 57,
+    name: '宝剑8',
+    nameEn: 'Swords Eight',
+    type: 'minor',
+    suit: 'swords',
+    number: 8,
+    meaning: {
+      upright: '作茧自缚、恐惧限制、受害者心态、视野狭窄',
+      reversed: '挣脱束缚、自我赋能、豁然开朗、走出困局',
+    },
+    description: '被绳索环绕却未受实质捆绑的女子，象征许多限制其实源于内心的恐惧与自我设限。',
+    interpretation: {
+      upright: '你感到进退维谷，但细察之下，困局多半来自自己的想象与执念。外界并非完全堵死，是你尚未允许自己看见出路。',
+      reversed: '觉醒正在发生——你意识到束缚并非不可挣脱。迈出一步，绳结便会松动，视野随之开阔。',
+    },
+    advice: {
+      upright: '列出「做不到」背后的真实原因，区分客观限制与心理恐惧，从小事开始验证自己的自由。',
+      reversed: '抓住刚出现的突破口果断行动，莫等万事俱备才肯松绑。',
+    },
+    categories: {
+      love: {
+        upright: '因害怕受伤而不敢靠近，或困在不被珍惜的关系里无法自拔。',
+        reversed: '鼓起勇气表达或离开，情感困局有望破局。',
+      },
+      career: {
+        upright: '觉得无路可进，其实选项比想象中多，缺的是行动勇气。',
+        reversed: '突破职场瓶颈的契机已现，主动争取可见转机。',
+      },
+      wealth: {
+        upright: '过度保守令财富停滞，适度冒险或学习新知可打开局面。',
+        reversed: '财务困境有解，调整策略后现金流可望改善。',
+      },
+      health: {
+        upright: '疑病或焦虑放大不适，检查之余亦需关照心理状态。',
+        reversed: '身心限制感减轻，积极康复与锻炼成效渐显。',
+      },
+    },
+  },
+  {
+    id: 58,
+    name: '宝剑9',
+    nameEn: 'Swords Nine',
+    type: 'minor',
+    suit: 'swords',
+    number: 9,
+    meaning: {
+      upright: '夜不能寐、忧思过度、内疚自责、梦魇缠身',
+      reversed: '恐惧渐消、直面心魔、求助他人、走出暗夜',
+    },
+    description: '夜半捂面而坐的人，墙上九剑悬于头顶，是焦虑在潜意识中的极致写照。',
+    interpretation: {
+      upright: '担忧在脑中反复上演，许多恐惧被放大，甚至影响睡眠与食欲。你所怕的未必会发生，但痛苦感受完全真实。',
+      reversed: '最黑暗的夜开始泛起微光，你愿意倾诉或寻求帮助，噩梦的力量随之减弱。直面恐惧，它便无法继续主宰你。',
+    },
+    advice: {
+      upright: '把忧虑写下来逐条审视，能行动的便行动，不能控制的学会放手。',
+      reversed: '不要独自硬扛，与信任的人或专业人士谈谈，光透进来时你会发现很多恐惧并不成立。',
+    },
+    categories: {
+      love: {
+        upright: '患得患失、猜疑或内疚折磨感情，需分辨事实与想象。',
+        reversed: '心结渐解，坦诚交流可驱散不必要的猜忌。',
+      },
+      career: {
+        upright: '对绩效、裁员的焦虑过重，影响判断与表现，宜专注可控之事。',
+        reversed: '职场压力缓解，重新找回节奏与自信。',
+      },
+      wealth: {
+        upright: '对金钱安全的忧虑可能过度，梳理实际资产负债以安心。',
+        reversed: '财务焦虑下降，理性规划带来踏实感。',
+      },
+      health: {
+        upright: '失眠、心悸等与精神压力密切相关，务必重视心理调适。',
+        reversed: '睡眠与情绪好转，持续自我关怀可巩固成果。',
+      },
+    },
+  },
+  {
+    id: 59,
+    name: '宝剑10',
+    nameEn: 'Swords Ten',
+    type: 'minor',
+    suit: 'swords',
+    number: 10,
+    meaning: {
+      upright: '惨痛终结、跌入谷底、背叛重创、旧局崩塌',
+      reversed: '绝处逢生、触底反弹、放下过去、黎明将至',
+    },
+    description: '十剑贯背，天色破晓，象征最彻底的结束——痛极之后，唯有向上。',
+    interpretation: {
+      upright: '一段关系、事业或信念已走到尽头，打击沉重，仿佛无路可退。这是谷底，也是翻转的起点，因为更糟的已不会发生。',
+      reversed: '废墟之中已有新芽，你从打击中站起身来，愿意告别过去。最艰难的时刻正在过去，重建虽慢，方向却是向上。',
+    },
+    advice: {
+      upright: '承认结束，允许自己崩溃片刻，然后一点点收拾残局，明天仍可重新开始。',
+      reversed: '感谢自己的韧性，以小目标重建生活，不必急于证明什么。',
+    },
+    categories: {
+      love: {
+        upright: '关系彻底破裂或遭遇背叛，痛彻心扉，但结束也意味着解脱。',
+        reversed: '从重创中走出，单身者有望遇见新缘，旧伤者学会自爱。',
+      },
+      career: {
+        upright: '项目失败、失业或声誉重挫，宜止损休整，勿孤注一掷翻本。',
+        reversed: '事业触底反弹，新机会在低调积累后浮现。',
+      },
+      wealth: {
+        upright: '重大财务损失可能发生，保全根本比追回一切更重要。',
+        reversed: '最坏阶段已过，稳健回血比激进投机更明智。',
+      },
+      health: {
+        upright: '身心俱疲，旧疾或意外需严肃对待，彻底休养刻不容缓。',
+        reversed: '康复之路开启，耐心调养可见持续改善。',
+      },
+    },
+  },
+  {
+    id: 60,
+    name: '宝剑侍从',
+    nameEn: 'Swords Page',
+    type: 'minor',
+    suit: 'swords',
+    meaning: {
+      upright: '好奇求知、敏锐观察、新点子、直言快语',
+      reversed: '言辞鲁莽、谣言蜚语、三分钟热度、计划空泛',
+    },
+    description: '少年举剑迎风而立，目光警觉，象征风元素的新生力量与尚未打磨的锋芒。',
+    interpretation: {
+      upright: '你对周遭保持高度警觉，新想法不断涌现，适合学习、调研或提出新颖方案。直言不讳有时令人不适，却可戳破沉默。',
+      reversed: '话未经过滤便脱口而出，或热衷八卦而忽略实质。计划雷声大雨点小，需把好奇心落实为持续行动。',
+    },
+    advice: {
+      upright: '记录灵感并求证事实，让敏锐成为洞察而非猜疑。',
+      reversed: '说话前三思，少说多听；选定一个方向深耕，胜过处处浅尝。',
+    },
+    categories: {
+      love: {
+        upright: '新鲜邂逅或暧昧试探，保持真诚与好奇，但勿过早下定论。',
+        reversed: '口舌之争或听信流言易伤感情，先核实再反应。',
+      },
+      career: {
+        upright: '适合实习、调研、撰写方案，展现学习力与信息嗅觉。',
+        reversed: '职场流言或轻率承诺惹麻烦，谨言慎行、踏实交付。',
+      },
+      wealth: {
+        upright: '留意新兴资讯与小额机会，先学习再投入。',
+        reversed: '听信小道消息投资易亏，回归基本面研究。',
+      },
+      health: {
+        upright: '精力充沛但易分心，规律作息可稳住状态。',
+        reversed: '因焦虑或过度刷资讯耗神，宜数字断舍离。',
+      },
+    },
+  },
+  {
+    id: 61,
+    name: '宝剑骑士',
+    nameEn: 'Swords Knight',
+    type: 'minor',
+    suit: 'swords',
+    meaning: {
+      upright: '雷厉风行、智勇进取、快刀斩麻、目标明确',
+      reversed: '鲁莽冲动、伤人言辞、欲速不达、方向迷失',
+    },
+    description: '策马疾驰的骑士高举宝剑，风驰电掣，象征思想驱动下的迅猛行动，亦警示失控的风险。',
+    interpretation: {
+      upright: '时机紧迫，你以果断与速度抢占先机，头脑与行动高度同步。适合快速推进谈判、竞赛或需要即时决断的事务。',
+      reversed: '速度压过思考，冲动决策或攻击性言辞带来反噬。看似勇猛，实则可能偏离目标，伤及无辜。',
+    },
+    advice: {
+      upright: '把握窗口期果断出手，但事先划定底线，避免胜利变成失控。',
+      reversed: '勒马三思，放慢半拍；锋芒收一分，局面往往更顺。',
+    },
+    categories: {
+      love: {
+        upright: '热烈追求或快进展的关系，激情有余，需确认彼此节奏是否合拍。',
+        reversed: '冲动表白或激烈争吵易后悔，冷静下来再沟通。',
+      },
+      career: {
+        upright: '竞标、冲刺、出差等快节奏任务可胜任，展现执行力。',
+        reversed: '冒进决策或顶撞上司惹祸，先对齐目标再行动。',
+      },
+      wealth: {
+        upright: '短线机会可把握，但需设定止损，见好就收。',
+        reversed: '追涨杀跌或赌博心态易失利，改走稳健路线。',
+      },
+      health: {
+        upright: '适合高强度锻炼或挑战，注意热身与适度，防运动损伤。',
+        reversed: '过劳或急躁加重身心负担，强制休息不可省。',
+      },
+    },
+  },
+  {
+    id: 62,
+    name: '宝剑皇后',
+    nameEn: 'Swords Queen',
+    type: 'minor',
+    suit: 'swords',
+    meaning: {
+      upright: '理智清晰、洞若观火、独立果决、公正直言',
+      reversed: '冷硬刻薄、心怀怨怼、过度批判、情感隔离',
+    },
+    description: '高坐王座的皇后手持直立宝剑，目光穿透云雾，是理性与边界感的化身。',
+    interpretation: {
+      upright: '你能剥离情绪看清真相，以公正态度处理纷争，言语简练有力。独立而不依附，是他人寻求清醒建议的对象。',
+      reversed: '理性沦为冷漠，过往伤痛转化为尖刻评判，筑墙自保却隔绝了温暖。需要辨认「清醒」与「冷酷」的界线。',
+    },
+    advice: {
+      upright: '以清晰边界保护自己也尊重他人，真话可温和表达。',
+      reversed: '允许自己感受脆弱，柔软并非软弱；放下旧怨，心才装得下新事。',
+    },
+    categories: {
+      love: {
+        upright: '理性审视关系，明确需求与底线，不合适的缘分坦然放手。',
+        reversed: '因受过伤而拒人千里，或言语伤人——疗愈自己才能重新信任。',
+      },
+      career: {
+        upright: '擅长分析、法务、编辑等需清晰思维的岗位，决策公允受敬重。',
+        reversed: '对同事过于苛刻或陷入办公室政治怨恨，宜调整心态。',
+      },
+      wealth: {
+        upright: '财务规划条理分明，理性消费与投资，不为情绪买单。',
+        reversed: '因不安全感而过度控制金钱，或报复性消费，需回归平衡。',
+      },
+      health: {
+        upright: '重视心理健康与边界，冥想、书写有助于维持清明。',
+        reversed: '压抑情绪可能转为躯体不适，宜寻求倾诉与专业支持。',
+      },
+    },
+  },
+  {
+    id: 63,
+    name: '宝剑国王',
+    nameEn: 'Swords King',
+    type: 'minor',
+    suit: 'swords',
+    meaning: {
+      upright: '权威智识、公正裁决、战略头脑、律法秩序',
+      reversed: '滥权专断、冷酷操控、言不符实、以理压人',
+    },
+    description: '宝剑国王端坐于石座，手握正义之剑，象征以理智与规则统御局面，是思想的最高统治者。',
+    interpretation: {
+      upright: '你或遇上有远见、讲原则的领导者，亦或自己正运用逻辑与权威统筹全局。重大决策宜依制度与证据，公正比讨好更重要。',
+      reversed: '权力被用来操控或打压，严苛教条取代人情，或言行不一。警惕以「理性」之名掩盖不公与残忍。',
+    },
+    advice: {
+      upright: '做决策时兼顾原则与人心，权威来自公信力而非声势。',
+      reversed: '反省是否过于刚愎或操控他人；真正的力量包含问责与修正。',
+    },
+    categories: {
+      love: {
+        upright: '关系需要明确承诺与规则，成熟沟通可稳固伴侣或婚姻。',
+        reversed: '一方过于控制或冷漠，感情沦为权力博弈，需重新谈判。',
+      },
+      career: {
+        upright: '晋升、担任管理或处理法务纠纷有利，以专业能力服人。',
+        reversed: '上司专断或职场精神控制，宜留存证据、守住底线，必要时寻求外援。',
+      },
+      wealth: {
+        upright: '大额决策可咨询专业人士，依制度与合同行事最稳妥。',
+        reversed: '谨防权威人士误导投资，勿因畏惧而签不平等协议。',
+      },
+      health: {
+        upright: '听从医嘱、系统治疗，理性管理慢性病或康复计划。',
+        reversed: '忽视身体信号硬撑，或过度依赖药物而忽略生活方式调整。',
+      },
+    },
+  },
+  {
+    id: 64,
+    name: '星币1',
+    nameEn: 'Pentacles Ace',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 1,
+    meaning: {
+      upright: '新机降临、物质契机、务实开端、福报初现',
+      reversed: '错失良机、根基不稳、眼高手低、计划落空',
+    },
+    description: '云中伸出的手托住一枚星币，象征土元素赐予的实实在在的机会，需以行动接住。',
+    interpretation: {
+      upright: '一份与工作、财务或健康相关的新机会正在眼前，种子已备好，只待你耕耘。这是将想法落地为具体成果的起点，务实比空想更重要。',
+      reversed: '机会从指间溜走，或因准备不足、好高骛远而未能把握。亦可能承诺丰厚却缺乏可行计划，需回归基本功。',
+    },
+    advice: {
+      upright: '抓住眼前的务实契机，从小处着手积累，让梦想沾上泥土才会生长。',
+      reversed: '复盘为何错失良机，补足技能与资源，下一次来时方能稳稳接住。',
+    },
+    categories: {
+      love: {
+        upright: '感情有务实进展，如谈婚论嫁、共同置业，稳定胜过浪漫空谈。',
+        reversed: '因现实条件或态度不坚而错过好姻缘，先理清自己真正要什么。',
+      },
+      career: {
+        upright: '新工作、新项目或技能培训的良机，踏实投入可见回报。',
+        reversed: '工作机会流失或创业计划搁浅，夯实简历与专业能力再出手。',
+      },
+      wealth: {
+        upright: '正财门路打开，适合储蓄、置业或启动稳健投资。',
+        reversed: '横财无望、计划泡汤，收缩开支、巩固现有资产为先。',
+      },
+      health: {
+        upright: '身体底子可打好，规律饮食与运动即是最实在的「星币」。',
+        reversed: '忽视小症状或养生计划半途而废，宜从微小习惯重新建立。',
+      },
+    },
+  },
+  {
+    id: 65,
+    name: '星币2',
+    nameEn: 'Pentacles Two',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 2,
+    meaning: {
+      upright: '权衡兼顾、灵活应变、多线并行、收支平衡',
+      reversed: '不堪重负、失衡失控、优先级混乱、疲于奔命',
+    },
+    description: '舞者般流转于两枚星币之间，海面起伏，象征在变动中维持物质与时间的平衡艺术。',
+    interpretation: {
+      upright: '你同时在应付多项财务或工作事务，需要灵活调度、轻重缓急分明。适应变化的能力是此刻最大的资产。',
+      reversed: '多线兼顾变成疲于奔命，收支或日程失衡，什么都抓反而什么都滑脱。必须删减承诺，重建秩序。',
+    },
+    advice: {
+      upright: '列出优先级，学会说「不」，在波动中保持节奏比追求完美更重要。',
+      reversed: '砍掉次要事务，先稳住一头再顾另一头，别让自己一直处在失控边缘。',
+    },
+    categories: {
+      love: {
+        upright: '工作与感情需兼顾，坦诚沟通时间安排，避免一方感到被冷落。',
+        reversed: '因忙碌或经济压力忽略伴侣，关系失衡需重新分配精力。',
+      },
+      career: {
+        upright: '多项目并行可胜任，善用工具与授权，保持交付质量。',
+        reversed: '揽活过多导致失误，与上级对齐优先级，学会减负。',
+      },
+      wealth: {
+        upright: '现金流紧平衡但可控，记账与预算帮你游刃有余。',
+        reversed: '入不敷出或债务压力增大，立即削减非必要支出。',
+      },
+      health: {
+        upright: '在忙碌中仍挤出时间运动与休息，身体才能跟上节奏。',
+        reversed: '过劳透支，作息紊乱，必须强制留出恢复时间。',
+      },
+    },
+  },
+  {
+    id: 66,
+    name: '星币3',
+    nameEn: 'Pentacles Three',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 3,
+    meaning: {
+      upright: '团队协作、匠心营造、技能精进、共同筑造',
+      reversed: '各自为政、敷衍了事、意见不合、质量堪忧',
+    },
+    description: '工匠与修士在教堂中研讨蓝图，象征以专业与协作将愿景砌成可见的成果。',
+    interpretation: {
+      upright: '团队合作顺畅，各人发挥专长，共同完成一项值得骄傲的作品。学习、学徒或跨界协作都能提升你的市场价值。',
+      reversed: '团队内耗、沟通断层或偷工减料，成果难以令人满意。需要重建标准与分工，或审视自己是否尽了本分。',
+    },
+    advice: {
+      upright: '虚心向擅长者请教，把功劳分给团队，大厦是一砖一瓦垒起来的。',
+      reversed: '先对齐目标与质量标准，不和则暂缓合作，宁缺毋滥。',
+    },
+    categories: {
+      love: {
+        upright: '共同规划未来、装修小家或筹备婚礼，协力让关系更踏实。',
+        reversed: '因家务分工或金钱观争执，需坐下来制定公平规则。',
+      },
+      career: {
+        upright: '项目合作、职场导师或考证进修顺利，专业口碑提升。',
+        reversed: '同事推诿或甲方反复改需求，明确边界与验收标准。',
+      },
+      wealth: {
+        upright: '合伙生意、定投或技能变现可期，重在长期信誉积累。',
+        reversed: '合作投资纠纷或工程质量引发损失，合同条款要清晰。',
+      },
+      health: {
+        upright: '遵医嘱联合调理，或参与团体运动，互相督促更有效。',
+        reversed: '康复计划执行不到位，换方案或换团队，别凑合。',
+      },
+    },
+  },
+  {
+    id: 67,
+    name: '星币4',
+    nameEn: 'Pentacles Four',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 4,
+    meaning: {
+      upright: '守成固本、谨慎持有、安全感、资源保全',
+      reversed: '紧握不放、吝啬守财、因惧失而失、格局狭隘',
+    },
+    description: '人紧抱一枚星币于胸前，脚下再踩一枚，象征对物质安全的执着与守护。',
+    interpretation: {
+      upright: '财务上宜保守储蓄，守住已有成果比盲目扩张更明智。建立应急储备与稳定现金流，安全感来自规划而非运气。',
+      reversed: '过度囤积、吝啬或恐惧失去，反而错失流动与增长的机会。守财成癖会伤害人际关系与内心自在。',
+    },
+    advice: {
+      upright: '该存的存，该花的花在刀刃上，稳固根基后再图发展。',
+      reversed: '适度松手与分享，流动起来的资源才能生息；信任不等于挥霍。',
+    },
+    categories: {
+      love: {
+        upright: '重视承诺与物质保障，稳定关系令人安心，但勿只谈条件不谈心。',
+        reversed: '占有欲或计较付出多少，让感情变得算计，需要更多信任与慷慨。',
+      },
+      career: {
+        upright: '守住现有职位与核心客户，稳扎稳打，不宜冒险跳槽。',
+        reversed: '因怕失去而拒绝一切变化，职场停滞；或独占功劳引发不满。',
+      },
+      wealth: {
+        upright: '储蓄、保险、固定资产配置合理，财务安全感强。',
+        reversed: '死守现金不敢投资，或为省钱牺牲必要品质与健康。',
+      },
+      health: {
+        upright: '身体底子尚可，维持现有养生习惯即可，忌大起大落。',
+        reversed: '因焦虑反复检查或过度进补，放松心态亦是养生。',
+      },
+    },
+  },
+  {
+    id: 68,
+    name: '星币5',
+    nameEn: 'Pentacles Five',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 5,
+    meaning: {
+      upright: '困顿匮乏、孤立无援、物质短缺、寒冬跋涉',
+      reversed: '困境缓解、援手在侧、精神富足、走出风雪',
+    },
+    description: '风雪中跛足而过的两人经过亮着灯的教堂，象征物质匮乏时仍有一线希望与援助未被发现。',
+    interpretation: {
+      upright: '财务或健康面临压力，感到被环境遗弃，援手似乎遥不可及。但牌中教堂灯火暗示：援助近在身边，只是你尚未抬头看见。',
+      reversed: '最艰难的阶段正在缓和，有人愿伸出援手，或你找到内在力量走出匮乏感。物质仍紧，心灵可先富足。',
+    },
+    advice: {
+      upright: '主动寻求可信赖的帮助，盘点可用资源，寒冬不会永远持续。',
+      reversed: '接受帮助并不丢脸，同时培养一项可变现的技能，逐步改善处境。',
+    },
+    categories: {
+      love: {
+        upright: '因经济或异地感到孤单，感情缺乏温暖支撑，需要彼此扶持。',
+        reversed: '分离或冷战有望缓和，共同面对现实困难可拉近心距。',
+      },
+      career: {
+        upright: '失业、降薪或项目停滞，宜缩减开支、广投简历，熬过低谷。',
+        reversed: '工作机会浮现，或副业带来补贴，坚持可见转机。',
+      },
+      wealth: {
+        upright: '现金流紧张，避免非必要借贷，优先保障基本生活。',
+        reversed: '救济、退款或兼职收入缓解压力，制定还债与储蓄计划。',
+      },
+      health: {
+        upright: '久病或营养不良需重视，及时就医，勿因省钱耽误治疗。',
+        reversed: '病情趋稳，社会支持系统发挥作用，康复信心回升。',
+      },
+    },
+  },
+  {
+    id: 69,
+    name: '星币6',
+    nameEn: 'Pentacles Six',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 6,
+    meaning: {
+      upright: '施予受纳、公平交换、慈善互助、资源再分配',
+      reversed: '施舍带条件、贫富悬殊、人情债、自私吝啬',
+    },
+    description: '富商持秤施予，贫者跪接，象征金钱流动中的公平、责任与相互依存。',
+    interpretation: {
+      upright: '财富在你与他人之间健康流动——你可能施予援助，也可能接受帮助。慷慨与感恩并存，关系因公平而稳固。',
+      reversed: '给予附带控制，或受助者丧失尊严；资源分配不公引发怨气。需要检视交换是否真诚平等。',
+    },
+    advice: {
+      upright: '有能力时慷慨分享，接受帮助时心存感激，流动创造财富。',
+      reversed: '施予勿求回报，受助亦要维护自尊；拒绝附带操控的「好意」。',
+    },
+    categories: {
+      love: {
+        upright: '关系中互相扶持、礼物与陪伴均衡，付出与接收都自然。',
+        reversed: '一方过度付出换取控制，或斤斤计较谁花得多，需谈清期待。',
+      },
+      career: {
+        upright: '导师提携、奖金分配或跨部门支援公平，职场人情温暖。',
+        reversed: '职场施舍式帮助暗藏代价，或资源向少数人倾斜引发不满。',
+      },
+      wealth: {
+        upright: '慈善捐赠、家庭资助或合伙分红合理，财散人聚。',
+        reversed: '高利贷、人情借款或税务不公，谨防变相剥削。',
+      },
+      health: {
+        upright: '医疗资源可及，互助照料病患，社区支持有益康复。',
+        reversed: '因费用或保险问题延误治疗，积极争取应有权益。',
+      },
+    },
+  },
+  {
+    id: 70,
+    name: '星币7',
+    nameEn: 'Pentacles Seven',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 7,
+    meaning: {
+      upright: '耕耘待收、耐心评估、长期投资、阶段性停顿',
+      reversed: '急躁冒进、收获未至、努力错位、半途而废',
+    },
+    description: '农人倚锄凝视藤上星币，象征播种后的等待与对成果的冷静估量。',
+    interpretation: {
+      upright: '你已投入时间精力，此刻不宜急于求成，而应评估进展、调整策略。收成在望，但还需一季耐心。',
+      reversed: '因迟迟不见回报而焦躁，或发现努力方向有误。继续硬撑不如及时转向，否则只会空耗土壤。',
+    },
+    advice: {
+      upright: '给计划足够时间发酵，定期复盘而非天天拔苗。',
+      reversed: '诚实评估投入产出比，该坚持的坚持，该换轨的果断换轨。',
+    },
+    categories: {
+      love: {
+        upright: '感情进入沉淀期，慢热但扎实，不宜因暂时没有火花而放弃。',
+        reversed: '长期单向付出未见回应，需重新考虑是否值得等待。',
+      },
+      career: {
+        upright: '项目中期评估、职级晋升酝酿期，持续交付可见长期价值。',
+        reversed: '晋升落空或学非所用，考虑内部转岗或外部机会。',
+      },
+      wealth: {
+        upright: '基金定投、房产或事业投资进入持有期，耐心是最大收益。',
+        reversed: '预期收益未达、投资被套，勿追加赌注，理性止损或调仓。',
+      },
+      health: {
+        upright: '康复或减重需时间，坚持疗程与习惯，效果会逐步显现。',
+        reversed: '疗法效果不彰，宜复诊调整方案，别在无效路上耗损。',
+      },
+    },
+  },
+  {
+    id: 71,
+    name: '星币8',
+    nameEn: 'Pentacles Eight',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 8,
+    meaning: {
+      upright: '精益求精、勤勉钻研、手艺成就、专注打磨',
+      reversed: '敷衍了事、技艺生疏、厌倦重复、质量下滑',
+    },
+    description: '工匠在作坊中一枚枚雕琢星币，象征以重复与专注铸就卓越的地元素之道。',
+    interpretation: {
+      upright: '你正沉浸于技能提升或细节打磨，勤恳带来可衡量的进步。专注当下每一件小事，大师皆由此路走来。',
+      reversed: '厌倦例行公事，质量开始滑坡，或急于求成跳过基本功。需要重燃对工艺的尊重，或寻找新的学习刺激。',
+    },
+    advice: {
+      upright: '把眼前任务做到最好，重复不是苦役，是通往卓越的阶梯。',
+      reversed: '找回初心，向标杆学习；若路径错误，勇敢换个值得深耕的领域。',
+    },
+    categories: {
+      love: {
+        upright: '用心经营日常小事，做饭、陪伴等实在关怀让感情升温。',
+        reversed: '对关系敷衍应付，浪漫缺席，需用行动而非空话证明在意。',
+      },
+      career: {
+        upright: '适合进修、考证或钻研业务，专业度提升直接转化为竞争力。',
+        reversed: '工作马虎惹投诉，或职业倦怠，调整岗位或重拾标准。',
+      },
+      wealth: {
+        upright: '技能变现、副业手艺或产品质量带来稳定增收。',
+        reversed: '偷工减料损口碑，短期省下的成本长期加倍奉还。',
+      },
+      health: {
+        upright: '坚持锻炼与饮食记录等「日常功课」，身体逐步强健。',
+        reversed: '养生三天打鱼两天晒网，或运动姿势错误反伤身体，要求教专业指导。',
+      },
+    },
+  },
+  {
+    id: 72,
+    name: '星币9',
+    nameEn: 'Pentacles Nine',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 9,
+    meaning: {
+      upright: '自足丰盛、优雅独享、劳动成果、物质惬意',
+      reversed: '虚荣挥霍、依赖他人、空虚享乐、财务隐忧',
+    },
+    description: '园中悠然独立的贵妇与猎鹰，象征凭自身努力挣得的富足与享受生活的权利。',
+    interpretation: {
+      upright: '你已具备自给自足的能力，可以享受劳动换来的舒适与美感。独处非孤独，而是对自己辛勤的正当奖赏。',
+      reversed: '表面奢华内里空虚，或依赖他人供养而失去自主。挥霍掩盖不安，需要重建内在价值感。',
+    },
+    advice: {
+      upright: '安心享受成果，同时保持财务自律，丰盛可持续。',
+      reversed: '区分「享受」与「炫耀」，培养不依附他人的收入与兴趣。',
+    },
+    categories: {
+      love: {
+        upright: '单身自在丰盈，有伴者亦保有个人空间，成熟魅力吸引优质缘分。',
+        reversed: '因物质或面子维系关系，或独居却感到空虚，需向内寻找满足。',
+      },
+      career: {
+        upright: '事业稳定、收入可观，可适度享受成果，亦宜回馈团队。',
+        reversed: '靠头衔撑场面却德不配位，或懈怠享乐影响绩效。',
+      },
+      wealth: {
+        upright: '被动收入或资产收益可观，财务独立度高，可规划品质生活。',
+        reversed: '奢侈消费透支储蓄，或表面富裕实则负债，立即收紧预算。',
+      },
+      health: {
+        upright: '身心状态佳，水疗、旅行等犒赏有益，但不过度。',
+        reversed: '纵欲或熬夜享乐损健康，奢华不能替代规律作息。',
+      },
+    },
+  },
+  {
+    id: 73,
+    name: '星币10',
+    nameEn: 'Pentacles Ten',
+    type: 'minor',
+    suit: 'pentacles',
+    number: 10,
+    meaning: {
+      upright: '家业兴旺、世代传承、长期安稳、富足圆满',
+      reversed: '家道中落、遗产纷争、表面富贵、根基动摇',
+    },
+    description: '四世同堂于庄园拱廊下，猎犬与丰饶田野在侧，象征土元素在时间与家族维度上的极致圆满。',
+    interpretation: {
+      upright: '物质与家族层面皆趋圆满——房产、储蓄、长辈福荫或事业遗产为你与后人奠定稳固根基。这是长期经营换来的安稳图景。',
+      reversed: '家族矛盾、财产纠纷或过度依赖祖业，表面光鲜内里分裂。需要修复关系、厘清产权，否则富贵难久。',
+    },
+    advice: {
+      upright: '珍惜并传承既有资源，立好遗嘱与家庭沟通机制，让富足延续。',
+      reversed: '家族问题宜早公开协商，莫让金钱摧毁亲情；自立比继承更可靠。',
+    },
+    categories: {
+      love: {
+        upright: '谈婚论嫁、见家长或组建家庭顺利，长辈祝福增添踏实感。',
+        reversed: '因房产、礼金等现实问题起家族冲突，需冷静谈判。',
+      },
+      career: {
+        upright: '家族企业、资深平台或退休规划稳妥，职业生命周期完整。',
+        reversed: '公司传承内斗或行业衰退波及，宜多元化收入与技能。',
+      },
+      wealth: {
+        upright: '房产、信托、保险等长期配置完善，财富可跨代传递。',
+        reversed: '遗产分配不公或投资踩雷，立即寻求法律与财务顾问。',
+      },
+      health: {
+        upright: '家族长寿基因或良好生活习惯惠及你，定期体检保代代安康。',
+        reversed: '遗传病史或家族压力影响身心，主动预防与心理疏导并重。',
+      },
+    },
+  },
+  {
+    id: 74,
+    name: '星币侍从',
+    nameEn: 'Pentacles Page',
+    type: 'minor',
+    suit: 'pentacles',
+    meaning: {
+      upright: '好学上进、务实憧憬、新学徒、脚踏实地',
+      reversed: '好高骛远、懒散拖延、空有梦想、学业受阻',
+    },
+    description: '少年凝视手中星币如读书般专注，象征土元素新生的求知欲与将梦想付诸学习的姿态。',
+    interpretation: {
+      upright: '你对学业、理财或新事业充满务实热情，愿意从基础学起。好消息或工作机会可能在酝酿，关键是持续行动。',
+      reversed: '想法很多落地很少，拖延或好高骛远让计划搁浅。需要把宏大愿景拆成可执行的每日小步。',
+    },
+    advice: {
+      upright: '报名课程、做预算、写商业计划——任何具体行动都比空想更接近星币。',
+      reversed: '选一个最小可行目标本周完成，用成就感击退懒散。',
+    },
+    categories: {
+      love: {
+        upright: '年轻或青涩恋情萌芽，真诚朴实比花言巧语更动人。',
+        reversed: '只说不做的承诺让对方失望，用实在行动表达爱意。',
+      },
+      career: {
+        upright: '实习、学徒或初级岗位表现亮眼，上司愿培养潜力股。',
+        reversed: '迟到早退、作业敷衍，错失转正；端正态度从头来。',
+      },
+      wealth: {
+        upright: '开始学习理财、记账或小额投资，财商成长带来未来收益。',
+        reversed: '沉迷暴富课却不动手，警惕骗局，回归储蓄与技能投资。',
+      },
+      health: {
+        upright: '建立运动或饮食日记，年轻身体亦需养成好习惯。',
+        reversed: '熬夜打游戏、不吃早饭等，短期无碍长期埋隐患，立刻调整。',
+      },
+    },
+  },
+  {
+    id: 75,
+    name: '星币骑士',
+    nameEn: 'Pentacles Knight',
+    type: 'minor',
+    suit: 'pentacles',
+    meaning: {
+      upright: '勤勉可靠、循序渐进、例行耕耘、厚德载物',
+      reversed: '固执停滞、乏味麻木、过度谨慎、错失良机',
+    },
+    description: '黑牛缓行的骑士手捧星币，象征土元素最沉稳的行进——慢，却从不偏离轨道。',
+    interpretation: {
+      upright: '你以耐心与责任感推进事务，日复一日积累可见成果。可靠比炫目更受信赖，坚持例行即是胜利。',
+      reversed: '过于保守变得僵化，生活工作乏味如囚笼，或因害怕风险而错过合理机会。需要在稳定与灵活间找到缝隙。',
+    },
+    advice: {
+      upright: '继续按部就班，信任时间的力量，牛步终抵千里。',
+      reversed: '给日程留一点变化，尝试小幅冒险，打破「永远明天再说」。',
+    },
+    categories: {
+      love: {
+        upright: '细水长流的陪伴与承诺，虽不浪漫却极可靠，适合谈长远。',
+        reversed: '关系沉闷如例行公事，或一方过于慢热令另一方疲惫。',
+      },
+      career: {
+        upright: '适合需要耐力与细节的岗位，考勤满分、交付稳定，晋升在积累后到来。',
+        reversed: '拒绝一切新任务导致边缘化，或机械重复引发职业倦怠。',
+      },
+      wealth: {
+        upright: '稳定工资、定期储蓄与低风险理财，财富慢而稳地增长。',
+        reversed: '过分保守错过升值资产，或因惰性不理财致通胀侵蚀。',
+      },
+      health: {
+        upright: '规律作息与适度劳作有益，慢病管理贵在坚持。',
+        reversed: '久坐不动、拒绝尝试新运动，身体僵硬精神萎靡，需打破惯性。',
+      },
+    },
+  },
+  {
+    id: 76,
+    name: '星币皇后',
+    nameEn: 'Pentacles Queen',
+    type: 'minor',
+    suit: 'pentacles',
+    meaning: {
+      upright: '温厚持家、务实滋养、舒适富足、母性大地',
+      reversed: '忽视自我、过度操劳、物质执念、溺爱束缚',
+    },
+    description: '怀抱星币端坐花园的皇后，兔与繁花环绕，象征以温暖与务实滋养周遭的物质丰饶。',
+    interpretation: {
+      upright: '你善于创造舒适安全的环境，兼顾事业与照料他人，务实中带着温情。财富与关怀皆能分享，是值得信赖的支柱。',
+      reversed: '照顾所有人却耗尽自己，或以物质替代情感连接。过度控制家人或沉溺享乐，都偏离了皇后本有的平衡。',
+    },
+    advice: {
+      upright: '在滋养他人的同时留一份资源给自己，丰盛才能源源不断。',
+      reversed: '学会放手与求助，爱自己不是自私，而是持续付出的前提。',
+    },
+    categories: {
+      love: {
+        upright: '体贴顾家、善于营造温馨，伴侣感到踏实与被珍视。',
+        reversed: '包办一切令对方依赖，或把爱变成物质堆砌，需更多情感交流。',
+      },
+      career: {
+        upright: '适合人力资源、餐饮、家居、财务顾问等兼顾细致与关怀的领域。',
+        reversed: '职场老好人承担过多，边界模糊导致倦怠，学会说不。',
+      },
+      wealth: {
+        upright: '善于持家理财，优惠券与资产配置并用，小富由俭。',
+        reversed: '为家人过度花钱却亏待自己，或沉迷购物填补内心空洞。',
+      },
+      health: {
+        upright: '食疗、园艺、按摩等滋养性活动有益身心，母性自愈力强。',
+        reversed: '长期忽视自身健康只顾他人，或体重与饮食失衡，优先自我照护。',
+      },
+    },
+  },
+  {
+    id: 77,
+    name: '星币国王',
+    nameEn: 'Pentacles King',
+    type: 'minor',
+    suit: 'pentacles',
+    meaning: {
+      upright: '财商卓越、稳健领导、实业成就、富足权威',
+      reversed: '贪婪腐化、唯利是图、外强中干、财务危机',
+    },
+    description: '王座上的国王把玩星币，葡萄与城堡环绕，象征土元素权力的顶峰——以实业与财富统御一方。',
+    interpretation: {
+      upright: '你或遇见成熟稳健的商业领袖，亦或自己在财务与事业上具备掌控力。长期规划、风险管控与慷慨回馈，让财富与威望并存。',
+      reversed: '贪婪腐蚀判断，为利不择手段，或外显富裕内里空虚。财务丑闻、投资失败或家庭因钱失和的风险上升。',
+    },
+    advice: {
+      upright: '以诚信经商、以远见布局，真正的国王懂得财富服务于人而非奴役人。',
+      reversed: '检视是否被物欲驱使，回归可持续与合法合规，修补信任比保住面子更重要。',
+    },
+    categories: {
+      love: {
+        upright: '伴侣成熟可靠，物质与情感皆能担当，适合共建家庭与资产。',
+        reversed: '把伴侣当财产或唯钱论，感情变质；或对方外富内负债需查清。',
+      },
+      career: {
+        upright: '创业、高管、投资负责人运势佳，实业与品牌长期主义取胜。',
+        reversed: '商业道德失守或盲目扩张致资金链断裂，宜收缩整固。',
+      },
+      wealth: {
+        upright: '资产雄厚、配置多元，可涉足房产、实业或家族信托规划。',
+        reversed: '税务、债务或欺诈风险浮现，立即审计账目、止损离场。',
+      },
+      health: {
+        upright: '有条件享受优质医疗与养生，但勿因应酬纵欲伤身。',
+        reversed: '富贵病、代谢问题或因压力暴食，财富买不回健康，需自律。',
+      },
+    },
+  }
+]
