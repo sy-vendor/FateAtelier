@@ -1,4 +1,5 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
+import './tarot-stage.css'
 import CardDrawAnimation from '../CardDrawAnimation'
 import ThreeCardDrawAnimation from '../ThreeCardDrawAnimation'
 import ReadingTypeSelector from '../ReadingTypeSelector'
@@ -7,11 +8,15 @@ import CardDrawer from '../CardDrawer'
 import CardDisplay from '../CardDisplay'
 import ReadingHistory from '../ReadingHistory'
 import Statistics from '../Statistics'
-import { getCardIcon, getSuitIcon } from '../../utils/cardIcons'
-import { isFavorite, toggleFavorite } from '../../utils/favorites'
+import { TarotCardVisual } from '../tarot/TarotCardVisual'
+import { TarotLogoMark } from '../tarot/TarotLogoMark'
+import { TarotRitualBar } from '../tarot/TarotRitualBar'
+import { DECK_NAME, DECK_NAME_EN } from '../../utils/tarotCardArt'
+import { useTarotFavorites } from '../../hooks/useTarotFavorites'
 import { downloadAllData } from '../../utils/exportData'
 import { DrawnCard } from '../../types'
 import type { TarotGameApi } from '../../types/tarotGameApi'
+import { Button } from '../ui'
 
 export type TarotMainViewProps = TarotGameApi
 
@@ -44,8 +49,23 @@ function TarotMainViewInner(props: TarotMainViewProps) {
     handleDeleteHistoryReading,
   } = props
 
+  const { isFavorite, toggleFavorite } = useTarotFavorites()
+
+  const ritualStep = useMemo((): 1 | 2 | 3 | 4 => {
+    if (selectedCard || threeCardReading) return 4
+    if (showDrawAnimation || showThreeCardAnimation) return 3
+    if (showReadingTypeSelector) return 2
+    return 1
+  }, [
+    selectedCard,
+    threeCardReading,
+    showDrawAnimation,
+    showThreeCardAnimation,
+    showReadingTypeSelector,
+  ])
+
   return (
-    <>
+    <div className="tarot-stage">
       {showDrawAnimation && drawingCard && (
         <CardDrawAnimation
           card={drawingCard.card}
@@ -68,31 +88,46 @@ function TarotMainViewInner(props: TarotMainViewProps) {
         />
       )}
 
+      <header className="tarot-hero">
+        <div className="tarot-hero__mark">
+          <TarotLogoMark size="lg" />
+        </div>
+        <div className="tarot-hero__text">
+          <p className="tarot-hero__deck">{DECK_NAME}</p>
+          <p className="tarot-hero__deck-en">{DECK_NAME_EN}</p>
+          <p className="tarot-hero__hint">深呼吸三次，带着你的问题进入牌阵</p>
+        </div>
+      </header>
+
+      <TarotRitualBar step={ritualStep} />
+
       <DailyCard onSelectCard={handleSelectCardFromBrowser} />
 
-      <div className="controls">
-        <CardDrawer
-          onDrawCard={drawCard}
-          onDrawThree={drawThreeCards}
-          onReset={reset}
-          drawnCount={drawnCards.length}
-        />
-      </div>
+      <CardDrawer
+        onDrawCard={drawCard}
+        onDrawThree={drawThreeCards}
+        onReset={reset}
+        drawnCount={drawnCards.length}
+      />
 
       {threeCardReading && (
-        <div className="three-card-reading">
-          <h2 className="reading-title">三牌占卜</h2>
+        <section className="tarot-reading tarot-reading--three">
+          <div className="tarot-reading__head">
+            <h2 className="tarot-reading__title">三牌时空</h2>
+            <p className="tarot-reading__sub">过去 · 现在 · 未来</p>
+          </div>
+
           <div className="three-cards-container">
             {threeCardReading.map((drawnCard, index) => (
               <div key={drawnCard.card.id} className="three-card-item">
-                <div className="card-position-label">
+                <span className="card-position-label">
                   {index === 0 ? '过去' : index === 1 ? '现在' : '未来'}
-                </div>
+                </span>
                 <CardDisplay
                   card={drawnCard.card}
                   isReversed={drawnCard.isReversed}
                   onFlip={() => updateCardReversed(drawnCard.card.id, !drawnCard.isReversed)}
-                  compact={true}
+                  compact
                 />
               </div>
             ))}
@@ -101,28 +136,27 @@ function TarotMainViewInner(props: TarotMainViewProps) {
           {readingInterpretation && (
             <div className="reading-interpretation">
               <div className="interpretation-header">
-                <h3 className="interpretation-title">🔮 综合解读</h3>
+                <h3 className="interpretation-title">综合解读</h3>
                 {viewingHistoryReading && (
                   <div className="action-buttons">
-                    <button
-                      type="button"
-                      className="export-btn"
+                    <Button
+                      variant="ghost"
+                      small
                       onClick={() => handleExportReading(viewingHistoryReading)}
-                      title="导出占卜结果"
                     >
-                      💾 导出
-                    </button>
-                    <button
-                      type="button"
-                      className="share-btn"
+                      导出
+                    </Button>
+                    <Button
+                      variant="primary"
+                      small
                       onClick={() => handleShareReading(viewingHistoryReading)}
-                      title="分享占卜结果"
                     >
-                      📤 分享
-                    </button>
+                      分享
+                    </Button>
                   </div>
                 )}
               </div>
+
               <div className="interpretation-content">
                 <div className="interpretation-summary">
                   <h4>整体趋势</h4>
@@ -131,47 +165,54 @@ function TarotMainViewInner(props: TarotMainViewProps) {
 
                 <div className="interpretation-stages">
                   <div className="stage-item">
-                    <h4>📜 过去</h4>
+                    <h4>过去</h4>
                     <p>{readingInterpretation.past}</p>
                   </div>
-                  <div className="stage-item">
-                    <h4>⚡ 现在</h4>
+                  <div className="stage-item stage-item--now">
+                    <h4>现在</h4>
                     <p>{readingInterpretation.present}</p>
                   </div>
                   <div className="stage-item">
-                    <h4>🔮 未来</h4>
+                    <h4>未来</h4>
                     <p>{readingInterpretation.future}</p>
                   </div>
                 </div>
 
                 <div className="interpretation-advice">
-                  <h4>💡 建议</h4>
+                  <h4>建议</h4>
                   <p>{readingInterpretation.advice}</p>
                 </div>
               </div>
             </div>
           )}
-        </div>
+        </section>
       )}
 
       {selectedCard && !threeCardReading && (
-        <div>
+        <section id="tarot-card-detail" className="tarot-reading tarot-reading--single">
+          <div className="tarot-reading__head">
+            <h2 className="tarot-reading__title">牌义详情</h2>
+            <p className="tarot-reading__sub">
+              {selectedCard.card.name}
+              {selectedCard.isReversed ? ' · 逆位' : ' · 正位'}
+            </p>
+          </div>
           {viewingHistoryReading && viewingHistoryReading.type === 'single' && (
             <div className="export-section">
-              <button
-                type="button"
-                className="export-btn"
+              <Button
+                variant="ghost"
+                small
                 onClick={() => handleExportReading(viewingHistoryReading)}
               >
-                💾 导出
-              </button>
-              <button
-                type="button"
-                className="share-btn"
+                导出
+              </Button>
+              <Button
+                variant="primary"
+                small
                 onClick={() => handleShareReading(viewingHistoryReading)}
               >
-                📤 分享
-              </button>
+                分享
+              </Button>
             </div>
           )}
           <CardDisplay
@@ -181,12 +222,15 @@ function TarotMainViewInner(props: TarotMainViewProps) {
             isFavorite={isFavorite(selectedCard.card.id)}
             onToggleFavorite={(card) => toggleFavorite(card.id)}
           />
-        </div>
+        </section>
       )}
 
       {drawnCards.length > 1 && (
-        <div className="drawn-cards">
-          <h2>已抽取的牌 ({drawnCards.length})</h2>
+        <section className="drawn-cards">
+          <div className="drawn-cards__head">
+            <h2>已抽取的牌</h2>
+            <span className="drawn-cards__count">{drawnCards.length} 张</span>
+          </div>
           <div className="cards-grid">
             {drawnCards.map((drawnCard: DrawnCard) => (
               <div
@@ -203,28 +247,20 @@ function TarotMainViewInner(props: TarotMainViewProps) {
                 tabIndex={0}
                 aria-label={`选择 ${drawnCard.card.name}`}
               >
-                <div className="card-thumbnail-content">
-                  <div className="card-thumbnail-icon">
-                    {getCardIcon(drawnCard.card)}
-                  </div>
-                  <div className="card-thumbnail-name">
-                    {drawnCard.card.name}
-                    {drawnCard.isReversed && <span className="reversed-indicator">逆</span>}
-                  </div>
-                  <div className="card-thumbnail-type">
-                    {drawnCard.card.type === 'major' ? '大阿卡纳' :
-                     drawnCard.card.suit === 'wands' ? '权杖' :
-                     drawnCard.card.suit === 'cups' ? '圣杯' :
-                     drawnCard.card.suit === 'swords' ? '宝剑' : '星币'}
-                  </div>
-                  {drawnCard.card.suit && (
-                    <div className="card-thumbnail-suit">{getSuitIcon(drawnCard.card.suit)}</div>
-                  )}
+                <TarotCardVisual
+                  card={drawnCard.card}
+                  isReversed={drawnCard.isReversed}
+                  faceUp
+                  size="xs"
+                />
+                <div className="card-thumbnail-name">
+                  {drawnCard.card.name}
+                  {drawnCard.isReversed && <span className="reversed-indicator">逆</span>}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       <ReadingHistory
@@ -235,7 +271,7 @@ function TarotMainViewInner(props: TarotMainViewProps) {
       />
 
       <Statistics readings={readingHistory} />
-    </>
+    </div>
   )
 }
 

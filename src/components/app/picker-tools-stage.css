@@ -1,0 +1,527 @@
+/* ── Shared picker tools stage (auspicious / number energy / fengshui) ── */
+
+.picker-stage {
+  --picker-accent: #e0c078;
+  --picker-accent-border: rgba(224, 192, 120, 0.35);
+  --picker-accent-bg: rgba(200, 160, 80, 0.14);
+  --picker-gradient: linear-gradient(
+    135deg,
+    rgba(200, 160, 80, 0.12) 0%,
+    rgba(160, 120, 60, 0.06) 45%,
+    rgba(15, 15, 22, 0) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-2xl);
+  width: 100%;
+}
+
+.picker-stage--auspicious {
+  --picker-accent: #e0c078;
+  --picker-accent-border: rgba(224, 192, 120, 0.35);
+  --picker-accent-bg: rgba(200, 160, 80, 0.14);
+  --picker-gradient: linear-gradient(135deg, rgba(200, 160, 80, 0.12) 0%, rgba(160, 120, 60, 0.06) 45%, rgba(15, 15, 22, 0) 100%);
+}
+
+.picker-stage--numberenergy {
+  --picker-accent: #78c8e8;
+  --picker-accent-border: rgba(120, 200, 232, 0.35);
+  --picker-accent-bg: rgba(80, 160, 200, 0.14);
+  --picker-gradient: linear-gradient(135deg, rgba(80, 160, 200, 0.12) 0%, rgba(60, 120, 160, 0.06) 45%, rgba(15, 15, 22, 0) 100%);
+}
+
+.picker-stage--fengshui {
+  --picker-accent: #a8d878;
+  --picker-accent-border: rgba(168, 216, 120, 0.35);
+  --picker-accent-bg: rgba(120, 180, 80, 0.14);
+  --picker-gradient: linear-gradient(135deg, rgba(120, 180, 80, 0.12) 0%, rgba(80, 140, 60, 0.06) 45%, rgba(15, 15, 22, 0) 100%);
+}
+
+.picker-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-lg);
+  padding: var(--ds-space-lg) var(--ds-space-xl);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
+  background: var(--picker-gradient);
+}
+
+.picker-hero__mark {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--ds-radius-lg);
+  background: var(--picker-accent-bg);
+  border: 1px solid var(--picker-accent-border);
+  color: var(--picker-accent);
+}
+
+.picker-hero__brand {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.picker-hero__brand-en {
+  margin: 2px 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ds-text-muted);
+}
+
+.picker-hero__hint {
+  margin: var(--ds-space-sm) 0 0;
+  font-size: 0.82rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+.picker-ritual {
+  margin-bottom: calc(var(--ds-space-sm) * -1);
+}
+
+.picker-logo-mark {
+  display: block;
+  color: inherit;
+}
+
+.picker-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-md);
+  padding: var(--ds-space-lg);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-surface);
+}
+
+.picker-section__title {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.picker-section__sub {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ds-text-muted);
+}
+
+.picker-time__fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-sm);
+}
+
+.picker-time__fields .field__input {
+  width: 4.5rem;
+  text-align: center;
+}
+
+.picker-time__sep {
+  font-size: 0.85rem;
+  color: var(--ds-text-muted);
+}
+
+.picker-input-error {
+  margin: 0;
+  font-size: 0.82rem;
+  color: rgba(239, 68, 68, 0.95);
+}
+
+.picker-shrine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ds-space-md);
+  padding: var(--ds-space-xl);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, var(--picker-accent-bg) 0%, transparent 70%), var(--ds-gradient-aurora);
+}
+
+.picker-shrine__glyph {
+  font-size: 3rem;
+  color: var(--picker-accent);
+  line-height: 1;
+}
+
+.picker-shrine__hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ds-text-muted);
+  text-align: center;
+}
+
+.picker-best-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--ds-space-md);
+}
+
+.picker-best-card {
+  position: relative;
+  text-align: center;
+  padding: var(--ds-space-lg);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--picker-accent-border);
+  background: var(--picker-accent-bg);
+}
+
+.picker-best-card__rank {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.picker-best-card__name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+.picker-best-card__range {
+  color: var(--ds-text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.picker-shichen-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--ds-space-md);
+}
+
+.picker-shichen-card {
+  padding: var(--ds-space-md);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-elevated);
+}
+
+.picker-shichen-card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--ds-space-sm);
+  margin-bottom: var(--ds-space-sm);
+}
+
+.picker-shichen-card__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.picker-score-bar {
+  height: 6px;
+  background: var(--ds-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: var(--ds-space-sm) 0;
+}
+
+.picker-score-bar__fill {
+  height: 100%;
+  background: var(--ds-gradient-primary);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.picker-energy-bar {
+  width: 100%;
+  height: 10px;
+  margin-top: var(--ds-space-lg);
+  background: var(--ds-bg-surface);
+  border-radius: var(--ds-radius-full);
+  overflow: hidden;
+}
+
+.picker-energy-bar__fill {
+  height: 100%;
+  border-radius: var(--ds-radius-full);
+  transition: width 0.6s ease;
+}
+
+.picker-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--ds-space-md);
+}
+
+.picker-type-card {
+  text-align: center;
+  padding: var(--ds-space-lg);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-elevated);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.picker-type-card:hover {
+  border-color: var(--picker-accent-border);
+}
+
+.picker-type-card--active {
+  border-color: var(--picker-accent);
+  background: var(--picker-accent-bg);
+}
+
+.picker-type-card__icon {
+  font-size: 2rem;
+  margin-bottom: var(--ds-space-sm);
+}
+
+.picker-type-card h3 {
+  margin: 0 0 var(--ds-space-xs);
+  font-size: 0.95rem;
+}
+
+.picker-type-card p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ds-text-muted);
+}
+
+.picker-input-wrap {
+  position: relative;
+}
+
+.picker-input-wrap .field__input {
+  padding-right: 2.75rem;
+}
+
+.picker-input-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.picker-actions {
+  display: flex;
+  gap: var(--ds-space-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Fengshui — clean octagon compass */
+.fengshui-compass-section {
+  gap: var(--ds-space-lg);
+}
+
+.fengshui-compass-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fengshui-octagon {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    'nw  n   ne'
+    'w   hub e'
+    'sw  s   se';
+  gap: var(--ds-space-sm);
+  max-width: 420px;
+  margin: 0 auto;
+  aspect-ratio: 1;
+}
+
+.fengshui-dir {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: var(--ds-space-sm);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-elevated);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  min-height: 72px;
+  position: relative;
+}
+
+.fengshui-dir:hover {
+  border-color: var(--picker-accent-border);
+  background: var(--picker-accent-bg);
+}
+
+.fengshui-dir--selected {
+  border-color: var(--picker-accent);
+  background: var(--picker-accent-bg);
+  box-shadow: 0 0 0 1px var(--picker-accent-border);
+}
+
+.fengshui-dir--auspicious {
+  border-color: rgba(74, 222, 128, 0.35);
+}
+
+.fengshui-dir--inauspicious {
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.fengshui-dir__badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 3px 5px;
+  border-radius: var(--ds-radius-sm);
+}
+
+.fengshui-dir__badge--auspicious {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.12);
+}
+
+.fengshui-dir__badge--inauspicious {
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.12);
+}
+
+.fengshui-dir__badge--neutral {
+  color: var(--ds-text-muted);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.fengshui-dir__name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.fengshui-dir__gua {
+  font-family: var(--ds-font-display);
+  font-size: 1.35rem;
+  line-height: 1.1;
+  color: var(--picker-accent);
+}
+
+.fengshui-dir__wuxing {
+  font-size: 0.68rem;
+  color: var(--ds-text-muted);
+}
+
+.fengshui-octagon__hub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 50%;
+  border: 1px dashed var(--picker-accent-border);
+  background: radial-gradient(circle, var(--picker-accent-bg) 0%, transparent 70%);
+  color: var(--picker-accent);
+  min-height: 0;
+}
+
+.fengshui-octagon__hub-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--ds-text-muted);
+}
+
+.fengshui-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--ds-space-md);
+  font-size: 0.75rem;
+  color: var(--ds-text-muted);
+}
+
+.fengshui-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fengshui-legend__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.fengshui-legend__dot--good {
+  background: #4ade80;
+}
+
+.fengshui-legend__dot--bad {
+  background: #f87171;
+}
+
+.fengshui-legend__dot--flat {
+  background: var(--ds-text-muted);
+}
+
+.fengshui-insight-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--ds-space-md);
+  padding: var(--ds-space-md);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--picker-accent-border);
+  background: var(--picker-accent-bg);
+}
+
+.fengshui-insight-banner__gua {
+  font-family: var(--ds-font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--picker-accent);
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.fengshui-insight-banner__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.fengshui-insight-banner__sub {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--ds-text-secondary);
+}
+
+@media (max-width: 480px) {
+  .fengshui-dir {
+    min-height: 60px;
+    padding: 6px;
+  }
+
+  .fengshui-dir__gua {
+    font-size: 1.1rem;
+  }
+
+  .fengshui-dir__name {
+    font-size: 0.72rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fengshui-dir,
+  .picker-score-bar__fill,
+  .picker-energy-bar__fill {
+    transition: none;
+  }
+}
+

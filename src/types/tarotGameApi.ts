@@ -25,7 +25,7 @@ export interface TarotGameApi {
   reset: () => void
   selectCard: (drawnCard: DrawnCard) => void
   updateCardReversed: (cardId: number, isReversed: boolean) => void
-  handleSelectCardFromBrowser: (card: TarotCard) => void
+  handleSelectCardFromBrowser: (card: TarotCard, isReversed?: boolean) => void
   handleViewHistoryReading: (reading: ReadingRecord) => void
   handleDeleteHistoryReading: (id: string) => Promise<void>
   handleExportReading: (reading: ReadingRecord) => void

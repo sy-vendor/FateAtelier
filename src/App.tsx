@@ -1,107 +1,81 @@
-import { useState, useRef, lazy, Suspense, useEffect } from 'react'
+import { useState, useMemo, useEffect, lazy, Suspense } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import ToastContainer from './components/ToastContainer'
 import ConfirmDialogContainer from './components/ConfirmDialogContainer'
-import AppCarousel from './components/app/AppCarousel'
+import AppNav from './components/app/AppNav'
 import AppFeatureRoutes from './components/app/AppFeatureRoutes'
+import { FeatureIcon } from './components/app/FeatureIcon'
 import { APP_FEATURES } from './constants/appFeatures'
 import type { AppPage } from './types/appPage'
 import { getPageSubtitle } from './utils/appSubtitles'
 import { useTarotGame } from './hooks/useTarotGame'
-import { usePreventHorizontalScroll } from './hooks/usePreventHorizontalScroll'
-import { useSyncCarouselToPage } from './hooks/useSyncCarouselToPage'
-import './App.css'
+import './components/app/app-shell.css'
 
-const CardBrowser = lazy(() => import('./components/CardBrowser'))
-const Favorites = lazy(() => import('./components/Favorites'))
-const HelpGuide = lazy(() => import('./components/HelpGuide'))
+const TarotLibrary = lazy(() => import('./components/tarot/TarotLibrary'))
 
 function App() {
   const [currentPage, setCurrentPage] = useState<AppPage>('tarot')
-  const [carouselIndex, setCarouselIndex] = useState(0)
-  const [carouselRotation, setCarouselRotation] = useState(0)
-  const [touchStart, setTouchStart] = useState(0)
-  const [touchEnd, setTouchEnd] = useState(0)
-  const carouselContainerRef = useRef<HTMLDivElement>(null)
   const tarot = useTarotGame()
-  usePreventHorizontalScroll(carouselContainerRef)
 
-  const features = APP_FEATURES
-
-  useSyncCarouselToPage(currentPage, features, setCarouselIndex, setCarouselRotation)
+  const currentFeature = useMemo(
+    () => APP_FEATURES.find((f) => f.page === currentPage) ?? APP_FEATURES[0],
+    [currentPage]
+  )
 
   useEffect(() => {
     void import('./components/app/TarotMainView')
-    void import('./components/CardBrowser')
-    void import('./components/Favorites')
-    void import('./components/HelpGuide')
+    void import('./components/tarot/TarotLibrary')
   }, [])
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>🔮 命运工坊</h1>
-        <p className="subtitle">{getPageSubtitle(currentPage)}</p>
+    <div className="shell">
+      <div className="shell__backdrop aurora-orbs" aria-hidden="true">
+        <span className="aurora-orb aurora-orb--violet" />
+        <span className="aurora-orb aurora-orb--rose" />
+        <span className="aurora-orb aurora-orb--cyan" />
+      </div>
 
-        <AppCarousel
-          ref={carouselContainerRef}
-          features={features}
-          carouselIndex={carouselIndex}
-          setCarouselIndex={setCarouselIndex}
-          carouselRotation={carouselRotation}
-          setCarouselRotation={setCarouselRotation}
-          touchStart={touchStart}
-          setTouchStart={setTouchStart}
-          touchEnd={touchEnd}
-          setTouchEnd={setTouchEnd}
-          setCurrentPage={setCurrentPage}
-        />
+      <AppNav currentPage={currentPage} onSelect={setCurrentPage} />
 
-        {currentPage === 'tarot' && (
-          <Suspense
-            fallback={
-              <div
-                className="header-actions"
-                style={{ minHeight: '2.75rem' }}
-                role="status"
-                aria-live="polite"
-                aria-label="加载操作栏"
-              />
-            }
-          >
-            <div className="header-actions">
-              <CardBrowser onSelectCard={tarot.handleSelectCardFromBrowser} />
-              <Favorites onSelectCard={tarot.handleSelectCardFromBrowser} />
-              <HelpGuide />
+      <div className="shell__main">
+        <header className="shell-topbar">
+          <div className="shell-topbar__feature">
+            <span className="shell-topbar__icon" aria-hidden>
+              <FeatureIcon page={currentPage} size="lg" />
+            </span>
+            <div className="shell-topbar__text">
+              <h1 className="shell-topbar__title">{currentFeature.name}</h1>
+              <p className="shell-topbar__sub">{getPageSubtitle(currentPage)}</p>
             </div>
-          </Suspense>
-        )}
-      </header>
-
-      <main className="app-main">
-        <AppFeatureRoutes currentPage={currentPage} tarot={tarot} />
-      </main>
-
-      <footer className="app-footer">
-        <div className="footer-content">
-          <p className="footer-copyright">© {new Date().getFullYear()} 命运工坊 - 仅供娱乐参考</p>
-          <div className="footer-team">
-            <p className="team-label">Made with ❤️ by</p>
-            <p className="team-name">默默团队</p>
           </div>
-          <div className="footer-contact">
+
+          {currentPage === 'tarot' && (
+            <Suspense fallback={null}>
+              <div className="shell-topbar__actions">
+                <TarotLibrary onSelectCard={tarot.handleSelectCardFromBrowser} />
+              </div>
+            </Suspense>
+          )}
+        </header>
+
+        <main className="shell-stage">
+          <AppFeatureRoutes currentPage={currentPage} tarot={tarot} />
+        </main>
+
+        <footer className="shell-footer">
+          <p>
+            © {new Date().getFullYear()} 命运工坊 · 仅供娱乐参考 ·{' '}
             <a
               href="https://github.com/sy-vendor/FateAtelier"
-              className="contact-email"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="命运工坊 GitHub 仓库"
             >
-              GitHub - FateAtelier
+              GitHub
             </a>
-          </div>
-        </div>
-      </footer>
+          </p>
+        </footer>
+      </div>
+
       <ToastContainer />
       <ConfirmDialogContainer />
       <Analytics />

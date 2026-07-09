@@ -27,7 +27,7 @@ export default defineConfig({
           ],
           'tools': [
             './src/components/NameGenerator',
-            './src/components/Horoscope',
+            './src/components/app/HoroscopeMainView',
             './src/components/Almanac',
             './src/components/NumberEnergy',
             './src/components/LuckyColor',

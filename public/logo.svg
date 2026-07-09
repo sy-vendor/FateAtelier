@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Fate Atelier">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#16161e" />
+      <stop offset="100%" stop-color="#09090c" />
+    </linearGradient>
+    <linearGradient id="star" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd" />
+      <stop offset="100%" stop-color="#8b7cf6" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8b7cf6" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#8b7cf6" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="100" height="100" rx="22" fill="url(#bg)" />
+  <circle cx="50" cy="50" r="40" fill="url(#glow)" />
+  <circle cx="50" cy="50" r="33" fill="none" stroke="#8b7cf6" stroke-width="0.9" opacity="0.28" />
+  <path
+    d="M50 20 L54.2 41.5 L76 45.5 L54.2 55.5 L58.5 77 L50 64 L41.5 77 L45.8 55.5 L24 45.5 L45.8 41.5 Z"
+    fill="url(#star)"
+  />
+  <circle cx="50" cy="50" r="4" fill="#ececf1" opacity="0.55" />
+</svg>

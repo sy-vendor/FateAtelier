@@ -1,19 +1,5 @@
-:root {
-  --color-bg: #1a1a2e;
-  --color-bg-secondary: #16213e;
-  --color-bg-card: #0f3460;
-  --color-text: #eaeaea;
-  --color-text-secondary: #a0a0a0;
-  --color-accent: #e94560;
-  --color-major: #ff6b9d;
-  --color-wands: #ffa500;
-  --color-cups: #4a90e2;
-  --color-swords: #c0c0c0;
-  --color-pentacles: #d4af37;
-  --color-border: rgba(255, 255, 255, 0.1);
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.4);
-}
+@import './styles/tokens.css';
+@import './styles/primitives.css';
 
 * {
   margin: 0;
@@ -23,81 +9,86 @@
 
 html {
   overflow-x: hidden;
+  overflow-y: scroll;
   width: 100%;
   position: relative;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--ds-font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: 
-    linear-gradient(135deg, var(--color-bg) 0%, var(--color-bg-secondary) 100%),
-    radial-gradient(circle at top left, rgba(255, 107, 157, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at bottom right, rgba(74, 144, 226, 0.1) 0%, transparent 50%);
-  background-attachment: fixed;
-  color: var(--color-text);
+  background: var(--ds-bg-void);
+  color: var(--ds-text-primary);
   min-height: 100vh;
-  line-height: 1.6;
+  line-height: 1.65;
   position: relative;
   overflow-x: hidden;
   width: 100%;
-  /* 优化移动端触摸 */
   -webkit-tap-highlight-color: transparent;
-  touch-action: pan-y pinch-zoom; /* 只允许垂直滚动和缩放，阻止水平滑动 */
+  touch-action: pan-y pinch-zoom;
   -webkit-overflow-scrolling: touch;
 }
 
-/* 移动端优化 */
+/* Aurora mesh background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 10%, rgba(139, 124, 246, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 20%, rgba(139, 124, 246, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 45% at 50% 90%, rgba(110, 184, 212, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, var(--ds-bg-void) 0%, var(--ds-bg-base) 40%, var(--ds-bg-elevated) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Starfield + subtle grain */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 10% 20%, rgba(255, 255, 255, 0.35), transparent),
+    radial-gradient(1px 1px at 30% 65%, rgba(255, 255, 255, 0.25), transparent),
+    radial-gradient(1.5px 1.5px at 55% 15%, rgba(255, 255, 255, 0.3), transparent),
+    radial-gradient(1px 1px at 75% 45%, rgba(255, 255, 255, 0.2), transparent),
+    radial-gradient(1px 1px at 90% 80%, rgba(255, 255, 255, 0.25), transparent),
+    radial-gradient(1.5px 1.5px at 40% 90%, rgba(255, 255, 255, 0.2), transparent),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 200% 200%, 128px 128px;
+  animation: starfield-drift 80s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+}
+
+@keyframes starfield-drift {
+  0% {
+    background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0 0;
+  }
+  100% {
+    background-position: 100% 100%, -50% 50%, 80% -20%, -30% 80%, 60% 40%, -40% -60%, 0 0;
+  }
+}
+
 @media (max-width: 768px) {
   body {
-    font-size: 14px;
+    font-size: 15px;
   }
 }
 
 @media (max-width: 480px) {
   body {
-    font-size: 13px;
-  }
-}
-
-/* 星空背景效果 */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.3), transparent),
-    radial-gradient(2px 2px at 60% 70%, rgba(255, 255, 255, 0.2), transparent),
-    radial-gradient(1px 1px at 50% 50%, rgba(255, 255, 255, 0.3), transparent),
-    radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.2), transparent),
-    radial-gradient(2px 2px at 90% 40%, rgba(255, 255, 255, 0.2), transparent),
-    radial-gradient(1px 1px at 33% 60%, rgba(255, 255, 255, 0.3), transparent),
-    radial-gradient(1px 1px at 66% 80%, rgba(255, 255, 255, 0.2), transparent);
-  background-size: 200% 200%;
-  background-position: 0% 0%;
-  animation: starfield 20s linear infinite;
-  pointer-events: none;
-  z-index: 0;
-}
-
-@keyframes starfield {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 100% 100%;
+    font-size: 14px;
   }
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: var(--ds-font-mono);
 }
 
 #root {
@@ -109,4 +100,3 @@ code {
   width: 100%;
   overflow-x: hidden;
 }
-

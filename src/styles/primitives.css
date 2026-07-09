@@ -1,0 +1,308 @@
+/**
+ * Shared UI primitives — glass panels, buttons, inputs, typography
+ */
+
+/* ── Typography ── */
+.ds-display {
+  font-family: var(--ds-font-display);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ds-gradient-text {
+  background: var(--ds-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Glass surfaces ── */
+.ds-glass {
+  background: var(--ds-gradient-glass);
+  backdrop-filter: blur(var(--ds-blur-md));
+  -webkit-backdrop-filter: blur(var(--ds-blur-md));
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.ds-glass-strong {
+  background: var(--ds-surface-raised);
+  backdrop-filter: blur(var(--ds-blur-lg));
+  -webkit-backdrop-filter: blur(var(--ds-blur-lg));
+  border: 1px solid var(--ds-border-strong);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-shadow-md);
+}
+
+.ds-glass:hover {
+  border-color: var(--ds-border-strong);
+}
+
+/* ── Feature page shell ── */
+.feature-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--ds-space-md);
+  animation: ds-fade-up var(--ds-duration-slow) var(--ds-ease-out) both;
+}
+
+.feature-shell-header {
+  text-align: center;
+  margin-bottom: var(--ds-space-xl);
+}
+
+.feature-shell-header h1,
+.feature-shell-header h2 {
+  font-family: var(--ds-font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 600;
+  margin: 0 0 var(--ds-space-sm);
+  background: var(--ds-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.feature-shell-header .subtitle,
+.feature-shell .subtitle {
+  color: var(--ds-text-secondary);
+  font-size: 1.05rem;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* ── Cards & panels ── */
+.ds-card {
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  padding: var(--ds-space-lg);
+  transition: border-color var(--ds-duration-normal) var(--ds-ease-out),
+    box-shadow var(--ds-duration-normal) var(--ds-ease-out),
+    transform var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.ds-card:hover {
+  border-color: var(--ds-border-strong);
+  box-shadow: var(--ds-shadow-sm);
+}
+
+.ds-card-elevated {
+  background: var(--ds-surface-raised);
+  border: 1px solid var(--ds-border-strong);
+  border-radius: var(--ds-radius-lg);
+  padding: var(--ds-space-lg);
+  box-shadow: var(--ds-shadow-md);
+}
+
+/* ── Buttons ── */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: var(--ds-control-h);
+  padding: 0 1.25rem;
+  font-family: var(--ds-font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  cursor: pointer;
+  transition: background var(--ds-duration-fast), border-color var(--ds-duration-fast),
+    color var(--ds-duration-fast);
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+.ds-btn:active {
+  transform: none;
+}
+
+.ds-btn-primary {
+  background: var(--ds-accent-deep);
+  border-color: var(--ds-accent-border);
+  color: #fff;
+  box-shadow: none;
+}
+
+.ds-btn-primary:hover {
+  background: var(--ds-accent);
+  border-color: var(--ds-accent-hover);
+  transform: none;
+  box-shadow: none;
+}
+
+.ds-btn-ghost {
+  background: var(--ds-surface);
+  color: var(--ds-text-primary);
+  border: 1px solid var(--ds-border);
+}
+
+.ds-btn-ghost:hover {
+  background: var(--ds-surface-hover);
+  border-color: var(--ds-border-strong);
+  transform: none;
+}
+
+/* ── Form controls ── */
+.ds-input,
+.ds-select,
+.ds-textarea {
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  font-family: var(--ds-font-body);
+  font-size: 1rem;
+  color: var(--ds-text-primary);
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  transition: border-color var(--ds-duration-fast), box-shadow var(--ds-duration-fast);
+  outline: none;
+}
+
+.ds-input::placeholder,
+.ds-textarea::placeholder {
+  color: var(--ds-text-muted);
+}
+
+.ds-input:hover,
+.ds-select:hover,
+.ds-textarea:hover {
+  border-color: var(--ds-border-strong);
+}
+
+.ds-input:focus,
+.ds-select:focus,
+.ds-textarea:focus {
+  border-color: var(--ds-accent-violet);
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.2);
+}
+
+.ds-select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a1a1ab' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 2.5rem;
+}
+
+.ds-select option {
+  background: var(--ds-bg-elevated);
+  color: var(--ds-text-primary);
+}
+
+/* ── Chips & tags ── */
+.ds-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ds-text-secondary);
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-full);
+  cursor: pointer;
+  transition: all var(--ds-duration-fast) var(--ds-ease-out);
+}
+
+.ds-chip:hover {
+  color: var(--ds-text-primary);
+  background: var(--ds-surface-hover);
+  border-color: var(--ds-border-strong);
+}
+
+.ds-chip.active {
+  color: var(--ds-text-primary);
+  background: var(--ds-accent-muted);
+  border-color: var(--ds-accent-border);
+  box-shadow: none;
+}
+
+/* ── Section titles inside features ── */
+.ds-section-title {
+  font-family: var(--ds-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  margin: 0 0 var(--ds-space-md);
+}
+
+/* ── Animations ── */
+@keyframes ds-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ds-shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes ds-pulse-glow {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes ds-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Loading spinner ── */
+.ds-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(167, 139, 250, 0.2);
+  border-top-color: var(--ds-accent-rose);
+  border-radius: 50%;
+  animation: ds-spin 0.85s linear infinite;
+}
+
+/* ── Scrollbar (webkit) ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--ds-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Selection ── */
+::selection {
+  background: rgba(139, 124, 246, 0.35);
+  color: white;
+}

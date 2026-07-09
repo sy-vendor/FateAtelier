@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { DrawnCard } from '../types'
 import { generateThreeCardReading } from '../utils/readingInterpretation'
+import { readingTypes } from '../types/reading'
 import './ReadingHistory.css'
+import { Button } from './ui'
 
 interface ReadingHistoryProps {
   readings: ReadingRecord[]
@@ -47,19 +49,22 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
     return (
       <div className="reading-history empty">
         <p>暂无占卜记录</p>
-        <p className="empty-hint">完成一次塔罗占卜（单牌或三牌）后，记录会显示在这里。</p>
+        <p className="empty-hint">完成一次单牌或三牌占卜后，记录会显示在这里。</p>
       </div>
     )
   }
 
+  const readingTypeLabel = (typeId?: string) =>
+    readingTypes.find((t) => t.id === typeId)?.name ?? '综合占卜'
+
   return (
     <div className="reading-history">
       <div className="history-header-section">
-        <h3>📜 占卜历史 ({readings.length})</h3>
+        <h3>占卜历史 · {readings.length}</h3>
         {onExportAll && (
-          <button className="export-all-btn" onClick={onExportAll}>
-            💾 导出所有数据
-          </button>
+          <Button variant="ghost" small onClick={onExportAll}>
+            导出全部
+          </Button>
         )}
       </div>
 
@@ -87,19 +92,13 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
               <div className="history-info">
                 <div className="history-type-row">
                   <span className="history-type">
-                    {reading.type === 'single' ? '🎴 单牌' : '🔮 三牌占卜'}
+                    {reading.type === 'single' ? '单牌' : '三牌'}
                   </span>
                   {reading.readingType && reading.type === 'three' && (
                     <span className="history-reading-type">
-                      {reading.readingType === 'daily' && '🌟 今日运势'}
-                      {reading.readingType === 'love' && '💕 姻缘感情'}
-                      {reading.readingType === 'wealth' && '💰 钱财财运'}
-                      {reading.readingType === 'career' && '💼 职场事业'}
-                      {reading.readingType === 'health' && '🌿 健康'}
-                      {reading.readingType === 'study' && '📚 学业'}
-                      {reading.readingType === 'relationship' && '🤝 人际关系'}
-                      {reading.readingType === 'custom' && `✨ ${reading.customQuestion || '自定义'}`}
-                      {reading.readingType === 'general' && '🔮 综合占卜'}
+                      {reading.readingType === 'custom'
+                        ? reading.customQuestion || '自定义'
+                        : readingTypeLabel(reading.readingType)}
                     </span>
                   )}
                 </div>

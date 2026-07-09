@@ -170,6 +170,14 @@ export function useTarotGame() {
     }
   }, [drawingThreeCards, selectedReadingType, customQuestion])
 
+  function scrollToCardDetail() {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        document.getElementById('tarot-card-detail')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 80)
+    })
+  }
+
   const reset = useCallback(() => {
     setDrawnCards([])
     setSelectedCard(null)
@@ -204,11 +212,11 @@ export function useTarotGame() {
     })
   }, [])
 
-  const handleSelectCardFromBrowser = useCallback((card: TarotCard) => {
-    const drawnCard: DrawnCard = { card, isReversed: false }
-    setSelectedCard(drawnCard)
+  const handleSelectCardFromBrowser = useCallback((card: TarotCard, isReversed = false) => {
+    setSelectedCard({ card, isReversed })
     setThreeCardReading(null)
     setViewingHistoryReading(null)
+    scrollToCardDetail()
   }, [])
 
   const handleViewHistoryReading = useCallback((reading: ReadingRecord) => {

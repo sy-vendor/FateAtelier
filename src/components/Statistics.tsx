@@ -51,7 +51,7 @@ function Statistics({ readings }: StatisticsProps) {
 
   return (
     <div className="statistics-section">
-      <h3>📊 占卜统计</h3>
+      <h3>占卜统计</h3>
       
       <div className="stats-grid">
         <div className="stat-card">

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
+import './components/ui/ui.css'
 import { logger } from './utils/logger'
 
 /** 强制清理：卸载当前 origin 下所有 Service Worker，并删除所有 Cache Storage */

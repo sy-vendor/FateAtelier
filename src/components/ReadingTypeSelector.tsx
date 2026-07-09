@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { ReadingType, readingTypes } from '../types/reading'
 import './ReadingTypeSelector.css'
 import { toast } from '../utils/toast'
+import { Button } from './ui'
+import { TarotLogoMark } from './tarot/TarotLogoMark'
 
 interface ReadingTypeSelectorProps {
   onSelect: (type: ReadingType, customQuestion?: string) => void
@@ -34,33 +36,25 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
   }
 
   return (
-    <div 
-      className="reading-type-overlay" 
+    <div
+      className="reading-type-overlay"
       onClick={onCancel}
       role="dialog"
       aria-modal="true"
       aria-labelledby="reading-type-title"
-      aria-describedby="reading-type-description"
-      style={{ 
-        display: 'flex',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        width: '100vw',
-        height: '100vh',
-        zIndex: 9999,
-        backgroundColor: 'rgba(0, 0, 0, 0.9)'
-      }}
     >
       <div className="reading-type-container" onClick={(e) => e.stopPropagation()}>
         <div className="reading-type-header">
-          <h2 id="reading-type-title">选择占卜类型</h2>
-          <button 
-            className="close-type-selector" 
+          <div className="reading-type-header__text">
+            <TarotLogoMark size="sm" />
+            <h2 id="reading-type-title">选择占卜主题</h2>
+            <p>三牌时空 · 针对你的问题选取解读方向</p>
+          </div>
+          <button
+            type="button"
+            className="close-type-selector"
             onClick={onCancel}
-            aria-label="关闭选择器"
+            aria-label="关闭"
           >
             ✕
           </button>
@@ -74,7 +68,6 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
               onClick={() => handleTypeClick(type.id)}
               role="radio"
               aria-checked={selectedType === type.id}
-              aria-label={`${type.name}: ${type.description}`}
               tabIndex={0}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -83,7 +76,6 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
                 }
               }}
             >
-              <div className="reading-type-icon" aria-hidden="true">{type.icon}</div>
               <div className="reading-type-name">{type.name}</div>
               <div className="reading-type-desc">{type.description}</div>
             </div>
@@ -92,7 +84,7 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
 
         {showCustomInput && (
           <div className="custom-question-input">
-            <label htmlFor="custom-question-textarea">请输入您的问题：</label>
+            <label htmlFor="custom-question-textarea">请输入您的问题</label>
             <textarea
               id="custom-question-textarea"
               value={customQuestion}
@@ -100,28 +92,21 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
               placeholder="例如：我最近的工作会顺利吗？"
               rows={3}
               className="custom-question-textarea"
-              aria-label="自定义问题输入框"
-              aria-required="true"
             />
           </div>
         )}
 
         <div className="reading-type-actions">
-          <button 
-            className="cancel-btn" 
-            onClick={onCancel}
-            aria-label="取消选择"
-          >
+          <Button variant="ghost" onClick={onCancel}>
             取消
-          </button>
-          <button 
-            className="confirm-btn" 
+          </Button>
+          <Button
+            variant="primary"
             onClick={handleConfirm}
             disabled={!selectedType || (selectedType === 'custom' && !customQuestion.trim())}
-            aria-label="确认并开始占卜"
           >
-            开始占卜
-          </button>
+            开始抽牌
+          </Button>
         </div>
       </div>
     </div>
@@ -129,4 +114,3 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
 }
 
 export default ReadingTypeSelector
-

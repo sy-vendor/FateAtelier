@@ -1,270 +1,150 @@
 .statistics-section {
-  margin-top: 3rem;
-  padding: 2rem;
-  background: rgba(15, 52, 96, 0.3);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border);
+  margin-top: var(--ds-space-md);
+  padding: var(--ds-space-xl);
+  background: var(--ds-surface);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
 }
 
 .statistics-section h3 {
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
+  margin: 0 0 var(--ds-space-lg);
+  font-family: var(--ds-font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
   text-align: center;
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-major) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--ds-text-primary);
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--ds-space-sm);
+  margin-bottom: var(--ds-space-lg);
 }
 
 .stat-card {
-  background: rgba(15, 52, 96, 0.5);
-  border: 1px solid var(--color-border);
-  border-radius: 15px;
-  padding: 1.5rem;
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  padding: var(--ds-space-md);
   text-align: center;
-  transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-  border-color: var(--color-accent);
-  box-shadow: 0 8px 24px rgba(233, 69, 96, 0.2);
 }
 
 .stat-value {
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-accent);
-  margin-bottom: 0.5rem;
+  color: var(--ds-accent);
+  margin-bottom: 0.25rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  font-size: 0.72rem;
+  color: var(--ds-text-muted);
 }
 
 .stats-details {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--ds-space-md);
 }
 
 .stat-detail-card {
-  background: rgba(15, 52, 96, 0.5);
-  border: 1px solid var(--color-border);
-  border-radius: 15px;
-  padding: 1.5rem;
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  padding: var(--ds-space-md);
 }
 
 .stat-detail-card h4 {
-  font-size: 1.2rem;
-  color: var(--color-text);
-  margin: 0 0 1rem 0;
+  font-size: 0.78rem;
   font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ds-text-muted);
+  margin: 0 0 var(--ds-space-md);
 }
 
 .position-distribution {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--ds-space-sm);
 }
 
 .position-bar {
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: var(--ds-space-sm);
   align-items: center;
-  gap: 1rem;
 }
 
 .position-label {
-  min-width: 60px;
-  font-size: 0.9rem;
-  color: var(--color-text);
-  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--ds-text-secondary);
 }
 
 .position-progress {
-  flex: 1;
-  height: 30px;
-  background: rgba(15, 52, 96, 0.5);
-  border-radius: 15px;
   position: relative;
+  height: 8px;
+  background: var(--ds-surface);
+  border-radius: var(--ds-radius-full);
   overflow: hidden;
-  display: flex;
-  align-items: center;
 }
 
 .position-fill {
   height: 100%;
-  border-radius: 15px;
-  transition: width 0.5s ease;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding-right: 10px;
+  border-radius: inherit;
+  transition: width var(--ds-duration-normal);
 }
 
 .position-fill.upright {
-  background: linear-gradient(90deg, var(--color-cups) 0%, #5ba3f5 100%);
+  background: var(--ds-accent);
+  opacity: 0.75;
 }
 
 .position-fill.reversed {
-  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-major) 100%);
+  background: var(--ds-accent-rose);
+  opacity: 0.65;
 }
 
 .position-percent {
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 600;
-  z-index: 1;
+  position: absolute;
+  right: 0;
+  top: -1.4rem;
+  font-size: 0.68rem;
+  color: var(--ds-text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 .frequent-cards {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--ds-space-xs);
 }
 
 .frequent-card-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
-  background: rgba(15, 52, 96, 0.3);
-  border-radius: 10px;
-  border-left: 3px solid var(--color-accent);
+  padding: var(--ds-space-xs) var(--ds-space-sm);
+  background: var(--ds-surface);
+  border-radius: var(--ds-radius-sm);
+  font-size: 0.82rem;
 }
 
 .card-name {
-  font-size: 1rem;
-  color: var(--color-text);
-  font-weight: 600;
+  color: var(--ds-text-secondary);
 }
 
 .card-count {
-  font-size: 0.9rem;
-  color: var(--color-accent);
+  font-size: 0.72rem;
   font-weight: 600;
+  color: var(--ds-accent);
+  font-variant-numeric: tabular-nums;
 }
 
-/* 平板样式 */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .statistics-section {
-    padding: 1.5rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* 手机样式 */
 @media (max-width: 768px) {
   .statistics-section {
-    padding: 1.5rem;
-    margin-top: 2rem;
-  }
-
-  .statistics-section h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-  }
-
-  .stat-card {
-    padding: 1.25rem;
-  }
-
-  .stat-value {
-    font-size: 2rem;
-  }
-
-  .stat-label {
-    font-size: 0.85rem;
-  }
-
-  .stat-detail-card {
-    padding: 1.25rem;
-  }
-
-  .stat-detail-card h4 {
-    font-size: 1.1rem;
+    padding: var(--ds-space-lg);
   }
 }
-
-/* 小手机样式 */
-@media (max-width: 480px) {
-  .statistics-section {
-    padding: 1rem;
-  }
-
-  .statistics-section h3 {
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-  }
-
-  .stat-card {
-    padding: 1rem;
-  }
-
-  .stat-value {
-    font-size: 1.75rem;
-  }
-
-  .stat-label {
-    font-size: 0.8rem;
-  }
-
-  .stat-detail-card {
-    padding: 1rem;
-  }
-
-  .stat-detail-card h4 {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .position-bar {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .position-label {
-    min-width: auto;
-    width: 100%;
-  }
-
-  .position-progress {
-    width: 100%;
-  }
-
-  .frequent-card-item {
-    padding: 0.6rem;
-  }
-
-  .card-name {
-    font-size: 0.9rem;
-  }
-
-  .card-count {
-    font-size: 0.85rem;
-  }
-}
-

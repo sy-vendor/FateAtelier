@@ -24,15 +24,16 @@
 }
 
 .confirm-dialog {
-  background: var(--color-bg-card);
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 400px;
+  background: var(--ds-surface-raised);
+  border-radius: var(--ds-radius-xl);
+  padding: 28px;
+  max-width: 420px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--color-border);
-  animation: slideUp 0.3s ease-out;
+  box-shadow: var(--ds-shadow-lg);
+  border: 1px solid var(--ds-border-strong);
+  animation: slideUp 0.35s var(--ds-ease-out);
   position: relative;
+  backdrop-filter: blur(var(--ds-blur-lg));
 }
 
 @keyframes slideUp {
@@ -51,10 +52,11 @@
 }
 
 .confirm-dialog-title {
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: var(--ds-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
   margin: 0;
-  color: var(--color-text);
+  color: var(--ds-text-primary);
   line-height: 1.4;
 }
 
@@ -76,14 +78,15 @@
 }
 
 .confirm-dialog-button {
-  padding: 10px 24px;
-  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--ds-radius-full);
   cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 80px;
+  transition: all var(--ds-duration-fast) var(--ds-ease-out);
+  min-width: 88px;
+  font-family: var(--ds-font-body);
 }
 
 .confirm-dialog-button-cancel {
@@ -95,26 +98,27 @@
 .confirm-dialog-button-cancel:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
 }
 
 .confirm-dialog-button-cancel:active {
-  transform: translateY(0);
+  transform: none;
 }
 
 .confirm-dialog-button-confirm {
-  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-major) 100%);
+  background: var(--ds-accent-deep);
   color: white;
-  border: none;
+  border: 1px solid var(--ds-accent-border);
+  box-shadow: none;
 }
 
 .confirm-dialog-button-confirm:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(233, 69, 96, 0.4);
+  background: var(--ds-accent);
+  transform: none;
+  box-shadow: none;
 }
 
 .confirm-dialog-button-confirm:active {
-  transform: translateY(0);
+  transform: none;
 }
 
 .confirm-dialog-button-confirm.danger {

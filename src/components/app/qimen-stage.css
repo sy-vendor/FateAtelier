@@ -1,0 +1,514 @@
+/* ── Qimen gameplay stage ── */
+
+.qimen-stage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-2xl);
+  width: 100%;
+}
+
+.qimen-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-lg);
+  padding: var(--ds-space-lg) var(--ds-space-xl);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
+  background: linear-gradient(
+    135deg,
+    rgba(200, 160, 80, 0.12) 0%,
+    rgba(160, 120, 60, 0.06) 45%,
+    rgba(15, 15, 22, 0) 100%
+  );
+}
+
+.qimen-hero__mark {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--ds-radius-lg);
+  background: rgba(200, 160, 80, 0.14);
+  border: 1px solid rgba(220, 180, 100, 0.35);
+  color: #e0c878;
+}
+
+.qimen-hero__brand {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  letter-spacing: 0.04em;
+}
+
+.qimen-hero__brand-en {
+  margin: 2px 0 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ds-text-muted);
+}
+
+.qimen-hero__hint {
+  margin: var(--ds-space-sm) 0 0;
+  font-size: 0.82rem;
+  color: var(--ds-text-secondary);
+  line-height: 1.5;
+}
+
+.qimen-ritual {
+  margin-bottom: calc(var(--ds-space-sm) * -1);
+}
+
+.qimen-logo-mark {
+  display: block;
+  color: inherit;
+}
+
+.qimen-time {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-md);
+  padding: var(--ds-space-lg);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-surface);
+}
+
+.qimen-time__title {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.qimen-time__sub {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ds-text-muted);
+}
+
+.qimen-time__fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ds-space-sm);
+}
+
+.qimen-time__fields .field__input {
+  width: 4.5rem;
+  text-align: center;
+}
+
+.qimen-time__sep {
+  font-size: 0.85rem;
+  color: var(--ds-text-muted);
+}
+
+.qimen-direction {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-md);
+  padding: var(--ds-space-lg);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-surface);
+}
+
+.qimen-direction__title {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.qimen-direction__sub {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ds-text-muted);
+}
+
+/* Compass shrine */
+.qimen-shrine {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--ds-space-lg);
+  padding: var(--ds-space-xl);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 40%, rgba(200, 160, 80, 0.12) 0%, transparent 70%),
+    var(--ds-gradient-aurora);
+  position: relative;
+  overflow: hidden;
+}
+
+.qimen-shrine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, rgba(224, 200, 120, 0.08) 0%, transparent 55%);
+  animation: qimenShrineBreath 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes qimenShrineBreath {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.02); }
+}
+
+.qimen-shrine__hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--ds-text-muted);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.qimen-compass {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  z-index: 1;
+}
+
+.qimen-compass__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(220, 180, 100, 0.45);
+  background: radial-gradient(circle, rgba(200, 160, 80, 0.08) 0%, transparent 70%);
+  box-shadow: 0 0 24px rgba(200, 160, 80, 0.15);
+}
+
+.qimen-compass__ring::before,
+.qimen-compass__ring::after {
+  content: '';
+  position: absolute;
+  background: rgba(220, 180, 100, 0.2);
+}
+
+.qimen-compass__ring::before {
+  top: 50%;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  transform: translateY(-50%);
+}
+
+.qimen-compass__ring::after {
+  left: 50%;
+  top: 8%;
+  bottom: 8%;
+  width: 1px;
+  transform: translateX(-50%);
+}
+
+.qimen-compass__label {
+  position: absolute;
+  font-size: 0.65rem;
+  color: var(--ds-text-muted);
+  font-weight: 600;
+}
+
+.qimen-compass__label--n { top: 4px; left: 50%; transform: translateX(-50%); }
+.qimen-compass__label--s { bottom: 4px; left: 50%; transform: translateX(-50%); }
+.qimen-compass__label--e { right: 6px; top: 50%; transform: translateY(-50%); }
+.qimen-compass__label--w { left: 6px; top: 50%; transform: translateY(-50%); }
+
+.qimen-compass__needle-wrap {
+  position: absolute;
+  inset: 20%;
+  display: grid;
+  place-items: center;
+  transition: transform 0.6s var(--ds-ease-out);
+}
+
+.qimen-compass__needle {
+  width: 4px;
+  height: 70%;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, #e85d5d 0%, #e85d5d 50%, rgba(200, 200, 200, 0.6) 50%, rgba(200, 200, 200, 0.6) 100%);
+  box-shadow: 0 0 8px rgba(232, 93, 93, 0.4);
+}
+
+.qimen-compass__center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #e0c878;
+  border: 2px solid rgba(220, 180, 100, 0.6);
+  z-index: 2;
+}
+
+.qimen-compass__dir {
+  margin-top: var(--ds-space-sm);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #e0c878;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.qimen-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ds-space-sm);
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.qimen-meta__chip {
+  padding: 4px 12px;
+  border-radius: var(--ds-radius-full);
+  font-size: 0.78rem;
+  border: 1px solid var(--ds-border);
+  background: rgba(200, 160, 80, 0.08);
+  color: var(--ds-text-secondary);
+}
+
+/* 9-palace chart */
+.qimen-chart {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ds-space-md);
+  width: 100%;
+  margin: 0;
+}
+
+.qimen-chart__cell {
+  display: flex;
+  flex-direction: column;
+  min-height: 160px;
+  padding: var(--ds-space-md);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  transition: border-color var(--ds-duration-normal), box-shadow var(--ds-duration-normal), transform 0.2s ease;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+}
+
+.qimen-chart__cell:hover {
+  transform: translateY(-1px);
+}
+
+.qimen-chart__cell--good {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.06);
+}
+
+.qimen-chart__cell--bad {
+  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+.qimen-chart__cell--selected {
+  border-color: rgba(220, 180, 100, 0.7);
+  box-shadow: 0 0 20px rgba(200, 160, 80, 0.2);
+}
+
+.qimen-chart__cell--focused {
+  outline: 2px solid rgba(220, 180, 100, 0.5);
+  outline-offset: 2px;
+}
+
+.qimen-chart__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--ds-space-sm);
+  padding-bottom: var(--ds-space-sm);
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.qimen-chart__name {
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.qimen-chart__dir {
+  font-size: 0.8rem;
+  color: var(--ds-text-muted);
+}
+
+.qimen-chart__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.qimen-chart__row {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-sm);
+  font-size: 0.85rem;
+}
+
+.qimen-chart__label {
+  color: var(--ds-text-muted);
+}
+
+.qimen-chart__score {
+  margin-top: auto;
+  padding-top: var(--ds-space-sm);
+  border-top: 1px solid var(--ds-border);
+}
+
+.qimen-chart__bar {
+  height: 6px;
+  background: var(--ds-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.qimen-chart__bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.qimen-chart__score-val {
+  font-size: 0.85rem;
+  color: var(--ds-text-muted);
+  font-weight: 600;
+}
+
+.qimen-insight {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-lg);
+  animation: ui-enter 0.5s var(--ds-ease-out);
+}
+
+.qimen-insight__banner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--ds-space-lg);
+  padding: var(--ds-space-lg);
+  border-radius: var(--ds-radius-xl);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-gradient-aurora);
+}
+
+.qimen-insight__icon {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid rgba(220, 180, 100, 0.4);
+  background: rgba(200, 160, 80, 0.12);
+  color: #e0c878;
+  font-size: 1.5rem;
+}
+
+.qimen-insight__title {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.qimen-insight__sub {
+  margin: 4px 0 0;
+  font-size: 0.78rem;
+  color: var(--ds-text-muted);
+}
+
+.qimen-score-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: var(--ds-radius-lg);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.qimen-score-tag--good {
+  background: rgba(34, 197, 94, 0.15);
+  color: rgba(34, 197, 94, 0.95);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.qimen-score-tag--bad {
+  background: rgba(239, 68, 68, 0.15);
+  color: rgba(239, 68, 68, 0.95);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.qimen-advice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--ds-space-md);
+}
+
+.qimen-advice-card {
+  padding: var(--ds-space-md) var(--ds-space-lg);
+  border-radius: var(--ds-radius-lg);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-surface);
+}
+
+.qimen-advice-card h3 {
+  margin: 0 0 var(--ds-space-sm);
+  font-size: 0.95rem;
+}
+
+.qimen-advice-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--ds-space-sm);
+  font-size: 0.88rem;
+}
+
+.qimen-tips {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  color: var(--ds-text-secondary);
+}
+
+@media (max-width: 720px) {
+  .qimen-chart {
+    gap: var(--ds-space-sm);
+  }
+
+  .qimen-chart__cell {
+    min-height: 130px;
+    padding: var(--ds-space-sm);
+  }
+
+  .qimen-insight__banner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .qimen-insight__icon {
+    margin: 0 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qimen-shrine::before,
+  .qimen-compass__needle-wrap {
+    animation: none !important;
+    transition: none !important;
+  }
+}

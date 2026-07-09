@@ -4,7 +4,7 @@
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--ds-accent-violet) 0%, var(--ds-accent-violet-deep) 100%);
   color: white;
 }
 
@@ -99,8 +99,8 @@
 }
 
 .error-button-primary {
-  background: white;
-  color: #667eea;
+  background: var(--ds-surface-raised);
+  color: var(--ds-accent-violet);
 }
 
 .error-button-primary:hover {

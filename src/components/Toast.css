@@ -2,19 +2,21 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 14px 20px;
   margin-bottom: 12px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  backdrop-filter: blur(10px);
+  border-radius: var(--ds-radius-md);
+  box-shadow: var(--ds-shadow-md);
+  backdrop-filter: blur(var(--ds-blur-lg));
+  -webkit-backdrop-filter: blur(var(--ds-blur-lg));
   min-width: 280px;
   max-width: 400px;
   cursor: pointer;
   opacity: 0;
-  transform: translateX(100%);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(100%) scale(0.95);
+  transition: all var(--ds-duration-normal) var(--ds-ease-out);
   position: relative;
   overflow: hidden;
+  border: 1px solid var(--ds-border);
 }
 
 .toast::before {
@@ -23,66 +25,66 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 4px;
+  width: 3px;
   background: currentColor;
+  border-radius: var(--ds-radius-full);
 }
 
 .toast-visible {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateX(0) scale(1);
 }
 
 .toast-exiting {
   opacity: 0;
-  transform: translateX(100%);
+  transform: translateX(100%) scale(0.95);
 }
 
 .toast-icon {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
   flex-shrink: 0;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .toast-message {
   flex: 1;
-  font-size: 14px;
+  font-size: 0.9rem;
   line-height: 1.5;
   word-break: break-word;
   white-space: pre-line;
 }
 
-/* 成功类型 */
 .toast-success {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.95), rgba(56, 142, 60, 0.95));
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.92), rgba(22, 163, 74, 0.88));
   color: white;
+  border-color: rgba(34, 197, 94, 0.3);
 }
 
-/* 错误类型 */
 .toast-error {
-  background: linear-gradient(135deg, rgba(244, 67, 54, 0.95), rgba(198, 40, 40, 0.95));
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.92), rgba(185, 28, 28, 0.88));
   color: white;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
-/* 警告类型 */
 .toast-warning {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.95), rgba(255, 152, 0, 0.95));
-  color: #333;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.92), rgba(245, 158, 11, 0.88));
+  color: var(--ds-text-inverse);
+  border-color: rgba(251, 191, 36, 0.3);
 }
 
-/* 信息类型 */
 .toast-info {
-  background: linear-gradient(135deg, rgba(33, 150, 243, 0.95), rgba(25, 118, 210, 0.95));
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.92), rgba(99, 102, 241, 0.88));
   color: white;
+  border-color: rgba(124, 58, 237, 0.3);
 }
 
-/* Toast 容器 */
 .toast-container {
   position: fixed;
   top: 20px;
@@ -97,7 +99,6 @@
   pointer-events: auto;
 }
 
-/* 移动端适配 */
 @media (max-width: 768px) {
   .toast-container {
     top: 10px;
@@ -110,4 +111,3 @@
     max-width: 100%;
   }
 }
-

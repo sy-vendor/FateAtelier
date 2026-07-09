@@ -1,0 +1,657 @@
+.shell-stage .page__header {
+  display: none;
+}
+
+.shell-stage .page {
+  padding-top: 0;
+  animation: none;
+}
+
+/* Aurora orbs (global backdrop) */
+.aurora-orbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.aurora-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.22;
+  animation: orb-float 20s ease-in-out infinite;
+}
+
+.aurora-orb--violet {
+  width: 420px;
+  height: 420px;
+  background: rgba(139, 124, 246, 0.25);
+  top: -8%;
+  left: -5%;
+}
+
+.aurora-orb--rose {
+  width: 360px;
+  height: 360px;
+  background: rgba(139, 124, 246, 0.12);
+  top: 30%;
+  right: -8%;
+  animation-delay: -7s;
+}
+
+.aurora-orb--cyan {
+  width: 300px;
+  height: 300px;
+  background: rgba(110, 184, 212, 0.1);
+  bottom: 5%;
+  left: 25%;
+  animation-delay: -14s;
+}
+
+@keyframes orb-float {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -20px) scale(1.08);
+  }
+  66% {
+    transform: translate(-20px, 25px) scale(0.95);
+  }
+}
+
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--shell-sidebar-width) minmax(0, 1fr);
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.shell__backdrop {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.shell__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  min-width: 0;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  padding: 0 var(--ds-space-md);
+  box-sizing: border-box;
+}
+
+/* ── Top bar ── */
+.shell-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-md);
+  width: 100%;
+  max-width: var(--shell-content-width);
+  padding: var(--ds-space-md) var(--ds-space-lg);
+  margin: var(--ds-space-md) 0 var(--ds-space-lg);
+  background: var(--ds-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-xl);
+  backdrop-filter: blur(var(--ds-blur-lg));
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.shell-topbar__feature {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-sm);
+  min-width: 0;
+}
+
+.shell-topbar__icon {
+  font-size: 1.75rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.shell-topbar__text {
+  min-width: 0;
+}
+
+.shell-topbar__title {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shell-topbar__sub {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: var(--ds-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shell-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* ── Content stage ── */
+.shell-stage {
+  flex: 1;
+  width: 100%;
+  max-width: var(--shell-content-width);
+  padding: 0 0 var(--ds-space-2xl);
+  box-sizing: border-box;
+}
+
+.shell-stage .page {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0 0 var(--ds-space-2xl);
+}
+
+.shell-stage .tarot-stage {
+  width: 100%;
+  max-width: none;
+}
+
+.shell-stage > * {
+  width: 100%;
+}
+
+/* ── Footer ── */
+.shell-footer {
+  width: 100%;
+  max-width: var(--shell-content-width);
+  padding: var(--ds-space-lg) 0;
+  margin: 0 0 var(--ds-space-md);
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--ds-text-muted);
+  border-top: 1px solid var(--ds-border);
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.shell-footer a {
+  color: var(--ds-text-secondary);
+  text-decoration: none;
+}
+
+.shell-footer a:hover {
+  color: var(--ds-accent-rose);
+}
+
+/* ── Desktop sidebar nav ── */
+.shell-nav--desktop {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--ds-space-lg) var(--ds-space-md);
+  border-right: 1px solid var(--ds-border);
+  background: rgba(8, 8, 15, 0.6);
+  backdrop-filter: blur(var(--ds-blur-lg));
+  z-index: 2;
+}
+
+.shell-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-sm);
+  padding: var(--ds-space-sm) var(--ds-space-sm) var(--ds-space-lg);
+  margin-bottom: var(--ds-space-sm);
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.shell-nav__logo {
+  font-size: 1.5rem;
+  background: var(--ds-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.shell-nav__brand-title {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ds-text-primary);
+}
+
+.shell-nav__brand-sub {
+  margin: 0;
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ds-accent-violet);
+}
+
+.shell-nav__scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-gutter: stable;
+}
+
+.shell-nav__group {
+  margin-bottom: var(--ds-space-lg);
+}
+
+.shell-nav__group-label {
+  margin: 0 0 var(--ds-space-sm);
+  padding: 0 var(--ds-space-sm);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ds-text-muted);
+}
+
+.shell-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shell-nav__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: var(--ds-control-h);
+  min-height: var(--ds-control-h);
+  max-height: var(--ds-control-h);
+  padding: 0 12px;
+  border: none;
+  border-radius: var(--ds-radius-md);
+  background: transparent;
+  color: var(--ds-text-secondary);
+  font-family: var(--ds-font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--ds-duration-fast), color var(--ds-duration-fast);
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  flex-shrink: 0;
+}
+
+.shell-nav__item:hover:not(.shell-nav__item--active) {
+  background: var(--ds-surface);
+  color: var(--ds-text-primary);
+}
+
+.shell-nav__item--active {
+  background: var(--ds-accent-muted);
+  color: var(--ds-text-primary);
+  box-shadow: inset 3px 0 0 var(--ds-accent);
+}
+
+.shell-nav__icon {
+  font-size: 1.15rem;
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.shell-nav__name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Mobile bottom dock ── */
+.shell-dock {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  background: rgba(8, 8, 15, 0.92);
+  border-top: 1px solid var(--ds-border);
+  backdrop-filter: blur(var(--ds-blur-lg));
+  justify-content: space-around;
+  gap: 4px;
+}
+
+.shell-dock__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  max-width: 72px;
+  height: 52px;
+  min-height: 52px;
+  max-height: 52px;
+  padding: 6px 4px;
+  border: none;
+  border-radius: var(--ds-radius-md);
+  background: transparent;
+  color: var(--ds-text-muted);
+  font-family: var(--ds-font-body);
+  font-size: 0.6rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--ds-duration-fast), color var(--ds-duration-fast);
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.shell-dock__item--active {
+  color: var(--ds-accent);
+  background: var(--ds-accent-muted);
+  box-shadow: inset 0 0 0 1px var(--ds-accent-border);
+}
+
+.shell-dock__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.shell-dock__label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Mobile sheet */
+.shell-sheet-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.shell-sheet {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  max-height: 75vh;
+  background: var(--ds-bg-elevated);
+  border: 1px solid var(--ds-border-strong);
+  border-radius: var(--ds-radius-xl) var(--ds-radius-xl) 0 0;
+  transform: translateY(100%);
+  transition: transform var(--ds-duration-normal) var(--ds-ease-out);
+}
+
+.shell-sheet--open {
+  transform: translateY(0);
+}
+
+.shell-sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ds-space-md) var(--ds-space-lg);
+  border-bottom: 1px solid var(--ds-border);
+}
+
+.shell-sheet__title {
+  margin: 0;
+  font-family: var(--ds-font-display);
+  font-size: 1.1rem;
+  color: var(--ds-text-primary);
+}
+
+.shell-sheet__close {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--ds-border);
+  border-radius: 50%;
+  background: var(--ds-surface);
+  color: var(--ds-text-primary);
+  cursor: pointer;
+}
+
+.shell-sheet__body {
+  padding: var(--ds-space-md) var(--ds-space-lg) calc(var(--ds-space-xl) + 72px);
+}
+
+/* ── Ritual steps (gameplay UX) ── */
+.ritual-steps {
+  display: flex;
+  gap: var(--ds-space-sm);
+  margin-bottom: var(--ds-space-lg);
+}
+
+.ritual-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: var(--ds-space-sm);
+  border-radius: var(--ds-radius-md);
+  border: 1px solid var(--ds-border);
+  background: var(--ds-bg-surface);
+  opacity: 0.45;
+  transition: all var(--ds-duration-normal);
+}
+
+.ritual-step--active {
+  opacity: 1;
+  border-color: var(--ds-accent-border);
+  box-shadow: none;
+  background: var(--ds-accent-muted);
+}
+
+.ritual-step--done {
+  opacity: 0.85;
+  border-color: var(--ds-border-strong);
+}
+
+.ritual-step__num {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--ds-surface);
+  color: var(--ds-text-secondary);
+}
+
+.ritual-step--active .ritual-step__num {
+  background: var(--ds-accent-deep);
+  color: #fff;
+}
+
+.ritual-step__label {
+  font-size: 0.7rem;
+  color: var(--ds-text-muted);
+  text-align: center;
+}
+
+.ritual-step--active .ritual-step__label {
+  color: var(--ds-text-primary);
+}
+
+/* Spread picker (tarot) */
+.spread-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--ds-space-md);
+}
+
+.spread-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-sm);
+  padding: var(--ds-space-lg);
+  text-align: left;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-surface);
+  cursor: pointer;
+  transition: border-color var(--ds-duration-normal) var(--ds-ease-out),
+    background var(--ds-duration-normal) var(--ds-ease-out);
+  font-family: var(--ds-font-body);
+  color: var(--ds-text-primary);
+}
+
+.spread-card:hover {
+  border-color: var(--ds-accent-border);
+  background: var(--ds-surface-hover);
+}
+
+.spread-card--primary {
+  background: var(--ds-accent-muted);
+  border-color: var(--ds-accent-border);
+}
+
+.spread-card__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  height: 48px;
+  color: var(--ds-accent);
+}
+
+.spread-card__icon {
+  font-size: 1.75rem;
+}
+
+.spread-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.spread-card__desc {
+  font-size: 0.8rem;
+  color: var(--ds-text-secondary);
+  margin: 0;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.spread-card__tag {
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--ds-radius-full);
+  background: var(--ds-bg-surface);
+  border: 1px solid var(--ds-border);
+  color: var(--ds-text-muted);
+}
+
+.spread-card--primary .spread-card__tag {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--ds-accent-border);
+  color: var(--ds-accent);
+}
+
+/* Feature SVG icons in nav / topbar */
+.shell-topbar__icon .tarot-logo-mark {
+  color: var(--ds-accent);
+}
+
+.shell-nav__icon .tarot-logo-mark,
+.shell-dock__icon .tarot-logo-mark {
+  color: var(--ds-text-secondary);
+}
+
+.shell-nav__item--active .shell-nav__icon .tarot-logo-mark,
+.shell-dock__item--active .shell-dock__icon .tarot-logo-mark {
+  color: var(--ds-accent);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .shell__main {
+    padding: 0 var(--ds-space-sm);
+  }
+
+  .shell-nav--desktop {
+    display: none;
+  }
+
+  .shell-dock,
+  .shell-sheet,
+  .shell-sheet-backdrop {
+    display: flex;
+  }
+
+  .shell-sheet {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .shell-stage {
+    padding-bottom: calc(var(--ds-space-2xl) + 72px);
+  }
+
+  .shell-topbar {
+    margin-top: var(--ds-space-sm);
+    margin-bottom: var(--ds-space-md);
+    padding: var(--ds-space-sm) var(--ds-space-md);
+  }
+
+  .shell-topbar__actions .btn {
+    padding: 0 0.85rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 901px) {
+  .shell-dock,
+  .shell-sheet,
+  .shell-sheet-backdrop {
+    display: none !important;
+  }
+}

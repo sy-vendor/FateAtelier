@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import './NameGenerator.css'
 import { toast } from '../utils/toast'
 import { logger } from '../utils/logger'
+import { Page, Panel, Button, Segmented, ChipGrid } from './ui'
 
 function NameGenerator() {
   const [surname, setSurname] = useState('')
@@ -1424,153 +1424,140 @@ function NameGenerator() {
   }
 
   return (
-    <div className="name-generator-page">
-      <div className="name-generator-header">
-        <h1>✨ 智能取名</h1>
-        <p className="subtitle">根据您的信息，为您推荐合适的名字</p>
-      </div>
-
-      <div className={`name-generator-content ${generatedNames.length > 0 ? 'has-results' : ''}`}>
-        <div className="input-section">
-          <div className="input-group">
-            <label>姓氏 *</label>
-            <input
-              type="text"
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
-              placeholder="请输入姓氏"
-              className="name-input"
-              maxLength={5}
-            />
-          </div>
-
-          <div className="input-group">
-            <label>性别</label>
-            <div className="gender-buttons">
-              <button
-                className={`gender-btn ${gender === 'male' ? 'active' : ''}`}
-                onClick={() => setGender('male')}
-              >
-                👦 男
-              </button>
-              <button
-                className={`gender-btn ${gender === 'female' ? 'active' : ''}`}
-                onClick={() => setGender('female')}
-              >
-                👧 女
-              </button>
-              <button
-                className={`gender-btn ${gender === '' ? 'active' : ''}`}
-                onClick={() => setGender('')}
-              >
-                🌈 不限
-              </button>
-            </div>
-          </div>
-
-          <div className="input-group">
-            <label>出生日期（可选）</label>
-            <input
-              type="date"
-              value={birthDate}
-              onChange={(e) => setBirthDate(e.target.value)}
-              className="name-input"
-            />
-          </div>
-
-          <div className="input-group">
-            <label>出生时间（可选）</label>
-            <input
-              type="time"
-              value={birthTime}
-              onChange={(e) => setBirthTime(e.target.value)}
-              className="name-input"
-            />
-          </div>
-
-          <div className="input-group">
-            <label>名字长度</label>
-            <div className="length-buttons">
-              <button
-                className={`length-btn ${nameLength === 'any' ? 'active' : ''}`}
-                onClick={() => setNameLength('any')}
-              >
-                任意
-              </button>
-              {surname.length <= 1 && (
-                <button
-                  className={`length-btn ${nameLength === '2' ? 'active' : ''}`}
-                  onClick={() => setNameLength('2')}
-                >
-                  两个字
-                </button>
-              )}
-              <button
-                className={`length-btn ${nameLength === '3' ? 'active' : ''}`}
-                onClick={() => setNameLength('3')}
-                disabled={surname.length > 1 && nameLength === '2'}
-              >
-                三个字
-              </button>
-              <button
-                className={`length-btn ${nameLength === '4' ? 'active' : ''}`}
-                onClick={() => setNameLength('4')}
-              >
-                四个字
-              </button>
-            </div>
-            {surname.length > 1 && (
-              <p style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)', marginTop: '0.5rem' }}>
-                复姓从三个字开始
-              </p>
-            )}
-          </div>
-
-          <div className="input-group">
-            <label>个人偏好（可多选）</label>
-            <div className="preference-tags">
-              {preferenceOptions.map(pref => (
-                <button
-                  key={pref}
-                  className={`preference-tag ${preferences.includes(pref) ? 'active' : ''}`}
-                  onClick={() => togglePreference(pref)}
-                >
-                  {pref}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <button
-            className="generate-btn"
-            onClick={generateNames}
-            disabled={!surname.trim() || isGenerating}
-          >
-            {isGenerating ? '生成中...' : '🤖 智能生成名字'}
-          </button>
+    <Page title="✨ 智能取名" subtitle="根据您的信息，为您推荐合适的名字">
+      <Panel title="填写信息">
+        <div className="field">
+          <label className="field__label" htmlFor="name-gen-surname">
+            姓氏 *
+          </label>
+          <input
+            id="name-gen-surname"
+            type="text"
+            className="field__input"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            placeholder="请输入姓氏"
+            maxLength={5}
+          />
         </div>
 
-        {generatedNames.length > 0 && (
-          <div className="results-section">
-            <h2>为您推荐的名字</h2>
-            <div className="names-grid">
-              {generatedNames.map((name, index) => (
-                <div key={index} className="name-card">
-                  <div className="name-text">{name}</div>
-                  <button
-                    className="copy-btn"
-                    onClick={() => copyName(name)}
-                    title="复制"
-                  >
-                    📋
-                  </button>
-                </div>
-              ))}
-            </div>
+        <div className="field">
+          <span className="field__label">性别</span>
+          <ChipGrid
+            items={[
+              { id: 'male', icon: '👦', label: '男' },
+              { id: 'female', icon: '👧', label: '女' },
+              { id: '', icon: '🌈', label: '不限' },
+            ]}
+            value={gender}
+            onChange={(id) => setGender(id as 'male' | 'female' | '')}
+          />
+        </div>
+
+        <div className="field">
+          <label className="field__label" htmlFor="name-gen-birth-date">
+            出生日期（可选）
+          </label>
+          <input
+            id="name-gen-birth-date"
+            type="date"
+            className="field__input"
+            value={birthDate}
+            onChange={(e) => setBirthDate(e.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <label className="field__label" htmlFor="name-gen-birth-time">
+            出生时间（可选）
+          </label>
+          <input
+            id="name-gen-birth-time"
+            type="time"
+            className="field__input"
+            value={birthTime}
+            onChange={(e) => setBirthTime(e.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <span className="field__label">名字长度</span>
+          <Segmented
+            block
+            value={nameLength}
+            options={[
+              { value: 'any', label: '任意' },
+              ...(surname.length <= 1 ? [{ value: '2' as const, label: '两个字' }] : []),
+              { value: '3', label: '三个字' },
+              { value: '4', label: '四个字' },
+            ]}
+            onChange={setNameLength}
+          />
+          {surname.length > 1 && (
+            <p className="callout">复姓从三个字开始</p>
+          )}
+        </div>
+
+        <div className="field">
+          <span className="field__label">个人偏好（可多选）</span>
+          <div className="chip-grid chip-grid--wide">
+            {preferenceOptions.map((pref) => (
+              <button
+                key={pref}
+                type="button"
+                className={`chip${preferences.includes(pref) ? ' chip--active' : ''}`}
+                onClick={() => togglePreference(pref)}
+              >
+                <span className="chip__label">{pref}</span>
+              </button>
+            ))}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+
+        <Button
+          variant="primary"
+          block
+          onClick={generateNames}
+          disabled={!surname.trim() || isGenerating}
+        >
+          {isGenerating ? '生成中...' : '🤖 智能生成名字'}
+        </Button>
+      </Panel>
+
+      {generatedNames.length > 0 && (
+        <Panel title="为您推荐的名字">
+          <div className="card-grid">
+            {generatedNames.map((name, index) => (
+              <article
+                key={index}
+                className="card-grid__item"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 'var(--ds-space-sm)',
+                }}
+              >
+                <span
+                  style={{
+                    flex: 1,
+                    textAlign: 'center',
+                    fontSize: '1.25rem',
+                    fontWeight: 700,
+                    color: 'var(--ds-text-primary)',
+                  }}
+                >
+                  {name}
+                </span>
+                <Button small onClick={() => copyName(name)} title="复制">
+                  📋
+                </Button>
+              </article>
+            ))}
+          </div>
+        </Panel>
+      )}
+    </Page>
   )
 }
 
