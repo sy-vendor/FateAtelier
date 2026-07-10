@@ -8,6 +8,7 @@ import {
   type DetailField,
 } from '../../utils/divinationData'
 import { cleanRepetitiveText } from '../../utils/divinationEngine'
+import { isMobileDevice, isShakeSupported } from '../../utils/deviceShake'
 import { useDivinationGame } from '../../hooks/useDivinationGame'
 import { DivinationLogoMark } from '../divination/DivinationLogoMark'
 import { DivinationRitualBar } from '../divination/DivinationRitualBar'
@@ -34,6 +35,8 @@ function DivinationMainView() {
     stickReading,
     filteredHistory,
     drawStick,
+    motionPermission,
+    ensureMotionPermission,
     toggleFavorite,
     copyToClipboard,
     shareStick,
@@ -74,7 +77,11 @@ function DivinationMainView() {
       </section>
 
       <section className="divination-shrine" aria-label="签筒仪式">
-        <p className="divination-shrine__hint">点击签筒或摇一摇手机开始求签</p>
+        <p className="divination-shrine__hint">
+          {isMobileDevice() && isShakeSupported() && motionPermission !== 'granted'
+            ? '点击签筒开启摇一摇权限，之后可摇手机求签'
+            : '点击签筒或摇一摇手机开始求签'}
+        </p>
         <div className="stick-container">
           <button
             type="button"
@@ -86,7 +93,10 @@ function DivinationMainView() {
             ]
               .filter(Boolean)
               .join(' ')}
-            onClick={drawStick}
+            onClick={() => {
+              void ensureMotionPermission()
+              drawStick()
+            }}
             disabled={isShaking || phase === 'revealing'}
             aria-label="摇签求签"
           >
@@ -123,7 +133,15 @@ function DivinationMainView() {
             </span>
           </button>
 
-          <Button variant="primary" block onClick={drawStick} disabled={isShaking || phase === 'revealing'}>
+          <Button
+            variant="primary"
+            block
+            onClick={() => {
+              void ensureMotionPermission()
+              drawStick()
+            }}
+            disabled={isShaking || phase === 'revealing'}
+          >
             {isShaking ? '摇签中…' : phase === 'revealing' ? '揭签中…' : '开始摇签'}
           </Button>
         </div>

@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { divinationSticks, type DivinationStick } from '../data/divinationSticks'
-import { buildStickReading, type StickReading } from '../utils/divinationEngine'
+import { buildStickReading, resolveCanonicalStick, type StickReading } from '../utils/divinationEngine'
+import {
+  createShakeListener,
+  isMobileDevice,
+  isShakeSupported,
+  requestMotionPermission,
+  type MotionPermissionState,
+} from '../utils/deviceShake'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
@@ -54,6 +61,8 @@ export function useDivinationGame() {
   })
   const [copied, setCopied] = useState(false)
   const [historySearch, setHistorySearch] = useState('')
+  const [motionPermission, setMotionPermission] = useState<MotionPermissionState>('unknown')
+  const motionPermissionRef = useRef<MotionPermissionState>('unknown')
 
   const drawHistoryRef = useRef(drawHistory)
   drawHistoryRef.current = drawHistory
@@ -92,8 +101,23 @@ export function useDivinationGame() {
     }
   }, [])
 
+  const ensureMotionPermission = useCallback(async () => {
+    if (!isShakeSupported() || !isMobileDevice()) return
+    if (motionPermissionRef.current === 'granted' || motionPermissionRef.current === 'denied') return
+
+    const state = await requestMotionPermission()
+    motionPermissionRef.current = state
+    setMotionPermission(state)
+
+    if (state === 'denied') {
+      toast.warning('未开启运动传感器权限，请点击签筒求签')
+    }
+  }, [])
+
   const drawStick = useCallback(() => {
     if (isShaking) return
+
+    void ensureMotionPermission()
 
     setPhase('shaking')
     setIsShaking(true)
@@ -119,25 +143,15 @@ export function useDivinationGame() {
         setDrawHistory((prev) => [historyItem, ...prev])
       }, 600)
     }, 1800)
-  }, [isShaking, selectedCategory])
+  }, [isShaking, selectedCategory, ensureMotionPermission])
 
   useEffect(() => {
     if (phase !== 'intent' && phase !== 'done') return
-    let lastShake = 0
-    const threshold = 14
-    const onMotion = (e: DeviceMotionEvent) => {
-      const acc = e.accelerationIncludingGravity
-      if (!acc) return
-      const total = Math.abs(acc.x ?? 0) + Math.abs(acc.y ?? 0) + Math.abs(acc.z ?? 0)
-      const now = Date.now()
-      if (total > threshold && now - lastShake > 1200) {
-        lastShake = now
-        drawStick()
-      }
-    }
-    window.addEventListener('devicemotion', onMotion)
-    return () => window.removeEventListener('devicemotion', onMotion)
-  }, [phase, drawStick])
+    if (!isShakeSupported()) return
+    if (motionPermission === 'denied' || motionPermission === 'unsupported') return
+
+    return createShakeListener(drawStick, { threshold: 15, cooldown: 1200 })
+  }, [phase, drawStick, motionPermission])
 
   const stickReading = useMemo((): StickReading | null => {
     if (!drawnStick) return null
@@ -259,7 +273,7 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
   }, [])
 
   const viewHistoryItem = useCallback((item: DrawHistory) => {
-    setDrawnStick(item.stick)
+    setDrawnStick(resolveCanonicalStick(item.stick))
     setShowResult(true)
     setSelectedCategory(item.category || '')
     setShowDetailed(false)
@@ -285,6 +299,8 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
     stickReading,
     filteredHistory,
     drawStick,
+    motionPermission,
+    ensureMotionPermission,
     toggleFavorite,
     copyToClipboard,
     shareStick,

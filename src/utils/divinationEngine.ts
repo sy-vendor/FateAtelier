@@ -1,4 +1,5 @@
 import type { DivinationStick } from '../data/divinationSticks'
+import { divinationSticks } from '../data/divinationSticks'
 import {
   CATEGORY_DETAIL_KEYS,
   DEFAULT_DETAIL_BY_LEVEL,
@@ -129,25 +130,17 @@ function buildCategoryGuidance(stick: DivinationStick, category: string): string
   return `就${getCategoryLabel(category)}而言，此签主${meta.tone}，宜结合自身处境审慎取舍。`
 }
 
+/** 历史记录等场景可能缺少 plainPoem，按签号回填完整签文 */
+export function resolveCanonicalStick(stick: DivinationStick): DivinationStick {
+  return divinationSticks.find((s) => s.id === stick.id) ?? stick
+}
+
 function buildPoemInsight(stick: DivinationStick): string {
-  const meta = LEVEL_META[stick.level] ?? LEVEL_META['中']
-  const segments = stick.poem.split(/[，。；]/).map((s) => s.trim()).filter(Boolean)
-
-  if (segments.length <= 1) {
-    return `签诗以「${stick.poem}」为旨。${meta.poemTone}，与「${stick.title}」之兆相合。`
+  const resolved = resolveCanonicalStick(stick)
+  if (resolved.plainPoem) {
+    return resolved.plainPoem
   }
-
-  const lines = segments.map((segment, index) => {
-    if (index === 0) {
-      return `首句「${segment}」——开宗明义，点出当下机缘与气象。`
-    }
-    if (index === segments.length - 1) {
-      return `末句「${segment}」——收束全签，示以应事之方向与结局。`
-    }
-    return `「${segment}」——承上启下，提示行事当守之分寸。`
-  })
-
-  return `${meta.poemTone}\n${lines.join('\n')}`
+  return resolved.interpretation
 }
 
 function buildOverview(stick: DivinationStick, category?: string): string {
@@ -183,23 +176,24 @@ function buildAdvice(stick: DivinationStick): string {
  * 将原始签文整理为结构化、可读的完整解签
  */
 export function buildStickReading(stick: DivinationStick, category?: string): StickReading {
-  const meta = LEVEL_META[stick.level] ?? LEVEL_META['中']
+  const resolved = resolveCanonicalStick(stick)
+  const meta = LEVEL_META[resolved.level] ?? LEVEL_META['中']
   const detailFields = category
     ? (CATEGORY_DETAIL_KEYS[category] ?? [])
-    : (DEFAULT_DETAIL_BY_LEVEL[stick.level] ?? ['career', 'wealth', 'health', 'home'])
+    : (DEFAULT_DETAIL_BY_LEVEL[resolved.level] ?? ['career', 'wealth', 'health', 'home'])
 
   return {
-    stick,
-    overview: buildOverview(stick, category),
-    poemInsight: buildPoemInsight(stick),
-    categoryGuidance: category ? buildCategoryGuidance(stick, category) : null,
+    stick: resolved,
+    overview: buildOverview(resolved, category),
+    poemInsight: buildPoemInsight(resolved),
+    categoryGuidance: category ? buildCategoryGuidance(resolved, category) : null,
     categoryLabel: category ? getCategoryLabel(category) : null,
-    aspects: buildAspects(stick, detailFields),
-    advice: buildAdvice(stick),
+    aspects: buildAspects(resolved, detailFields),
+    advice: buildAdvice(resolved),
     auspicious: meta.auspicious,
     cautions: meta.cautions,
     timing: meta.timing,
-    storyNote: stick.story ? cleanRepetitiveText(stick.story, stick.title) : null,
+    storyNote: resolved.story ? cleanRepetitiveText(resolved.story, resolved.title) : null,
   }
 }
 

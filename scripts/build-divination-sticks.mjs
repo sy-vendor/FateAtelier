@@ -7,6 +7,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import { POLISH_1_50 } from './divination-polish/1-50.mjs'
 import { POLISH_51_100 } from './divination-polish/51-100.mjs'
+import { PLAIN_POEMS } from './divination-polish/plain-poems.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const OUT = path.join(__dirname, '../src/data/divinationSticks.ts')
@@ -137,11 +138,17 @@ function emitStick(s) {
     travel: detailed.travel,
   }
 
+  const plainPoem = PLAIN_POEMS[s.id]
+  if (!plainPoem) {
+    throw new Error(`Missing plain poem for stick id ${s.id}`)
+  }
+
   let o = `  {
     id: ${s.id},
     level: '${s.level}',
     title: '${esc(s.title)}',
     poem: '${esc(s.poem)}',
+    plainPoem: '${esc(plainPoem)}',
     interpretation: '${esc(p.interpretation)}',
     advice: '${esc(p.advice)}',
     story: '${esc(p.story)}',
@@ -175,6 +182,7 @@ export interface DivinationStick {
   level: '上上' | '上' | '中上' | '中' | '中下' | '下' | '下下'
   title: string
   poem: string
+  plainPoem: string
   interpretation: string
   advice: string
   story?: string
