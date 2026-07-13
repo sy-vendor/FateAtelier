@@ -27,10 +27,29 @@ const POSITION_LABEL = {
   future: '未来',
 } as const
 
-const POSITION_HINT = {
-  past: '这段经历仍在影响你的判断与情绪，宜从中提炼教训而非沉溺。',
-  present: '这是当下最需要你正视的能量，你的回应将直接塑造下一步。',
-  future: '这是趋势所向，并非定数——清醒准备，仍可因行动而改变走向。',
+/** 三牌时空各列顶部的短副标题（与牌面解读引擎分离，供 UI 展示） */
+export const THREE_CARD_POSITION_HINT = {
+  过去: '已沉淀的因缘',
+  现在: '当下的核心',
+  未来: '趋势所向',
+} as const
+
+const POSITION_HINTS = {
+  past: [
+    '这段经历仍在影响你的判断，值得提炼，不必重演。',
+    '它像一条暗线牵引至今：看清当时的选择，才能松开旧有惯性。',
+    '过去带来的不只是结果，还有你已经练出的能力与尚未卸下的包袱。',
+  ],
+  present: [
+    '当下的关键不在预测，而在你准备怎样回应。',
+    '这张牌把焦点拉回此刻：一个清晰的小决定，胜过反复揣测远方。',
+    '你正处在转折的受力点，态度与行动会比外部条件更快改变局面。',
+  ],
+  future: [
+    '这是按当前轨迹延伸的趋势，不是无法更改的定数。',
+    '未来的门已露出轮廓，你今天的取舍决定它会向哪一边打开。',
+    '把这张牌当作天气预报：顺风时扬帆，起雾时减速，主动权仍在你手中。',
+  ],
 } as const
 
 function getTypeLabel(type: ReadingType, customQuestion?: string): string {
@@ -132,7 +151,7 @@ function buildPositionReading(
   const energy = getEnergyLabel(isReversed, position)
   const { keywords, prose, themed } = getCardReading(card, isReversed, readingType)
   const label = POSITION_LABEL[position]
-  const hint = POSITION_HINT[position]
+  const hint = POSITION_HINTS[position][card.id % POSITION_HINTS[position].length]
 
   let text = `${label}：${card.name}（${orient}）——${energy}。${prose}`
   if (themed) {
@@ -187,6 +206,29 @@ function buildAdvice(
   return `${prefix}${core}`
 }
 
+function buildCardSynthesis(cards: DrawnCard[]): string {
+  const [past, present, future] = cards
+  const pastFlow = past.isReversed ? '尚未理顺的旧课题' : '已经积累的经验'
+  const presentFlow = present.isReversed ? '在当下形成卡点' : '正在当下发挥作用'
+  const futureFlow = future.isReversed ? '若不调整，可能继续内耗' : '若顺势行动，会逐渐打开局面'
+  return `三张牌的关联在于：「${past.card.name}」所代表的${pastFlow}，经由「${present.card.name}」${presentFlow}，最终走向「${future.card.name}」所提示的阶段——${futureFlow}。`
+}
+
+/** 按最新引擎逻辑重新生成三牌解读（历史/导出/分享应优先调用） */
+export function resolveThreeCardInterpretation(reading: {
+  type: 'single' | 'three'
+  cards: DrawnCard[]
+  readingType?: string
+  customQuestion?: string
+}): ReadingInterpretation | null {
+  if (reading.type !== 'three' || reading.cards.length !== 3) return null
+  return generateThreeCardReading(
+    reading.cards,
+    (reading.readingType as ReadingType) || 'general',
+    reading.customQuestion,
+  )
+}
+
 export const generateThreeCardReading = (
   cards: DrawnCard[],
   readingType: ReadingType = 'general',
@@ -208,7 +250,7 @@ export const generateThreeCardReading = (
   const trend = buildTrend(reversedCount, majorCount)
 
   return {
-    summary: buildSummary(readingType, trend, customQuestion),
+    summary: `${buildSummary(readingType, trend, customQuestion)} ${buildCardSynthesis(cards)}`,
     past: buildPositionReading(pastCard, 'past', readingType),
     present: buildPositionReading(presentCard, 'present', readingType),
     future: buildPositionReading(futureCard, 'future', readingType),

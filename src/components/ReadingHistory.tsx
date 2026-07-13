@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { DrawnCard } from '../types'
-import { generateThreeCardReading } from '../utils/readingInterpretation'
+import { generateThreeCardReading, resolveThreeCardInterpretation } from '../utils/readingInterpretation'
 import { readingTypes } from '../types/reading'
 import './ReadingHistory.css'
 import { Button } from './ui'
@@ -119,11 +119,15 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
                 </button>
               </div>
             </div>
-            {reading.type === 'three' && reading.interpretation && (
-              <div className="history-preview">
-                <p className="preview-text">{reading.interpretation.summary}</p>
-              </div>
-            )}
+            {reading.type === 'three' && (() => {
+              const interpretation = resolveThreeCardInterpretation(reading) ?? reading.interpretation
+              if (!interpretation) return null
+              return (
+                <div className="history-preview">
+                  <p className="preview-text">{interpretation.summary}</p>
+                </div>
+              )
+            })()}
           </div>
           ))
         )}

@@ -104,6 +104,7 @@ export function useTarotGame() {
         timestamp: Date.now()
       }
       setReadingHistory((prev) => [historyRecord, ...prev])
+      setViewingHistoryReading(historyRecord)
 
       setDrawingCard(null)
       setShowDrawAnimation(false)
@@ -164,6 +165,7 @@ export function useTarotGame() {
         customQuestion: customQuestion
       }
       setReadingHistory((prev) => [historyRecord, ...prev])
+      setViewingHistoryReading(historyRecord)
 
       setDrawingThreeCards(null)
       setShowThreeCardAnimation(false)

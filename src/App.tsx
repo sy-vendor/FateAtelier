@@ -14,7 +14,11 @@ import './components/app/app-shell.css'
 const TarotLibrary = lazy(() => import('./components/tarot/TarotLibrary'))
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<AppPage>('tarot')
+  const pageFromLocation = (): AppPage => {
+    const slug = window.location.pathname.split('/').filter(Boolean)[0] || 'tarot'
+    return APP_FEATURES.some((feature) => feature.page === slug) ? slug as AppPage : 'tarot'
+  }
+  const [currentPage, setCurrentPage] = useState<AppPage>(pageFromLocation)
   const tarot = useTarotGame()
 
   const currentFeature = useMemo(
@@ -27,6 +31,29 @@ function App() {
     void import('./components/tarot/TarotLibrary')
   }, [])
 
+  useEffect(() => {
+    const onPopState = () => setCurrentPage(pageFromLocation())
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [])
+
+  useEffect(() => {
+    const canonicalUrl = `https://www.fateatelier.cloud/${currentPage}`
+    document.title = `${currentFeature.seoTitle} | 命运工坊`
+    document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', currentFeature.description)
+    document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute('content', document.title)
+    document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute('content', currentFeature.description)
+    document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute('content', canonicalUrl)
+    document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', canonicalUrl)
+  }, [currentFeature, currentPage])
+
+  const navigateTo = (page: AppPage) => {
+    if (page === currentPage) return
+    window.history.pushState(null, '', `/${page}`)
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <div className="shell">
       <div className="shell__backdrop aurora-orbs" aria-hidden="true">
@@ -35,7 +62,7 @@ function App() {
         <span className="aurora-orb aurora-orb--cyan" />
       </div>
 
-      <AppNav currentPage={currentPage} onSelect={setCurrentPage} />
+      <AppNav currentPage={currentPage} onSelect={navigateTo} />
 
       <div className="shell__main">
         <header className="shell-topbar">

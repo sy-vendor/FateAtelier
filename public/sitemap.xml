@@ -7,14 +7,14 @@
   <!-- 主页 -->
   <url>
     <loc>https://www.fateatelier.cloud/</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2026-07-13</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   
   <!-- 塔罗占卜 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#tarot</loc>
+    <loc>https://www.fateatelier.cloud/tarot</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -22,7 +22,7 @@
   
   <!-- 星座运势 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#horoscope</loc>
+    <loc>https://www.fateatelier.cloud/horoscope</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -30,7 +30,7 @@
   
   <!-- 今日黄历 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#almanac</loc>
+    <loc>https://www.fateatelier.cloud/almanac</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -38,7 +38,7 @@
   
   <!-- 八字算命 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#bazi</loc>
+    <loc>https://www.fateatelier.cloud/bazi</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -46,7 +46,7 @@
   
   <!-- 抽签求签 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#divination</loc>
+    <loc>https://www.fateatelier.cloud/divination</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -54,7 +54,7 @@
   
   <!-- 梦境解析 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#dream</loc>
+    <loc>https://www.fateatelier.cloud/dream</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -62,7 +62,7 @@
   
   <!-- 风水罗盘 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#fengshui</loc>
+    <loc>https://www.fateatelier.cloud/fengshui</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -70,7 +70,7 @@
   
   <!-- 择日吉时 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#auspicious</loc>
+    <loc>https://www.fateatelier.cloud/auspicious</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -78,7 +78,7 @@
   
   <!-- 数字能量 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#numberenergy</loc>
+    <loc>https://www.fateatelier.cloud/numberenergy</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -86,7 +86,7 @@
   
   <!-- 每日幸运色 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#luckycolor</loc>
+    <loc>https://www.fateatelier.cloud/luckycolor</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -94,7 +94,7 @@
   
   <!-- 奇门遁甲 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#qimen</loc>
+    <loc>https://www.fateatelier.cloud/qimen</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -102,7 +102,7 @@
   
   <!-- 姓名测试 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#nametest</loc>
+    <loc>https://www.fateatelier.cloud/nametest</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -110,7 +110,7 @@
   
   <!-- 紫微斗数 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#ziwei</loc>
+    <loc>https://www.fateatelier.cloud/ziwei</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -118,7 +118,7 @@
   
   <!-- 生肖配对 -->
   <url>
-    <loc>https://www.fateatelier.cloud/#shengxiao</loc>
+    <loc>https://www.fateatelier.cloud/shengxiao</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

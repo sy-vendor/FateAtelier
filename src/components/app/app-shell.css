@@ -302,6 +302,7 @@
   font-weight: 500;
   line-height: 1;
   text-align: left;
+  text-decoration: none;
   cursor: pointer;
   transition: background var(--ds-duration-fast), color var(--ds-duration-fast);
   box-sizing: border-box;
@@ -371,6 +372,7 @@
   font-size: 0.6rem;
   font-weight: 500;
   line-height: 1;
+  text-decoration: none;
   cursor: pointer;
   transition: background var(--ds-duration-fast), color var(--ds-duration-fast);
   box-sizing: border-box;

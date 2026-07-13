@@ -27,10 +27,11 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
               const active = page === currentPage
               return (
                 <li key={page}>
-                  <button
-                    type="button"
+                  <a
+                    href={`/${page}`}
                     className={`shell-nav__item${active ? ' shell-nav__item--active' : ''}`}
-                    onClick={() => {
+                    onClick={(event) => {
+                      event.preventDefault()
                       onSelect(page)
                       setMobileOpen(false)
                     }}
@@ -40,7 +41,7 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
                       <FeatureIcon page={page} size="sm" />
                     </span>
                     <span className="shell-nav__name">{f.name}</span>
-                  </button>
+                  </a>
                 </li>
               )
             })}
@@ -70,11 +71,11 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
           const f = featureMeta(page)
           const active = page === currentPage
           return (
-            <button
+            <a
               key={page}
-              type="button"
+              href={`/${page}`}
               className={`shell-dock__item${active ? ' shell-dock__item--active' : ''}`}
-              onClick={() => onSelect(page)}
+              onClick={(event) => { event.preventDefault(); onSelect(page) }}
               aria-label={f.name}
               aria-current={active ? 'page' : undefined}
             >
@@ -82,7 +83,7 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
                 <FeatureIcon page={page} size="sm" />
               </span>
               <span className="shell-dock__label">{f.name.replace(/占卜|运势|求签/g, '')}</span>
-            </button>
+            </a>
           )
         })}
         <button

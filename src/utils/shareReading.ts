@@ -1,4 +1,5 @@
 import { ReadingRecord } from '../components/ReadingHistory'
+import { resolveThreeCardInterpretation } from './readingInterpretation'
 import { toast } from '../utils/toast'
 
 export const shareReading = async (reading: ReadingRecord): Promise<void> => {
@@ -38,8 +39,10 @@ const generateShareText = (reading: ReadingRecord): string => {
       const position = index === 0 ? '过去' : index === 1 ? '现在' : '未来'
       text += `${position}: ${card.card.name} (${card.isReversed ? '逆位' : '正位'})\n`
     })
-    if (reading.interpretation) {
-      text += `\n整体趋势: ${reading.interpretation.summary}\n`
+    const interpretation = resolveThreeCardInterpretation(reading) ?? reading.interpretation
+    if (interpretation) {
+      text += `\n时空串联: ${interpretation.summary}\n`
+      text += `综合指引: ${interpretation.advice}\n`
     }
   }
 

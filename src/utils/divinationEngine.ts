@@ -147,13 +147,21 @@ function buildOverview(stick: DivinationStick, category?: string): string {
   const meta = LEVEL_META[stick.level] ?? LEVEL_META['中']
   const core = cleanRepetitiveText(stick.interpretation, stick.title)
 
-  let overview = `第${stick.id}签「${stick.title}」为${stick.level}签，${meta.tone}。`
+  const openings = [
+    `第${stick.id}签「${stick.title}」，签等为${stick.level}。${meta.tone}。`,
+    `今日得第${stick.id}签「${stick.title}」。此签属${stick.level}，${meta.tone}。`,
+    `「${stick.title}」是第${stick.id}签，位列${stick.level}。它为当下局面定下的基调是：${meta.tone}。`,
+  ]
+  let overview = openings[stick.id % openings.length]
   if (core) {
     overview += core
   }
 
   if (category) {
-    overview += ` 您此刻问的是${getCategoryLabel(category)}，签意将侧重此方向展开。`
+    const categoryLead = stick.id % 2 === 0
+      ? ` 你此刻所问为${getCategoryLabel(category)}，下文会把签诗的象意落到这个具体处境。`
+      : ` 就${getCategoryLabel(category)}而言，不必只看吉凶，更要看签中提醒你把握的时机与分寸。`
+    overview += categoryLead
   } else {
     overview += ' 签文涵盖事业、财禄、情感、健康诸端，可依下方分项详批参详。'
   }
@@ -195,6 +203,11 @@ export function buildStickReading(stick: DivinationStick, category?: string): St
     timing: meta.timing,
     storyNote: resolved.story ? cleanRepetitiveText(resolved.story, resolved.title) : null,
   }
+}
+
+/** 历史回看时按最新引擎逻辑重新解签 */
+export function rehydrateStickReading(stick: DivinationStick, category?: string): StickReading {
+  return buildStickReading(resolveCanonicalStick(stick), category)
 }
 
 /** @deprecated 保留兼容；请优先使用 buildStickReading */

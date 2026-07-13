@@ -53,6 +53,12 @@ const FALLBACK_REFLECTIONS = [
   '把梦中最鲜明的一个画面带入白天，观察它何时会再次浮现。',
 ]
 
+const DREAM_OPENINGS = [
+  '这不像一个孤立的画面，更像内心对近期生活做的一次隐喻式整理',
+  '梦没有直说答案，而是借意象把你白天忽略的感受放大了',
+  '这场梦像一封用图像写成的信，关键不只在发生了什么，更在你当时如何感受',
+]
+
 export interface DreamInterpretation {
   symbols: MatchedDreamSymbol[]
   overview: string
@@ -79,7 +85,11 @@ function buildThemes(symbols: MatchedDreamSymbol[]): string {
   const sorted = [...themeCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5)
   if (sorted.length === 0) return ''
   const parts = sorted.map(([t, n]) => (n > 1 ? `${t}（${n}次）` : t))
-  return `梦意主题集中在：${parts.join('、')}。这些意象彼此呼应，勾勒出你近期心理关注的重心。`
+  const focus = sorted[0][0]
+  const tail = sorted.length > 1
+    ? `「${focus}」是主轴，其余主题像支线一样补足了它的来源与去向。`
+    : `单一主题反复聚焦，说明它可能正是你近期最在意的课题。`
+  return `梦意主题集中在：${parts.join('、')}。${tail}`
 }
 
 function buildSymbolNarrative(symbols: MatchedDreamSymbol[]): string {
@@ -100,13 +110,14 @@ function buildSymbolNarrative(symbols: MatchedDreamSymbol[]): string {
     .map((s) => `「${s.matchedKeyword}」${s.meaning}`)
     .join('、')
 
-  let narrative = `梦境中${symbols.length}个意象交织：${highlights}`
+  let narrative = `${DREAM_OPENINGS[symbols.length % DREAM_OPENINGS.length]}。其中${symbols.length}个意象交织：${highlights}`
   if (symbols.length > 4) narrative += '等'
   narrative += `。${catNotes}。`
 
   if (symbols.length >= 2) {
     const [a, b] = symbols
-    narrative += `其中「${a.matchedKeyword}」与「${b.matchedKeyword}」形成对照——前者指向${a.themes[0]}，后者牵涉${b.themes[0]}，二者并置，暗示你内心正在权衡或整合这两种力量。`
+    const relation = a.category === b.category ? '同一心理课题的两个侧面' : '内在需求与外部处境的对话'
+    narrative += `「${a.matchedKeyword}」指向${a.themes[0]}，「${b.matchedKeyword}」牵涉${b.themes[0]}；二者并置，更像${relation}，而不是两个彼此无关的符号。`
   }
 
   return narrative
@@ -166,7 +177,30 @@ function buildReflection(symbols: MatchedDreamSymbol[]): string {
   const primary = symbols[0]
   const idx = primary.keywords[0].charCodeAt(0) % FALLBACK_REFLECTIONS.length
   const base = FALLBACK_REFLECTIONS[idx]
-  return `围绕「${primary.matchedKeyword}」自问：它在现实生活中最可能对应什么？${base}`
+  const prompt = primary.themes.length > 1
+    ? `若「${primary.matchedKeyword}」代表你的一部分，它正在保护什么，又在担心什么？`
+    : `「${primary.matchedKeyword}」在现实中最像哪个人、一件事，或一种尚未说出的感受？`
+  return `梦后一问：${prompt}${base}`
+}
+
+/** 用最新引擎逻辑重新解析梦境（历史回看应优先调用） */
+export function rehydrateDreamInterpretation(record: {
+  content: string
+  mood: string
+  interpretation?: DreamInterpretation & { overall?: string }
+}): DreamInterpretation {
+  if (record.content.trim()) {
+    return interpretDreamWithMood(record.content, record.mood)
+  }
+  return normalizeDreamInterpretation(record.interpretation ?? {
+    symbols: [],
+    overview: '',
+    emotionalTone: null,
+    themes: '',
+    symbolNarrative: '',
+    advice: '',
+    reflection: '',
+  })
 }
 
 export function normalizeDreamInterpretation(

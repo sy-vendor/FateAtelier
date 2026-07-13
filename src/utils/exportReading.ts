@@ -1,4 +1,5 @@
 import { ReadingRecord } from '../components/ReadingHistory'
+import { resolveThreeCardInterpretation } from './readingInterpretation'
 
 export const exportReadingToText = (reading: ReadingRecord): string => {
   let text = '🔮 命运工坊 - 玄机阁\n'
@@ -25,13 +26,15 @@ export const exportReadingToText = (reading: ReadingRecord): string => {
       text += `牌意: ${card.isReversed ? card.card.meaning.reversed : card.card.meaning.upright}\n\n`
     })
 
-    if (reading.interpretation) {
-      text += '综合解读:\n'
-      text += `整体趋势: ${reading.interpretation.summary}\n\n`
-      text += `过去: ${reading.interpretation.past}\n\n`
-      text += `现在: ${reading.interpretation.present}\n\n`
-      text += `未来: ${reading.interpretation.future}\n\n`
-      text += `建议: ${reading.interpretation.advice}\n`
+    const interpretation = resolveThreeCardInterpretation(reading) ?? reading.interpretation
+
+    if (interpretation) {
+      text += '时空串联:\n'
+      text += `整体趋势: ${interpretation.summary}\n\n`
+      text += `过去: ${interpretation.past}\n\n`
+      text += `现在: ${interpretation.present}\n\n`
+      text += `未来: ${interpretation.future}\n\n`
+      text += `综合指引: ${interpretation.advice}\n`
     }
   }
 

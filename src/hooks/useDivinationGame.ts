@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { divinationSticks, type DivinationStick } from '../data/divinationSticks'
-import { buildStickReading, resolveCanonicalStick, type StickReading } from '../utils/divinationEngine'
+import { resolveCanonicalStick, rehydrateStickReading, type StickReading } from '../utils/divinationEngine'
 import {
   createShakeListener,
   isMobileDevice,
@@ -155,7 +155,7 @@ export function useDivinationGame() {
 
   const stickReading = useMemo((): StickReading | null => {
     if (!drawnStick) return null
-    return buildStickReading(drawnStick, selectedCategory || undefined)
+    return rehydrateStickReading(drawnStick, selectedCategory || undefined)
   }, [drawnStick, selectedCategory])
 
   const toggleFavorite = useCallback((stickId: number) => {

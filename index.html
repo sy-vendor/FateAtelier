@@ -75,11 +75,6 @@
         "price": "0",
         "priceCurrency": "CNY"
       },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "1000"
-      },
       "featureList": [
         "塔罗占卜",
         "星座运势",
@@ -112,12 +107,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "命运工坊",
-      "url": "https://www.fateatelier.cloud/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://www.fateatelier.cloud/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "url": "https://www.fateatelier.cloud/"
     }
     </script>
     
@@ -139,7 +129,9 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <main><h1>命运工坊</h1><p>免费在线体验塔罗占卜、星座运势、今日黄历、八字排盘、抽签解签与梦境解析等趣味工具。</p><nav><a href="/tarot">塔罗占卜</a> · <a href="/horoscope">星座运势</a> · <a href="/almanac">今日黄历</a> · <a href="/bazi">八字排盘</a> · <a href="/divination">抽签求签</a> · <a href="/dream">梦境解析</a></nav></main>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-

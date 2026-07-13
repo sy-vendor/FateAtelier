@@ -9,6 +9,7 @@ import CardDisplay from '../CardDisplay'
 import ReadingHistory from '../ReadingHistory'
 import Statistics from '../Statistics'
 import { TarotCardVisual } from '../tarot/TarotCardVisual'
+import { ThreeCardSlot } from '../tarot/ThreeCardSlot'
 import { TarotLogoMark } from '../tarot/TarotLogoMark'
 import { TarotRitualBar } from '../tarot/TarotRitualBar'
 import { DECK_NAME, DECK_NAME_EN } from '../../utils/tarotCardArt'
@@ -113,30 +114,27 @@ function TarotMainViewInner(props: TarotMainViewProps) {
       {threeCardReading && (
         <section className="tarot-reading tarot-reading--three">
           <div className="tarot-reading__head">
+            <p className="tarot-reading__eyebrow">Three Cards</p>
             <h2 className="tarot-reading__title">三牌时空</h2>
             <p className="tarot-reading__sub">过去 · 现在 · 未来</p>
           </div>
 
-          <div className="three-cards-container">
+          <div className="three-cards-grid">
             {threeCardReading.map((drawnCard, index) => (
-              <div key={drawnCard.card.id} className="three-card-item">
-                <span className="card-position-label">
-                  {index === 0 ? '过去' : index === 1 ? '现在' : '未来'}
-                </span>
-                <CardDisplay
-                  card={drawnCard.card}
-                  isReversed={drawnCard.isReversed}
-                  onFlip={() => updateCardReversed(drawnCard.card.id, !drawnCard.isReversed)}
-                  compact
-                />
-              </div>
+              <ThreeCardSlot
+                key={drawnCard.card.id}
+                label={index === 0 ? '过去' : index === 1 ? '现在' : '未来'}
+                drawnCard={drawnCard}
+                highlight={index === 1}
+                onFlip={() => updateCardReversed(drawnCard.card.id, !drawnCard.isReversed)}
+              />
             ))}
           </div>
 
           {readingInterpretation && (
             <div className="reading-interpretation">
               <div className="interpretation-header">
-                <h3 className="interpretation-title">综合解读</h3>
+                <h3 className="interpretation-title">时空串联</h3>
                 {viewingHistoryReading && (
                   <div className="action-buttons">
                     <Button
@@ -179,7 +177,7 @@ function TarotMainViewInner(props: TarotMainViewProps) {
                 </div>
 
                 <div className="interpretation-advice">
-                  <h4>建议</h4>
+                  <h4>综合指引</h4>
                   <p>{readingInterpretation.advice}</p>
                 </div>
               </div>
