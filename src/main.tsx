@@ -6,6 +6,11 @@ import './index.css'
 import './components/ui/ui.css'
 import { logger } from './utils/logger'
 
+// Pause decorative infinite animations while the tab is hidden.
+document.addEventListener('visibilitychange', () => {
+  document.documentElement.classList.toggle('app-background-paused', document.hidden)
+})
+
 /** 强制清理：卸载当前 origin 下所有 Service Worker，并删除所有 Cache Storage */
 function forceClearSwAndCache(): Promise<void> {
   if (!('serviceWorker' in navigator)) return Promise.resolve()
@@ -47,4 +52,3 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     </ErrorBoundary>
   </React.StrictMode>,
 )
-

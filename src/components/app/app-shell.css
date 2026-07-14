@@ -24,6 +24,18 @@
   animation: orb-float 20s ease-in-out infinite;
 }
 
+.tarot-route-tools {
+  display: flex;
+  justify-content: flex-end;
+  min-height: var(--ds-control-h);
+  margin-bottom: var(--ds-space-sm);
+}
+
+html.app-background-paused .aurora-orb,
+html.app-background-paused body::after {
+  animation-play-state: paused;
+}
+
 .aurora-orb--violet {
   width: 420px;
   height: 420px;
@@ -60,6 +72,17 @@
   }
   66% {
     transform: translate(-20px, 25px) scale(0.95);
+  }
+}
+
+@media (max-width: 768px) {
+  .aurora-orb {
+    filter: blur(48px);
+    animation: none;
+  }
+
+  .aurora-orb--cyan {
+    display: none;
   }
 }
 
@@ -160,12 +183,187 @@
 }
 
 /* ── Content stage ── */
+.daily-journey {
+  width: 100%;
+  max-width: var(--shell-content-width);
+  margin: 0 0 var(--ds-space-lg);
+  padding: var(--ds-space-lg);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-xl);
+  background:
+    linear-gradient(135deg, rgba(139, 124, 246, 0.1), transparent 48%),
+    var(--ds-bg-surface);
+  box-sizing: border-box;
+}
+
+.daily-journey--done {
+  border-color: var(--ds-accent-border);
+}
+
+.daily-journey__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ds-space-md);
+}
+
+.daily-journey__eyebrow,
+.daily-mission__eyebrow {
+  margin: 0 0 3px;
+  color: var(--ds-accent-violet);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.daily-journey__title {
+  margin: 0;
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-display);
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: 600;
+}
+
+.daily-journey__streak {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-shrink: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--ds-accent-border);
+  border-radius: 999px;
+  background: var(--ds-accent-muted);
+  color: var(--ds-text-secondary);
+  font-size: 0.7rem;
+}
+
+.daily-journey__streak strong {
+  color: var(--ds-text-primary);
+  font-size: 1rem;
+}
+
+.daily-journey__progress {
+  height: 4px;
+  margin: var(--ds-space-md) 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.daily-journey__progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--ds-gradient-primary);
+  transition: width 0.35s var(--ds-ease-out);
+}
+
+.daily-journey__missions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--ds-space-sm);
+}
+
+.daily-mission {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--ds-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--ds-duration-fast), background var(--ds-duration-fast), transform var(--ds-duration-fast);
+}
+
+.daily-mission:hover {
+  transform: translateY(-1px);
+  border-color: var(--ds-accent-border);
+  background: var(--ds-accent-muted);
+}
+
+.daily-mission--done {
+  border-color: rgba(110, 184, 212, 0.25);
+  background: rgba(110, 184, 212, 0.06);
+}
+
+.daily-mission__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: var(--ds-accent-muted);
+  color: var(--ds-accent-cyan);
+}
+
+.daily-mission__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.daily-mission__copy strong {
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.daily-mission__copy > span:last-child {
+  overflow: hidden;
+  color: var(--ds-text-muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.daily-mission__arrow {
+  color: var(--ds-text-muted);
+}
+
+.daily-journey__tomorrow {
+  margin: var(--ds-space-sm) 0 0;
+  color: var(--ds-text-muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
+
 .shell-stage {
   flex: 1;
   width: 100%;
   max-width: var(--shell-content-width);
   padding: 0 0 var(--ds-space-2xl);
   box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .daily-journey__missions {
+    grid-template-columns: 1fr;
+  }
+
+  .daily-mission__copy > span:last-child {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .daily-journey {
+    padding: var(--ds-space-md);
+  }
+
+  .daily-journey__title {
+    max-width: 220px;
+  }
+
+  .daily-journey__streak > span:last-child {
+    display: none;
+  }
 }
 
 .shell-stage .page {

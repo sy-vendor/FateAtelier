@@ -1,17 +1,16 @@
-import { useState, useMemo, useEffect, lazy, Suspense } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Analytics } from '@vercel/analytics/react'
 import ToastContainer from './components/ToastContainer'
 import ConfirmDialogContainer from './components/ConfirmDialogContainer'
 import AppNav from './components/app/AppNav'
 import AppFeatureRoutes from './components/app/AppFeatureRoutes'
+import DailyJourney from './components/app/DailyJourney'
 import { FeatureIcon } from './components/app/FeatureIcon'
 import { APP_FEATURES } from './constants/appFeatures'
 import type { AppPage } from './types/appPage'
 import { getPageSubtitle } from './utils/appSubtitles'
-import { useTarotGame } from './hooks/useTarotGame'
+import { useDailyJourney } from './hooks/useDailyJourney'
 import './components/app/app-shell.css'
-
-const TarotLibrary = lazy(() => import('./components/tarot/TarotLibrary'))
 
 function App() {
   const pageFromLocation = (): AppPage => {
@@ -19,17 +18,12 @@ function App() {
     return APP_FEATURES.some((feature) => feature.page === slug) ? slug as AppPage : 'tarot'
   }
   const [currentPage, setCurrentPage] = useState<AppPage>(pageFromLocation)
-  const tarot = useTarotGame()
+  const dailyJourney = useDailyJourney(currentPage)
 
   const currentFeature = useMemo(
     () => APP_FEATURES.find((f) => f.page === currentPage) ?? APP_FEATURES[0],
     [currentPage]
   )
-
-  useEffect(() => {
-    void import('./components/app/TarotMainView')
-    void import('./components/tarot/TarotLibrary')
-  }, [])
 
   useEffect(() => {
     const onPopState = () => setCurrentPage(pageFromLocation())
@@ -76,17 +70,12 @@ function App() {
             </div>
           </div>
 
-          {currentPage === 'tarot' && (
-            <Suspense fallback={null}>
-              <div className="shell-topbar__actions">
-                <TarotLibrary onSelectCard={tarot.handleSelectCardFromBrowser} />
-              </div>
-            </Suspense>
-          )}
         </header>
 
+        <DailyJourney {...dailyJourney} onSelect={navigateTo} />
+
         <main className="shell-stage">
-          <AppFeatureRoutes currentPage={currentPage} tarot={tarot} />
+          <AppFeatureRoutes currentPage={currentPage} />
         </main>
 
         <footer className="shell-footer">
