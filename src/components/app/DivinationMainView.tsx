@@ -14,6 +14,7 @@ import { DivinationLogoMark } from '../divination/DivinationLogoMark'
 import { DivinationRitualBar } from '../divination/DivinationRitualBar'
 import { Panel, Button, Segmented, Collapsible } from '../ui'
 import './divination-stage.css'
+import NextJourney from './NextJourney'
 
 function DivinationMainView() {
   const {
@@ -287,6 +288,7 @@ function DivinationMainView() {
           <Button variant="primary" block onClick={resetDraw}>
             再抽一签
           </Button>
+          <NextJourney from="divination" />
         </section>
       )}
 

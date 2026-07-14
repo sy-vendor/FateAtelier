@@ -18,6 +18,7 @@ import { downloadAllData } from '../../utils/exportData'
 import { DrawnCard } from '../../types'
 import type { TarotGameApi } from '../../types/tarotGameApi'
 import { Button } from '../ui'
+import NextJourney from './NextJourney'
 
 export type TarotMainViewProps = TarotGameApi
 
@@ -222,6 +223,8 @@ function TarotMainViewInner(props: TarotMainViewProps) {
           />
         </section>
       )}
+
+      {(selectedCard || threeCardReading) && <NextJourney from="tarot" />}
 
       {drawnCards.length > 1 && (
         <section className="drawn-cards">

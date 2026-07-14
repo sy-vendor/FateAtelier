@@ -10,6 +10,7 @@ import { APP_FEATURES } from './constants/appFeatures'
 import type { AppPage } from './types/appPage'
 import { getPageSubtitle } from './utils/appSubtitles'
 import { useDailyJourney } from './hooks/useDailyJourney'
+import { APP_NAVIGATE_EVENT } from './utils/appNavigation'
 import './components/app/app-shell.css'
 
 function App() {
@@ -32,6 +33,21 @@ function App() {
   }, [])
 
   useEffect(() => {
+    const onNavigate = (event: Event) => {
+      const page = (event as CustomEvent<AppPage>).detail
+      if (!APP_FEATURES.some((feature) => feature.page === page)) return
+      window.history.pushState(null, '', `/${page}`)
+      setCurrentPage(page)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    window.addEventListener(APP_NAVIGATE_EVENT, onNavigate)
+    return () => window.removeEventListener(APP_NAVIGATE_EVENT, onNavigate)
+  }, [])
+
+  useEffect(() => {
+    // Detail landing pages are emitted with their own server-rendered metadata.
+    // Preserve it after React mounts so crawlers keep the long-tail canonical.
+    if (window.location.pathname.split('/').filter(Boolean).length > 1) return
     const canonicalUrl = `https://www.fateatelier.cloud/${currentPage}`
     document.title = `${currentFeature.seoTitle} | 命运工坊`
     document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', currentFeature.description)

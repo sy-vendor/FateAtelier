@@ -1,9 +1,11 @@
+import type { CSSProperties } from 'react'
 import { DREAM_BRAND, DREAM_BRAND_EN, MOOD_OPTIONS, getCategoryColor } from '../../utils/dreamData'
 import { useDreamGame } from '../../hooks/useDreamGame'
 import { DreamLogoMark } from '../dream/DreamLogoMark'
 import { DreamRitualBar } from '../dream/DreamRitualBar'
 import { Panel, Button, Segmented } from '../ui'
 import './dream-stage.css'
+import NextJourney from './NextJourney'
 
 function DreamMainView() {
   const {
@@ -59,92 +61,133 @@ function DreamMainView() {
 
       <DreamRitualBar step={ritualStep} />
 
-      <section className="dream-mood">
-        <h2 className="dream-mood__title">梦中情绪</h2>
-        <p className="dream-mood__sub">选择醒后残留的感受，解梦会据此微调解读</p>
-        <div style={{ opacity: isInterpreting ? 0.6 : 1, pointerEvents: isInterpreting ? 'none' : 'auto' }}>
-          <Segmented
-            block
-            value={selectedMood}
-            options={[...MOOD_OPTIONS]}
-            onChange={setSelectedMood}
-          />
-        </div>
-      </section>
-
-      <section className="dream-shrine" aria-label="月轮解梦">
-        <p className="dream-shrine__hint">在下方描述梦境，或轻触月轮开始解析</p>
-
-        <div className="dream-portal">
-          <button
-            type="button"
-            className={[
-              'dream-moon',
-              `dream-moon--${phase}`,
-            ].join(' ')}
-            onClick={handleMoonClick}
-            disabled={isInterpreting}
-            aria-label={phase === 'revealed' ? '再入新梦' : '开始解析梦境'}
-          >
-            <span className="dream-moon__aura" aria-hidden />
-            <div className="dream-moon-body">
-              <div className="dream-moon-disc">
-                <span className="dream-moon-shadow" aria-hidden />
-              </div>
-              <div className="dream-mist" aria-hidden>
-                {Array.from({ length: 8 }, (_, i) => (
-                  <span key={i} className="dream-mist-particle" />
-                ))}
-              </div>
-            </div>
-            <span className="dream-moon-label">{moonLabel}</span>
-          </button>
-
-          <div className="dream-input-panel">
-            <div className="field">
-              <label htmlFor="dream-content" className="field__label">
-                描述你的梦境
-              </label>
-              <textarea
-                id="dream-content"
-                className="field__textarea"
-                placeholder="例如：我梦见一条大蛇在追我，我拼命地跑，最后跳进了一条河里……"
-                value={dreamContent}
-                onChange={(e) => {
-                  setDreamContent(e.target.value)
-                  if (inputError) setInputError('')
-                }}
-                rows={5}
-                disabled={isInterpreting}
-              />
-              {inputError && <p className="dream-input-error" role="alert">{inputError}</p>}
-            </div>
-
-            <div className="dream-actions">
-              <Button
-                variant="primary"
-                onClick={handleInterpret}
-                disabled={isInterpreting || !dreamContent.trim()}
-                aria-label="开始解析梦境"
-                aria-busy={isInterpreting}
-              >
-                {isInterpreting ? '梦雾流转中…' : '开始解梦'}
-              </Button>
-              {dreamContent && (
-                <Button onClick={handleClear} disabled={isInterpreting} aria-label="清空输入内容">
-                  清空
-                </Button>
-              )}
-              <Button
-                onClick={() => setShowHistory(!showHistory)}
-                aria-label={showHistory ? '隐藏历史记录' : '查看历史记录'}
-                aria-expanded={showHistory}
-              >
-                {showHistory ? '隐藏历史' : '查看历史'}
-              </Button>
-            </div>
+      {!showResult && (
+        <section className="dream-mood">
+          <h2 className="dream-mood__title">梦中情绪</h2>
+          <p className="dream-mood__sub">选择醒后残留的感受，解梦会据此微调解读</p>
+          <div style={{ opacity: isInterpreting ? 0.6 : 1, pointerEvents: isInterpreting ? 'none' : 'auto' }}>
+            <Segmented
+              block
+              value={selectedMood}
+              options={[...MOOD_OPTIONS]}
+              onChange={setSelectedMood}
+            />
           </div>
-        </div>
+        </section>
+      )}
+
+      <section
+        className={[
+          'dream-shrine',
+          `dream-shrine--${phase}`,
+          showResult ? 'dream-shrine--collapsed' : '',
+        ].filter(Boolean).join(' ')}
+        aria-label="月轮解梦"
+      >
+        {showResult ? (
+          <div className="dream-shrine__done">
+            <div className="dream-shrine__done-moon" aria-hidden>
+              <span className="dream-shrine__done-disc" />
+            </div>
+            <div className="dream-shrine__done-copy">
+              <p className="dream-shrine__done-eyebrow">Dream revealed</p>
+              <p className="dream-shrine__done-title">梦意已显</p>
+              <p className="dream-shrine__done-sub">解读在下方展开；若要再录一场新梦，点这里重新开始</p>
+            </div>
+            <Button variant="ghost" small onClick={resetForNewDream}>
+              再入新梦
+            </Button>
+          </div>
+        ) : (
+          <>
+            <div className="dream-shrine__copy">
+              <p className="dream-shrine__eyebrow">Night ritual</p>
+              <h2 className="dream-shrine__title">述梦于月下</h2>
+              <p className="dream-shrine__hint">
+                {phase === 'interpreting'
+                  ? '梦雾正在流转，稍候片刻'
+                  : phase === 'recount'
+                    ? '梦境已录，轻触月轮或下方按钮开始解析'
+                    : '在右侧写下记忆尚新的片段，也可轻触月轮启程'}
+              </p>
+            </div>
+
+            <div className="dream-portal">
+              <button
+                type="button"
+                className={['dream-moon', `dream-moon--${phase}`].join(' ')}
+                onClick={handleMoonClick}
+                disabled={isInterpreting}
+                aria-label="开始解析梦境"
+              >
+                <span className="dream-moon__orbit" aria-hidden>
+                  <span className="dream-moon__star dream-moon__star--1" />
+                  <span className="dream-moon__star dream-moon__star--2" />
+                  <span className="dream-moon__star dream-moon__star--3" />
+                </span>
+                <span className="dream-moon__aura" aria-hidden />
+                <div className="dream-moon-body">
+                  <div className="dream-moon-disc">
+                    <span className="dream-moon-crater dream-moon-crater--a" aria-hidden />
+                    <span className="dream-moon-crater dream-moon-crater--b" aria-hidden />
+                    <span className="dream-moon-shadow" aria-hidden />
+                  </div>
+                  <div className="dream-mist" aria-hidden>
+                    {Array.from({ length: 8 }, (_, i) => (
+                      <span key={i} className="dream-mist-particle" />
+                    ))}
+                  </div>
+                </div>
+                <span className="dream-moon-label">{moonLabel}</span>
+              </button>
+
+              <div className="dream-input-panel">
+                <div className="field">
+                  <label htmlFor="dream-content" className="field__label">
+                    描述你的梦境
+                  </label>
+                  <textarea
+                    id="dream-content"
+                    className="field__textarea"
+                    placeholder="例如：我梦见一条大蛇在追我，我拼命地跑，最后跳进了一条河里……"
+                    value={dreamContent}
+                    onChange={(e) => {
+                      setDreamContent(e.target.value)
+                      if (inputError) setInputError('')
+                    }}
+                    rows={5}
+                    disabled={isInterpreting}
+                  />
+                  {inputError && <p className="dream-input-error" role="alert">{inputError}</p>}
+                </div>
+
+                <div className="dream-actions">
+                  <Button
+                    variant="primary"
+                    onClick={handleInterpret}
+                    disabled={isInterpreting || !dreamContent.trim()}
+                    aria-label="开始解析梦境"
+                    aria-busy={isInterpreting}
+                  >
+                    {isInterpreting ? '梦雾流转中…' : '开始解梦'}
+                  </Button>
+                  {dreamContent && (
+                    <Button onClick={handleClear} disabled={isInterpreting} aria-label="清空输入内容">
+                      清空
+                    </Button>
+                  )}
+                  <Button
+                    onClick={() => setShowHistory(!showHistory)}
+                    aria-label={showHistory ? '隐藏历史记录' : '查看历史记录'}
+                    aria-expanded={showHistory}
+                  >
+                    {showHistory ? '隐藏历史' : '查看历史'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </section>
 
       {showHistory && history.length > 0 && (
@@ -219,42 +262,63 @@ function DreamMainView() {
           )}
 
           {interpretation.symbols.length > 0 && (
-            <Panel title="梦境符号">
-              <div className="dream-symbol-grid">
-                {interpretation.symbols.map((symbol, index) => (
-                  <article key={index} className="dream-symbol-card">
-                    <div className="dream-symbol-card__head">
-                      <span className="dream-symbol-card__title">
-                        {symbol.matchedKeyword}
-                        <span className="dream-symbol-card__subtitle"> · {symbol.meaning}</span>
-                      </span>
-                      <span
-                        className="dream-category-tag"
-                        style={{ background: getCategoryColor(symbol.category) }}
-                      >
-                        {symbol.category}
-                      </span>
-                    </div>
-                    <p className="dream-symbol-card__text">{symbol.interpretation}</p>
-                    <p className="dream-symbol-card__text" style={{ color: 'rgba(34, 197, 94, 0.95)' }}>
-                      <strong>吉象：</strong>
-                      {symbol.positive}
-                    </p>
-                    <p className="dream-symbol-card__text" style={{ color: 'rgba(239, 68, 68, 0.95)' }}>
-                      <strong>留意：</strong>
-                      {symbol.negative}
-                    </p>
-                    <p className="dream-symbol-card__text">
-                      <strong>建议：</strong>
-                      {symbol.advice}
-                    </p>
-                    <div className="dream-symbol-card__themes">
-                      {symbol.themes.map((theme) => (
-                        <span key={theme} className="dream-theme-tag">{theme}</span>
-                      ))}
-                    </div>
-                  </article>
-                ))}
+            <Panel title="梦境符号" description="从梦中浮出的鲜明意象，可与上文串联对照阅读">
+              <div
+                className={[
+                  'dream-symbol-grid',
+                  interpretation.symbols.length === 1 ? 'dream-symbol-grid--single' : '',
+                ].filter(Boolean).join(' ')}
+              >
+                {interpretation.symbols.map((symbol, index) => {
+                  const accent = getCategoryColor(symbol.category)
+                  return (
+                    <article
+                      key={index}
+                      className="dream-symbol-card"
+                      style={{ '--symbol-accent': accent } as CSSProperties}
+                    >
+                      <div className="dream-symbol-card__head">
+                        <div className="dream-symbol-card__identity">
+                          <span className="dream-symbol-card__glyph" aria-hidden>
+                            {symbol.matchedKeyword.slice(0, 1)}
+                          </span>
+                          <div>
+                            <h3 className="dream-symbol-card__title">
+                              {symbol.matchedKeyword}
+                              <span className="dream-symbol-card__subtitle">{symbol.meaning}</span>
+                            </h3>
+                          </div>
+                        </div>
+                        <span className="dream-category-tag">{symbol.category}</span>
+                      </div>
+
+                      <p className="dream-symbol-card__text">{symbol.interpretation}</p>
+
+                      <div className="dream-symbol-card__aspects">
+                        <div className="dream-symbol-aspect dream-symbol-aspect--good">
+                          <span className="dream-symbol-aspect__label">吉象</span>
+                          <p className="dream-symbol-aspect__text">{symbol.positive}</p>
+                        </div>
+                        <div className="dream-symbol-aspect dream-symbol-aspect--warn">
+                          <span className="dream-symbol-aspect__label">留意</span>
+                          <p className="dream-symbol-aspect__text">{symbol.negative}</p>
+                        </div>
+                        <div className="dream-symbol-aspect dream-symbol-aspect--tip">
+                          <span className="dream-symbol-aspect__label">建议</span>
+                          <p className="dream-symbol-aspect__text">{symbol.advice}</p>
+                        </div>
+                      </div>
+
+                      {symbol.themes.length > 0 && (
+                        <div className="dream-symbol-card__themes">
+                          {symbol.themes.map((theme) => (
+                            <span key={theme} className="dream-theme-tag">{theme}</span>
+                          ))}
+                        </div>
+                      )}
+                    </article>
+                  )
+                })}
               </div>
             </Panel>
           )}
@@ -270,6 +334,7 @@ function DreamMainView() {
           <p className="callout">
             梦境解析仅供参考，每个人的梦境都有其独特性。最重要的是关注梦境带给你的感受和启发。
           </p>
+          <NextJourney from="dream" />
         </section>
       )}
 

@@ -200,6 +200,11 @@ html.app-background-paused body::after {
   border-color: var(--ds-accent-border);
 }
 
+.daily-journey--compact {
+  padding-top: var(--ds-space-sm);
+  padding-bottom: var(--ds-space-sm);
+}
+
 .daily-journey__head {
   display: flex;
   align-items: center;
@@ -236,6 +241,18 @@ html.app-background-paused body::after {
   background: var(--ds-accent-muted);
   color: var(--ds-text-secondary);
   font-size: 0.7rem;
+}
+
+.daily-journey__toggle {
+  flex-shrink: 0;
+  padding: 6px 9px;
+  border: 1px solid var(--ds-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ds-text-muted);
+  font: inherit;
+  font-size: 0.7rem;
+  cursor: pointer;
 }
 
 .daily-journey__streak strong {
@@ -334,6 +351,94 @@ html.app-background-paused body::after {
   text-align: center;
 }
 
+.next-journey {
+  margin: var(--ds-space-lg) 0;
+  padding: var(--ds-space-lg);
+  border: 1px solid var(--ds-accent-border);
+  border-radius: var(--ds-radius-xl);
+  background: linear-gradient(135deg, var(--ds-accent-muted), rgba(110, 184, 212, 0.035));
+}
+
+.next-journey__head h2 {
+  margin: 0 0 var(--ds-space-md);
+  color: var(--ds-text-primary);
+  font-family: var(--ds-font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.next-journey__eyebrow {
+  margin: 0 0 3px;
+  color: var(--ds-accent-violet);
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.next-journey__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ds-space-sm);
+}
+
+.next-journey__grid button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: var(--ds-space-md);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-lg);
+  background: var(--ds-bg-surface);
+  color: var(--ds-text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform var(--ds-duration-fast), border-color var(--ds-duration-fast);
+}
+
+.next-journey__grid button:hover {
+  transform: translateY(-1px);
+  border-color: var(--ds-accent-border);
+}
+
+.next-journey__grid button > span:nth-child(2) {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.next-journey__grid strong {
+  font-size: 0.82rem;
+}
+
+.next-journey__grid small {
+  color: var(--ds-text-muted);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.next-journey__icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  background: var(--ds-accent-muted);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .shell-stage {
   flex: 1;
   width: 100%;
@@ -350,6 +455,10 @@ html.app-background-paused body::after {
   .daily-mission__copy > span:last-child {
     white-space: normal;
   }
+
+  .next-journey__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 480px) {
@@ -363,6 +472,14 @@ html.app-background-paused body::after {
 
   .daily-journey__streak > span:last-child {
     display: none;
+  }
+
+  .daily-journey__streak {
+    margin-left: auto;
+  }
+
+  .daily-journey__toggle {
+    padding-inline: 7px;
   }
 }
 

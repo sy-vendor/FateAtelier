@@ -2,6 +2,17 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { POLISH_MAJOR } from './tarot-polish/major.mjs'
+import { POLISH_WANDS } from './tarot-polish/wands.mjs'
+import { POLISH_CUPS } from './tarot-polish/cups.mjs'
+import { POLISH_SWORDS } from './tarot-polish/swords.mjs'
+import { POLISH_PENTACLES } from './tarot-polish/pentacles.mjs'
+import { POLISH_ANIMALS_NATURE } from './dream-polish/animals-nature.mjs'
+import { POLISH_PEOPLE_BUILDING } from './dream-polish/people-building.mjs'
+import { POLISH_ITEMS_ACTIONS } from './dream-polish/items-actions.mjs'
+import { POLISH_1_50 } from './divination-polish/1-50.mjs'
+import { POLISH_51_100 } from './divination-polish/51-100.mjs'
+import { PLAIN_POEMS } from './divination-polish/plain-poems.mjs'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dist = path.join(root, 'dist')
@@ -28,6 +39,39 @@ const pages = [
 
 function escapeJson(value) {
   return JSON.stringify(value).replace(/</g, '\\u003c')
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char])
+}
+
+function writeDetailPage({ route, title, description, parentName, body }) {
+  const url = `${origin}/${route}`
+  const fullTitle = `${title} | 命运工坊`
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: title,
+    description,
+    inLanguage: 'zh-CN',
+    mainEntityOfPage: url,
+    isAccessibleForFree: true,
+    author: { '@type': 'Organization', name: '命运工坊' },
+  }
+  const crawlable = `<div id="root"><main class="seo-entry"><nav><a href="/">命运工坊</a> › <a href="/${route.split('/')[0]}">${escapeHtml(parentName)}</a></nav>${body}</main></div>`
+  const html = template
+    .replace(/<title>.*?<\/title>/, `<title>${escapeHtml(fullTitle)}</title>`)
+    .replace(/<meta name="description" content="[^"]*"\s*\/>/, `<meta name="description" content="${escapeHtml(description)}" />`)
+    .replace(/<link rel="canonical" href="[^"]*"\s*\/>/, `<link rel="canonical" href="${url}" />`)
+    .replace(/<meta property="og:url" content="[^"]*"\s*\/>/, `<meta property="og:url" content="${url}" />`)
+    .replace(/<meta property="og:title" content="[^"]*"\s*\/>/, `<meta property="og:title" content="${escapeHtml(fullTitle)}" />`)
+    .replace(/<meta property="og:description" content="[^"]*"\s*\/>/, `<meta property="og:description" content="${escapeHtml(description)}" />`)
+    .replace('<div id="root"></div>', crawlable)
+    .replace('</head>', `<script type="application/ld+json">${escapeJson(schema)}</script></head>`)
+  const target = path.join(dist, route)
+  fs.mkdirSync(target, { recursive: true })
+  fs.writeFileSync(path.join(target, 'index.html'), html)
+  return url
 }
 
 for (const [slug, title, description, intro, question, answer] of pages) {
@@ -59,4 +103,40 @@ for (const [slug, title, description, intro, question, answer] of pages) {
   fs.writeFileSync(path.join(target, 'index.html'), html)
 }
 
-console.log(`Built ${pages.length} crawlable SEO pages`)
+const detailUrls = []
+const majorNames = ['愚者', '魔术师', '女祭司', '皇后', '皇帝', '教皇', '恋人', '战车', '力量', '隐者', '命运之轮', '正义', '倒吊人', '死神', '节制', '恶魔', '塔', '星星', '月亮', '太阳', '审判', '世界']
+const courtNames = ['侍从', '骑士', '皇后', '国王']
+const suits = [['权杖', POLISH_WANDS, 22], ['圣杯', POLISH_CUPS, 36], ['宝剑', POLISH_SWORDS, 50], ['星币', POLISH_PENTACLES, 64]]
+const tarotCards = majorNames.map((name, id) => ({ id, name, data: POLISH_MAJOR[id] }))
+for (const [suit, polish, start] of suits) {
+  for (let index = 0; index < 14; index += 1) {
+    tarotCards.push({ id: start + index, name: index < 10 ? `${suit}${index + 1}` : `${suit}${courtNames[index - 10]}`, data: polish[start + index] })
+  }
+}
+for (const card of tarotCards) {
+  const title = `${card.name}塔罗牌义：正位与逆位解读`
+  const description = `${card.name}的塔罗牌义，包含正位、逆位、感情、事业与行动建议。`
+  detailUrls.push(writeDetailPage({ route: `tarot/card/${card.id}`, title, description, parentName: '塔罗占卜', body: `<h1>${escapeHtml(title)}</h1><p>${escapeHtml(card.data.description)}</p><h2>${card.name}正位牌义</h2><p>${escapeHtml(card.data.interpretation.upright)}</p><p><strong>建议：</strong>${escapeHtml(card.data.advice.upright)}</p><h2>${card.name}逆位牌义</h2><p>${escapeHtml(card.data.interpretation.reversed)}</p><p><strong>建议：</strong>${escapeHtml(card.data.advice.reversed)}</p><p><a href="/tarot">在线抽取塔罗牌</a></p>` }))
+}
+
+const dreamSymbols = [...POLISH_ANIMALS_NATURE, ...POLISH_PEOPLE_BUILDING, ...POLISH_ITEMS_ACTIONS]
+dreamSymbols.forEach((symbol, index) => {
+  const keyword = symbol.keywords[0]
+  const title = `梦见${keyword}是什么意思？${keyword}梦境解析`
+  detailUrls.push(writeDetailPage({ route: `dream/symbol/${index}`, title, description: `梦见${keyword}的常见象征含义、积极暗示、需要留意的方向与行动建议。`, parentName: '梦境解析', body: `<h1>${escapeHtml(title)}</h1><p>${escapeHtml(symbol.interpretation)}</p><h2>积极的可能</h2><p>${escapeHtml(symbol.positive)}</p><h2>需要留意</h2><p>${escapeHtml(symbol.negative)}</p><h2>梦后建议</h2><p>${escapeHtml(symbol.advice)}</p><p><strong>相关主题：</strong>${escapeHtml(symbol.themes.join('、'))}</p><p><a href="/dream">输入完整梦境进行解析</a></p>` }))
+})
+
+const stickPolish = { ...POLISH_1_50, ...POLISH_51_100 }
+const stickSource = fs.readFileSync(path.join(root, 'src/data/divinationSticks.ts'), 'utf8')
+const stickPattern = /id:\s*(\d+),\s*\n\s*level:\s*'([^']+)',\s*\n\s*title:\s*'([^']+)',\s*\n\s*poem:\s*'([^']+)'/g
+for (const match of stickSource.matchAll(stickPattern)) {
+  const id = Number(match[1]); const level = match[2]; const titleText = match[3]; const poem = match[4]; const polish = stickPolish[id]
+  const title = `第${id}签${titleText}解签：${level}签签文详解`
+  detailUrls.push(writeDetailPage({ route: `divination/stick/${id}`, title, description: `第${id}签「${titleText}」的签诗、白话解释、典故与行事建议。`, parentName: '抽签求签', body: `<h1>${escapeHtml(title)}</h1><blockquote>${escapeHtml(poem)}</blockquote><h2>签诗白话</h2><p>${escapeHtml(PLAIN_POEMS[id])}</p><h2>签意解读</h2><p>${escapeHtml(polish.interpretation)}</p><h2>行事建议</h2><p>${escapeHtml(polish.advice)}</p><p>${escapeHtml(polish.story)}</p><p><a href="/divination">在线抽取今日一签</a></p>` }))
+}
+
+const sitemapPath = path.join(dist, 'sitemap.xml')
+const sitemap = fs.readFileSync(sitemapPath, 'utf8').replace('</urlset>', `${detailUrls.map((url) => `  <url><loc>${url}</loc><lastmod>2026-07-14</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>`).join('\n')}\n</urlset>`)
+fs.writeFileSync(sitemapPath, sitemap)
+
+console.log(`Built ${pages.length} feature pages and ${detailUrls.length} long-tail SEO pages`)
