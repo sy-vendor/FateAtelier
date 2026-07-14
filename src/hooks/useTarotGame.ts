@@ -4,6 +4,7 @@ import type { ReadingRecord } from '../components/ReadingHistory'
 import { generateThreeCardReading } from '../utils/readingInterpretation'
 import { downloadReading } from '../utils/exportReading'
 import { shareReading } from '../utils/shareReading'
+import { resolveDrawnCard, resolveDrawnCards } from '../utils/tarotCardResolve'
 import { DrawnCard } from '../types'
 import { ReadingType } from '../types/reading'
 import { toast } from '../utils/toast'
@@ -12,6 +13,13 @@ import { getStorageItem, setStorageItem } from '../utils/storage'
 import type { TarotGameApi } from '../types/tarotGameApi'
 
 const READING_HISTORY_SAVE_DEBOUNCE_MS = 400
+
+function rehydrateReadingRecord(reading: ReadingRecord): ReadingRecord {
+  return {
+    ...reading,
+    cards: resolveDrawnCards(reading.cards ?? []),
+  }
+}
 
 export function useTarotGame() {
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
@@ -34,7 +42,7 @@ export function useTarotGame() {
       })
     }
     if (result.success && result.data !== undefined && Array.isArray(result.data)) {
-      return result.data
+      return result.data.map(rehydrateReadingRecord)
     }
     return []
   })
@@ -222,18 +230,19 @@ export function useTarotGame() {
   }, [])
 
   const handleViewHistoryReading = useCallback((reading: ReadingRecord) => {
-    setViewingHistoryReading(reading)
-    if (reading.type === 'single') {
-      setSelectedCard(reading.cards[0])
+    const hydrated = rehydrateReadingRecord(reading)
+    setViewingHistoryReading(hydrated)
+    if (hydrated.type === 'single') {
+      setSelectedCard(hydrated.cards[0] ? resolveDrawnCard(hydrated.cards[0]) : null)
       setThreeCardReading(null)
     } else {
-      setThreeCardReading(reading.cards)
+      setThreeCardReading(resolveDrawnCards(hydrated.cards))
       setSelectedCard(null)
-      if (reading.readingType) {
-        setSelectedReadingType(reading.readingType as ReadingType)
+      if (hydrated.readingType) {
+        setSelectedReadingType(hydrated.readingType as ReadingType)
       }
-      if (reading.customQuestion) {
-        setCustomQuestion(reading.customQuestion)
+      if (hydrated.customQuestion) {
+        setCustomQuestion(hydrated.customQuestion)
       }
     }
     window.scrollTo({ top: 0, behavior: 'smooth' })

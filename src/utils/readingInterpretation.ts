@@ -1,6 +1,7 @@
 import { DrawnCard } from '../types'
 import { TarotCard } from '../data/tarotCards'
 import { ReadingType } from '../types/reading'
+import { resolveDrawnCards } from './tarotCardResolve'
 
 export interface ReadingInterpretation {
   summary: string
@@ -93,11 +94,11 @@ function getCardReading(
 ): { keywords: string; prose: string; themed: string | null } {
   const orientation = isReversed ? 'reversed' : 'upright'
   const category = TYPE_CATEGORY[readingType]
-  const themed = category ? card.categories[category][orientation] : null
+  const themed = category ? card.categories?.[category]?.[orientation] ?? null : null
 
   return {
-    keywords: card.meaning[orientation],
-    prose: card.interpretation[orientation],
+    keywords: card.meaning?.[orientation] ?? '',
+    prose: card.interpretation?.[orientation] ?? '',
     themed,
   }
 }
@@ -175,11 +176,11 @@ function buildAdvice(
   const majorCount = cards.filter((c) => c.card.type === 'major').length
 
   const presentAdvice = present.isReversed
-    ? present.card.advice.reversed
-    : present.card.advice.upright
+    ? present.card.advice?.reversed ?? ''
+    : present.card.advice?.upright ?? ''
   const futureAdvice = future.isReversed
-    ? future.card.advice.reversed
-    : future.card.advice.upright
+    ? future.card.advice?.reversed ?? ''
+    : future.card.advice?.upright ?? ''
 
   let core = `当下之牌建议：${presentAdvice} 未来之牌提示：${futureAdvice}`
 
@@ -223,7 +224,7 @@ export function resolveThreeCardInterpretation(reading: {
 }): ReadingInterpretation | null {
   if (reading.type !== 'three' || reading.cards.length !== 3) return null
   return generateThreeCardReading(
-    reading.cards,
+    resolveDrawnCards(reading.cards),
     (reading.readingType as ReadingType) || 'general',
     reading.customQuestion,
   )
@@ -234,7 +235,8 @@ export const generateThreeCardReading = (
   readingType: ReadingType = 'general',
   customQuestion?: string
 ): ReadingInterpretation => {
-  if (cards.length !== 3) {
+  const resolvedCards = resolveDrawnCards(cards)
+  if (resolvedCards.length !== 3) {
     return {
       summary: '需要三张牌才能进行时空牌阵解读。',
       past: '',
@@ -244,16 +246,16 @@ export const generateThreeCardReading = (
     }
   }
 
-  const [pastCard, presentCard, futureCard] = cards
-  const reversedCount = cards.filter((c) => c.isReversed).length
-  const majorCount = cards.filter((c) => c.card.type === 'major').length
+  const [pastCard, presentCard, futureCard] = resolvedCards
+  const reversedCount = resolvedCards.filter((c) => c.isReversed).length
+  const majorCount = resolvedCards.filter((c) => c.card.type === 'major').length
   const trend = buildTrend(reversedCount, majorCount)
 
   return {
-    summary: `${buildSummary(readingType, trend, customQuestion)} ${buildCardSynthesis(cards)}`,
+    summary: `${buildSummary(readingType, trend, customQuestion)} ${buildCardSynthesis(resolvedCards)}`,
     past: buildPositionReading(pastCard, 'past', readingType),
     present: buildPositionReading(presentCard, 'present', readingType),
     future: buildPositionReading(futureCard, 'future', readingType),
-    advice: buildAdvice(cards, readingType, customQuestion),
+    advice: buildAdvice(resolvedCards, readingType, customQuestion),
   }
 }

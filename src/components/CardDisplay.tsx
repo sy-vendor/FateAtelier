@@ -1,4 +1,5 @@
 import { TarotCard } from '../data/tarotCards'
+import { resolveCanonicalTarotCard } from '../utils/tarotCardResolve'
 import { TarotCardVisual } from './tarot/TarotCardVisual'
 import './CardDisplay.css'
 
@@ -12,13 +13,18 @@ interface CardDisplayProps {
 }
 
 function CardDisplay({
-  card,
+  card: rawCard,
   isReversed,
   onFlip,
   compact = false,
   isFavorite = false,
   onToggleFavorite,
 }: CardDisplayProps) {
+  const card = resolveCanonicalTarotCard(rawCard)
+  const meaning = (isReversed ? card.meaning?.reversed : card.meaning?.upright) ?? ''
+  const interpretation = (isReversed ? card.interpretation?.reversed : card.interpretation?.upright) ?? ''
+  const advice = (isReversed ? card.advice?.reversed : card.advice?.upright) ?? ''
+
   return (
     <div className={`card-display ${compact ? 'compact' : ''}`}>
       <TarotCardVisual
@@ -38,9 +44,7 @@ function CardDisplay({
         <div className="card-meaning">
           <div className="meaning-section">
             <h3>关键词</h3>
-            <p className="meaning-text">
-              {isReversed ? card.meaning.reversed : card.meaning.upright}
-            </p>
+            <p className="meaning-text">{meaning}</p>
           </div>
 
           <div className="description-section">
@@ -50,16 +54,12 @@ function CardDisplay({
 
           <div className="interpretation-section">
             <h3>牌意解读</h3>
-            <p className="interpretation-text">
-              {isReversed ? card.interpretation.reversed : card.interpretation.upright}
-            </p>
+            <p className="interpretation-text">{interpretation}</p>
           </div>
 
           <div className="advice-section">
             <h3>行动建议</h3>
-            <p className="advice-text">
-              {isReversed ? card.advice.reversed : card.advice.upright}
-            </p>
+            <p className="advice-text">{advice}</p>
           </div>
 
           <div className="card-actions">
@@ -88,11 +88,11 @@ function CardDisplay({
         <div className="card-meaning-compact">
           <div className="meaning-compact">
             <h4>牌意解读</h4>
-            <p>{isReversed ? card.interpretation.reversed : card.interpretation.upright}</p>
+            <p>{interpretation}</p>
           </div>
           <div className="description-compact">
             <h4>行动建议</h4>
-            <p>{isReversed ? card.advice.reversed : card.advice.upright}</p>
+            <p>{advice}</p>
           </div>
           <button type="button" className="flip-button-compact" onClick={onFlip}>
             {isReversed ? '转为正位' : '转为逆位'}

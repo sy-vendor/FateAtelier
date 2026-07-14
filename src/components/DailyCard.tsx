@@ -26,10 +26,13 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
   const reading = useMemo(() => {
     if (!dailyCard) return null
     return {
-      keywords: splitKeywords(isReversed ? dailyCard.meaning.reversed : dailyCard.meaning.upright),
-      interpretation: isReversed ? dailyCard.interpretation.reversed : dailyCard.interpretation.upright,
-      advice: isReversed ? dailyCard.advice.reversed : dailyCard.advice.upright,
-      description: dailyCard.description,
+      keywords: splitKeywords(
+        (isReversed ? dailyCard.meaning?.reversed : dailyCard.meaning?.upright) ?? '',
+      ),
+      interpretation:
+        (isReversed ? dailyCard.interpretation?.reversed : dailyCard.interpretation?.upright) ?? '',
+      advice: (isReversed ? dailyCard.advice?.reversed : dailyCard.advice?.upright) ?? '',
+      description: dailyCard.description ?? '',
     }
   }, [dailyCard, isReversed])
 

@@ -28,9 +28,10 @@ function Statistics({ readings }: StatisticsProps) {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
     .map(([id, count]) => ({
-      card: tarotCards[parseInt(id)],
+      card: tarotCards.find((item) => item.id === parseInt(id, 10)),
       count
     }))
+    .filter((item): item is { card: (typeof tarotCards)[number]; count: number } => Boolean(item.card))
 
   // 统计正逆位比例
   let uprightCount = 0

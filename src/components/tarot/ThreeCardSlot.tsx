@@ -1,5 +1,6 @@
 import type { DrawnCard } from '../../types'
 import { THREE_CARD_POSITION_HINT } from '../../utils/readingInterpretation'
+import { resolveDrawnCard } from '../../utils/tarotCardResolve'
 import { TarotCardVisual } from './TarotCardVisual'
 
 function splitKeywords(raw: string): string[] {
@@ -18,10 +19,12 @@ interface ThreeCardSlotProps {
 }
 
 export function ThreeCardSlot({ label, drawnCard, highlight, onFlip }: ThreeCardSlotProps) {
-  const { card, isReversed } = drawnCard
-  const keywords = splitKeywords(isReversed ? card.meaning.reversed : card.meaning.upright)
-  const interpretation = isReversed ? card.interpretation.reversed : card.interpretation.upright
-  const advice = isReversed ? card.advice.reversed : card.advice.upright
+  const { card, isReversed } = resolveDrawnCard(drawnCard)
+  const keywords = splitKeywords(
+    (isReversed ? card.meaning?.reversed : card.meaning?.upright) ?? '',
+  )
+  const interpretation = (isReversed ? card.interpretation?.reversed : card.interpretation?.upright) ?? ''
+  const advice = (isReversed ? card.advice?.reversed : card.advice?.upright) ?? ''
   const typeLabel = card.type === 'major' ? '大阿卡纳' : '小阿卡纳'
 
   return (
