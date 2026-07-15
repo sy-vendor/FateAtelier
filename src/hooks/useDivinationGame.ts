@@ -31,11 +31,18 @@ function pickStickForCategory(category: string): DivinationStick {
   return source[Math.floor(Math.random() * source.length)]
 }
 
+function getLinkedStick(): DivinationStick | null {
+  const match = window.location.pathname.match(/^\/divination\/stick\/(\d+)\/?$/)
+  if (!match) return null
+  return divinationSticks.find((stick) => stick.id === Number(match[1])) ?? null
+}
+
 export function useDivinationGame() {
-  const [phase, setPhase] = useState<DrawPhase>('intent')
+  const linkedStick = useMemo(getLinkedStick, [])
+  const [phase, setPhase] = useState<DrawPhase>(linkedStick ? 'done' : 'intent')
   const [isShaking, setIsShaking] = useState(false)
-  const [drawnStick, setDrawnStick] = useState<DivinationStick | null>(null)
-  const [showResult, setShowResult] = useState(false)
+  const [drawnStick, setDrawnStick] = useState<DivinationStick | null>(linkedStick)
+  const [showResult, setShowResult] = useState(Boolean(linkedStick))
   const [selectedCategory, setSelectedCategory] = useState('')
   const [drawHistory, setDrawHistory] = useState<DrawHistory[]>(() => {
     const historyResult = getStorageItem<DrawHistory[]>('divination-draw-history', [])

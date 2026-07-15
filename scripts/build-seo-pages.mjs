@@ -45,12 +45,12 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char])
 }
 
-function writeDetailPage({ route, title, description, parentName, body }) {
+function writeDetailPage({ route, title, description, parentName, body, schemaType = 'Article' }) {
   const url = `${origin}/${route}`
   const fullTitle = `${title} | 命运工坊`
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': schemaType,
     headline: title,
     description,
     inLanguage: 'zh-CN',
@@ -116,14 +116,14 @@ for (const [suit, polish, start] of suits) {
 for (const card of tarotCards) {
   const title = `${card.name}塔罗牌义：正位与逆位解读`
   const description = `${card.name}的塔罗牌义，包含正位、逆位、感情、事业与行动建议。`
-  detailUrls.push(writeDetailPage({ route: `tarot/card/${card.id}`, title, description, parentName: '塔罗占卜', body: `<h1>${escapeHtml(title)}</h1><p>${escapeHtml(card.data.description)}</p><h2>${card.name}正位牌义</h2><p>${escapeHtml(card.data.interpretation.upright)}</p><p><strong>建议：</strong>${escapeHtml(card.data.advice.upright)}</p><h2>${card.name}逆位牌义</h2><p>${escapeHtml(card.data.interpretation.reversed)}</p><p><strong>建议：</strong>${escapeHtml(card.data.advice.reversed)}</p><p><a href="/tarot">在线抽取塔罗牌</a></p>` }))
+  detailUrls.push(writeDetailPage({ route: `tarot/card/${card.id}`, title, description, parentName: '塔罗占卜', body: `<h1>${escapeHtml(title)}</h1><p>${escapeHtml(card.data.description)}</p><h2>${card.name}正位牌义</h2><p>${escapeHtml(card.data.interpretation.upright)}</p><p><strong>建议：</strong>${escapeHtml(card.data.advice.upright)}</p><h2>${card.name}逆位牌义</h2><p>${escapeHtml(card.data.interpretation.reversed)}</p><p><strong>建议：</strong>${escapeHtml(card.data.advice.reversed)}</p><p><a href="/tarot">在线抽取塔罗牌</a> · <a href="/tarot/cards">浏览全部牌义</a></p>` }))
 }
 
 const dreamSymbols = [...POLISH_ANIMALS_NATURE, ...POLISH_PEOPLE_BUILDING, ...POLISH_ITEMS_ACTIONS]
 dreamSymbols.forEach((symbol, index) => {
   const keyword = symbol.keywords[0]
   const title = `梦见${keyword}是什么意思？${keyword}梦境解析`
-  detailUrls.push(writeDetailPage({ route: `dream/symbol/${index}`, title, description: `梦见${keyword}的常见象征含义、积极暗示、需要留意的方向与行动建议。`, parentName: '梦境解析', body: `<h1>${escapeHtml(title)}</h1><p>${escapeHtml(symbol.interpretation)}</p><h2>积极的可能</h2><p>${escapeHtml(symbol.positive)}</p><h2>需要留意</h2><p>${escapeHtml(symbol.negative)}</p><h2>梦后建议</h2><p>${escapeHtml(symbol.advice)}</p><p><strong>相关主题：</strong>${escapeHtml(symbol.themes.join('、'))}</p><p><a href="/dream">输入完整梦境进行解析</a></p>` }))
+  detailUrls.push(writeDetailPage({ route: `dream/symbol/${index}`, title, description: `梦见${keyword}的常见象征含义、积极暗示、需要留意的方向与行动建议。`, parentName: '梦境解析', body: `<h1>${escapeHtml(title)}</h1><p>${escapeHtml(symbol.interpretation)}</p><h2>积极的可能</h2><p>${escapeHtml(symbol.positive)}</p><h2>需要留意</h2><p>${escapeHtml(symbol.negative)}</p><h2>梦后建议</h2><p>${escapeHtml(symbol.advice)}</p><p><strong>相关主题：</strong>${escapeHtml(symbol.themes.join('、'))}</p><p><a href="/dream">输入完整梦境进行解析</a> · <a href="/dream/symbols">浏览全部梦象</a></p>` }))
 })
 
 const stickPolish = { ...POLISH_1_50, ...POLISH_51_100 }
@@ -132,7 +132,22 @@ const stickPattern = /id:\s*(\d+),\s*\n\s*level:\s*'([^']+)',\s*\n\s*title:\s*'(
 for (const match of stickSource.matchAll(stickPattern)) {
   const id = Number(match[1]); const level = match[2]; const titleText = match[3]; const poem = match[4]; const polish = stickPolish[id]
   const title = `第${id}签${titleText}解签：${level}签签文详解`
-  detailUrls.push(writeDetailPage({ route: `divination/stick/${id}`, title, description: `第${id}签「${titleText}」的签诗、白话解释、典故与行事建议。`, parentName: '抽签求签', body: `<h1>${escapeHtml(title)}</h1><blockquote>${escapeHtml(poem)}</blockquote><h2>签诗白话</h2><p>${escapeHtml(PLAIN_POEMS[id])}</p><h2>签意解读</h2><p>${escapeHtml(polish.interpretation)}</p><h2>行事建议</h2><p>${escapeHtml(polish.advice)}</p><p>${escapeHtml(polish.story)}</p><p><a href="/divination">在线抽取今日一签</a></p>` }))
+  detailUrls.push(writeDetailPage({ route: `divination/stick/${id}`, title, description: `第${id}签「${titleText}」的签诗、白话解释、典故与行事建议。`, parentName: '抽签求签', body: `<h1>${escapeHtml(title)}</h1><blockquote>${escapeHtml(poem)}</blockquote><h2>签诗白话</h2><p>${escapeHtml(PLAIN_POEMS[id])}</p><h2>签意解读</h2><p>${escapeHtml(polish.interpretation)}</p><h2>行事建议</h2><p>${escapeHtml(polish.advice)}</p><p>${escapeHtml(polish.story)}</p><p><a href="/divination">在线抽取今日一签</a> · <a href="/divination/sticks">浏览全部签文</a></p>` }))
+}
+
+const hubs = [
+  { route: 'tarot/cards', title: '78 张塔罗牌牌义大全', description: '浏览全部大阿卡纳与小阿卡纳的正位、逆位牌义。', parentName: '塔罗占卜', links: tarotCards.map((card) => [`/tarot/card/${card.id}`, `${card.name}牌义`]) },
+  { route: 'dream/symbols', title: '常见梦境意象解析大全', description: '查看动物、自然、人物、建筑、物品与动作类梦象。', parentName: '梦境解析', links: dreamSymbols.map((symbol, index) => [`/dream/symbol/${index}`, `梦见${symbol.keywords[0]}`]) },
+  { route: 'divination/sticks', title: '一百支签文解签大全', description: '浏览第一签至第一百签的签诗、白话与行事建议。', parentName: '抽签求签', links: [...stickSource.matchAll(stickPattern)].map((match) => [`/divination/stick/${match[1]}`, `第${match[1]}签 · ${match[3]}`]) },
+]
+
+for (const hub of hubs) {
+  const list = hub.links.map(([href, label]) => `<li><a href="${href}">${escapeHtml(label)}</a></li>`).join('')
+  detailUrls.push(writeDetailPage({ ...hub, schemaType: 'CollectionPage', body: `<h1>${hub.title}</h1><p>${hub.description}</p><ul>${list}</ul>` }))
+  const feature = hub.route.split('/')[0]
+  const featurePath = path.join(dist, feature, 'index.html')
+  const featureHtml = fs.readFileSync(featurePath, 'utf8').replace('</main></div>', `<p><a href="/${hub.route}">${hub.title}</a></p></main></div>`)
+  fs.writeFileSync(featurePath, featureHtml)
 }
 
 const sitemapPath = path.join(dist, 'sitemap.xml')

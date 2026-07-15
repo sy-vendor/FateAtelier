@@ -9,6 +9,7 @@ import { interpretDreamWithMood, rehydrateDreamInterpretation, type DreamInterpr
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
+import { dreamSymbols } from '../data/dreamSymbols'
 
 export interface DreamRecord {
   id: string
@@ -22,7 +23,11 @@ const STORAGE_DEBOUNCE_MS = 400
 const INTERPRET_DELAY_MS = 900
 
 export function useDreamGame() {
-  const [dreamContent, setDreamContent] = useState('')
+  const [dreamContent, setDreamContent] = useState(() => {
+    const match = window.location.pathname.match(/^\/dream\/symbol\/(\d+)\/?$/)
+    const symbol = match ? dreamSymbols[Number(match[1])] : undefined
+    return symbol ? `我梦见了${symbol.keywords[0]}` : ''
+  })
   const [selectedMood, setSelectedMood] = useState('')
   const [interpretation, setInterpretation] = useState<DreamInterpretation | null>(null)
   const [phase, setPhase] = useState<DreamPhase>('slumber')
