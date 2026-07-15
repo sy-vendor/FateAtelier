@@ -22,6 +22,7 @@ export interface StickReading {
   categoryLabel: string | null
   aspects: ReadingAspect[]
   advice: string
+  actionSteps: string[]
   auspicious: string[]
   cautions: string[]
   timing: string
@@ -180,6 +181,23 @@ function buildAdvice(stick: DivinationStick): string {
   return `此签${meta.tone}。${cleaned || '宜守中正之心，顺时随缘。'} ${meta.timing}`
 }
 
+function buildActionSteps(stick: DivinationStick, aspects: ReadingAspect[], category?: string): string[] {
+  const meta = LEVEL_META[stick.level] ?? LEVEL_META['中']
+  const firstAspect = aspects[0]
+  const start = meta.auspicious.length > 0
+    ? meta.auspicious[stick.id % meta.auspicious.length]
+    : '先理清手上最重要的一件事'
+  const pause = meta.cautions.length > 0
+    ? meta.cautions[stick.id % meta.cautions.length]
+    : '不在情绪最强时做重大决定'
+  const middle = firstAspect
+    ? `核对「${firstAspect.label}」：${firstAspect.text}`
+    : category
+      ? `围绕${getCategoryLabel(category)}写下一个可以验证的小目标`
+      : '把签文中最有感觉的一句，对照到今天的具体处境'
+  return [`先行：${start}`, `再看：${middle}`, `暂缓：${pause}`]
+}
+
 /**
  * 将原始签文整理为结构化、可读的完整解签
  */
@@ -189,6 +207,7 @@ export function buildStickReading(stick: DivinationStick, category?: string): St
   const detailFields = category
     ? (CATEGORY_DETAIL_KEYS[category] ?? [])
     : (DEFAULT_DETAIL_BY_LEVEL[resolved.level] ?? ['career', 'wealth', 'health', 'home'])
+  const aspects = buildAspects(resolved, detailFields)
 
   return {
     stick: resolved,
@@ -196,8 +215,9 @@ export function buildStickReading(stick: DivinationStick, category?: string): St
     poemInsight: buildPoemInsight(resolved),
     categoryGuidance: category ? buildCategoryGuidance(resolved, category) : null,
     categoryLabel: category ? getCategoryLabel(category) : null,
-    aspects: buildAspects(resolved, detailFields),
+    aspects,
     advice: buildAdvice(resolved),
+    actionSteps: buildActionSteps(resolved, aspects, category),
     auspicious: meta.auspicious,
     cautions: meta.cautions,
     timing: meta.timing,

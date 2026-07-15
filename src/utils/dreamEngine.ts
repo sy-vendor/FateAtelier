@@ -59,6 +59,10 @@ const DREAM_OPENINGS = [
   '这场梦像一封用图像写成的信，关键不只在发生了什么，更在你当时如何感受',
 ]
 
+function symbolSeed(symbols: MatchedDreamSymbol[]): number {
+  return symbols.reduce((sum, symbol) => sum + [...symbol.matchedKeyword].reduce((n, char) => n + char.charCodeAt(0), 0), 0)
+}
+
 export interface DreamInterpretation {
   symbols: MatchedDreamSymbol[]
   overview: string
@@ -137,10 +141,19 @@ function buildOverview(
 
   if (symbols.length === 1) {
     const s = symbols[0]
-    return `${moodPrefix}此梦以${s.category}类意象「${s.matchedKeyword}」为核心（${s.meaning}）。${s.interpretation}`
+    const singleOpenings = [
+      `整场梦把镜头对准了「${s.matchedKeyword}」，它带着${s.meaning}的意味`,
+      `醒来后若只留下一个画面，「${s.matchedKeyword}」就是这场梦的中心`,
+      `这个梦没有铺开很多线索，而是用「${s.matchedKeyword}」反复强调${s.themes[0] ?? s.meaning}`,
+    ]
+    return `${moodPrefix}${singleOpenings[symbolSeed(symbols) % singleOpenings.length]}。${s.interpretation}`
   }
-
-  return `${moodPrefix}梦境涉及${categories.join('、')}等${categories.length}个层面，共${symbols.length}个鲜明意象。这些符号并非孤立出现，而是共同描绘你当下的心理图景——既有显性的情节，也有潜藏其后的情绪脉络。`
+  const multiOpenings = [
+    `梦境跨过${categories.join('、')}${categories.length}个层面，${symbols.length}个意象像同一段话里的不同词语`,
+    `这不是单一符号的梦。${symbols.length}个意象在${categories.join('、')}之间来回切换`,
+    `若把这场梦当成一幅画，${symbols.length}个意象构成前景与背景，而${categories.join('、')}是它使用的主要颜色`,
+  ]
+  return `${moodPrefix}${multiOpenings[symbolSeed(symbols) % multiOpenings.length]}。它们共同指向一个比单个梦象更完整的心理图景。`
 }
 
 function buildAdvice(
@@ -148,26 +161,22 @@ function buildAdvice(
   moodMeta: (typeof MOOD_META)[string] | undefined
 ): string {
   const lean = moodMeta?.lean ?? 'neutral'
-  const parts: string[] = []
-
   if (symbols.length === 0) {
-    parts.push('坚持记录梦境，尤其写下醒来后的第一感受与情绪颜色。')
-    if (moodMeta) parts.push(moodMeta.suffix)
-    return parts.join(' ')
+    return `先别急着解释。请补记醒来后的第一感受、最明显的颜色，以及梦里你最想离开或靠近的地方。${moodMeta ? ` ${moodMeta.suffix}` : ''}`
   }
 
   const primary = symbols[0]
-  parts.push(pickLeanText(primary, lean))
-  parts.push(primary.advice)
-
-  if (symbols.length > 1) {
-    const secondary = symbols[1]
-    parts.push(secondary.advice)
-  }
-
-  if (moodMeta) parts.push(moodMeta.suffix)
-
-  return parts.join(' ')
+  const secondary = symbols[1]
+  const leanText = pickLeanText(primary, lean)
+  const connectors = [
+    `先承认这个梦带来的感受：${leanText} 然后把它收束成一个小动作——${primary.advice}`,
+    `与其追问吉凶，不如留意「${primary.matchedKeyword}」在现实中引起的直觉。${leanText} 今天可以试试：${primary.advice}`,
+    `这场梦最值得带回白天的，是对「${primary.themes[0] ?? primary.matchedKeyword}」的觉察。${leanText} 落地做法是：${primary.advice}`,
+  ]
+  let result = connectors[symbolSeed(symbols) % connectors.length]
+  if (secondary) result += ` 若还有余力，再照看「${secondary.matchedKeyword}」这条支线：${secondary.advice}`
+  if (moodMeta) result += ` ${moodMeta.suffix}`
+  return result
 }
 
 function buildReflection(symbols: MatchedDreamSymbol[]): string {

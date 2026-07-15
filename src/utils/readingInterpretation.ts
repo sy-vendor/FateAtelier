@@ -80,13 +80,6 @@ function getOrientationLabel(isReversed: boolean): string {
   return isReversed ? '逆位' : '正位'
 }
 
-function getEnergyLabel(isReversed: boolean, position: keyof typeof POSITION_LABEL): string {
-  if (isReversed) {
-    return position === 'present' ? '能量受阻，需调整' : '尚有阻滞，宜谨慎'
-  }
-  return position === 'future' ? '趋势向好，可期' : '能量顺畅'
-}
-
 function getCardReading(
   card: TarotCard,
   isReversed: boolean,
@@ -149,20 +142,19 @@ function buildPositionReading(
 ): string {
   const { card, isReversed } = drawn
   const orient = getOrientationLabel(isReversed)
-  const energy = getEnergyLabel(isReversed, position)
   const { keywords, prose, themed } = getCardReading(card, isReversed, readingType)
   const label = POSITION_LABEL[position]
   const hint = POSITION_HINTS[position][card.id % POSITION_HINTS[position].length]
-
-  let text = `${label}：${card.name}（${orient}）——${energy}。${prose}`
-  if (themed) {
-    text += ` 就${getTypeLabel(readingType)}而言：${themed}`
-  } else {
-    text += ` 核心意象：${keywords}。`
-  }
-  text += ` ${hint}`
-
-  return text
+  const focus = themed
+    ? `放到${getTypeLabel(readingType)}中，${themed}`
+    : `它把注意力带向「${keywords}」`
+  const variants = [
+    `${label}位出现${card.name}${orient}。${prose} ${focus}。${hint}`,
+    `${card.name}以${orient}落在${label}位，先点出的是：${prose} ${hint} ${focus}。`,
+    `读${label}这一格，关键在${card.name}的${orient}状态。${focus}。${prose} ${hint}`,
+    `${label}的线索由${card.name}${orient}带来。${focus}。这并不只是一个标签：${prose} ${hint}`,
+  ]
+  return variants[(card.id + Object.keys(POSITION_LABEL).indexOf(position)) % variants.length]
 }
 
 function buildAdvice(
@@ -182,7 +174,12 @@ function buildAdvice(
     ? future.card.advice?.reversed ?? ''
     : future.card.advice?.upright ?? ''
 
-  let core = `当下之牌建议：${presentAdvice} 未来之牌提示：${futureAdvice}`
+  const actionBridges = [
+    `先从眼前可做的一步开始：${presentAdvice} 等局面往前走时，再记住：${futureAdvice}`,
+    `不必同时解决所有问题。此刻最值得做的是${presentAdvice} 下一阶段则要留意${futureAdvice}`,
+    `把解读落到行动上：今天尝试${presentAdvice} 之后的判断标准是${futureAdvice}`,
+  ]
+  let core = actionBridges[(present.card.id + future.card.id) % actionBridges.length]
 
   if (majorCount >= 2) {
     core += ' 大阿卡纳多次出现，此事关乎人生方向，宜以长远眼光抉择，勿困于一时得失。'
@@ -203,7 +200,7 @@ function buildAdvice(
     custom: `关于「${getTypeLabel(readingType, customQuestion)}」：`,
   }
 
-  const prefix = prefixes[readingType] ?? '综合指引：'
+  const prefix = prefixes[readingType] ?? '这次的落地提醒：'
   return `${prefix}${core}`
 }
 

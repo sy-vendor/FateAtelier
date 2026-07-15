@@ -219,6 +219,12 @@ function DivinationMainView() {
             <p className="prose">{stickReading.advice}</p>
           </Panel>
 
+          <Panel title="三步落签" description="不只看吉凶，把签意化成今天能做的事">
+            <ol className="divination-action-steps">
+              {stickReading.actionSteps.map((step) => <li key={step}>{step}</li>)}
+            </ol>
+          </Panel>
+
           {stickReading.storyNote && (
             <Panel title="典故启发">
               <p className="prose">{stickReading.storyNote}</p>
