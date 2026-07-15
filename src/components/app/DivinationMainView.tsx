@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import {
   DIVINATION_BRAND,
   DIVINATION_BRAND_EN,
@@ -12,6 +11,7 @@ import { isMobileDevice, isShakeSupported } from '../../utils/deviceShake'
 import { useDivinationGame } from '../../hooks/useDivinationGame'
 import { DivinationLogoMark } from '../divination/DivinationLogoMark'
 import { DivinationRitualBar } from '../divination/DivinationRitualBar'
+import { OracleVessel } from '../divination/OracleVessel'
 import { Panel, Button, Segmented, Collapsible } from '../ui'
 import './divination-stage.css'
 import NextJourney from './NextJourney'
@@ -77,74 +77,82 @@ function DivinationMainView() {
         </div>
       </section>
 
-      <section className="divination-shrine" aria-label="签筒仪式">
-        <p className="divination-shrine__hint">
-          {isMobileDevice() && isShakeSupported() && motionPermission !== 'granted'
-            ? '点击签筒开启摇一摇权限，之后可摇手机求签'
-            : '点击签筒或摇一摇手机开始求签'}
-        </p>
-        <div className="stick-container">
-          <button
-            type="button"
-            className={[
-              'stick-tube',
-              phase === 'intent' && !isShaking ? 'stick-tube--idle' : '',
-              isShaking ? 'stick-tube--shaking' : '',
-              phase === 'revealing' ? 'stick-tube--revealing' : '',
-            ]
-              .filter(Boolean)
-              .join(' ')}
-            onClick={() => {
-              void ensureMotionPermission()
-              drawStick()
-            }}
-            disabled={isShaking || phase === 'revealing'}
-            aria-label="摇签求签"
-          >
-            <span className="stick-tube__aura" aria-hidden />
-            <div className="stick-tube-body">
-              <div className="stick-tube-opening" aria-hidden />
-              <div className="stick-tube-sticks" aria-hidden>
-                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-                  <span key={i} className="stick-tube-stick" style={{ '--stick-i': i } as CSSProperties} />
-                ))}
-              </div>
-              <div className="stick-tube-flyout" aria-hidden>
-                <span className="stick-tube-flyout__stick" />
-                <span className="stick-tube-flyout__glow" />
-              </div>
-              <div className="stick-tube-top" />
-              <div className="stick-tube-band" aria-hidden />
-              <div className="stick-tube-bottom" />
-              {isShaking && (
-                <div className="stick-particles" aria-hidden>
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <span
-                      key={i}
-                      className="stick-particle"
-                      style={{ '--particle-i': i } as CSSProperties}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-            <span className="stick-tube-base" aria-hidden />
-            <span className="stick-tube-label">
-              {isShaking ? '签文飞出中…' : phase === 'revealing' ? '灵签已出…' : phase === 'done' ? '再求一签' : '轻触签筒 · 心诚则灵'}
-            </span>
-          </button>
+      <section
+        className={[
+          'divination-shrine',
+          phase === 'done' && showResult ? 'divination-shrine--settled' : '',
+          isShaking ? 'divination-shrine--shaking' : '',
+          phase === 'revealing' ? 'divination-shrine--revealing' : '',
+        ].filter(Boolean).join(' ')}
+        aria-label="签筒仪式"
+      >
+        <div className="divination-shrine__altar">
+          <div className="divination-shrine__copy">
+            <p className="divination-shrine__eyebrow">
+              {phase === 'done' && showResult ? '本次指引' : '静心片刻'}
+            </p>
+            <h2 className="divination-shrine__title">
+              {phase === 'done' && showResult ? '答案已经落下' : '把问题留在心里'}
+            </h2>
+            <p className="divination-shrine__hint">
+              {isShaking
+                ? '保持呼吸，让杂念慢慢安静'
+                : phase === 'revealing'
+                  ? '抽取完成，正在展开你的结果'
+                  : phase === 'done' && showResult
+                    ? '向下查看这次抽取的完整解读'
+                    : isMobileDevice() && isShakeSupported() && motionPermission !== 'granted'
+                      ? '准备好后轻触右侧器物，也可以直接点击按钮'
+                      : '不必说出口。想清楚你此刻最在意的一件事，然后开始。'}
+            </p>
 
-          <Button
-            variant="primary"
-            block
-            onClick={() => {
-              void ensureMotionPermission()
-              drawStick()
-            }}
-            disabled={isShaking || phase === 'revealing'}
-          >
-            {isShaking ? '摇签中…' : phase === 'revealing' ? '揭签中…' : '开始摇签'}
-          </Button>
+            <ol className="divination-shrine__flow" aria-label="抽取流程">
+              <li className="is-complete"><span>1</span>选择方向</li>
+              <li className={phase !== 'intent' ? 'is-complete' : 'is-current'}><span>2</span>静心抽取</li>
+              <li className={phase === 'done' ? 'is-complete' : ''}><span>3</span>查看解读</li>
+            </ol>
+          </div>
+
+          <div className="divination-shrine__interaction">
+            <button
+              type="button"
+              className={[
+                'stick-tube',
+                phase === 'intent' && !isShaking ? 'stick-tube--idle' : '',
+                isShaking ? 'stick-tube--shaking' : '',
+                phase === 'revealing' ? 'stick-tube--revealing' : '',
+                phase === 'done' ? 'stick-tube--done' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              onClick={() => {
+                void ensureMotionPermission()
+                drawStick()
+              }}
+              disabled={isShaking || phase === 'revealing'}
+              aria-label="开始抽取"
+            >
+              <span className="stick-tube__haze" aria-hidden />
+              <span className="stick-tube__glow" aria-hidden />
+              <OracleVessel />
+            </button>
+
+            <p className="divination-shrine__status" aria-live="polite">
+              {isShaking ? '正在摇动…' : phase === 'revealing' ? '正在展开…' : phase === 'done' ? '本次抽取已完成' : '轻触器物或使用下方按钮'}
+            </p>
+
+            <Button
+              variant="primary"
+              className="divination-draw-button"
+              onClick={() => {
+                void ensureMotionPermission()
+                drawStick()
+              }}
+              disabled={isShaking || phase === 'revealing'}
+            >
+              {isShaking ? '请稍候…' : phase === 'revealing' ? '正在展开…' : phase === 'done' ? '重新抽取' : '开始抽取'}
+            </Button>
+          </div>
         </div>
       </section>
 
