@@ -18,6 +18,24 @@ const SUBTITLES: Record<AppPage, string> = {
   shengxiao: '生肖缘谱 · 合参测缘论配对',
 }
 
-export function getPageSubtitle(page: AppPage): string {
-  return SUBTITLES[page] ?? SUBTITLES.tarot
+const SUBTITLES_EN: Record<AppPage, string> = {
+  tarot: 'Starlit Arcana · Draw with intention',
+  horoscope: 'Celestial Observatory · Guidance for every sign',
+  almanac: 'Seasonal Almanac · Move with the rhythm of the day',
+  cybermerit: 'Cyber Merit · A quiet moment of digital practice',
+  bazi: 'Four Pillars · Read the pattern of your birth',
+  divination: 'Bamboo Oracle · Ask sincerely and draw a sign',
+  dream: 'Dream Guide · Follow the symbols beneath the surface',
+  fengshui: 'Compass Studio · Explore balance in every direction',
+  auspicious: 'Favorable Timing · Choose a date with intention',
+  numberenergy: 'Number Patterns · Discover the energy in digits',
+  luckycolor: 'Color Oracle · Meet today’s inspiring palette',
+  qimen: 'Qi Men Compass · Read timing, place, and possibility',
+  nametest: 'Name Mirror · Explore form, sound, and strokes',
+  ziwei: 'Purple Star Astrology · Map the palaces of destiny',
+  shengxiao: 'Zodiac Bonds · Explore chemistry and connection',
+}
+
+export function getPageSubtitle(page: AppPage, isEnglish = false): string {
+  return (isEnglish ? SUBTITLES_EN : SUBTITLES)[page]
 }

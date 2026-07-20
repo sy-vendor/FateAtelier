@@ -182,6 +182,34 @@ html.app-background-paused body::after {
   flex-shrink: 0;
 }
 
+.locale-switch {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--ds-accent-border);
+  border-radius: 999px;
+  background: var(--ds-accent-muted);
+  color: var(--ds-text-primary);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color var(--ds-duration-fast), transform var(--ds-duration-fast);
+}
+
+.locale-switch:hover {
+  transform: translateY(-1px);
+  border-color: var(--ds-accent-violet);
+}
+
+.locale-switch:focus-visible {
+  outline: 2px solid var(--ds-accent-violet);
+  outline-offset: 2px;
+}
+
 /* ── Content stage ── */
 .daily-journey {
   width: 100%;

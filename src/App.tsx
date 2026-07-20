@@ -12,8 +12,10 @@ import { getPageSubtitle } from './utils/appSubtitles'
 import { useDailyJourney } from './hooks/useDailyJourney'
 import { APP_NAVIGATE_EVENT } from './utils/appNavigation'
 import './components/app/app-shell.css'
+import { useLocale } from './i18n/LocaleContext'
 
 function App() {
+  const { locale, setLocale, isEnglish } = useLocale()
   const pageFromLocation = (): AppPage => {
     const slug = window.location.pathname.split('/').filter(Boolean)[0] || 'tarot'
     return APP_FEATURES.some((feature) => feature.page === slug) ? slug as AppPage : 'tarot'
@@ -49,13 +51,15 @@ function App() {
     // Preserve it after React mounts so crawlers keep the long-tail canonical.
     if (window.location.pathname.split('/').filter(Boolean).length > 1) return
     const canonicalUrl = `https://www.fateatelier.cloud/${currentPage}`
-    document.title = `${currentFeature.seoTitle} | 命运工坊`
-    document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', currentFeature.description)
+    const seoTitle = isEnglish ? currentFeature.seoTitleEn : currentFeature.seoTitle
+    const description = isEnglish ? currentFeature.descriptionEn : currentFeature.description
+    document.title = `${seoTitle} | ${isEnglish ? 'Fate Atelier' : '命运工坊'}`
+    document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', description)
     document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute('content', document.title)
-    document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute('content', currentFeature.description)
+    document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute('content', description)
     document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute('content', canonicalUrl)
     document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', canonicalUrl)
-  }, [currentFeature, currentPage])
+  }, [currentFeature, currentPage, isEnglish])
 
   const navigateTo = (page: AppPage) => {
     if (page === currentPage) return
@@ -81,9 +85,16 @@ function App() {
               <FeatureIcon page={currentPage} size="lg" />
             </span>
             <div className="shell-topbar__text">
-              <h1 className="shell-topbar__title">{currentFeature.name}</h1>
-              <p className="shell-topbar__sub">{getPageSubtitle(currentPage)}</p>
+              <h1 className="shell-topbar__title">{isEnglish ? currentFeature.nameEn : currentFeature.name}</h1>
+              <p className="shell-topbar__sub">{getPageSubtitle(currentPage, isEnglish)}</p>
             </div>
+          </div>
+
+          <div className="shell-topbar__actions" role="group" aria-label={isEnglish ? 'Language' : '语言'}>
+            <button className="locale-switch" type="button" onClick={() => setLocale(locale === 'en' ? 'zh-CN' : 'en')}>
+              <span aria-hidden>{isEnglish ? '中' : 'EN'}</span>
+              <span className="sr-only">{isEnglish ? '切换到中文' : 'Switch to English'}</span>
+            </button>
           </div>
 
         </header>
@@ -96,7 +107,7 @@ function App() {
 
         <footer className="shell-footer">
           <p>
-            © {new Date().getFullYear()} 命运工坊 · 仅供娱乐参考 ·{' '}
+            © {new Date().getFullYear()} {isEnglish ? 'Fate Atelier · For entertainment only' : '命运工坊 · 仅供娱乐参考'} ·{' '}
             <a
               href="https://github.com/sy-vendor/FateAtelier"
               target="_blank"

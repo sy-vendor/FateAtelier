@@ -5,6 +5,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
 import './components/ui/ui.css'
 import { logger } from './utils/logger'
+import { LocaleProvider } from './i18n/LocaleContext'
 
 // Pause decorative infinite animations while the tab is hidden.
 document.addEventListener('visibilitychange', () => {
@@ -48,7 +49,9 @@ if (typeof window !== 'undefined' && window.location.search.includes('clearCache
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <App />
+      <LocaleProvider>
+        <App />
+      </LocaleProvider>
     </ErrorBoundary>
   </React.StrictMode>,
 )
