@@ -1,4 +1,6 @@
 import { memo, useMemo } from 'react'
+import { useLocale } from '../../i18n/LocaleContext'
+import { useTx } from '../../i18n/useTx'
 import './tarot-stage.css'
 import CardDrawAnimation from '../CardDrawAnimation'
 import ThreeCardDrawAnimation from '../ThreeCardDrawAnimation'
@@ -51,6 +53,8 @@ function TarotMainViewInner(props: TarotMainViewProps) {
     handleDeleteHistoryReading,
   } = props
 
+  const { isEnglish } = useLocale()
+  const tx = useTx()
   const { isFavorite, toggleFavorite } = useTarotFavorites()
 
   const ritualStep = useMemo((): 1 | 2 | 3 | 4 => {
@@ -95,9 +99,8 @@ function TarotMainViewInner(props: TarotMainViewProps) {
           <TarotLogoMark size="lg" />
         </div>
         <div className="tarot-hero__text">
-          <p className="tarot-hero__deck">{DECK_NAME}</p>
-          <p className="tarot-hero__deck-en">{DECK_NAME_EN}</p>
-          <p className="tarot-hero__hint">深呼吸三次，带着你的问题进入牌阵</p>
+          <p className="tarot-hero__deck">{isEnglish ? DECK_NAME_EN : DECK_NAME}</p>
+          <p className="tarot-hero__hint">{tx('深呼吸三次，带着你的问题进入牌阵', 'Take three deep breaths and enter the spread with your question')}</p>
         </div>
       </header>
 
@@ -115,16 +118,16 @@ function TarotMainViewInner(props: TarotMainViewProps) {
       {threeCardReading && (
         <section className="tarot-reading tarot-reading--three">
           <div className="tarot-reading__head">
-            <p className="tarot-reading__eyebrow">Three Cards</p>
-            <h2 className="tarot-reading__title">三牌时空</h2>
-            <p className="tarot-reading__sub">过去 · 现在 · 未来</p>
+            <p className="tarot-reading__eyebrow">{tx('三牌占卜', 'Three Cards')}</p>
+            <h2 className="tarot-reading__title">{tx('三牌时空', 'Three-Card Spread')}</h2>
+            <p className="tarot-reading__sub">{tx('过去 · 现在 · 未来', 'Past · Present · Future')}</p>
           </div>
 
           <div className="three-cards-grid">
             {threeCardReading.map((drawnCard, index) => (
               <ThreeCardSlot
                 key={drawnCard.card.id}
-                label={index === 0 ? '过去' : index === 1 ? '现在' : '未来'}
+                positionIndex={index as 0 | 1 | 2}
                 drawnCard={drawnCard}
                 highlight={index === 1}
                 onFlip={() => updateCardReversed(drawnCard.card.id, !drawnCard.isReversed)}
@@ -135,7 +138,7 @@ function TarotMainViewInner(props: TarotMainViewProps) {
           {readingInterpretation && (
             <div className="reading-interpretation">
               <div className="interpretation-header">
-                <h3 className="interpretation-title">时空串联</h3>
+                <h3 className="interpretation-title">{tx('时空串联', 'Across Time')}</h3>
                 {viewingHistoryReading && (
                   <div className="action-buttons">
                     <Button
@@ -143,14 +146,14 @@ function TarotMainViewInner(props: TarotMainViewProps) {
                       small
                       onClick={() => handleExportReading(viewingHistoryReading)}
                     >
-                      导出
+                      {tx('导出', 'Export')}
                     </Button>
                     <Button
                       variant="primary"
                       small
                       onClick={() => handleShareReading(viewingHistoryReading)}
                     >
-                      分享
+                      {tx('分享', 'Share')}
                     </Button>
                   </div>
                 )}
@@ -158,27 +161,27 @@ function TarotMainViewInner(props: TarotMainViewProps) {
 
               <div className="interpretation-content">
                 <div className="interpretation-summary">
-                  <h4>整体趋势</h4>
+                  <h4>{tx('整体趋势', 'Overall Trend')}</h4>
                   <p>{readingInterpretation.summary}</p>
                 </div>
 
                 <div className="interpretation-stages">
                   <div className="stage-item">
-                    <h4>过去</h4>
+                    <h4>{tx('过去', 'Past')}</h4>
                     <p>{readingInterpretation.past}</p>
                   </div>
                   <div className="stage-item stage-item--now">
-                    <h4>现在</h4>
+                    <h4>{tx('现在', 'Present')}</h4>
                     <p>{readingInterpretation.present}</p>
                   </div>
                   <div className="stage-item">
-                    <h4>未来</h4>
+                    <h4>{tx('未来', 'Future')}</h4>
                     <p>{readingInterpretation.future}</p>
                   </div>
                 </div>
 
                 <div className="interpretation-advice">
-                  <h4>综合指引</h4>
+                  <h4>{tx('综合指引', 'Guidance')}</h4>
                   <p>{readingInterpretation.advice}</p>
                 </div>
               </div>
@@ -190,10 +193,10 @@ function TarotMainViewInner(props: TarotMainViewProps) {
       {selectedCard && !threeCardReading && (
         <section id="tarot-card-detail" className="tarot-reading tarot-reading--single">
           <div className="tarot-reading__head">
-            <h2 className="tarot-reading__title">牌义详情</h2>
+            <h2 className="tarot-reading__title">{tx('牌义详情', 'Card Meaning')}</h2>
             <p className="tarot-reading__sub">
-              {selectedCard.card.name}
-              {selectedCard.isReversed ? ' · 逆位' : ' · 正位'}
+              {isEnglish ? selectedCard.card.nameEn : selectedCard.card.name}
+              {selectedCard.isReversed ? tx(' · 逆位', ' · Reversed') : tx(' · 正位', ' · Upright')}
             </p>
           </div>
           {viewingHistoryReading && viewingHistoryReading.type === 'single' && (
@@ -203,14 +206,14 @@ function TarotMainViewInner(props: TarotMainViewProps) {
                 small
                 onClick={() => handleExportReading(viewingHistoryReading)}
               >
-                导出
+                {tx('导出', 'Export')}
               </Button>
               <Button
                 variant="primary"
                 small
                 onClick={() => handleShareReading(viewingHistoryReading)}
               >
-                分享
+                {tx('分享', 'Share')}
               </Button>
             </div>
           )}
@@ -229,8 +232,8 @@ function TarotMainViewInner(props: TarotMainViewProps) {
       {drawnCards.length > 1 && (
         <section className="drawn-cards">
           <div className="drawn-cards__head">
-            <h2>已抽取的牌</h2>
-            <span className="drawn-cards__count">{drawnCards.length} 张</span>
+            <h2>{tx('已抽取的牌', 'Drawn Cards')}</h2>
+            <span className="drawn-cards__count">{tx(`${drawnCards.length} 张`, `${drawnCards.length} cards`)}</span>
           </div>
           <div className="cards-grid">
             {drawnCards.map((drawnCard: DrawnCard) => (
@@ -246,7 +249,7 @@ function TarotMainViewInner(props: TarotMainViewProps) {
                 }}
                 role="button"
                 tabIndex={0}
-                aria-label={`选择 ${drawnCard.card.name}`}
+                aria-label={tx(`选择 ${drawnCard.card.name}`, `Select ${drawnCard.card.nameEn}`)}
               >
                 <TarotCardVisual
                   card={drawnCard.card}
@@ -255,8 +258,8 @@ function TarotMainViewInner(props: TarotMainViewProps) {
                   size="xs"
                 />
                 <div className="card-thumbnail-name">
-                  {drawnCard.card.name}
-                  {drawnCard.isReversed && <span className="reversed-indicator">逆</span>}
+                  {isEnglish ? drawnCard.card.nameEn : drawnCard.card.name}
+                  {drawnCard.isReversed && <span className="reversed-indicator">{tx('逆', 'R')}</span>}
                 </div>
               </div>
             ))}

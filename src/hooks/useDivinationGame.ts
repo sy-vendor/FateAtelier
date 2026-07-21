@@ -11,6 +11,8 @@ import {
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
+import { txStatic } from '../i18n/locale'
+import { useLocale } from '../i18n/LocaleContext'
 import { DRAW_PHASE_STEP, type DrawPhase } from '../utils/divinationData'
 
 export interface DrawHistory {
@@ -38,6 +40,7 @@ function getLinkedStick(): DivinationStick | null {
 }
 
 export function useDivinationGame() {
+  const { isEnglish } = useLocale()
   const linkedStick = useMemo(getLinkedStick, [])
   const [phase, setPhase] = useState<DrawPhase>(linkedStick ? 'done' : 'intent')
   const [isShaking, setIsShaking] = useState(false)
@@ -47,7 +50,7 @@ export function useDivinationGame() {
   const [drawHistory, setDrawHistory] = useState<DrawHistory[]>(() => {
     const historyResult = getStorageItem<DrawHistory[]>('divination-draw-history', [])
     if (historyResult.error) {
-      requestAnimationFrame(() => toast.error('加载历史记录失败'))
+      requestAnimationFrame(() => toast.error(txStatic('加载历史记录失败', 'Failed to load history')))
     }
     if (historyResult.success && historyResult.data !== undefined && Array.isArray(historyResult.data)) {
       return historyResult.data
@@ -59,7 +62,7 @@ export function useDivinationGame() {
   const [favorites, setFavorites] = useState<Set<number>>(() => {
     const favoritesResult = getStorageItem<number[]>('divination-favorites', [])
     if (favoritesResult.error) {
-      requestAnimationFrame(() => toast.error('加载收藏失败'))
+      requestAnimationFrame(() => toast.error(txStatic('加载收藏失败', 'Failed to load favorites')))
     }
     if (favoritesResult.success && favoritesResult.data !== undefined && Array.isArray(favoritesResult.data)) {
       return new Set(favoritesResult.data)
@@ -80,7 +83,7 @@ export function useDivinationGame() {
     const id = window.setTimeout(() => {
       const result = setStorageItem('divination-draw-history', drawHistoryRef.current)
       if (!result.success && result.error) {
-        toast.warning(result.error || '保存历史记录失败')
+        toast.warning(result.error || txStatic('保存历史记录失败', 'Failed to save history'))
       }
     }, STORAGE_DEBOUNCE_MS)
     return () => clearTimeout(id)
@@ -96,7 +99,7 @@ export function useDivinationGame() {
     const id = window.setTimeout(() => {
       const result = setStorageItem('divination-favorites', Array.from(favoritesRef.current))
       if (!result.success && result.error) {
-        toast.warning(result.error || '保存收藏失败')
+        toast.warning(result.error || txStatic('保存收藏失败', 'Failed to save favorites'))
       }
     }, STORAGE_DEBOUNCE_MS)
     return () => clearTimeout(id)
@@ -117,7 +120,7 @@ export function useDivinationGame() {
     setMotionPermission(state)
 
     if (state === 'denied') {
-      toast.warning('未开启运动传感器权限，请点击签筒求签')
+      toast.warning(txStatic('未开启运动传感器权限，请点击签筒求签', 'Motion permission denied. Tap the vessel to draw a sign.'))
     }
   }, [])
 
@@ -163,7 +166,7 @@ export function useDivinationGame() {
   const stickReading = useMemo((): StickReading | null => {
     if (!drawnStick) return null
     return rehydrateStickReading(drawnStick, selectedCategory || undefined)
-  }, [drawnStick, selectedCategory])
+  }, [drawnStick, selectedCategory, isEnglish])
 
   const toggleFavorite = useCallback((stickId: number) => {
     setFavorites((prev) => {
@@ -211,7 +214,7 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     }).catch(() => {
-      toast.error('复制失败')
+      toast.error(txStatic('复制失败', 'Copy failed'))
     })
   }, [stickReading])
 
@@ -248,10 +251,10 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
 
   const clearHistory = useCallback(async () => {
     const confirmed = await confirm({
-      title: '清空历史记录',
-      message: '确定要清空所有历史记录吗？此操作不可恢复。',
-      confirmText: '清空',
-      cancelText: '取消',
+      title: txStatic('清空历史记录', 'Clear history'),
+      message: txStatic('确定要清空所有历史记录吗？此操作不可恢复。', 'Clear all history? This cannot be undone.'),
+      confirmText: txStatic('清空', 'Clear'),
+      cancelText: txStatic('取消', 'Cancel'),
       type: 'danger',
     })
     if (confirmed) {

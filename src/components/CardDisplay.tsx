@@ -1,4 +1,6 @@
 import { TarotCard } from '../data/tarotCards'
+import { useLocale } from '../i18n/LocaleContext'
+import { useTx } from '../i18n/useTx'
 import { resolveCanonicalTarotCard } from '../utils/tarotCardResolve'
 import { TarotCardVisual } from './tarot/TarotCardVisual'
 import './CardDisplay.css'
@@ -20,6 +22,8 @@ function CardDisplay({
   isFavorite = false,
   onToggleFavorite,
 }: CardDisplayProps) {
+  const { isEnglish } = useLocale()
+  const tx = useTx()
   const card = resolveCanonicalTarotCard(rawCard)
   const meaning = (isReversed ? card.meaning?.reversed : card.meaning?.upright) ?? ''
   const interpretation = (isReversed ? card.interpretation?.reversed : card.interpretation?.upright) ?? ''
@@ -36,35 +40,35 @@ function CardDisplay({
         onClick={onFlip}
       />
       <p className="card-display__caption">
-        {card.name}
-        <span className="card-display__caption-en">{card.nameEn}</span>
+        {isEnglish ? card.nameEn : card.name}
+        <span className="card-display__caption-en">{isEnglish ? card.name : card.nameEn}</span>
       </p>
 
       {!compact && (
         <div className="card-meaning">
           <div className="meaning-section">
-            <h3>关键词</h3>
+            <h3>{tx('关键词', 'Keywords')}</h3>
             <p className="meaning-text">{meaning}</p>
           </div>
 
           <div className="description-section">
-            <h3>牌面要义</h3>
+            <h3>{tx('牌面要义', 'Card Essence')}</h3>
             <p className="description-text">{card.description}</p>
           </div>
 
           <div className="interpretation-section">
-            <h3>牌意解读</h3>
+            <h3>{tx('牌意解读', 'Interpretation')}</h3>
             <p className="interpretation-text">{interpretation}</p>
           </div>
 
           <div className="advice-section">
-            <h3>行动建议</h3>
+            <h3>{tx('行动建议', 'Advice')}</h3>
             <p className="advice-text">{advice}</p>
           </div>
 
           <div className="card-actions">
             <button type="button" className="flip-button" onClick={onFlip}>
-              {isReversed ? '转为正位' : '转为逆位'}
+              {isReversed ? tx('转为正位', 'Switch to upright') : tx('转为逆位', 'Switch to reversed')}
             </button>
             {onToggleFavorite && (
               <button
@@ -74,10 +78,10 @@ function CardDisplay({
                   e.stopPropagation()
                   onToggleFavorite(card)
                 }}
-                title={isFavorite ? '取消收藏' : '收藏'}
-                aria-label={isFavorite ? '取消收藏' : '收藏'}
+                title={isFavorite ? tx('取消收藏', 'Remove favorite') : tx('收藏', 'Favorite')}
+                aria-label={isFavorite ? tx('取消收藏', 'Remove favorite') : tx('收藏', 'Favorite')}
               >
-                {isFavorite ? '⭐' : '☆'} {isFavorite ? '已收藏' : '收藏'}
+                {isFavorite ? '⭐' : '☆'} {isFavorite ? tx('已收藏', 'Saved') : tx('收藏', 'Favorite')}
               </button>
             )}
           </div>
@@ -87,15 +91,15 @@ function CardDisplay({
       {compact && (
         <div className="card-meaning-compact">
           <div className="meaning-compact">
-            <h4>牌意解读</h4>
+            <h4>{tx('牌意解读', 'Interpretation')}</h4>
             <p>{interpretation}</p>
           </div>
           <div className="description-compact">
-            <h4>行动建议</h4>
+            <h4>{tx('行动建议', 'Advice')}</h4>
             <p>{advice}</p>
           </div>
           <button type="button" className="flip-button-compact" onClick={onFlip}>
-            {isReversed ? '转为正位' : '转为逆位'}
+            {isReversed ? tx('转为正位', 'Switch to upright') : tx('转为逆位', 'Switch to reversed')}
           </button>
         </div>
       )}

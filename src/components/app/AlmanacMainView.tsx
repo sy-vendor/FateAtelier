@@ -11,9 +11,13 @@ import { useAlmanacGame } from '../../hooks/useAlmanacGame'
 import { AlmanacLogoMark } from '../almanac/AlmanacLogoMark'
 import { AlmanacRitualBar } from '../almanac/AlmanacRitualBar'
 import { Panel } from '../ui'
+import { useLocale } from '../../i18n/LocaleContext'
+import { useTx } from '../../i18n/useTx'
 import './almanac-stage.css'
 
 function AlmanacMainView() {
+  const tx = useTx()
+  const { isEnglish } = useLocale()
   const {
     today,
     almanac,
@@ -24,6 +28,12 @@ function AlmanacMainView() {
     handleShichenSelect,
   } = useAlmanacGame()
 
+  const pillars = [
+    { label: tx('年柱', 'Year pillar'), value: almanac.yearGanZhi, day: false },
+    { label: tx('月柱', 'Month pillar'), value: almanac.monthGanZhi, day: false },
+    { label: tx('日柱', 'Day pillar'), value: almanac.dayGanZhi, day: true },
+  ]
+
   return (
     <div className="almanac-stage">
       <header className="almanac-hero">
@@ -31,9 +41,9 @@ function AlmanacMainView() {
           <AlmanacLogoMark size="lg" />
         </div>
         <div>
-          <p className="almanac-hero__brand">{ALMANAC_BRAND}</p>
-          <p className="almanac-hero__brand-en">{ALMANAC_BRAND_EN}</p>
-          <p className="almanac-hero__hint">顺天时，知地利，察日宜忌以安行止</p>
+          <p className="almanac-hero__brand">{tx(ALMANAC_BRAND, ALMANAC_BRAND_EN)}</p>
+          <p className="almanac-hero__brand-en">{isEnglish ? ALMANAC_BRAND_EN.toUpperCase() : ALMANAC_BRAND_EN}</p>
+          <p className="almanac-hero__hint">{tx('顺天时，知地利，察日宜忌以安行止', 'Follow the seasons, read the day, and choose your timing wisely')}</p>
         </div>
       </header>
 
@@ -42,21 +52,17 @@ function AlmanacMainView() {
       <section className="almanac-day-banner">
         <div>
           <p className="almanac-day-banner__date">{formatAlmanacDate(today)}</p>
-          <p className="almanac-day-banner__pillar">日柱 {almanac.dayGanZhi}</p>
+          <p className="almanac-day-banner__pillar">{tx('日柱', 'Day pillar')} {almanac.dayGanZhi}</p>
           <p className="almanac-day-banner__sub">{WUXING_HINT[almanac.wuxing]}</p>
         </div>
         <div className="almanac-wuxing-badge">
           <span className="almanac-wuxing-badge__value">{almanac.wuxing}</span>
-          <span className="almanac-wuxing-badge__label">日主五行</span>
+          <span className="almanac-wuxing-badge__label">{tx('日主五行', 'Day element')}</span>
         </div>
       </section>
 
-      <section className="almanac-pillars" aria-label="三柱">
-        {[
-          { label: '年柱', value: almanac.yearGanZhi, day: false },
-          { label: '月柱', value: almanac.monthGanZhi, day: false },
-          { label: '日柱', value: almanac.dayGanZhi, day: true },
-        ].map((pillar) => (
+      <section className="almanac-pillars" aria-label={tx('三柱', 'Three pillars')}>
+        {pillars.map((pillar) => (
           <article
             key={pillar.label}
             className={`almanac-pillar${pillar.day ? ' almanac-pillar--day' : ''}`}
@@ -67,26 +73,26 @@ function AlmanacMainView() {
         ))}
       </section>
 
-      <section className="almanac-meta" aria-label="冲煞方位">
+      <section className="almanac-meta" aria-label={tx('冲煞方位', 'Clash and directions')}>
         <article className="almanac-meta__item">
-          <span className="almanac-meta__label">冲煞</span>
+          <span className="almanac-meta__label">{tx('冲煞', 'Clash')}</span>
           <div className="almanac-meta__row">
-            <span className="almanac-meta__key">冲</span>
+            <span className="almanac-meta__key">{tx('冲', 'Clash')}</span>
             <span>{almanac.chongShengxiao}</span>
           </div>
           <div className="almanac-meta__row">
-            <span className="almanac-meta__key">煞</span>
+            <span className="almanac-meta__key">{tx('煞', 'Sha')}</span>
             <span>{almanac.chongFang}</span>
           </div>
         </article>
         <article className="almanac-meta__item">
-          <span className="almanac-meta__label">方位</span>
+          <span className="almanac-meta__label">{tx('方位', 'Directions')}</span>
           <div className="almanac-meta__row">
-            <span className="almanac-meta__key">吉神</span>
+            <span className="almanac-meta__key">{tx('吉神', 'Auspicious')}</span>
             <span>{almanac.jishenFangwei}</span>
           </div>
           <div className="almanac-meta__row">
-            <span className="almanac-meta__key">凶神</span>
+            <span className="almanac-meta__key">{tx('凶神', 'Inauspicious')}</span>
             <span>{almanac.xiongshenFangwei}</span>
           </div>
         </article>
@@ -98,7 +104,7 @@ function AlmanacMainView() {
         onClick={() => setEngaged(true)}
         role="presentation"
       >
-        <Panel title="宜">
+        <Panel title={tx('宜', 'Favorable')}>
           <div className="almanac-yiji__tags">
             {almanac.yi.map((item) => (
               <span key={item} className="tag tag--good">
@@ -107,7 +113,7 @@ function AlmanacMainView() {
             ))}
           </div>
         </Panel>
-        <Panel title="忌">
+        <Panel title={tx('忌', 'Unfavorable')}>
           <div className="almanac-yiji__tags">
             {almanac.ji.map((item) => (
               <span key={item} className="tag tag--bad">
@@ -118,8 +124,8 @@ function AlmanacMainView() {
         </Panel>
       </section>
 
-      <section className="almanac-shichen" aria-label="时辰吉凶">
-        <Panel title="十二时辰" description="点击时辰查看吉凶详解，择吉时而行">
+      <section className="almanac-shichen" aria-label={tx('时辰吉凶', 'Hourly fortune')}>
+        <Panel title={tx('十二时辰', 'Twelve hours')} description={tx('点击时辰查看吉凶详解，择吉时而行', 'Tap an hour to view details and choose auspicious timing')}>
           <div className="almanac-shichen__grid">
             {almanac.shichenJixiong.map((item) => {
               const selected = selectedShichen === item.shichen
@@ -143,7 +149,7 @@ function AlmanacMainView() {
                   onClick={() => handleShichenSelect(item.shichen)}
                   aria-pressed={selected}
                 >
-                  <span className="almanac-shichen__name">{item.shichen}时</span>
+                  <span className="almanac-shichen__name">{item.shichen}{tx('时', ' hour')}</span>
                   <span className="almanac-shichen__time">{SHICHEN_TIMES[item.shichen]}</span>
                   <span className={shichenTagClass(item.jixiong)}>{item.jixiong}</span>
                 </button>
@@ -155,7 +161,7 @@ function AlmanacMainView() {
             <div className="almanac-shichen-detail">
               <div className="almanac-shichen-detail__head">
                 <h4 className="almanac-shichen-detail__title">
-                  {selectedShichenItem.shichen}时 · {SHICHEN_TIMES[selectedShichenItem.shichen]}
+                  {selectedShichenItem.shichen}{tx('时', ' hour')} · {SHICHEN_TIMES[selectedShichenItem.shichen]}
                 </h4>
                 <span className={shichenTagClass(selectedShichenItem.jixiong)}>
                   {selectedShichenItem.jixiong}
@@ -169,7 +175,7 @@ function AlmanacMainView() {
         </Panel>
       </section>
 
-      <p className="callout almanac-footnote">本黄历仅供参考，实际决策请结合具体情况</p>
+      <p className="callout almanac-footnote">{tx('本黄历仅供参考，实际决策请结合具体情况', 'This almanac is for reference only. Use your own judgment for important decisions.')}</p>
     </div>
   )
 }

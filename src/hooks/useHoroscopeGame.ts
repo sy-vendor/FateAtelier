@@ -13,6 +13,7 @@ import {
   getZodiacSignByDate,
   type PairingResult,
 } from '../utils/horoscopeEngine'
+import { useLocale } from '../i18n/LocaleContext'
 
 export type BirthQueryResult = {
   signIndex: number
@@ -28,6 +29,7 @@ function scrollToHoroscopeReading() {
 }
 
 export function useHoroscopeGame() {
+  const { isEnglish } = useLocale()
   const today = new Date()
   const [period, setPeriod] = useState<HoroscopePeriod>('today')
   const [signIndex, setSignIndex] = useState(0)
@@ -71,8 +73,10 @@ export function useHoroscopeGame() {
     const solarDate = lunarToSolar(year, isLunarLeapMonth ? month + 12 : month, day)
     if (!solarDate) return null
 
-    return `对应阳历 ${solarDate.getFullYear()}年${solarDate.getMonth() + 1}月${solarDate.getDate()}日`
-  }, [calendarType, birthYear, birthMonth, birthDay, isLunarLeapMonth])
+    return isEnglish
+      ? `Gregorian date: ${solarDate.getFullYear()}-${solarDate.getMonth() + 1}-${solarDate.getDate()}`
+      : `对应阳历 ${solarDate.getFullYear()}年${solarDate.getMonth() + 1}月${solarDate.getDate()}日`
+  }, [calendarType, birthYear, birthMonth, birthDay, isLunarLeapMonth, isEnglish])
 
   const clearBirthQueryFeedback = useCallback(() => {
     setBirthQueryResult(null)
@@ -114,7 +118,7 @@ export function useHoroscopeGame() {
     setBirthQueryResult(null)
 
     if (!birthYear || !birthMonth || !birthDay) {
-      setBirthQueryError('请完整填写年、月、日')
+      setBirthQueryError(isEnglish ? 'Please enter the complete date' : '请完整填写年、月、日')
       return
     }
 
@@ -123,17 +127,17 @@ export function useHoroscopeGame() {
     const day = parseInt(birthDay, 10)
 
     if (isNaN(year) || isNaN(month) || isNaN(day)) {
-      setBirthQueryError('请输入有效的数字日期')
+      setBirthQueryError(isEnglish ? 'Please enter a valid numeric date' : '请输入有效的数字日期')
       return
     }
 
     if (year < 1900 || year > 2100) {
-      setBirthQueryError('年份需在 1900–2100 之间')
+      setBirthQueryError(isEnglish ? 'Year must be between 1900 and 2100' : '年份需在 1900–2100 之间')
       return
     }
 
     if (month < 1 || month > 12 || day < 1 || day > 31) {
-      setBirthQueryError('月日范围不正确')
+      setBirthQueryError(isEnglish ? 'Month or day is out of range' : '月日范围不正确')
       return
     }
 
@@ -149,7 +153,7 @@ export function useHoroscopeGame() {
     const lunarMonthParam = isLunarLeapMonth ? month + 12 : month
     const solarDate = lunarToSolar(year, lunarMonthParam, day)
     if (!solarDate) {
-      setBirthQueryError('农历日期转换失败，请检查日期或闰月是否正确')
+      setBirthQueryError(isEnglish ? 'Could not convert the lunar date. Check the date and leap month.' : '农历日期转换失败，请检查日期或闰月是否正确')
       return
     }
 
@@ -160,19 +164,21 @@ export function useHoroscopeGame() {
     setEngaged(true)
     setBirthQueryResult({
       signIndex: calculatedSign,
-      detail: `农历 ${year}年${isLunarLeapMonth ? '闰' : ''}${month}月${day}日 → 阳历 ${solarDate.getFullYear()}年${solarMonth}月${solarDay}日`,
+      detail: isEnglish
+        ? `Lunar ${year}-${month}-${day} → Gregorian ${solarDate.getFullYear()}-${solarMonth}-${solarDay}`
+        : `农历 ${year}年${isLunarLeapMonth ? '闰' : ''}${month}月${day}日 → 阳历 ${solarDate.getFullYear()}年${solarMonth}月${solarDay}日`,
     })
     scrollToHoroscopeReading()
-  }, [birthYear, birthMonth, birthDay, calendarType, isLunarLeapMonth])
+  }, [birthYear, birthMonth, birthDay, calendarType, isLunarLeapMonth, isEnglish])
 
   const runPairing = useCallback(() => {
     if (pairingSign1 !== null && pairingSign2 !== null) {
       setPairingResult(analyzeZodiacPairing(pairingSign1, pairingSign2))
       setEngaged(true)
     } else {
-      toast.warning('请选择两个星座')
+      toast.warning(isEnglish ? 'Please choose two zodiac signs' : '请选择两个星座')
     }
-  }, [pairingSign1, pairingSign2])
+  }, [pairingSign1, pairingSign2, isEnglish])
 
   return {
     period,

@@ -4,9 +4,13 @@ import { ZiweiLogoMark } from '../ziwei/ZiweiLogoMark'
 import { ZiweiRitualBar } from '../ziwei/ZiweiRitualBar'
 import { BirthDateFields } from '../tools/BirthDateFields'
 import { Panel, Button } from '../ui'
+import { useLocale } from '../../i18n/LocaleContext'
+import { useTx } from '../../i18n/useTx'
 import './fortune-tools-stage.css'
 
 function ZiweiMainView() {
+  const tx = useTx()
+  const { isEnglish } = useLocale()
   const {
     calendarType,
     setCalendarType,
@@ -44,16 +48,16 @@ function ZiweiMainView() {
       <header className="tools-hero">
         <div className="tools-hero__mark"><ZiweiLogoMark size="lg" /></div>
         <div>
-          <p className="tools-hero__brand">{ZIWEI_BRAND}</p>
-          <p className="tools-hero__brand-en">{ZIWEI_BRAND_EN}</p>
-          <p className="tools-hero__hint">安星布宫，十二宫位照见命途轨迹</p>
+          <p className="tools-hero__brand">{tx(ZIWEI_BRAND, ZIWEI_BRAND_EN)}</p>
+          <p className="tools-hero__brand-en">{isEnglish ? ZIWEI_BRAND_EN.toUpperCase() : ZIWEI_BRAND_EN}</p>
+          <p className="tools-hero__hint">{tx('安星布宫，十二宫位照见命途轨迹', 'Place the stars across twelve palaces to trace your destiny')}</p>
         </div>
       </header>
 
       <ZiweiRitualBar step={ritualStep} />
 
       <section className="tools-form">
-        <h2 className="tools-form__title">输入生辰</h2>
+        <h2 className="tools-form__title">{tx('输入生辰', 'Enter birth details')}</h2>
         <BirthDateFields
           calendarType={calendarType}
           onCalendarTypeChange={setCalendarType}
@@ -77,28 +81,30 @@ function ZiweiMainView() {
           inputError={inputError}
         />
         <Button variant="primary" block onClick={calculateChart}>
-          生成命盘
+          {tx('生成命盘', 'Generate chart')}
         </Button>
       </section>
 
       {!result && (
         <section className="tools-shrine" aria-hidden>
           <span className="tools-shrine__glyph">⭐</span>
-          <p className="tools-shrine__hint">紫微临垣，众星拱照，命盘待启</p>
+          <p className="tools-shrine__hint">{tx('紫微临垣，众星拱照，命盘待启', 'Purple Star ascends; the chart awaits')}</p>
         </section>
       )}
 
       {result && (
-        <section ref={insightRef} className="tools-insight" aria-label="紫微命盘">
+        <section ref={insightRef} className="tools-insight" aria-label={tx('紫微命盘', 'Zi Wei chart')}>
           <div className="tools-insight__banner">
             <div className="tools-insight__icon" aria-hidden>垣</div>
             <div>
-              <h2 className="tools-insight__title">命宫 · {palaceNames[result.mingGong]}</h2>
-              <p className="tools-insight__sub">身宫 · {palaceNames[result.shenGong]} · 点击宫位细察</p>
+              <h2 className="tools-insight__title">{tx('命宫', 'Life palace')} · {palaceNames[result.mingGong]}</h2>
+              <p className="tools-insight__sub">
+                {tx('身宫', 'Body palace')} · {palaceNames[result.shenGong]} · {tx('点击宫位细察', 'Tap a palace for details')}
+              </p>
             </div>
           </div>
 
-          <Panel title="十二宫位">
+          <Panel title={tx('十二宫位', 'Twelve palaces')}>
             <div className="tools-palace-grid">
               {result.palaces.map((palace, index) => {
                 const isMing = index === 0
@@ -117,8 +123,8 @@ function ZiweiMainView() {
                     <div className="tools-palace-card__head">
                       <h3 className="tools-palace-card__name">{palace.name}</h3>
                       <div style={{ display: 'flex', gap: 4 }}>
-                        {isMing && <span className="tag tag--info">命</span>}
-                        {isShen && <span className="tag tag--ok">身</span>}
+                        {isMing && <span className="tag tag--info">{tx('命', 'Life')}</span>}
+                        {isShen && <span className="tag tag--ok">{tx('身', 'Body')}</span>}
                       </div>
                     </div>
                     <div className="tools-palace-card__stars">
@@ -129,7 +135,7 @@ function ZiweiMainView() {
                         <span key={star} className="tag tag--muted">{star}</span>
                       ))}
                       {palace.mainStars.length === 0 && palace.minorStars.length === 0 && (
-                        <span style={{ color: 'var(--ds-text-muted)', fontSize: '0.82rem' }}>空宫</span>
+                        <span style={{ color: 'var(--ds-text-muted)', fontSize: '0.82rem' }}>{tx('空宫', 'Empty')}</span>
                       )}
                     </div>
                   </button>
@@ -139,7 +145,7 @@ function ZiweiMainView() {
           </Panel>
 
           {focusedPalace && (
-            <Panel title={`${focusedPalace.name}解读`}>
+            <Panel title={`${focusedPalace.name}${tx('解读', ' reading')}`}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
                 {focusedPalace.mainStars.map((s) => <span key={s} className="tag tag--info">{s}</span>)}
                 {focusedPalace.sihua.map((s) => <span key={s} className="tag tag--ok">{s}</span>)}
@@ -148,7 +154,7 @@ function ZiweiMainView() {
             </Panel>
           )}
 
-          <Panel title="重点宫位">
+          <Panel title={tx('重点宫位', 'Key palaces')}>
             <div className="aspect-grid">
               {result.palaces
                 .filter((p) => KEY_PALACE_NAMES.includes(p.name))

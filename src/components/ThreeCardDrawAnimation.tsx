@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { TarotCard } from '../data/tarotCards'
+import { getThreeCardPositionLabel } from '../utils/readingInterpretation'
+import { useLocale } from '../i18n/LocaleContext'
 import { TarotCardVisual } from './tarot/TarotCardVisual'
 import './ThreeCardDrawAnimation.css'
 
@@ -9,6 +11,7 @@ interface ThreeCardDrawAnimationProps {
 }
 
 function ThreeCardDrawAnimation({ cards, onComplete }: ThreeCardDrawAnimationProps) {
+  const { isEnglish } = useLocale()
   const [showAnimation, setShowAnimation] = useState(false)
   const [faceUp, setFaceUp] = useState<boolean[]>([false, false, false])
 
@@ -39,8 +42,6 @@ function ThreeCardDrawAnimation({ cards, onComplete }: ThreeCardDrawAnimationPro
     return null
   }
 
-  const positions = ['过去', '现在', '未来']
-
   return (
     <div className="three-card-draw-animation-overlay">
       <div className="three-card-draw-animation-container">
@@ -48,7 +49,9 @@ function ThreeCardDrawAnimation({ cards, onComplete }: ThreeCardDrawAnimationPro
         <div className="three-cards-animation-wrapper">
           {cards.map((drawnCard, index) => (
             <div key={drawnCard.card.id} className="three-card-animation-item">
-              <div className="three-card-position-label">{positions[index]}</div>
+              <div className="three-card-position-label">
+                {getThreeCardPositionLabel(index as 0 | 1 | 2, isEnglish)}
+              </div>
               <TarotCardVisual
                 card={drawnCard.card}
                 faceUp={faceUp[index]}

@@ -9,6 +9,8 @@ import { interpretDreamWithMood, rehydrateDreamInterpretation, type DreamInterpr
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
+import { txStatic } from '../i18n/locale'
+import { useLocale } from '../i18n/LocaleContext'
 import { dreamSymbols } from '../data/dreamSymbols'
 
 export interface DreamRecord {
@@ -23,6 +25,7 @@ const STORAGE_DEBOUNCE_MS = 400
 const INTERPRET_DELAY_MS = 900
 
 export function useDreamGame() {
+  const { isEnglish } = useLocale()
   const [dreamContent, setDreamContent] = useState(() => {
     const match = window.location.pathname.match(/^\/dream\/symbol\/(\d+)\/?$/)
     const symbol = match ? dreamSymbols[Number(match[1])] : undefined
@@ -35,7 +38,7 @@ export function useDreamGame() {
   const [history, setHistory] = useState<DreamRecord[]>(() => {
     const result = getStorageItem<DreamRecord[]>('dream-interpretation-history', [])
     if (result.error) {
-      requestAnimationFrame(() => toast.error('加载历史记录失败'))
+      requestAnimationFrame(() => toast.error(txStatic('加载历史记录失败', 'Failed to load history')))
     }
     if (result.success && result.data !== undefined && Array.isArray(result.data)) {
       return result.data
@@ -58,7 +61,7 @@ export function useDreamGame() {
     const id = window.setTimeout(() => {
       const result = setStorageItem('dream-interpretation-history', historyRef.current)
       if (!result.success && result.error) {
-        toast.warning(result.error || '保存历史记录失败')
+        toast.warning(result.error || txStatic('保存历史记录失败', 'Failed to save history'))
       }
     }, STORAGE_DEBOUNCE_MS)
     return () => clearTimeout(id)
@@ -86,7 +89,7 @@ export function useDreamGame() {
   const handleInterpret = useCallback(() => {
     const trimmed = dreamContent.trim()
     if (!trimmed) {
-      setInputError('请先描述你的梦境，再开始解析')
+      setInputError(txStatic('请先描述你的梦境，再开始解析', 'Describe your dream before interpreting'))
       return
     }
 
@@ -94,7 +97,7 @@ export function useDreamGame() {
     setPhase('interpreting')
 
     window.setTimeout(() => {
-      const result = interpretDreamWithMood(trimmed, selectedMood)
+      const result = interpretDreamWithMood(trimmed, selectedMood, isEnglish)
       setInterpretation(result)
 
       const record: DreamRecord = {
@@ -108,7 +111,7 @@ export function useDreamGame() {
       setPhase('revealed')
       window.setTimeout(scrollToResult, 100)
     }, INTERPRET_DELAY_MS)
-  }, [dreamContent, selectedMood, scrollToResult])
+  }, [dreamContent, selectedMood, scrollToResult, isEnglish])
 
   const handleClear = useCallback(() => {
     setDreamContent('')
@@ -121,20 +124,25 @@ export function useDreamGame() {
     (record: DreamRecord) => {
       setDreamContent(record.content)
       setSelectedMood(record.mood)
-      setInterpretation(rehydrateDreamInterpretation(record))
+      setInterpretation(rehydrateDreamInterpretation(record, isEnglish))
       setShowHistory(false)
       setPhase('revealed')
       window.setTimeout(scrollToResult, 100)
     },
-    [scrollToResult],
+    [scrollToResult, isEnglish],
   )
+
+  useEffect(() => {
+    if (phase !== 'revealed' || !dreamContent.trim()) return
+    setInterpretation(interpretDreamWithMood(dreamContent, selectedMood, isEnglish))
+  }, [isEnglish]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDeleteHistory = useCallback(async (id: string) => {
     const confirmed = await confirm({
-      title: '删除记录',
-      message: '确定要删除这条记录吗？',
-      confirmText: '删除',
-      cancelText: '取消',
+      title: txStatic('删除记录', 'Delete record'),
+      message: txStatic('确定要删除这条记录吗？', 'Are you sure you want to delete this record?'),
+      confirmText: txStatic('删除', 'Delete'),
+      cancelText: txStatic('取消', 'Cancel'),
       type: 'danger',
     })
     if (confirmed) {

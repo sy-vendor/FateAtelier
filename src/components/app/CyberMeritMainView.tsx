@@ -3,6 +3,7 @@ import {
   CYBER_MERIT_BRAND_EN,
   MERIT_GAMES,
   RELEASE_CREATURES,
+  type MeritGameType,
 } from '../../utils/cyberMeritData'
 import { useCyberMeritGame } from '../../hooks/useCyberMeritGame'
 import { CyberMeritLogoMark } from '../cyber-merit/CyberMeritLogoMark'
@@ -10,9 +11,50 @@ import { CyberMeritRitualBar } from '../cyber-merit/CyberMeritRitualBar'
 import { MeritGameIcon } from '../cyber-merit/MeritGameIcon'
 import { ReleaseCreatureIcon } from '../cyber-merit/ReleaseCreatureIcon'
 import { Button, Segmented } from '../ui'
+import { useLocale } from '../../i18n/LocaleContext'
+import { useTx } from '../../i18n/useTx'
 import './cyber-merit-stage.css'
 
+const GAME_LABEL_EN: Record<MeritGameType, string> = {
+  woodfish: 'Woodfish',
+  release: 'Release',
+  incense: 'Incense',
+  prayer: 'Prayer',
+}
+
+const GAME_TITLE_EN: Record<MeritGameType, string> = {
+  woodfish: 'Tap the digital woodfish',
+  release: 'Cyber release',
+  incense: 'Cyber incense',
+  prayer: 'Cyber prayer',
+}
+
+const GAME_DESC_EN: Record<MeritGameType, string> = {
+  woodfish: 'Tap the woodfish for merit with each strike; auto mode available',
+  release: 'Release creatures back to nature and accumulate compassion',
+  incense: 'Light incense in devotion as fragrant smoke rises',
+  prayer: 'Press your palms together with sincerity and receive blessings',
+}
+
+const GAME_HINT_EN: Record<MeritGameType, string> = {
+  woodfish: 'Tap the woodfish · +1 merit each',
+  release: 'Tap a creature to release · +3 merit each',
+  incense: 'Tap the censer · +2 merit each',
+  prayer: 'Tap to pray · +5 merit each',
+}
+
+const CREATURE_NAME_EN: Record<string, string> = {
+  carp: 'Spirit carp',
+  koi: 'Koi',
+  turtle: 'Spirit turtle',
+  dove: 'White dove',
+  butterfly: 'Mystic butterfly',
+  gecko: 'Spirit gecko',
+}
+
 function CyberMeritMainView() {
+  const tx = useTx()
+  const { isEnglish } = useLocale()
   const {
     activeGame,
     selectGame,
@@ -34,7 +76,14 @@ function CyberMeritMainView() {
     pray,
   } = useCyberMeritGame()
 
-  const gameTabOptions = MERIT_GAMES.map((g) => ({ value: g.id, label: g.label }))
+  const gameTabOptions = MERIT_GAMES.map((g) => ({
+    value: g.id,
+    label: tx(g.label, GAME_LABEL_EN[g.id]),
+  }))
+
+  const gameTitle = tx(activeGameInfo.title, GAME_TITLE_EN[activeGame])
+  const gameDescription = tx(activeGameInfo.description, GAME_DESC_EN[activeGame])
+  const gameHint = tx(activeGameInfo.hint, GAME_HINT_EN[activeGame])
 
   return (
     <div className="cm-stage">
@@ -43,18 +92,18 @@ function CyberMeritMainView() {
           <CyberMeritLogoMark size="lg" />
         </div>
         <div>
-          <p className="cm-hero__brand">{CYBER_MERIT_BRAND}</p>
-          <p className="cm-hero__brand-en">{CYBER_MERIT_BRAND_EN}</p>
-          <p className="cm-hero__hint">电子木鱼、赛博放生、上香祈福，一键积功德</p>
+          <p className="cm-hero__brand">{tx(CYBER_MERIT_BRAND, CYBER_MERIT_BRAND_EN)}</p>
+          <p className="cm-hero__brand-en">{isEnglish ? CYBER_MERIT_BRAND_EN.toUpperCase() : CYBER_MERIT_BRAND_EN}</p>
+          <p className="cm-hero__hint">{tx('电子木鱼、赛博放生、上香祈福，一键积功德', 'Digital woodfish, cyber release, incense, and prayer — merit in one tap')}</p>
         </div>
       </header>
 
       <CyberMeritRitualBar step={ritualStep} />
 
-      <section className="cm-stats" aria-label="功德统计">
+      <section className="cm-stats" aria-label={tx('功德统计', 'Merit stats')}>
         <div className="cm-stats__primary">
           <span className="cm-stats__value">{totalMerit}</span>
-          <span className="cm-stats__label">总功德</span>
+          <span className="cm-stats__label">{tx('总功德', 'Total merit')}</span>
         </div>
         <div className="cm-stats__grid">
           {MERIT_GAMES.map((game) => (
@@ -71,21 +120,21 @@ function CyberMeritMainView() {
                 <MeritGameIcon game={game.id} size="sm" />
               </span>
               <span className="cm-stats__item-count">{counts[game.id]}</span>
-              <span className="cm-stats__item-label">{game.label}</span>
+              <span className="cm-stats__item-label">{tx(game.label, GAME_LABEL_EN[game.id])}</span>
             </div>
           ))}
         </div>
       </section>
 
       <section className="cm-mode">
-        <h2 className="cm-mode__title">修行法门</h2>
+        <h2 className="cm-mode__title">{tx('修行法门', 'Practice modes')}</h2>
         <Segmented block value={activeGame} options={gameTabOptions} onChange={selectGame} />
       </section>
 
-      <section className="cm-shrine" aria-label={activeGameInfo.title}>
+      <section className="cm-shrine" aria-label={gameTitle}>
         <div className="cm-shrine__head">
-          <h2 className="cm-shrine__title">{activeGameInfo.title}</h2>
-          <p className="cm-shrine__sub">{activeGameInfo.description}</p>
+          <h2 className="cm-shrine__title">{gameTitle}</h2>
+          <p className="cm-shrine__sub">{gameDescription}</p>
         </div>
 
         {activeGame === 'woodfish' && (
@@ -105,7 +154,7 @@ function CyberMeritMainView() {
                 }}
                 role="button"
                 tabIndex={0}
-                aria-label="敲木鱼"
+                aria-label={tx('敲木鱼', 'Tap woodfish')}
               >
                 <div className="cm-woodfish-body">
                   <div className="cm-woodfish-top" />
@@ -121,9 +170,11 @@ function CyberMeritMainView() {
             </div>
             {currentMessage && <p className="cm-current-message">{currentMessage}</p>}
             <Button variant={isAutoPlaying ? 'primary' : 'ghost'} onClick={toggleAutoWoodfish}>
-              {isAutoPlaying ? '停止自动' : '自动敲击'}
+              {isAutoPlaying ? tx('停止自动', 'Stop auto') : tx('自动敲击', 'Auto tap')}
             </Button>
-            <p className="cm-shrine__hint">{activeGameInfo.hint} · 已敲 {counts.woodfish} 次</p>
+            <p className="cm-shrine__hint">
+              {gameHint} · {tx(`已敲 ${counts.woodfish} 次`, `${counts.woodfish} taps`)}
+            </p>
           </div>
         )}
 
@@ -151,7 +202,7 @@ function CyberMeritMainView() {
                         .join(' ')}
                       onClick={(e) => releaseLife(e, index)}
                       disabled={isReleasing}
-                      aria-label={`放生${creature.name}`}
+                      aria-label={tx(`放生${creature.name}`, `Release ${CREATURE_NAME_EN[creature.id] ?? creature.name}`)}
                     >
                       <span className="cm-release-slot__ring" aria-hidden />
                       <span
@@ -164,7 +215,9 @@ function CyberMeritMainView() {
                       >
                         <ReleaseCreatureIcon creature={creature.id} size="xl" />
                       </span>
-                      <span className="cm-release-slot__name">{creature.name}</span>
+                      <span className="cm-release-slot__name">
+                        {tx(creature.name, CREATURE_NAME_EN[creature.id] ?? creature.name)}
+                      </span>
                       {isReleasing && (
                         <span className="cm-release-slot__merit" aria-hidden>+3</span>
                       )}
@@ -174,7 +227,9 @@ function CyberMeritMainView() {
               </div>
             </div>
             {currentMessage && <p className="cm-current-message">{currentMessage}</p>}
-            <p className="cm-shrine__hint">{activeGameInfo.hint} · 已放生 {counts.release} 次</p>
+            <p className="cm-shrine__hint">
+              {gameHint} · {tx(`已放生 ${counts.release} 次`, `${counts.release} releases`)}
+            </p>
           </div>
         )}
 
@@ -186,7 +241,7 @@ function CyberMeritMainView() {
                 className="cm-incense-burner"
                 onClick={(e) => burnIncense(e)}
                 disabled={isBurning}
-                aria-label="上香"
+                aria-label={tx('上香', 'Light incense')}
               >
                 <div className={`cm-incense-stick ${isBurning ? 'burning' : ''}`}>
                   <div className="cm-stick-tip" />
@@ -207,7 +262,7 @@ function CyberMeritMainView() {
             </div>
             {currentMessage && <p className="cm-current-message">{currentMessage}</p>}
             <p className="cm-shrine__hint">
-              {isBurning ? '香火燃烧中…' : activeGameInfo.hint} · 已上香 {counts.incense} 次
+              {isBurning ? tx('香火燃烧中…', 'Incense burning…') : gameHint} · {tx(`已上香 ${counts.incense} 次`, `${counts.incense} offerings`)}
             </p>
           </div>
         )}
@@ -220,7 +275,7 @@ function CyberMeritMainView() {
                 className={`cm-prayer-icon ${isPraying ? 'praying' : ''}`}
                 onClick={(e) => pray(e)}
                 disabled={isPraying}
-                aria-label="祈福"
+                aria-label={tx('祈福', 'Pray')}
               >
                 🙏
               </button>
@@ -247,7 +302,7 @@ function CyberMeritMainView() {
             </div>
             {currentMessage && <p className="cm-current-message">{currentMessage}</p>}
             <p className="cm-shrine__hint">
-              {isPraying ? '祈福中…' : activeGameInfo.hint} · 已祈福 {counts.prayer} 次
+              {isPraying ? tx('祈福中…', 'Praying…') : gameHint} · {tx(`已祈福 ${counts.prayer} 次`, `${counts.prayer} prayers`)}
             </p>
           </div>
         )}

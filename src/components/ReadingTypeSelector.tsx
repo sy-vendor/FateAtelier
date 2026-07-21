@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { ReadingType, readingTypes } from '../types/reading'
+import { ReadingType, getReadingTypes } from '../types/reading'
+import { useLocale } from '../i18n/LocaleContext'
+import { useTx } from '../i18n/useTx'
 import './ReadingTypeSelector.css'
 import { toast } from '../utils/toast'
 import { Button } from './ui'
@@ -11,6 +13,9 @@ interface ReadingTypeSelectorProps {
 }
 
 function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
+  const { isEnglish } = useLocale()
+  const tx = useTx()
+  const readingTypes = getReadingTypes(isEnglish)
   const [selectedType, setSelectedType] = useState<ReadingType | null>(null)
   const [customQuestion, setCustomQuestion] = useState('')
   const [showCustomInput, setShowCustomInput] = useState(false)
@@ -28,7 +33,7 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
   const handleConfirm = () => {
     if (selectedType) {
       if (selectedType === 'custom' && !customQuestion.trim()) {
-        toast.warning('请输入您的问题')
+        toast.warning(tx('请输入您的问题', 'Please enter your question'))
         return
       }
       onSelect(selectedType, selectedType === 'custom' ? customQuestion : undefined)
@@ -47,14 +52,14 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
         <div className="reading-type-header">
           <div className="reading-type-header__text">
             <TarotLogoMark size="sm" />
-            <h2 id="reading-type-title">选择占卜主题</h2>
-            <p>三牌时空 · 针对你的问题选取解读方向</p>
+            <h2 id="reading-type-title">{tx('选择占卜主题', 'Choose a Reading Theme')}</h2>
+            <p>{tx('三牌时空 · 针对你的问题选取解读方向', 'Three-Card Spread · Choose a lens for your question')}</p>
           </div>
           <button
             type="button"
             className="close-type-selector"
             onClick={onCancel}
-            aria-label="关闭"
+            aria-label={tx('关闭', 'Close')}
           >
             ✕
           </button>
@@ -84,12 +89,12 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
 
         {showCustomInput && (
           <div className="custom-question-input">
-            <label htmlFor="custom-question-textarea">请输入您的问题</label>
+            <label htmlFor="custom-question-textarea">{tx('请输入您的问题', 'Enter your question')}</label>
             <textarea
               id="custom-question-textarea"
               value={customQuestion}
               onChange={(e) => setCustomQuestion(e.target.value)}
-              placeholder="例如：我最近的工作会顺利吗？"
+              placeholder={tx('例如：我最近的工作会顺利吗？', 'e.g. Will my work go smoothly soon?')}
               rows={3}
               className="custom-question-textarea"
             />
@@ -98,14 +103,14 @@ function ReadingTypeSelector({ onSelect, onCancel }: ReadingTypeSelectorProps) {
 
         <div className="reading-type-actions">
           <Button variant="ghost" onClick={onCancel}>
-            取消
+            {tx('取消', 'Cancel')}
           </Button>
           <Button
             variant="primary"
             onClick={handleConfirm}
             disabled={!selectedType || (selectedType === 'custom' && !customQuestion.trim())}
           >
-            开始抽牌
+            {tx('开始抽牌', 'Start Drawing')}
           </Button>
         </div>
       </div>

@@ -5,14 +5,40 @@ import {
   NUMBER_TYPES,
   energyTagClass,
   levelTagClass,
+  type NumberType,
 } from '../../utils/numberEnergyData'
 import { useNumberEnergyGame } from '../../hooks/useNumberEnergyGame'
 import { NumberEnergyLogoMark } from '../number-energy/NumberEnergyLogoMark'
 import { NumberEnergyRitualBar } from '../number-energy/NumberEnergyRitualBar'
 import { Panel, Button, Metric, MetaList, AspectGrid, Collapsible } from '../ui'
+import { useLocale } from '../../i18n/LocaleContext'
+import { useTx } from '../../i18n/useTx'
 import './picker-tools-stage.css'
 
+const TYPE_NAME_EN: Record<NumberType, string> = {
+  phone: 'Phone number',
+  plate: 'License plate',
+  id: 'ID number',
+  other: 'Other numbers',
+}
+
+const TYPE_DESC_EN: Record<NumberType, string> = {
+  phone: 'Analyze the energy of a mobile number',
+  plate: 'Analyze the energy of a license plate',
+  id: 'Analyze the energy of an ID number',
+  other: 'Analyze the energy of any number sequence',
+}
+
+const TYPE_PLACEHOLDER_EN: Record<NumberType, string> = {
+  phone: 'Enter an 11-digit phone number',
+  plate: 'Enter a license plate (e.g. 京A12345)',
+  id: 'Enter an 18-digit ID number',
+  other: 'Enter numbers',
+}
+
 function NumberEnergyMainView() {
+  const tx = useTx()
+  const { isEnglish } = useLocale()
   const {
     input,
     onInputChange,
@@ -39,16 +65,16 @@ function NumberEnergyMainView() {
           <NumberEnergyLogoMark size="lg" />
         </div>
         <div>
-          <p className="picker-hero__brand">{NUMBER_ENERGY_BRAND}</p>
-          <p className="picker-hero__brand-en">{NUMBER_ENERGY_BRAND_EN}</p>
-          <p className="picker-hero__hint">析数脉之律动，解号码背后五行气运与吉凶</p>
+          <p className="picker-hero__brand">{tx(NUMBER_ENERGY_BRAND, NUMBER_ENERGY_BRAND_EN)}</p>
+          <p className="picker-hero__brand-en">{isEnglish ? NUMBER_ENERGY_BRAND_EN.toUpperCase() : NUMBER_ENERGY_BRAND_EN}</p>
+          <p className="picker-hero__hint">{tx('析数脉之律动，解号码背后五行气运与吉凶', 'Read number rhythms and the elemental fortune behind them')}</p>
         </div>
       </header>
 
       <NumberEnergyRitualBar step={ritualStep} />
 
       <section className="picker-section">
-        <h2 className="picker-section__title">选择数字类型</h2>
+        <h2 className="picker-section__title">{tx('选择数字类型', 'Choose number type')}</h2>
         <div className="picker-type-grid">
           {NUMBER_TYPES.map((type) => (
             <button
@@ -63,21 +89,23 @@ function NumberEnergyMainView() {
               onClick={() => selectType(type.id)}
             >
               <div className="picker-type-card__icon">{type.icon}</div>
-              <h3>{type.name}</h3>
-              <p>{type.description}</p>
+              <h3>{tx(type.name, TYPE_NAME_EN[type.id])}</h3>
+              <p>{tx(type.description, TYPE_DESC_EN[type.id])}</p>
             </button>
           ))}
         </div>
       </section>
 
       <section className="picker-section">
-        <h2 className="picker-section__title">输入数字</h2>
+        <h2 className="picker-section__title">{tx('输入数字', 'Enter numbers')}</h2>
         <div className="field">
           <div className="picker-input-wrap">
             <input
               type="text"
               className="field__input"
-              placeholder={selectedTypeInfo?.placeholder}
+              placeholder={selectedTypeInfo
+                ? tx(selectedTypeInfo.placeholder, TYPE_PLACEHOLDER_EN[selectedTypeInfo.id])
+                : undefined}
               value={input}
               onChange={(e) => onInputChange(e.target.value)}
               maxLength={selectedType === 'phone' ? 11 : selectedType === 'id' ? 18 : 50}
@@ -96,20 +124,20 @@ function NumberEnergyMainView() {
           {actionError && <p className="picker-input-error" role="alert">{actionError}</p>}
         </div>
         <Button variant="primary" block onClick={analyze} disabled={!input.trim()}>
-          开始析数
+          {tx('开始析数', 'Analyze')}
         </Button>
       </section>
 
       {!analysis && !hasAnalyzed && (
         <section className="picker-shrine" aria-hidden>
           <span className="picker-shrine__glyph">数</span>
-          <p className="picker-shrine__hint">号码载气，数字成脉，待入而析</p>
+          <p className="picker-shrine__hint">{tx('号码载气，数字成脉，待入而析', 'Numbers carry energy; enter them to read their pulse')}</p>
         </section>
       )}
 
       {analysis && (
         <>
-          <Panel title="能量分析">
+          <Panel title={tx('能量分析', 'Energy analysis')}>
             <div
               style={{
                 display: 'flex',
@@ -118,16 +146,16 @@ function NumberEnergyMainView() {
                 marginBottom: 'var(--ds-space-md)',
               }}
             >
-              <span className="field__label">能量评分</span>
+              <span className="field__label">{tx('能量评分', 'Energy score')}</span>
               <span className={levelTagClass(analysis.level)}>{analysis.levelText}</span>
             </div>
             <div className="hero-row">
               <Metric value={analysis.score} label="/ 100" />
               <MetaList
                 rows={[
-                  { key: '提取的数字', value: analysis.numbers },
-                  { key: '数字总和', value: String(analysis.sum) },
-                  { key: '最终数字', value: String(analysis.finalDigit) },
+                  { key: tx('提取的数字', 'Extracted digits'), value: analysis.numbers },
+                  { key: tx('数字总和', 'Digit sum'), value: String(analysis.sum) },
+                  { key: tx('最终数字', 'Final digit'), value: String(analysis.finalDigit) },
                 ]}
               />
             </div>
@@ -139,25 +167,25 @@ function NumberEnergyMainView() {
             </div>
           </Panel>
 
-          <Panel title="数字统计">
+          <Panel title={tx('数字统计', 'Digit statistics')}>
             <AspectGrid
               items={Object.entries(analysis.digitCount)
                 .sort((a, b) => b[1] - a[1])
                 .map(([digit, count]) => {
                   const meaning = NUMBER_MEANINGS[digit]
                   return {
-                    title: `数字 ${digit}`,
+                    title: tx(`数字 ${digit}`, `Digit ${digit}`),
                     score: count,
                     text: meaning
-                      ? `${meaning.meaning}（出现 ${count} 次）`
-                      : `出现 ${count} 次`,
+                      ? `${meaning.meaning}（${tx(`出现 ${count} 次`, `appears ${count} times`)}）`
+                      : tx(`出现 ${count} 次`, `Appears ${count} times`),
                   }
                 })}
             />
           </Panel>
 
           {analysis.combinations.length > 0 && (
-            <Panel title="特殊组合">
+            <Panel title={tx('特殊组合', 'Special combinations')}>
               {analysis.combinations.map(({ combo, info }, index) => (
                 <div key={index} className="callout" style={{ marginBottom: 'var(--ds-space-md)' }}>
                   <div
@@ -180,8 +208,8 @@ function NumberEnergyMainView() {
                   <Collapsible
                     open={!!showDetails[`combo-${index}`]}
                     onToggle={() => toggleDetail(`combo-${index}`)}
-                    label="查看详情"
-                    labelOpen="收起"
+                    label={tx('查看详情', 'View details')}
+                    labelOpen={tx('收起', 'Collapse')}
                   >
                     {info.detail && <p className="prose">{info.detail}</p>}
                     {info.suggestion && <p className="callout">💡 {info.suggestion}</p>}
@@ -192,7 +220,7 @@ function NumberEnergyMainView() {
           )}
 
           {analysis.finalDigitInfo && (
-            <Panel title={`最终数字 ${analysis.finalDigit} 详细解读`}>
+            <Panel title={tx(`最终数字 ${analysis.finalDigit} 详细解读`, `Final digit ${analysis.finalDigit} details`)}>
               <div
                 style={{
                   display: 'flex',
@@ -216,13 +244,13 @@ function NumberEnergyMainView() {
                   </p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {analysis.finalDigitInfo.wuxing && (
-                      <span className="tag tag--muted">五行：{analysis.finalDigitInfo.wuxing}</span>
+                      <span className="tag tag--muted">{tx('五行', 'Element')}：{analysis.finalDigitInfo.wuxing}</span>
                     )}
                     {analysis.finalDigitInfo.direction && (
-                      <span className="tag tag--muted">方位：{analysis.finalDigitInfo.direction}</span>
+                      <span className="tag tag--muted">{tx('方位', 'Direction')}：{analysis.finalDigitInfo.direction}</span>
                     )}
                     {analysis.finalDigitInfo.color && (
-                      <span className="tag tag--muted">颜色：{analysis.finalDigitInfo.color}</span>
+                      <span className="tag tag--muted">{tx('颜色', 'Color')}：{analysis.finalDigitInfo.color}</span>
                     )}
                   </div>
                 </div>
@@ -230,8 +258,8 @@ function NumberEnergyMainView() {
               <Collapsible
                 open={!!showDetails['final-digit']}
                 onToggle={() => toggleDetail('final-digit')}
-                label="查看详情"
-                labelOpen="收起详情"
+                label={tx('查看详情', 'View details')}
+                labelOpen={tx('收起详情', 'Collapse details')}
               >
                 {analysis.finalDigitInfo.detail && (
                   <p className="prose">{analysis.finalDigitInfo.detail}</p>
@@ -239,19 +267,19 @@ function NumberEnergyMainView() {
                 <MetaList
                   rows={[
                     analysis.finalDigitInfo.personality
-                      ? { key: '性格', value: analysis.finalDigitInfo.personality }
+                      ? { key: tx('性格', 'Personality'), value: analysis.finalDigitInfo.personality }
                       : null,
                     analysis.finalDigitInfo.career
-                      ? { key: '职业', value: analysis.finalDigitInfo.career }
+                      ? { key: tx('职业', 'Career'), value: analysis.finalDigitInfo.career }
                       : null,
                     analysis.finalDigitInfo.health
-                      ? { key: '健康', value: analysis.finalDigitInfo.health }
+                      ? { key: tx('健康', 'Health'), value: analysis.finalDigitInfo.health }
                       : null,
                     analysis.finalDigitInfo.relationship
-                      ? { key: '人际', value: analysis.finalDigitInfo.relationship }
+                      ? { key: tx('人际', 'Relationships'), value: analysis.finalDigitInfo.relationship }
                       : null,
                     analysis.finalDigitInfo.wealth
-                      ? { key: '财运', value: analysis.finalDigitInfo.wealth }
+                      ? { key: tx('财运', 'Wealth'), value: analysis.finalDigitInfo.wealth }
                       : null,
                   ].filter((row): row is { key: string; value: string } => row !== null)}
                 />
@@ -259,7 +287,7 @@ function NumberEnergyMainView() {
             </Panel>
           )}
 
-          <Panel title="数字含义">
+          <Panel title={tx('数字含义', 'Digit meanings')}>
             <div className="picker-type-grid">
               {Array.from(new Set(analysis.numbers.split(''))).map((digit) => {
                 const meaning = NUMBER_MEANINGS[digit]
@@ -287,9 +315,9 @@ function NumberEnergyMainView() {
                       <div style={{ marginTop: 'var(--ds-space-md)', textAlign: 'left' }}>
                         {meaning.detail && <p className="prose">{meaning.detail}</p>}
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
-                          {meaning.wuxing && <span className="tag tag--muted">五行：{meaning.wuxing}</span>}
-                          {meaning.direction && <span className="tag tag--muted">方位：{meaning.direction}</span>}
-                          {meaning.color && <span className="tag tag--muted">颜色：{meaning.color}</span>}
+                          {meaning.wuxing && <span className="tag tag--muted">{tx('五行', 'Element')}：{meaning.wuxing}</span>}
+                          {meaning.direction && <span className="tag tag--muted">{tx('方位', 'Direction')}：{meaning.direction}</span>}
+                          {meaning.color && <span className="tag tag--muted">{tx('颜色', 'Color')}：{meaning.color}</span>}
                         </div>
                       </div>
                     )}
@@ -299,7 +327,7 @@ function NumberEnergyMainView() {
             </div>
           </Panel>
 
-          <Panel title="建议">
+          <Panel title={tx('建议', 'Suggestions')}>
             <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
               {analysis.suggestions.map((suggestion, index) => (
                 <li key={index} className="callout" style={{ marginBottom: 'var(--ds-space-sm)' }}>
@@ -311,10 +339,10 @@ function NumberEnergyMainView() {
 
           <div className="picker-actions">
             <Button variant="primary" onClick={shareAnalysis}>
-              分享分析结果
+              {tx('分享分析结果', 'Share analysis')}
             </Button>
             <Button onClick={() => copyToClipboard(analysis.numbers)}>
-              {copiedText === analysis.numbers ? '✓ 已复制' : '复制数字'}
+              {copiedText === analysis.numbers ? tx('✓ 已复制', '✓ Copied') : tx('复制数字', 'Copy digits')}
             </Button>
           </div>
         </>

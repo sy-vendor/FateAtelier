@@ -16,6 +16,18 @@ export interface ReadingTypeOption {
   description: string
 }
 
+export const readingTypesEn: ReadingTypeOption[] = [
+  { id: 'general', name: 'General', icon: '🔮', description: 'Guidance across every area of life' },
+  { id: 'daily', name: 'Today', icon: '🌟', description: 'Overall energy and what to watch for today' },
+  { id: 'love', name: 'Love', icon: '💕', description: 'Romance, relationships, and emotional bonds' },
+  { id: 'wealth', name: 'Wealth', icon: '💰', description: 'Money, investments, and financial flow' },
+  { id: 'career', name: 'Career', icon: '💼', description: 'Work, ambition, and professional direction' },
+  { id: 'health', name: 'Health', icon: '🌿', description: 'Physical wellbeing and inner balance' },
+  { id: 'study', name: 'Study', icon: '📚', description: 'Learning, exams, and intellectual growth' },
+  { id: 'relationship', name: 'Relationships', icon: '🤝', description: 'Family, friends, and social dynamics' },
+  { id: 'custom', name: 'Custom', icon: '✨', description: 'A question shaped by you' },
+]
+
 export const readingTypes: ReadingTypeOption[] = [
   {
     id: 'general',
@@ -72,4 +84,8 @@ export const readingTypes: ReadingTypeOption[] = [
     description: '针对特定问题的占卜'
   }
 ]
+
+export function getReadingTypes(isEnglish = false): ReadingTypeOption[] {
+  return isEnglish ? readingTypesEn : readingTypes
+}
 

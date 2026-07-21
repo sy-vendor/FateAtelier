@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { DrawnCard } from '../types'
+import { useLocale } from '../i18n/LocaleContext'
+import { useTx } from '../i18n/useTx'
 import { generateThreeCardReading, resolveThreeCardInterpretation } from '../utils/readingInterpretation'
-import { readingTypes } from '../types/reading'
+import { getReadingTypes } from '../types/reading'
 import './ReadingHistory.css'
 import { Button } from './ui'
 
@@ -23,11 +25,14 @@ export interface ReadingRecord {
 }
 
 function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll }: ReadingHistoryProps) {
+  const { isEnglish } = useLocale()
+  const tx = useTx()
   const [searchTerm, setSearchTerm] = useState('')
+  const readingTypes = getReadingTypes(isEnglish)
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp)
-    return date.toLocaleString('zh-CN', {
+    return date.toLocaleString(isEnglish ? 'en-US' : 'zh-CN', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -48,22 +53,22 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
   if (readings.length === 0) {
     return (
       <div className="reading-history empty">
-        <p>暂无占卜记录</p>
-        <p className="empty-hint">完成一次单牌或三牌占卜后，记录会显示在这里。</p>
+        <p>{tx('暂无占卜记录', 'No readings yet')}</p>
+        <p className="empty-hint">{tx('完成一次单牌或三牌占卜后，记录会显示在这里。', 'Complete a single or three-card reading and it will appear here.')}</p>
       </div>
     )
   }
 
   const readingTypeLabel = (typeId?: string) =>
-    readingTypes.find((t) => t.id === typeId)?.name ?? '综合占卜'
+    readingTypes.find((t) => t.id === typeId)?.name ?? tx('综合占卜', 'General')
 
   return (
     <div className="reading-history">
       <div className="history-header-section">
-        <h3>占卜历史 · {readings.length}</h3>
+        <h3>{tx('占卜历史', 'Reading History')} · {readings.length}</h3>
         {onExportAll && (
           <Button variant="ghost" small onClick={onExportAll}>
-            导出全部
+            {tx('导出全部', 'Export all')}
           </Button>
         )}
       </div>
@@ -72,7 +77,7 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
         <div className="history-search">
           <input
             type="text"
-            placeholder="搜索占卜记录..."
+            placeholder={tx('搜索占卜记录...', 'Search readings...')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="history-search-input"
@@ -83,7 +88,7 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
       <div className="history-list">
         {filteredReadings.length === 0 ? (
           <div className="history-empty-search">
-            <p>未找到匹配的占卜记录</p>
+            <p>{tx('未找到匹配的占卜记录', 'No matching readings found')}</p>
           </div>
         ) : (
           filteredReadings.map((reading) => (
@@ -92,12 +97,12 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
               <div className="history-info">
                 <div className="history-type-row">
                   <span className="history-type">
-                    {reading.type === 'single' ? '单牌' : '三牌'}
+                    {reading.type === 'single' ? tx('单牌', 'Single') : tx('三牌', 'Three')}
                   </span>
                   {reading.readingType && reading.type === 'three' && (
                     <span className="history-reading-type">
                       {reading.readingType === 'custom'
-                        ? reading.customQuestion || '自定义'
+                        ? reading.customQuestion || tx('自定义', 'Custom')
                         : readingTypeLabel(reading.readingType)}
                     </span>
                   )}
@@ -109,18 +114,18 @@ function ReadingHistory({ readings, onViewReading, onDeleteReading, onExportAll 
                   className="view-btn"
                   onClick={() => onViewReading(reading)}
                 >
-                  查看
+                  {tx('查看', 'View')}
                 </button>
                 <button 
                   className="delete-btn"
                   onClick={() => onDeleteReading(reading.id)}
                 >
-                  删除
+                  {tx('删除', 'Delete')}
                 </button>
               </div>
             </div>
             {reading.type === 'three' && (() => {
-              const interpretation = resolveThreeCardInterpretation(reading) ?? reading.interpretation
+              const interpretation = resolveThreeCardInterpretation(reading, isEnglish) ?? reading.interpretation
               if (!interpretation) return null
               return (
                 <div className="history-preview">

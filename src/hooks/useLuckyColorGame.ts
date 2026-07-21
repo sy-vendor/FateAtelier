@@ -15,6 +15,7 @@ import {
   getZodiacSignByDate,
 } from '../utils/luckyColorEngine'
 import { toast } from '../utils/toast'
+import { txStatic } from '../i18n/locale'
 
 export function useLuckyColorGame() {
   const today = new Date()
@@ -182,7 +183,7 @@ export function useLuckyColorGame() {
       setCopiedHex(type)
       setTimeout(() => setCopiedHex(null), 2000)
     } catch {
-      toast.error('复制失败，请手动复制')
+      toast.error(txStatic('复制失败，请手动复制', 'Copy failed — please copy manually'))
     }
   }, [])
 
@@ -197,7 +198,7 @@ export function useLuckyColorGame() {
       }
     }
     await copyToClipboard(shareText, 'share')
-    toast.success('已复制分享内容')
+    toast.success(txStatic('已复制分享内容', 'Share content copied'))
   }, [luckyColor, copyToClipboard])
 
   const handleCalendarTypeChange = useCallback((v: CalendarType) => {

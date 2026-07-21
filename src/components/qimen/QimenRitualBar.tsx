@@ -1,18 +1,21 @@
+import { useTx } from '../../i18n/useTx'
+
 interface QimenRitualBarProps {
   step: 1 | 2 | 3 | 4
 }
 
 const STEPS = [
-  { num: 1, label: '择时' },
-  { num: 2, label: '定方' },
-  { num: 3, label: '排盘' },
-  { num: 4, label: '悟机' },
+  { num: 1, zh: '择时', en: 'Timing' },
+  { num: 2, zh: '定方', en: 'Direction' },
+  { num: 3, zh: '排盘', en: 'Chart' },
+  { num: 4, zh: '悟机', en: 'Insight' },
 ] as const
 
 export function QimenRitualBar({ step }: QimenRitualBarProps) {
+  const tx = useTx()
   return (
-    <div className="ritual-steps qimen-ritual" aria-label="奇门流程">
-      {STEPS.map(({ num, label }) => {
+    <div className="ritual-steps qimen-ritual" aria-label={tx('奇门流程', 'Qi Men steps')}>
+      {STEPS.map(({ num, zh, en }) => {
         const done = num < step
         const active = num === step
         const cls = [
@@ -26,7 +29,7 @@ export function QimenRitualBar({ step }: QimenRitualBarProps) {
         return (
           <div key={num} className={cls} aria-current={active ? 'step' : undefined}>
             <span className="ritual-step__num">{done ? '✓' : num}</span>
-            <span className="ritual-step__label">{label}</span>
+            <span className="ritual-step__label">{tx(zh, en)}</span>
           </div>
         )
       })}

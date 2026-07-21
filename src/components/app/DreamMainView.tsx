@@ -1,13 +1,26 @@
-import type { CSSProperties } from 'react'
+import { useMemo, type CSSProperties } from 'react'
 import { DREAM_BRAND, DREAM_BRAND_EN, MOOD_OPTIONS, getCategoryColor } from '../../utils/dreamData'
 import { useDreamGame } from '../../hooks/useDreamGame'
 import { DreamLogoMark } from '../dream/DreamLogoMark'
 import { DreamRitualBar } from '../dream/DreamRitualBar'
 import { Panel, Button, Segmented } from '../ui'
+import { useLocale } from '../../i18n/LocaleContext'
+import { useTx } from '../../i18n/useTx'
 import './dream-stage.css'
 import NextJourney from './NextJourney'
 
+const MOOD_LABEL_EN: Record<string, string> = {
+  '': 'None',
+  calm: 'Calm',
+  fear: 'Fear',
+  joy: 'Joy',
+  confused: 'Confused',
+  sad: 'Sad',
+}
+
 function DreamMainView() {
+  const tx = useTx()
+  const { isEnglish } = useLocale()
   const {
     dreamContent,
     setDreamContent,
@@ -23,7 +36,6 @@ function DreamMainView() {
     setShowHistory,
     resultSectionRef,
     symbolCount,
-    moonLabel,
     handleInterpret,
     handleClear,
     handleViewHistory,
@@ -35,6 +47,31 @@ function DreamMainView() {
 
   const isInterpreting = phase === 'interpreting'
   const showResult = phase === 'revealed' && interpretation !== null
+
+  const moodOptions = useMemo(
+    () => MOOD_OPTIONS.map((o) => ({ ...o, label: tx(o.label, MOOD_LABEL_EN[o.value] ?? o.label) })),
+    [tx],
+  )
+
+  const moodLabel = (mood: string) => {
+    const opt = MOOD_OPTIONS.find((o) => o.value === mood)
+    return opt ? tx(opt.label, MOOD_LABEL_EN[opt.value] ?? opt.label) : getMoodLabel(mood)
+  }
+
+  const moonLabelText = useMemo(() => {
+    switch (phase) {
+      case 'slumber':
+        return tx('月华静候 · 述梦以启', 'Moonlight awaits · describe your dream')
+      case 'recount':
+        return tx('梦境已录 · 轻触月轮解析', 'Dream recorded · tap the moon to interpret')
+      case 'interpreting':
+        return tx('梦雾流转中…', 'Dream mist swirling…')
+      case 'revealed':
+        return tx('梦意已显 · 再入新梦', 'Meaning revealed · begin a new dream')
+      default:
+        return ''
+    }
+  }, [phase, tx])
 
   const handleMoonClick = () => {
     if (phase === 'revealed') {
@@ -53,9 +90,9 @@ function DreamMainView() {
           <DreamLogoMark size="lg" />
         </div>
         <div>
-          <p className="dream-hero__brand">{DREAM_BRAND}</p>
-          <p className="dream-hero__brand-en">{DREAM_BRAND_EN}</p>
-          <p className="dream-hero__hint">趁记忆尚新，述梦于月华之下，探潜意识幽径</p>
+          <p className="dream-hero__brand">{tx(DREAM_BRAND, DREAM_BRAND_EN)}</p>
+          <p className="dream-hero__brand-en">{isEnglish ? DREAM_BRAND_EN.toUpperCase() : DREAM_BRAND_EN}</p>
+          <p className="dream-hero__hint">{tx('趁记忆尚新，述梦于月华之下，探潜意识幽径', 'While memory is fresh, tell your dream beneath the moonlight')}</p>
         </div>
       </header>
 
@@ -63,13 +100,13 @@ function DreamMainView() {
 
       {!showResult && (
         <section className="dream-mood">
-          <h2 className="dream-mood__title">梦中情绪</h2>
-          <p className="dream-mood__sub">选择醒后残留的感受，解梦会据此微调解读</p>
+          <h2 className="dream-mood__title">{tx('梦中情绪', 'Dream mood')}</h2>
+          <p className="dream-mood__sub">{tx('选择醒后残留的感受，解梦会据此微调解读', 'Choose how you felt upon waking to fine-tune the reading')}</p>
           <div style={{ opacity: isInterpreting ? 0.6 : 1, pointerEvents: isInterpreting ? 'none' : 'auto' }}>
             <Segmented
               block
               value={selectedMood}
-              options={[...MOOD_OPTIONS]}
+              options={moodOptions}
               onChange={setSelectedMood}
             />
           </div>
@@ -82,7 +119,7 @@ function DreamMainView() {
           `dream-shrine--${phase}`,
           showResult ? 'dream-shrine--collapsed' : '',
         ].filter(Boolean).join(' ')}
-        aria-label="月轮解梦"
+        aria-label={tx('月轮解梦', 'Moon dream ritual')}
       >
         {showResult ? (
           <div className="dream-shrine__done">
@@ -91,24 +128,24 @@ function DreamMainView() {
             </div>
             <div className="dream-shrine__done-copy">
               <p className="dream-shrine__done-eyebrow">Dream revealed</p>
-              <p className="dream-shrine__done-title">梦意已显</p>
-              <p className="dream-shrine__done-sub">解读在下方展开；若要再录一场新梦，点这里重新开始</p>
+              <p className="dream-shrine__done-title">{tx('梦意已显', 'Meaning revealed')}</p>
+              <p className="dream-shrine__done-sub">{tx('解读在下方展开；若要再录一场新梦，点这里重新开始', 'The reading unfolds below. Tap here to record a new dream')}</p>
             </div>
             <Button variant="ghost" small onClick={resetForNewDream}>
-              再入新梦
+              {tx('再入新梦', 'New dream')}
             </Button>
           </div>
         ) : (
           <>
             <div className="dream-shrine__copy">
               <p className="dream-shrine__eyebrow">Night ritual</p>
-              <h2 className="dream-shrine__title">述梦于月下</h2>
+              <h2 className="dream-shrine__title">{tx('述梦于月下', 'Tell your dream by moonlight')}</h2>
               <p className="dream-shrine__hint">
                 {phase === 'interpreting'
-                  ? '梦雾正在流转，稍候片刻'
+                  ? tx('梦雾正在流转，稍候片刻', 'Dream mist is swirling — one moment')
                   : phase === 'recount'
-                    ? '梦境已录，轻触月轮或下方按钮开始解析'
-                    : '在右侧写下记忆尚新的片段，也可轻触月轮启程'}
+                    ? tx('梦境已录，轻触月轮或下方按钮开始解析', 'Dream recorded — tap the moon or the button below')
+                    : tx('在右侧写下记忆尚新的片段，也可轻触月轮启程', 'Write fresh fragments on the right, or tap the moon to begin')}
               </p>
             </div>
 
@@ -118,7 +155,7 @@ function DreamMainView() {
                 className={['dream-moon', `dream-moon--${phase}`].join(' ')}
                 onClick={handleMoonClick}
                 disabled={isInterpreting}
-                aria-label="开始解析梦境"
+                aria-label={tx('开始解析梦境', 'Start dream interpretation')}
               >
                 <span className="dream-moon__orbit" aria-hidden>
                   <span className="dream-moon__star dream-moon__star--1" />
@@ -138,18 +175,21 @@ function DreamMainView() {
                     ))}
                   </div>
                 </div>
-                <span className="dream-moon-label">{moonLabel}</span>
+                <span className="dream-moon-label">{moonLabelText}</span>
               </button>
 
               <div className="dream-input-panel">
                 <div className="field">
                   <label htmlFor="dream-content" className="field__label">
-                    描述你的梦境
+                    {tx('描述你的梦境', 'Describe your dream')}
                   </label>
                   <textarea
                     id="dream-content"
                     className="field__textarea"
-                    placeholder="例如：我梦见一条大蛇在追我，我拼命地跑，最后跳进了一条河里……"
+                    placeholder={tx(
+                      '例如：我梦见一条大蛇在追我，我拼命地跑，最后跳进了一条河里……',
+                      'For example: I dreamed a large snake was chasing me. I ran hard and finally jumped into a river…',
+                    )}
                     value={dreamContent}
                     onChange={(e) => {
                       setDreamContent(e.target.value)
@@ -166,22 +206,22 @@ function DreamMainView() {
                     variant="primary"
                     onClick={handleInterpret}
                     disabled={isInterpreting || !dreamContent.trim()}
-                    aria-label="开始解析梦境"
+                    aria-label={tx('开始解析梦境', 'Start dream interpretation')}
                     aria-busy={isInterpreting}
                   >
-                    {isInterpreting ? '梦雾流转中…' : '开始解梦'}
+                    {isInterpreting ? tx('梦雾流转中…', 'Dream mist swirling…') : tx('开始解梦', 'Interpret dream')}
                   </Button>
                   {dreamContent && (
-                    <Button onClick={handleClear} disabled={isInterpreting} aria-label="清空输入内容">
-                      清空
+                    <Button onClick={handleClear} disabled={isInterpreting} aria-label={tx('清空输入内容', 'Clear input')}>
+                      {tx('清空', 'Clear')}
                     </Button>
                   )}
                   <Button
                     onClick={() => setShowHistory(!showHistory)}
-                    aria-label={showHistory ? '隐藏历史记录' : '查看历史记录'}
+                    aria-label={showHistory ? tx('隐藏历史记录', 'Hide history') : tx('查看历史记录', 'View history')}
                     aria-expanded={showHistory}
                   >
-                    {showHistory ? '隐藏历史' : '查看历史'}
+                    {showHistory ? tx('隐藏历史', 'Hide history') : tx('查看历史', 'View history')}
                   </Button>
                 </div>
               </div>
@@ -191,24 +231,24 @@ function DreamMainView() {
       </section>
 
       {showHistory && history.length > 0 && (
-        <Panel title="解析历史">
+        <Panel title={tx('解析历史', 'Interpretation history')}>
           <div className="dream-symbol-grid" style={{ gridTemplateColumns: '1fr' }}>
             {history.map((record) => (
               <article key={record.id} className="dream-history-card">
                 <p className="dream-history-card__content">{record.content}</p>
                 <span className="dream-history-card__meta">
                   {formatDreamDate(record.timestamp)}
-                  {record.mood ? ` · ${getMoodLabel(record.mood)}` : ''}
+                  {record.mood ? ` · ${moodLabel(record.mood)}` : ''}
                   {record.interpretation.symbols.length > 0
-                    ? ` · ${record.interpretation.symbols.length} 个符号`
+                    ? ` · ${tx(`${record.interpretation.symbols.length} 个符号`, `${record.interpretation.symbols.length} symbols`)}`
                     : ''}
                 </span>
                 <div className="dream-actions" style={{ marginTop: 12 }}>
                   <Button small onClick={() => handleViewHistory(record)}>
-                    查看
+                    {tx('查看', 'View')}
                   </Button>
                   <Button small onClick={() => handleDeleteHistory(record.id)}>
-                    删除
+                    {tx('删除', 'Delete')}
                   </Button>
                 </div>
               </article>
@@ -219,30 +259,30 @@ function DreamMainView() {
 
       {showHistory && history.length === 0 && (
         <Panel>
-          <p className="prose">暂无历史记录</p>
-          <p className="callout">解析过的梦境会显示在这里。</p>
+          <p className="prose">{tx('暂无历史记录', 'No history yet')}</p>
+          <p className="callout">{tx('解析过的梦境会显示在这里。', 'Interpreted dreams will appear here.')}</p>
         </Panel>
       )}
 
       {showResult && interpretation && (
-        <section ref={resultSectionRef} className="dream-result" aria-label="解梦结果">
+        <section ref={resultSectionRef} className="dream-result" aria-label={tx('解梦结果', 'Dream interpretation')}>
           <div className="dream-result__banner">
             <div className="dream-result__icon" aria-hidden>
               ☽
             </div>
             <div>
-              <h2 className="dream-result__title">梦意已显</h2>
+              <h2 className="dream-result__title">{tx('梦意已显', 'Meaning revealed')}</h2>
               <p className="dream-result__sub">
-                {selectedMood ? `情绪基调：${getMoodLabel(selectedMood)} · ` : ''}
-                静心体悟，勿执于一解
+                {selectedMood ? `${tx('情绪基调', 'Mood')}: ${moodLabel(selectedMood)} · ` : ''}
+                {tx('静心体悟，勿执于一解', 'Reflect calmly — no single reading is final')}
               </p>
             </div>
             {symbolCount > 0 && (
-              <span className="dream-symbol-count">{symbolCount} 符号</span>
+              <span className="dream-symbol-count">{tx(`${symbolCount} 符号`, `${symbolCount} symbols`)}</span>
             )}
           </div>
 
-          <Panel title="梦意总览">
+          <Panel title={tx('梦意总览', 'Overview')}>
             <p className="prose">{interpretation.overview}</p>
             {interpretation.emotionalTone && (
               <p className="callout" style={{ marginTop: 12 }}>{interpretation.emotionalTone}</p>
@@ -250,19 +290,19 @@ function DreamMainView() {
           </Panel>
 
           {interpretation.themes && (
-            <Panel title="主题脉络">
+            <Panel title={tx('主题脉络', 'Themes')}>
               <p className="prose">{interpretation.themes}</p>
             </Panel>
           )}
 
           {interpretation.symbolNarrative && (
-            <Panel title="符号串联">
+            <Panel title={tx('符号串联', 'Symbol narrative')}>
               <p className="prose">{interpretation.symbolNarrative}</p>
             </Panel>
           )}
 
           {interpretation.symbols.length > 0 && (
-            <Panel title="梦境符号" description="从梦中浮出的鲜明意象，可与上文串联对照阅读">
+            <Panel title={tx('梦境符号', 'Dream symbols')} description={tx('从梦中浮出的鲜明意象，可与上文串联对照阅读', 'Vivid images from the dream — read alongside the narrative above')}>
               <div
                 className={[
                   'dream-symbol-grid',
@@ -296,15 +336,15 @@ function DreamMainView() {
 
                       <div className="dream-symbol-card__aspects">
                         <div className="dream-symbol-aspect dream-symbol-aspect--good">
-                          <span className="dream-symbol-aspect__label">吉象</span>
+                          <span className="dream-symbol-aspect__label">{tx('吉象', 'Positive')}</span>
                           <p className="dream-symbol-aspect__text">{symbol.positive}</p>
                         </div>
                         <div className="dream-symbol-aspect dream-symbol-aspect--warn">
-                          <span className="dream-symbol-aspect__label">留意</span>
+                          <span className="dream-symbol-aspect__label">{tx('留意', 'Caution')}</span>
                           <p className="dream-symbol-aspect__text">{symbol.negative}</p>
                         </div>
                         <div className="dream-symbol-aspect dream-symbol-aspect--tip">
-                          <span className="dream-symbol-aspect__label">建议</span>
+                          <span className="dream-symbol-aspect__label">{tx('建议', 'Advice')}</span>
                           <p className="dream-symbol-aspect__text">{symbol.advice}</p>
                         </div>
                       </div>
@@ -323,29 +363,32 @@ function DreamMainView() {
             </Panel>
           )}
 
-          <Panel title="启示建议">
+          <Panel title={tx('启示建议', 'Guidance')}>
             <p className="prose">{interpretation.advice}</p>
           </Panel>
 
-          <Panel title="反思手记">
+          <Panel title={tx('反思手记', 'Reflection')}>
             <p className="prose">{interpretation.reflection}</p>
           </Panel>
 
           <p className="callout">
-            梦境解析仅供参考，每个人的梦境都有其独特性。最重要的是关注梦境带给你的感受和启发。
+            {tx(
+              '梦境解析仅供参考，每个人的梦境都有其独特性。最重要的是关注梦境带给你的感受和启发。',
+              'Dream readings are for inspiration. Your own feelings and insights matter most.',
+            )}
           </p>
           <NextJourney from="dream" />
         </section>
       )}
 
       {!showResult && !showHistory && (
-        <Panel title="述梦要诀">
+        <Panel title={tx('述梦要诀', 'Dream journaling tips')}>
           <ul className="dream-tips">
-            <li>趁记忆尚新时记录，人物、场景、动作与感受越细越好</li>
-            <li>细节往往比整体情节更能揭示潜意识的信息</li>
-            <li>记录时尽量客观陈述，不必急于赋予意义</li>
-            <li>定期回顾梦境日志，或能发现潜藏的模式</li>
-            <li>解梦是启发而非定论，内心的感受才是最终指引</li>
+            <li>{tx('趁记忆尚新时记录，人物、场景、动作与感受越细越好', 'Record while memory is fresh — people, scenes, actions, and feelings')}</li>
+            <li>{tx('细节往往比整体情节更能揭示潜意识的信息', 'Details often reveal more than the overall plot')}</li>
+            <li>{tx('记录时尽量客观陈述，不必急于赋予意义', 'Describe objectively before assigning meaning')}</li>
+            <li>{tx('定期回顾梦境日志，或能发现潜藏的模式', 'Review your dream log regularly to spot patterns')}</li>
+            <li>{tx('解梦是启发而非定论，内心的感受才是最终指引', 'Interpretation inspires — your inner feeling is the guide')}</li>
           </ul>
         </Panel>
       )}

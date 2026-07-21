@@ -1,6 +1,7 @@
 import { Component, ErrorInfo, ReactNode } from 'react'
 import { logger } from '../utils/logger'
 import { toast } from '../utils/toast'
+import { txStatic } from '../i18n/locale'
 import './ErrorBoundary.css'
 
 interface Props {
@@ -39,7 +40,7 @@ class ErrorBoundary extends Component<Props, State> {
     })
     
     // 显示用户友好的错误提示
-    toast.error('应用出现错误，请刷新页面重试')
+    toast.error(txStatic('应用出现错误，请刷新页面重试', 'Something went wrong. Please refresh and try again.'))
   }
 
   handleReset = () => {
@@ -62,13 +63,13 @@ class ErrorBoundary extends Component<Props, State> {
         <div className="error-boundary" role="alert">
           <div className="error-boundary-content">
             <div className="error-icon">⚠️</div>
-            <h1 className="error-title">出错了</h1>
+            <h1 className="error-title">{txStatic('出错了', 'Something went wrong')}</h1>
             <p className="error-message">
-              应用遇到了一个错误，我们正在努力修复。
+              {txStatic('应用遇到了一个错误，我们正在努力修复。', 'The app hit an unexpected error. We are working on a fix.')}
             </p>
             {import.meta.env.DEV && this.state.error && (
               <details className="error-details">
-                <summary>错误详情（仅开发环境）</summary>
+                <summary>{txStatic('错误详情（仅开发环境）', 'Error details (development only)')}</summary>
                 <pre className="error-stack">
                   {this.state.error.toString()}
                   {this.state.errorInfo?.componentStack}
@@ -79,16 +80,16 @@ class ErrorBoundary extends Component<Props, State> {
               <button
                 className="error-button error-button-primary"
                 onClick={this.handleReset}
-                aria-label="刷新页面"
+                aria-label={txStatic('刷新页面', 'Refresh page')}
               >
-                🔄 刷新页面
+                🔄 {txStatic('刷新页面', 'Refresh')}
               </button>
               <button
                 className="error-button error-button-secondary"
                 onClick={() => window.history.back()}
-                aria-label="返回上一页"
+                aria-label={txStatic('返回上一页', 'Go back')}
               >
-                ← 返回
+                ← {txStatic('返回', 'Back')}
               </button>
             </div>
           </div>

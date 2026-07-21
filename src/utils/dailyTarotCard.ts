@@ -1,4 +1,5 @@
 import { tarotCards, type TarotCard } from '../data/tarotCards'
+import { resolveCanonicalTarotCard } from './tarotCardResolve'
 import { getStorageItem, setStorageItem } from './storage'
 
 const DAILY_SEED_KEY = 'tarot-daily-seed'
@@ -41,13 +42,14 @@ function hashString(input: string): number {
 
 function drawFromSeed(dateKey: string, seed: string): { card: TarotCard; isReversed: boolean } {
   const combined = hashString(`${dateKey}:${seed}`)
-  const card = tarotCards[combined % tarotCards.length]
+  const card = resolveCanonicalTarotCard(tarotCards[combined % tarotCards.length])
   const isReversed = (combined >>> 1) % 2 === 1
   return { card, isReversed }
 }
 
 function findCardById(cardId: number): TarotCard | undefined {
-  return tarotCards.find((c) => c.id === cardId)
+  const found = tarotCards.find((c) => c.id === cardId)
+  return found ? resolveCanonicalTarotCard(found) : undefined
 }
 
 /** 每人每日一牌：同用户同日固定，不同用户不同牌 */

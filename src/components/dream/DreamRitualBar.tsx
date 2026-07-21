@@ -1,18 +1,21 @@
+import { useTx } from '../../i18n/useTx'
+
 interface DreamRitualBarProps {
   step: 1 | 2 | 3 | 4
 }
 
 const STEPS = [
-  { num: 1, label: '入梦' },
-  { num: 2, label: '述梦' },
-  { num: 3, label: '解梦' },
-  { num: 4, label: '悟意' },
+  { num: 1, zh: '入梦', en: 'Dream' },
+  { num: 2, zh: '述梦', en: 'Recount' },
+  { num: 3, zh: '解梦', en: 'Interpret' },
+  { num: 4, zh: '悟意', en: 'Insight' },
 ] as const
 
 export function DreamRitualBar({ step }: DreamRitualBarProps) {
+  const tx = useTx()
   return (
-    <div className="ritual-steps dream-ritual" aria-label="解梦流程">
-      {STEPS.map(({ num, label }) => {
+    <div className="ritual-steps dream-ritual" aria-label={tx('解梦流程', 'Dream interpretation steps')}>
+      {STEPS.map(({ num, zh, en }) => {
         const done = num < step
         const active = num === step
         const cls = [
@@ -26,7 +29,7 @@ export function DreamRitualBar({ step }: DreamRitualBarProps) {
         return (
           <div key={num} className={cls} aria-current={active ? 'step' : undefined}>
             <span className="ritual-step__num">{done ? '✓' : num}</span>
-            <span className="ritual-step__label">{label}</span>
+            <span className="ritual-step__label">{tx(zh, en)}</span>
           </div>
         )
       })}

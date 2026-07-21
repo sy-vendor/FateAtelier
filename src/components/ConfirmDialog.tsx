@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTx } from '../i18n/useTx'
 import './ConfirmDialog.css'
 
 interface ConfirmDialogProps {
@@ -16,13 +17,16 @@ function ConfirmDialog({
   isOpen,
   title,
   message,
-  confirmText = '确认',
-  cancelText = '取消',
+  confirmText,
+  cancelText,
   onConfirm,
   onCancel,
   type = 'info'
 }: ConfirmDialogProps) {
-  // 处理 ESC 键关闭
+  const tx = useTx()
+  const resolvedConfirmText = confirmText ?? tx('确认', 'Confirm')
+  const resolvedCancelText = cancelText ?? tx('取消', 'Cancel')
+
   useEffect(() => {
     if (!isOpen) return
 
@@ -40,8 +44,6 @@ function ConfirmDialog({
 
     document.addEventListener('keydown', handleEscape)
     document.addEventListener('keydown', handleEnter)
-
-    // 阻止背景滚动
     document.body.style.overflow = 'hidden'
 
     return () => {
@@ -83,17 +85,17 @@ function ConfirmDialog({
           <button
             className="confirm-dialog-button confirm-dialog-button-cancel"
             onClick={onCancel}
-            aria-label="取消操作"
+            aria-label={tx('取消操作', 'Cancel action')}
           >
-            {cancelText}
+            {resolvedCancelText}
           </button>
           <button
             className={`confirm-dialog-button confirm-dialog-button-confirm ${type}`}
             onClick={onConfirm}
             autoFocus
-            aria-label="确认操作"
+            aria-label={tx('确认操作', 'Confirm action')}
           >
-            {confirmText}
+            {resolvedConfirmText}
           </button>
         </div>
       </div>
@@ -102,4 +104,3 @@ function ConfirmDialog({
 }
 
 export default ConfirmDialog
-

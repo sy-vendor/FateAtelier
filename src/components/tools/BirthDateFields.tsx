@@ -1,5 +1,6 @@
 import type { CalendarType } from '../../utils/birthDateUtils'
 import { SHICHEN_NAMES } from '../../utils/baziData'
+import { useTx } from '../../i18n/useTx'
 import { Segmented, ChipGrid } from '../ui'
 
 interface BirthDateFieldsProps {
@@ -47,16 +48,18 @@ export function BirthDateFields({
   shichenOptions,
   inputError,
 }: BirthDateFieldsProps) {
+  const tx = useTx()
+
   return (
     <>
       <div className="field">
-        <span className="field__label">历法类型</span>
+        <span className="field__label">{tx('历法类型', 'Calendar')}</span>
         <Segmented
           block
           value={calendarType}
           options={[
-            { value: 'solar', label: '阳历' },
-            { value: 'lunar', label: '农历' },
+            { value: 'solar', label: tx('阳历', 'Gregorian') },
+            { value: 'lunar', label: tx('农历', 'Lunar') },
           ]}
           onChange={onCalendarTypeChange}
         />
@@ -64,89 +67,89 @@ export function BirthDateFields({
 
       {calendarType === 'solar' ? (
         <div className="field">
-          <span className="field__label">出生日期（阳历）</span>
+          <span className="field__label">{tx('出生日期（阳历）', 'Birth date (Gregorian)')}</span>
           <div className="tools-time__fields">
             <input
               type="text"
               inputMode="numeric"
               className="field__input"
-              aria-label="年"
+              aria-label={tx('年', 'Year')}
               placeholder="1995"
               value={solarYear}
               onChange={(e) => onSolarYear(e.target.value)}
             />
-            <span className="tools-time__sep">年</span>
+            <span className="tools-time__sep">{tx('年', 'Y')}</span>
             <input
               type="text"
               inputMode="numeric"
               className="field__input"
-              aria-label="月"
+              aria-label={tx('月', 'Month')}
               placeholder="8"
               value={solarMonth}
               onChange={(e) => onSolarMonth(e.target.value)}
             />
-            <span className="tools-time__sep">月</span>
+            <span className="tools-time__sep">{tx('月', 'M')}</span>
             <input
               type="text"
               inputMode="numeric"
               className="field__input"
-              aria-label="日"
+              aria-label={tx('日', 'Day')}
               placeholder="10"
               value={solarDay}
               onChange={(e) => onSolarDay(e.target.value)}
             />
-            <span className="tools-time__sep">日</span>
+            <span className="tools-time__sep">{tx('日', 'D')}</span>
           </div>
         </div>
       ) : (
         <div className="field">
-          <span className="field__label">出生日期（农历）</span>
+          <span className="field__label">{tx('出生日期（农历）', 'Birth date (Lunar)')}</span>
           <div className="tools-time__fields">
             <input
               type="text"
               inputMode="numeric"
               className="field__input"
-              placeholder="年"
+              placeholder={tx('年', 'Year')}
               value={lunarYear}
               onChange={(e) => onLunarYear(e.target.value)}
-              aria-label="农历年"
+              aria-label={tx('农历年', 'Lunar year')}
             />
-            <span className="tools-time__sep">年</span>
+            <span className="tools-time__sep">{tx('年', 'Y')}</span>
             <input
               type="text"
               inputMode="numeric"
               className="field__input"
-              placeholder="月"
+              placeholder={tx('月', 'Month')}
               value={lunarMonth}
               onChange={(e) => onLunarMonth(e.target.value)}
-              aria-label="农历月"
+              aria-label={tx('农历月', 'Lunar month')}
             />
-            <span className="tools-time__sep">月</span>
+            <span className="tools-time__sep">{tx('月', 'M')}</span>
             <input
               type="text"
               inputMode="numeric"
               className="field__input"
-              placeholder="日"
+              placeholder={tx('日', 'Day')}
               value={lunarDay}
               onChange={(e) => onLunarDay(e.target.value)}
-              aria-label="农历日"
+              aria-label={tx('农历日', 'Lunar day')}
             />
-            <span className="tools-time__sep">日</span>
+            <span className="tools-time__sep">{tx('日', 'D')}</span>
             <label className="tools-leap" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
               <input
                 type="checkbox"
                 checked={isLunarLeapMonth}
                 onChange={(e) => onLunarLeapMonth(e.target.checked)}
               />
-              闰月
+              {tx('闰月', 'Leap month')}
             </label>
           </div>
-          <p className="callout">支持 1900–2100 年农历转阳历。</p>
+          <p className="callout">{tx('支持 1900–2100 年农历转阳历。', 'Supports lunar dates from 1900 to 2100.')}</p>
         </div>
       )}
 
       <div className="field">
-        <span className="field__label">出生时辰</span>
+        <span className="field__label">{tx('出生时辰', 'Birth hour')}</span>
         <ChipGrid
           wide
           items={shichenOptions.map((shichen) => ({ id: shichen, label: shichen }))}

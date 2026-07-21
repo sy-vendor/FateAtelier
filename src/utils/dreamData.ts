@@ -19,6 +19,12 @@ export const CATEGORY_COLORS: Record<string, string> = {
   建筑: '#fbbf24',
   物品: '#34d399',
   动作: '#fb923c',
+  Animals: '#a78bfa',
+  Nature: '#60a5fa',
+  People: '#f472b6',
+  Buildings: '#fbbf24',
+  Objects: '#34d399',
+  Actions: '#fb923c',
 }
 
 export function getCategoryColor(category: string): string {

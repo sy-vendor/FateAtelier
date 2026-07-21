@@ -4,11 +4,13 @@ import { BaziLogoMark } from '../bazi/BaziLogoMark'
 import { BaziRitualBar } from '../bazi/BaziRitualBar'
 import { BirthDateFields } from '../tools/BirthDateFields'
 import { Panel, Button, AspectGrid } from '../ui'
+import { useLocale } from '../../i18n/LocaleContext'
+import { useTx } from '../../i18n/useTx'
 import './fortune-tools-stage.css'
 
-const PILLAR_LABELS = ['年柱', '月柱', '日柱', '时柱'] as const
-
 function BaziMainView() {
+  const tx = useTx()
+  const { isEnglish } = useLocale()
   const {
     calendarType,
     setCalendarType,
@@ -37,21 +39,36 @@ function BaziMainView() {
     shichenOptions,
   } = useBaziGame()
 
+  const pillarLabels = [
+    tx('年柱', 'Year pillar'),
+    tx('月柱', 'Month pillar'),
+    tx('日柱', 'Day pillar'),
+    tx('时柱', 'Hour pillar'),
+  ]
+
+  const interpretationTitles = [
+    { title: tx('性格特点', 'Personality'), key: 'personality' as const },
+    { title: tx('事业发展', 'Career'), key: 'career' as const },
+    { title: tx('财运分析', 'Wealth'), key: 'wealth' as const },
+    { title: tx('健康状况', 'Health'), key: 'health' as const },
+    { title: tx('感情婚姻', 'Relationships'), key: 'relationship' as const },
+  ]
+
   return (
     <div className="tools-stage tools-stage--bazi">
       <header className="tools-hero">
         <div className="tools-hero__mark"><BaziLogoMark size="lg" /></div>
         <div>
-          <p className="tools-hero__brand">{BAZI_BRAND}</p>
-          <p className="tools-hero__brand-en">{BAZI_BRAND_EN}</p>
-          <p className="tools-hero__hint">录生辰排四柱，察五行十神以窥命途</p>
+          <p className="tools-hero__brand">{tx(BAZI_BRAND, BAZI_BRAND_EN)}</p>
+          <p className="tools-hero__brand-en">{isEnglish ? BAZI_BRAND_EN.toUpperCase() : BAZI_BRAND_EN}</p>
+          <p className="tools-hero__hint">{tx('录生辰排四柱，察五行十神以窥命途', 'Enter birth details to chart the four pillars and read your destiny')}</p>
         </div>
       </header>
 
       <BaziRitualBar step={ritualStep} />
 
       <section className="tools-form">
-        <h2 className="tools-form__title">输入生辰</h2>
+        <h2 className="tools-form__title">{tx('输入生辰', 'Enter birth details')}</h2>
         <BirthDateFields
           calendarType={calendarType}
           onCalendarTypeChange={setCalendarType}
@@ -75,31 +92,31 @@ function BaziMainView() {
           inputError={inputError}
         />
         <Button variant="primary" block onClick={calculateFortune}>
-          开始排盘
+          {tx('开始排盘', 'Generate chart')}
         </Button>
       </section>
 
       {!result && (
         <section className="tools-shrine" aria-hidden>
           <span className="tools-shrine__glyph">☯</span>
-          <p className="tools-shrine__hint">阴阳交感，四柱成局，命途始显</p>
+          <p className="tools-shrine__hint">{tx('阴阳交感，四柱成局，命途始显', 'Yin and yang converge; four pillars form and destiny emerges')}</p>
         </section>
       )}
 
       {result && (
-        <section ref={insightRef} className="tools-insight" aria-label="八字解读">
+        <section ref={insightRef} className="tools-insight" aria-label={tx('八字解读', 'Ba Zi reading')}>
           <div className="tools-insight__banner">
             <div className="tools-insight__icon" aria-hidden>命</div>
             <div>
-              <h2 className="tools-insight__title">日柱 {result.bazi[2]}</h2>
-              <p className="tools-insight__sub">日主五行 · {dayMasterWuxing}</p>
+              <h2 className="tools-insight__title">{tx('日柱', 'Day pillar')} {result.bazi[2]}</h2>
+              <p className="tools-insight__sub">{tx('日主五行', 'Day master element')} · {dayMasterWuxing}</p>
             </div>
             <span className="tools-score-ring">{result.bazi[2]}</span>
           </div>
 
-          <Panel title="四柱八字">
+          <Panel title={tx('四柱八字', 'Four pillars')}>
             <div className="tools-pillar-grid">
-              {PILLAR_LABELS.map((label, index) => (
+              {pillarLabels.map((label, index) => (
                 <article key={label} className="tools-pillar-card">
                   <div className="tools-pillar-card__label">{label}</div>
                   <div className="tools-pillar-card__value">{result.bazi[index]}</div>
@@ -108,18 +125,22 @@ function BaziMainView() {
             </div>
           </Panel>
 
-          <Panel title="五行分析">
+          <Panel title={tx('五行分析', 'Five elements')}>
             <AspectGrid
               items={Object.entries(result.wuxing).map(([element, count]) => ({
-                title: `${element}行`,
+                title: `${element}${tx('行', ' element')}`,
                 score: count,
-                text: count >= 3 ? '五行较旺' : count <= 1 ? '五行偏弱' : '状态平稳',
+                text: count >= 3
+                  ? tx('五行较旺', 'Relatively strong')
+                  : count <= 1
+                    ? tx('五行偏弱', 'Relatively weak')
+                    : tx('状态平稳', 'Balanced'),
               }))}
             />
           </Panel>
 
           {result.shishen.length > 0 && (
-            <Panel title="十神">
+            <Panel title={tx('十神', 'Ten gods')}>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 {result.shishen.map((s) => (
                   <span key={s} className="tag tag--info">{s}</span>
@@ -128,28 +149,22 @@ function BaziMainView() {
             </Panel>
           )}
 
-          <Panel title="命理解读">
+          <Panel title={tx('命理解读', 'Destiny reading')}>
             <div className="aspect-grid">
-              {[
-                { title: '性格特点', text: result.interpretation.personality },
-                { title: '事业发展', text: result.interpretation.career },
-                { title: '财运分析', text: result.interpretation.wealth },
-                { title: '健康状况', text: result.interpretation.health },
-                { title: '感情婚姻', text: result.interpretation.relationship },
-              ].map((item) => (
+              {interpretationTitles.map((item) => (
                 <article key={item.title} className="aspect">
                   <div className="aspect__head"><span className="aspect__title">{item.title}</span></div>
-                  <p className="aspect__text">{item.text}</p>
+                  <p className="aspect__text">{result.interpretation[item.key]}</p>
                 </article>
               ))}
             </div>
           </Panel>
 
-          <Panel title="综合总结">
+          <Panel title={tx('综合总结', 'Summary')}>
             <p className="prose">{result.interpretation.summary}</p>
           </Panel>
 
-          <p className="callout">八字算命仅供参考，命运掌握在自己手中，理性看待。</p>
+          <p className="callout">{tx('八字算命仅供参考，命运掌握在自己手中，理性看待。', 'Ba Zi readings are for reference only. Your choices shape your path.')}</p>
         </section>
       )}
     </div>

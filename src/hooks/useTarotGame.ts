@@ -9,6 +9,8 @@ import { DrawnCard } from '../types'
 import { ReadingType } from '../types/reading'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
+import { txStatic } from '../i18n/locale'
+import { useLocale } from '../i18n/LocaleContext'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import type { TarotGameApi } from '../types/tarotGameApi'
 
@@ -22,6 +24,7 @@ function rehydrateReadingRecord(reading: ReadingRecord): ReadingRecord {
 }
 
 export function useTarotGame() {
+  const { isEnglish } = useLocale()
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
   const [selectedCard, setSelectedCard] = useState<DrawnCard | null>(null)
   const [threeCardReading, setThreeCardReading] = useState<DrawnCard[] | null>(null)
@@ -38,7 +41,7 @@ export function useTarotGame() {
     const result = getStorageItem<ReadingRecord[]>('tarot-reading-history', [])
     if (result.error) {
       requestAnimationFrame(() => {
-        toast.error('加载历史记录失败')
+        toast.error(txStatic('加载历史记录失败', 'Failed to load history'))
       })
     }
     if (result.success && result.data !== undefined && Array.isArray(result.data)) {
@@ -54,7 +57,7 @@ export function useTarotGame() {
     const id = window.setTimeout(() => {
       const result = setStorageItem('tarot-reading-history', readingHistoryRef.current)
       if (!result.success && result.error) {
-        toast.warning(result.error || '保存历史记录失败')
+        toast.warning(result.error || txStatic('保存历史记录失败', 'Failed to save history'))
       }
     }, READING_HISTORY_SAVE_DEBOUNCE_MS)
     return () => clearTimeout(id)
@@ -70,14 +73,14 @@ export function useTarotGame() {
     if (threeCardReading && threeCardReading.length === 3) {
       const readingType = (viewingHistoryReading?.readingType as ReadingType) || selectedReadingType
       const question = viewingHistoryReading?.customQuestion || customQuestion
-      return generateThreeCardReading(threeCardReading, readingType, question)
+      return generateThreeCardReading(threeCardReading, readingType, question, isEnglish)
     }
     return null
-  }, [threeCardReading, selectedReadingType, customQuestion, viewingHistoryReading])
+  }, [threeCardReading, selectedReadingType, customQuestion, viewingHistoryReading, isEnglish])
 
   const drawCard = useCallback(() => {
     if (drawnCards.length >= 78) {
-      toast.info('所有牌都已抽取完毕！')
+      toast.info(txStatic('所有牌都已抽取完毕！', 'All cards have been drawn!'))
       return
     }
 
@@ -86,7 +89,7 @@ export function useTarotGame() {
     )
 
     if (availableCards.length === 0) {
-      toast.info('没有可用的牌了！')
+      toast.info(txStatic('没有可用的牌了！', 'No cards left to draw!'))
       return
     }
 
@@ -121,7 +124,7 @@ export function useTarotGame() {
 
   const drawThreeCards = useCallback(() => {
     if (drawnCards.length + 3 > 78) {
-      toast.warning('剩余的牌不足以抽取三张！')
+      toast.warning(txStatic('剩余的牌不足以抽取三张！', 'Not enough cards left for a three-card spread!'))
       return
     }
     setShowReadingTypeSelector(true)
@@ -162,7 +165,7 @@ export function useTarotGame() {
       setThreeCardReading(threeDrawnCards)
       setSelectedCard(null)
 
-      const interpretation = generateThreeCardReading(threeDrawnCards, selectedReadingType, customQuestion)
+      const interpretation = generateThreeCardReading(threeDrawnCards, selectedReadingType, customQuestion, isEnglish)
       const historyRecord: ReadingRecord = {
         id: Date.now().toString(),
         type: 'three',
@@ -250,10 +253,10 @@ export function useTarotGame() {
 
   const handleDeleteHistoryReading = useCallback(async (id: string) => {
     const confirmed = await confirm({
-      title: '删除占卜记录',
-      message: '确定要删除这条占卜记录吗？',
-      confirmText: '删除',
-      cancelText: '取消',
+      title: txStatic('删除占卜记录', 'Delete reading'),
+      message: txStatic('确定要删除这条占卜记录吗？', 'Are you sure you want to delete this reading?'),
+      confirmText: txStatic('删除', 'Delete'),
+      cancelText: txStatic('取消', 'Cancel'),
       type: 'danger'
     })
     if (confirmed) {

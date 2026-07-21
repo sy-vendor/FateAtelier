@@ -1,5 +1,7 @@
 import { ReadingRecord } from './ReadingHistory'
 import { tarotCards } from '../data/tarotCards'
+import { useLocale } from '../i18n/LocaleContext'
+import { useTx } from '../i18n/useTx'
 import './Statistics.css'
 
 interface StatisticsProps {
@@ -7,6 +9,9 @@ interface StatisticsProps {
 }
 
 function Statistics({ readings }: StatisticsProps) {
+  const { isEnglish } = useLocale()
+  const tx = useTx()
+
   if (readings.length === 0) {
     return null
   }
@@ -52,36 +57,36 @@ function Statistics({ readings }: StatisticsProps) {
 
   return (
     <div className="statistics-section">
-      <h3>占卜统计</h3>
+      <h3>{tx('占卜统计', 'Reading Stats')}</h3>
       
       <div className="stats-grid">
         <div className="stat-card">
           <div className="stat-value">{totalReadings}</div>
-          <div className="stat-label">总占卜次数</div>
+          <div className="stat-label">{tx('总占卜次数', 'Total readings')}</div>
         </div>
         
         <div className="stat-card">
           <div className="stat-value">{singleReadings}</div>
-          <div className="stat-label">单牌占卜</div>
+          <div className="stat-label">{tx('单牌占卜', 'Single-card')}</div>
         </div>
         
         <div className="stat-card">
           <div className="stat-value">{threeReadings}</div>
-          <div className="stat-label">三牌占卜</div>
+          <div className="stat-label">{tx('三牌占卜', 'Three-card')}</div>
         </div>
         
         <div className="stat-card">
           <div className="stat-value">{totalCards}</div>
-          <div className="stat-label">抽取牌数</div>
+          <div className="stat-label">{tx('抽取牌数', 'Cards drawn')}</div>
         </div>
       </div>
 
       <div className="stats-details">
         <div className="stat-detail-card">
-          <h4>正逆位分布</h4>
+          <h4>{tx('正逆位分布', 'Upright vs Reversed')}</h4>
           <div className="position-distribution">
             <div className="position-bar">
-              <div className="position-label">正位</div>
+              <div className="position-label">{tx('正位', 'Upright')}</div>
               <div className="position-progress">
                 <div 
                   className="position-fill upright"
@@ -91,7 +96,7 @@ function Statistics({ readings }: StatisticsProps) {
               </div>
             </div>
             <div className="position-bar">
-              <div className="position-label">逆位</div>
+              <div className="position-label">{tx('逆位', 'Reversed')}</div>
               <div className="position-progress">
                 <div 
                   className="position-fill reversed"
@@ -105,12 +110,12 @@ function Statistics({ readings }: StatisticsProps) {
 
         {mostFrequentCards.length > 0 && (
           <div className="stat-detail-card">
-            <h4>最常出现的牌</h4>
+            <h4>{tx('最常出现的牌', 'Most Frequent Cards')}</h4>
             <div className="frequent-cards">
               {mostFrequentCards.map(({ card, count }) => (
                 <div key={card.id} className="frequent-card-item">
-                  <span className="card-name">{card.name}</span>
-                  <span className="card-count">{count}次</span>
+                  <span className="card-name">{isEnglish ? card.nameEn : card.name}</span>
+                  <span className="card-count">{tx(`${count}次`, `${count}×`)}</span>
                 </div>
               ))}
             </div>

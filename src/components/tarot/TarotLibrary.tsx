@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom'
 import type { TarotCard } from '../../data/tarotCards'
 import { tarotCards } from '../../data/tarotCards'
 import { getFavoriteCards, toggleFavorite, isFavorite } from '../../utils/favorites'
+import { useTx } from '../../i18n/useTx'
 import { TarotCardVisual } from './TarotCardVisual'
 import { Segmented } from '../ui'
 import './tarot-library.css'
@@ -10,47 +11,63 @@ import './tarot-library.css'
 type LibraryTab = 'deck' | 'favorites' | 'guide'
 type SuitFilter = 'all' | 'major' | 'wands' | 'cups' | 'swords' | 'pentacles'
 
-const FILTER_OPTIONS: { value: SuitFilter; label: string }[] = [
-  { value: 'all', label: '全部' },
-  { value: 'major', label: '大阿卡纳' },
-  { value: 'wands', label: '权杖' },
-  { value: 'cups', label: '圣杯' },
-  { value: 'swords', label: '宝剑' },
-  { value: 'pentacles', label: '星币' },
+const FILTER_OPTIONS: { value: SuitFilter; label: string; labelEn: string }[] = [
+  { value: 'all', label: '全部', labelEn: 'All' },
+  { value: 'major', label: '大阿卡纳', labelEn: 'Major Arcana' },
+  { value: 'wands', label: '权杖', labelEn: 'Wands' },
+  { value: 'cups', label: '圣杯', labelEn: 'Cups' },
+  { value: 'swords', label: '宝剑', labelEn: 'Swords' },
+  { value: 'pentacles', label: '星币', labelEn: 'Pentacles' },
 ]
 
 const GUIDE_SECTIONS = [
   {
     title: '每日一牌',
+    titleEn: 'Daily Draw',
     body: '每天可揭示一次当日牌面。点击牌背翻开，可切换正逆位查看不同解读。',
+    bodyEn: 'Reveal one card each day. Tap the back to flip, then switch upright or reversed for different readings.',
   },
   {
     title: '单牌洞察',
+    titleEn: 'Single Card',
     body: '默念问题后抽取一张牌，获得对当下处境的直接指引。点击牌面可切换正逆位。',
+    bodyEn: 'Hold your question, draw one card, and receive direct guidance. Tap the card to switch orientation.',
   },
   {
     title: '三牌占卜',
+    titleEn: 'Three-Card Spread',
     body: '一次抽取三张牌，分别对应过去、现在与未来，并附带综合解读。',
+    bodyEn: 'Draw three cards for past, present, and future, with a synthesized reading across all three.',
   },
   {
     title: '星穹秘典图鉴',
+    titleEn: 'Celestial Codex Library',
     body: '浏览全部 78 张牌面，支持按花色筛选与名称搜索。点击任意牌可查看完整牌义。',
+    bodyEn: 'Browse all 78 cards, filter by suit, and search by name. Tap any card for its full meaning.',
   },
   {
     title: '收藏',
+    titleEn: 'Favorites',
     body: '在图鉴中为常用牌面添加收藏，方便日后快速查阅。',
+    bodyEn: 'Star cards you return to often for quick access later.',
   },
   {
     title: '占卜记录',
+    titleEn: 'Reading History',
     body: '每次占卜结果会自动保存，可在页面下方回顾历史记录。',
+    bodyEn: 'Every reading is saved automatically and appears in your history below.',
   },
   {
     title: '正位与逆位',
+    titleEn: 'Upright & Reversed',
     body: '同一张牌在正位与逆位下含义不同。抽牌后点击「转为逆位」或直接点击牌面切换。',
+    bodyEn: 'The same card shifts meaning by orientation. Tap “Switch to reversed” or the card itself after drawing.',
   },
   {
     title: '说明',
+    titleEn: 'Disclaimer',
     body: '塔罗占卜仅供娱乐与自我反思，不应作为重大决策的唯一依据。',
+    bodyEn: 'Tarot is for reflection and entertainment — not the sole basis for major life decisions.',
   },
 ]
 
@@ -99,11 +116,17 @@ function IconClose() {
 }
 
 export default function TarotLibrary({ onSelectCard }: TarotLibraryProps) {
+  const tx = useTx()
   const [open, setOpen] = useState(false)
   const [tab, setTab] = useState<LibraryTab>('deck')
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<SuitFilter>('all')
   const [favoriteCards, setFavoriteCards] = useState<TarotCard[]>([])
+
+  const filterOptions = useMemo(
+    () => FILTER_OPTIONS.map((option) => ({ value: option.value, label: tx(option.label, option.labelEn) })),
+    [tx],
+  )
 
   const refreshFavorites = () => {
     setFavoriteCards(getFavoriteCards(tarotCards))
@@ -166,24 +189,24 @@ export default function TarotLibrary({ onSelectCard }: TarotLibraryProps) {
 
   return (
     <>
-      <div className="tarot-toolbar" role="toolbar" aria-label="塔罗工具">
+      <div className="tarot-toolbar" role="toolbar" aria-label={tx('塔罗工具', 'Tarot tools')}>
         <button
           type="button"
           className="tarot-toolbar__btn"
           onClick={() => openPanel('deck')}
-          aria-label="打开牌面图鉴"
+          aria-label={tx('打开牌面图鉴', 'Open card library')}
         >
           <IconDeck />
-          <span>图鉴</span>
+          <span>{tx('图鉴', 'Library')}</span>
         </button>
         <button
           type="button"
           className="tarot-toolbar__btn"
           onClick={() => openPanel('favorites')}
-          aria-label={`我的收藏，${favoriteCards.length} 张`}
+          aria-label={tx(`我的收藏，${favoriteCards.length} 张`, `My favorites, ${favoriteCards.length} cards`)}
         >
           <IconStar />
-          <span>收藏</span>
+          <span>{tx('收藏', 'Favorites')}</span>
           {favoriteCards.length > 0 && (
             <span className="tarot-toolbar__badge">{favoriteCards.length}</span>
           )}
@@ -192,33 +215,33 @@ export default function TarotLibrary({ onSelectCard }: TarotLibraryProps) {
           type="button"
           className="tarot-toolbar__btn"
           onClick={() => openPanel('guide')}
-          aria-label="打开占卜指南"
+          aria-label={tx('打开占卜指南', 'Open reading guide')}
         >
           <IconHelp />
-          <span>指南</span>
+          <span>{tx('指南', 'Guide')}</span>
         </button>
       </div>
 
       {open &&
         createPortal(
-          <div className="tarot-library" role="dialog" aria-modal="true" aria-label="塔罗牌库">
+          <div className="tarot-library" role="dialog" aria-modal="true" aria-label={tx('塔罗牌库', 'Tarot library')}>
             <button
               type="button"
               className="tarot-library__backdrop"
               onClick={() => setOpen(false)}
-              aria-label="关闭"
+              aria-label={tx('关闭', 'Close')}
             />
             <div className="tarot-library__panel">
               <header className="tarot-library__head">
                 <div className="tarot-library__head-text">
-                  <h2 className="tarot-library__title">星穹秘典</h2>
-                  <p className="tarot-library__sub">Celestial Codex · 78 张塔罗牌</p>
+                  <h2 className="tarot-library__title">{tx('星穹秘典', 'Celestial Codex')}</h2>
+                  <p className="tarot-library__sub">{tx('Celestial Codex · 78 张塔罗牌', 'Celestial Codex · 78 tarot cards')}</p>
                 </div>
                 <button
                   type="button"
                   className="tarot-library__close"
                   onClick={() => setOpen(false)}
-                  aria-label="关闭"
+                  aria-label={tx('关闭', 'Close')}
                 >
                   <IconClose />
                 </button>
@@ -228,12 +251,15 @@ export default function TarotLibrary({ onSelectCard }: TarotLibraryProps) {
                 block
                 value={tab}
                 options={[
-                  { value: 'deck' as LibraryTab, label: '图鉴' },
+                  { value: 'deck' as LibraryTab, label: tx('图鉴', 'Library') },
                   {
                     value: 'favorites' as LibraryTab,
-                    label: `收藏${favoriteCards.length ? ` (${favoriteCards.length})` : ''}`,
+                    label: tx(
+                      `收藏${favoriteCards.length ? ` (${favoriteCards.length})` : ''}`,
+                      `Favorites${favoriteCards.length ? ` (${favoriteCards.length})` : ''}`,
+                    ),
                   },
-                  { value: 'guide' as LibraryTab, label: '指南' },
+                  { value: 'guide' as LibraryTab, label: tx('指南', 'Guide') },
                 ]}
                 onChange={setTab}
               />
@@ -242,8 +268,8 @@ export default function TarotLibrary({ onSelectCard }: TarotLibraryProps) {
                 <div className="tarot-library__guide">
                   {GUIDE_SECTIONS.map((section) => (
                     <article key={section.title} className="tarot-library__guide-item">
-                      <h3>{section.title}</h3>
-                      <p>{section.body}</p>
+                      <h3>{tx(section.title, section.titleEn)}</h3>
+                      <p>{tx(section.body, section.bodyEn)}</p>
                     </article>
                   ))}
                 </div>
@@ -254,26 +280,26 @@ export default function TarotLibrary({ onSelectCard }: TarotLibraryProps) {
                       <input
                         type="search"
                         className="tarot-library__search"
-                        placeholder="搜索牌名…"
+                        placeholder={tx('搜索牌名…', 'Search cards…')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
                       <div className="tarot-library__filter-scroll">
-                        <Segmented value={filter} options={FILTER_OPTIONS} onChange={setFilter} />
+                        <Segmented value={filter} options={filterOptions} onChange={setFilter} />
                       </div>
                     </div>
                   )}
 
                   {displayCards.length === 0 ? (
                     <div className="tarot-library__empty">
-                      <p>{tab === 'favorites' ? '还没有收藏任何牌面' : '没有匹配的牌面'}</p>
+                      <p>{tab === 'favorites' ? tx('还没有收藏任何牌面', 'No favorite cards yet') : tx('没有匹配的牌面', 'No matching cards')}</p>
                       {tab === 'favorites' && (
                         <button
                           type="button"
                           className="tarot-library__empty-btn"
                           onClick={() => setTab('deck')}
                         >
-                          去图鉴浏览
+                          {tx('去图鉴浏览', 'Browse the library')}
                         </button>
                       )}
                     </div>
@@ -281,8 +307,8 @@ export default function TarotLibrary({ onSelectCard }: TarotLibraryProps) {
                     <div className="tarot-library__body">
                       <p className="tarot-library__count">
                         {tab === 'favorites'
-                          ? `已收藏 ${displayCards.length} 张`
-                          : `共 ${displayCards.length} 张`}
+                          ? tx(`已收藏 ${displayCards.length} 张`, `${displayCards.length} saved`)
+                          : tx(`共 ${displayCards.length} 张`, `${displayCards.length} cards`)}
                       </p>
 
                       <div className="tarot-library__grid">
@@ -296,13 +322,13 @@ export default function TarotLibrary({ onSelectCard }: TarotLibraryProps) {
                               <div className="tarot-library__card-visual">
                                 <TarotCardVisual card={card} faceUp variant="library" />
                               </div>
-                              <span className="tarot-library__card-name">{card.name}</span>
+                              <span className="tarot-library__card-name">{tx(card.name, card.nameEn)}</span>
                             </button>
                             <button
                               type="button"
                               className={`tarot-library__fav${isFavorite(card.id) ? ' tarot-library__fav--on' : ''}`}
                               onClick={(e) => handleFavoriteToggle(card.id, e)}
-                              aria-label={isFavorite(card.id) ? '取消收藏' : '收藏'}
+                              aria-label={isFavorite(card.id) ? tx('取消收藏', 'Remove favorite') : tx('收藏', 'Favorite')}
                             >
                               <IconStar />
                             </button>
