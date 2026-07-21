@@ -104,6 +104,53 @@ export function getBashenShortName(name: string): string {
   return idx >= 0 ? bashenNames[idx] : name
 }
 
+const palaceNamesEn: Record<string, string> = {
+  巽宫: 'Xun Palace', 离宫: 'Li Palace', 坤宫: 'Kun Palace', 震宫: 'Zhen Palace', 中宫: 'Center Palace',
+  兑宫: 'Dui Palace', 艮宫: 'Gen Palace', 坎宫: 'Kan Palace', 乾宫: 'Qian Palace',
+}
+const bamenEn: Record<string, { short: string; full: string; meaning: string; description: string }> = {
+  休门: { short: 'Rest', full: 'Rest Gate', meaning: 'Rest and recuperation', description: 'Supports rest, recuperation, and adjustment.' },
+  生门: { short: 'Life', full: 'Life Gate', meaning: 'Growth and vitality', description: 'Supports growth, hope, entrepreneurship, and development.' },
+  开门: { short: 'Open', full: 'Open Gate', meaning: 'Openness and access', description: 'Supports opening paths and beginning new work.' },
+  景门: { short: 'View', full: 'View Gate', meaning: 'Light and beauty', description: 'Supports learning, culture, and presentation.' },
+  死门: { short: 'Death', full: 'Death Gate', meaning: 'Endings and closure', description: 'Signals closure and obstruction; avoid action when possible.' },
+  惊门: { short: 'Shock', full: 'Shock Gate', meaning: 'Alarm and unrest', description: 'Signals volatility and calls for caution.' },
+  伤门: { short: 'Harm', full: 'Harm Gate', meaning: 'Injury and loss', description: 'Signals conflict or loss; avoid confrontation.' },
+  杜门: { short: 'Block', full: 'Block Gate', meaning: 'Obstruction and concealment', description: 'Signals obstruction and favors a conservative approach.' },
+}
+const jiuxingEn: Record<string, { short: string; full: string; meaning: string; description: string }> = {
+  天蓬: { short: 'Peng', full: 'Tian Peng Star', meaning: 'Bandit star', description: 'Signals disruption and the need to guard against bad actors.' },
+  天芮: { short: 'Rui', full: 'Tian Rui Star', meaning: 'Illness star', description: 'Signals health concerns or obstacles; pay attention to wellbeing.' },
+  天冲: { short: 'Chong', full: 'Tian Chong Star', meaning: 'Thunder star', description: 'Supports swift action and momentum.' },
+  天辅: { short: 'Fu', full: 'Tian Fu Star', meaning: 'Scholar star', description: 'Supports learning, wisdom, and education.' },
+  天禽: { short: 'Qin', full: 'Tian Qin Star', meaning: 'Central balance star', description: 'Supports balanced, stable decisions.' },
+  天心: { short: 'Xin', full: 'Tian Xin Star', meaning: 'Healer star', description: 'Supports healing, healthcare, and wellbeing.' },
+  天柱: { short: 'Zhu', full: 'Tian Zhu Star', meaning: 'Breaking star', description: 'Signals disruptive forces and calls for caution.' },
+  天任: { short: 'Ren', full: 'Tian Ren Star', meaning: 'Support star', description: 'Supports cooperation and reliable assistance.' },
+  天英: { short: 'Ying', full: 'Tian Ying Star', meaning: 'Brilliance star', description: 'Supports visibility, display, and achievement.' },
+}
+const bashenEn: Record<string, { short: string; full: string; meaning: string; description: string }> = {
+  值符: { short: 'Chief', full: 'Chief Spirit', meaning: 'Leadership and authority', description: 'Represents leadership, authority, and the highest energy.' },
+  腾蛇: { short: 'Serpent', full: 'Soaring Serpent', meaning: 'Deception and change', description: 'Signals shifting appearances; guard against deception.' },
+  太阴: { short: 'Moon', full: 'Great Yin', meaning: 'Subtlety and concealment', description: 'Supports discreet, behind-the-scenes action.' },
+  六合: { short: 'Harmony', full: 'Six Harmony', meaning: 'Harmony and cooperation', description: 'Supports cooperation, partnership, and marriage.' },
+  白虎: { short: 'Tiger', full: 'White Tiger', meaning: 'Risk and conflict', description: 'Signals risk and conflict; avoid confrontation.' },
+  玄武: { short: 'Tortoise', full: 'Dark Warrior', meaning: 'Theft and hidden rivals', description: 'Signals hidden rivals; stay alert.' },
+  九地: { short: 'Earth', full: 'Nine Earth', meaning: 'Stability and reserve', description: 'Supports holding ground and conservative progress.' },
+  九天: { short: 'Heaven', full: 'Nine Heaven', meaning: 'Reach and expansion', description: 'Supports expansion and ambitious development.' },
+}
+
+export function getPalaceNameEn(name: string): string { return palaceNamesEn[name] ?? name }
+export function getBamenNameEn(name: string, short = false): string { return bamenEn[name] ? (short ? bamenEn[name].short : bamenEn[name].full) : name }
+export function getJiuxingNameEn(name: string, short = false): string { return jiuxingEn[name] ? (short ? jiuxingEn[name].short : jiuxingEn[name].full) : name }
+export function getBashenNameEn(name: string, short = false): string { return bashenEn[name] ? (short ? bashenEn[name].short : bashenEn[name].full) : name }
+export function getBamenMeaningEn(name: string): string { return bamenEn[name]?.meaning ?? name }
+export function getJiuxingMeaningEn(name: string): string { return jiuxingEn[name]?.meaning ?? name }
+export function getBashenMeaningEn(name: string): string { return bashenEn[name]?.meaning ?? name }
+export function getBamenDescriptionEn(name: string): string { return bamenEn[name]?.description ?? name }
+export function getJiuxingDescriptionEn(name: string): string { return jiuxingEn[name]?.description ?? name }
+export function getBashenDescriptionEn(name: string): string { return bashenEn[name]?.description ?? name }
+
 export type QimenPhase = 'idle' | 'timed' | 'directed' | 'insight'
 
 export const QIMEN_PHASE_STEP: Record<QimenPhase, 1 | 2 | 3 | 4> = {

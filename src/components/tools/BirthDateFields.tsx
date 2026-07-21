@@ -1,5 +1,6 @@
 import type { CalendarType } from '../../utils/birthDateUtils'
-import { SHICHEN_NAMES } from '../../utils/baziData'
+import { SHICHEN_NAMES, SHICHEN_NAMES_EN } from '../../utils/baziData'
+import { useLocale } from '../../i18n/LocaleContext'
 import { useTx } from '../../i18n/useTx'
 import { Segmented, ChipGrid } from '../ui'
 
@@ -49,6 +50,7 @@ export function BirthDateFields({
   inputError,
 }: BirthDateFieldsProps) {
   const tx = useTx()
+  const { isEnglish } = useLocale()
 
   return (
     <>
@@ -152,11 +154,16 @@ export function BirthDateFields({
         <span className="field__label">{tx('出生时辰', 'Birth hour')}</span>
         <ChipGrid
           wide
-          items={shichenOptions.map((shichen) => ({ id: shichen, label: shichen }))}
+          items={shichenOptions.map((shichen) => ({
+            id: shichen,
+            label: isEnglish
+              ? ({ 子: 'Zi', 丑: 'Chou', 寅: 'Yin', 卯: 'Mao', 辰: 'Chen', 巳: 'Si', 午: 'Wu', 未: 'Wei', 申: 'Shen', 酉: 'You', 戌: 'Xu', 亥: 'Hai' }[shichen] ?? shichen)
+              : shichen,
+          }))}
           value={birthTime}
           onChange={onBirthTime}
         />
-        <p className="callout">{SHICHEN_NAMES[birthTime]}</p>
+        <p className="callout">{(isEnglish ? SHICHEN_NAMES_EN : SHICHEN_NAMES)[birthTime]}</p>
       </div>
 
       {inputError && <p className="tools-input-error" role="alert">{inputError}</p>}

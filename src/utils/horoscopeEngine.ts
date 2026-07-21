@@ -1,5 +1,6 @@
 import type { HoroscopePeriod, ZodiacElement } from './horoscopeData'
 import { ZODIAC_SIGNS } from './horoscopeData'
+import { isEnglishLocale } from '../i18n/locale'
 
 export interface HoroscopeResult {
   overall: number
@@ -94,12 +95,39 @@ const luckyItems = [
   '木鱼', '经书', '护身符袋', '能量手链', '五行手链', '生肖挂件', '星座徽章', '幸运钥匙扣', '许愿石', '能量水晶'
 ]
 
+const luckyColorsEn = [
+  'Blue', 'Gold', 'Green', 'Silver', 'Violet', 'Red', 'White', 'Black', 'Orange', 'Teal',
+  'Pink', 'Yellow', 'Brown', 'Gray', 'Cream', 'Navy', 'Light Green', 'Coral', 'Mint', 'Lavender',
+]
+
+const luckyItemsEn = [
+  'Star pendant', 'Natural crystal', 'Essential oil', 'Journal', 'Lucky coin', 'Fountain pen', 'Scarf', 'Bracelet', 'Earrings', 'Brooch',
+  'Talisman', 'Safety charm', 'Fortune bead', 'Jade pendant', 'Sandalwood bracelet', 'Amethyst', 'Rose quartz', 'Citrine', 'Obsidian', 'Agate',
+]
+
 // 基于种子生成分数（60-100）
 function genScore(seed: number): number {
   return 60 + (hash(seed) % 41)
 }
 
 function genAdvice(seed: number, element: ZodiacElement): string {
+  if (isEnglishLocale()) {
+    const common = [
+      'Focus on one small goal in front of you; it will make the day feel clearer and more productive.',
+      'Take the first workable step, then adjust your direction with what you learn.',
+      'A brief review of recent progress can turn experience into your next useful idea.',
+      'Slow the pace slightly. Patience will help the important detail come into view.',
+      'Talk with someone you trust; a fresh perspective can unlock the next step.',
+      'Keep your own rhythm instead of measuring your progress against someone else’s.',
+    ]
+    const elementHints: Record<ZodiacElement, string[]> = {
+      火: ['Lead with enthusiasm, then give yourself a moment to check the pace before acting.'],
+      土: ['Build the foundation first. A simple process will make your plan feel dependable.'],
+      风: ['Share and capture your ideas; conversation can turn inspiration into something usable.'],
+      水: ['Listen to your feelings and intuition. Inner steadiness supports outward progress.'],
+    }
+    return select(seed, [...common, ...elementHints[element]])
+  }
   const common = [
     '把注意力放在当下的小目标上，会更高效也更踏实。',
     '与其纠结未知，不如先迈出第一步再微调方向。',
@@ -145,6 +173,23 @@ function genAdvice(seed: number, element: ZodiacElement): string {
 }
 
 function genAspectText(seed: number, aspect: string, element: ZodiacElement): string {
+  if (isEnglishLocale()) {
+    const templates = [
+      `${aspect} is steady and gradually improving; following your plan will build confidence.`,
+      `${aspect} brings a new idea or opening. Capture it, then test one practical version.`,
+      `${aspect} benefits from simplifying first so the priority becomes obvious.`,
+      `${aspect} rewards patient preparation over rushing for a quick result.`,
+      `${aspect} improves through cooperation, honest listening, and a clear next step.`,
+      `${aspect} may bring a small detour that helps refine your direction.`,
+    ]
+    const elementFlavors: Record<ZodiacElement, string[]> = {
+      火: [`${aspect} favors a bold move, provided you keep your timing and emotions measured.`],
+      土: [`${aspect} responds well to careful structure and attention to useful details.`],
+      风: [`${aspect} opens through conversation and exchanging perspectives.`],
+      水: [`${aspect} moves more easily when you acknowledge feelings before making decisions.`],
+    }
+    return select(seed, [...templates, ...elementFlavors[element]])
+  }
   const templates = [
     `${aspect}方面起伏不大，稳中有进，按原计划推进更安心。`,
     `${aspect}方面会浮现新的灵感或机会，及时记录并尝试。`,
@@ -195,16 +240,16 @@ export function generateHoroscope(seed: number, element: ZodiacElement): Horosco
   const wealth = genScore(seed * 31 + 3)
   const health = genScore(seed * 31 + 4)
   const study = genScore(seed * 31 + 5)
-  const color = select(seed * 31 + 6, luckyColors)
-  const item = select(seed * 31 + 7, luckyItems)
-  const summary = genAspectText(seed * 31 + 8, '整体', element)
+  const color = select(seed * 31 + 6, isEnglishLocale() ? luckyColorsEn : luckyColors)
+  const item = select(seed * 31 + 7, isEnglishLocale() ? luckyItemsEn : luckyItems)
+  const summary = genAspectText(seed * 31 + 8, isEnglishLocale() ? 'Your overall outlook' : '整体', element)
   const advice = genAdvice(seed * 31 + 9, element)
   const details = [
-    { key: '爱情', value: love, text: genAspectText(seed * 31 + 10, '爱情', element) },
-    { key: '事业', value: career, text: genAspectText(seed * 31 + 11, '事业', element) },
-    { key: '财富', value: wealth, text: genAspectText(seed * 31 + 12, '财富', element) },
-    { key: '健康', value: health, text: genAspectText(seed * 31 + 13, '健康', element) },
-    { key: '学业', value: study, text: genAspectText(seed * 31 + 14, '学业', element) }
+    { key: isEnglishLocale() ? 'Love' : '爱情', value: love, text: genAspectText(seed * 31 + 10, isEnglishLocale() ? 'Love' : '爱情', element) },
+    { key: isEnglishLocale() ? 'Career' : '事业', value: career, text: genAspectText(seed * 31 + 11, isEnglishLocale() ? 'Career' : '事业', element) },
+    { key: isEnglishLocale() ? 'Wealth' : '财富', value: wealth, text: genAspectText(seed * 31 + 12, isEnglishLocale() ? 'Wealth' : '财富', element) },
+    { key: isEnglishLocale() ? 'Health' : '健康', value: health, text: genAspectText(seed * 31 + 13, isEnglishLocale() ? 'Health' : '健康', element) },
+    { key: isEnglishLocale() ? 'Study' : '学业', value: study, text: genAspectText(seed * 31 + 14, isEnglishLocale() ? 'Study' : '学业', element) }
   ]
   return { overall, summary, advice, color, item, details, element }
 }
@@ -274,6 +319,80 @@ const RELATIONSHIP_DESCRIPTIONS: Record<string, string> = {
   普通: '没有显著相合或相冲相位，关系走向更多取决于沟通方式与相处耐心。',
 }
 
+const RELATIONSHIP_DESCRIPTIONS_EN: Record<string, string> = {
+  六合: 'A harmonious 60° aspect suggesting natural rapport and complementary strengths.',
+  三合: 'A supportive 120° trine that favors shared aims and steady growth together.',
+  同象: 'The same element style — values and pacing align easily, though sameness can feel flat if you never diversify.',
+  相同: 'The same sign pairing mirrors each other strongly — deep resonance, but shared flaws can amplify.',
+  对宫: 'An opposition of 180° — attraction and friction coexist, asking for patience and translation.',
+  相刑: 'A tense 90° square that can stall on key issues until both sides learn new ways to ask for needs.',
+  普通: 'No strong harmony or clash aspect; the tone of the bond depends mainly on communication and care.',
+}
+
+const COMPATIBILITY_EN: Record<string, string> = {
+  极佳: 'Excellent',
+  良好: 'Good',
+  中等: 'Moderate',
+  一般: 'Fair',
+  较差: 'Challenging',
+}
+
+const COMPATIBILITY_EN_REVERSE: Record<string, string> = {
+  Excellent: '极佳',
+  Good: '良好',
+  Moderate: '中等',
+  Fair: '一般',
+  Challenging: '较差',
+}
+
+const RELATIONSHIP_EN: Record<string, string> = {
+  六合: 'Sextile',
+  三合: 'Trine',
+  同象: 'Same element',
+  相同: 'Same sign',
+  对宫: 'Opposition',
+  相刑: 'Square',
+  普通: 'Neutral',
+}
+
+const RELATIONSHIP_EN_REVERSE: Record<string, string> = Object.fromEntries(
+  Object.entries(RELATIONSHIP_EN).map(([zh, en]) => [en, zh]),
+)
+
+const DIMENSION_KEY_EN: Record<string, string> = {
+  爱情默契: 'Romance',
+  沟通理解: 'Communication',
+  信任稳定: 'Trust',
+  激情吸引: 'Attraction',
+  长久潜力: 'Long-term',
+}
+
+const ANALYSIS_EN: Record<string, string> = {
+  六合: 'A sextile is one of the most supportive pairings — harmony and complementarity come naturally. You tend to find balance in pace and values, and disagreements lean toward negotiation rather than escalation. Keep naming appreciation so the ease never becomes taken for granted.',
+  三合: 'A trine favors mutual support and shared growth. You often agree on what matters and show up practically for each other. Shared goals give this bond lasting momentum.',
+  同象: 'Same-element pairings understand each other quickly and share topics easily, but similarity can tip into monotony. Keep separate hobbies and solitude so the relationship stays fresh.',
+  对宫: 'Opposition pairs feel both magnetic and challenging. Differences are obvious, yet they can become a powerful complement if you treat contrast as learning rather than a project to fix the other person.',
+  相刑: 'A square can create friction around key issues. Name boundaries early, pause when stuck, and look for the need beneath the argument before seeking compromise.',
+  相同: 'Same-sign pairings feel like looking in a mirror — easy empathy, but shared blind spots can intensify. Build complementary habits so the bond doesn’t only replay one pattern.',
+  普通: 'Without a strong harmony or clash aspect, this pairing is wide open. How you communicate and repair will define the tone more than any fixed chart pattern.',
+}
+
+const ELEMENT_SAME_DYNAMIC_EN: Record<ZodiacElement, string> = {
+  火: 'Two fire signs spark easily and move fast — great for momentum, as long as you leave cooling-off room.',
+  土: 'Two earth signs build steadily and practically — reliable, though a little improvisation keeps things alive.',
+  风: 'Two air signs thrive on ideas and dialogue — write down conclusions so talk turns into follow-through.',
+  水: 'Two water signs feel deeply together — self-soothe first when emotions flood, then reconnect.',
+}
+
+const ELEMENT_CROSS_DYNAMIC_EN: Record<string, string> = {
+  '火-土': 'Fire brings initiative; earth brings pacing. Translate needs between speed and stability.',
+  '火-风': 'Fire wants action; air wants options. Feedback plus patience keeps enthusiasm from scattering.',
+  '火-水': 'Fire moves outward; water moves inward. Slow the pace and name feelings to avoid misfires.',
+  '土-风': 'Air offers possibilities; earth chooses. Clear roles make decisions lighter.',
+  '土-水': 'Earth shows care through action; water through words. Confirm love in both languages.',
+  '风-水': 'Air analyzes; water feels. Listen before interpreting, feel before explaining.',
+}
+
 const ELEMENT_SAME_DYNAMIC: Record<ZodiacElement, string> = {
   火: '双火象相遇，热情与行动力翻倍，但也容易争强好胜，学会轮流主导关系会更和谐。',
   土: '双土象组合，务实稳重、目标一致，适合共建生活，但要留一点浪漫与弹性空间。',
@@ -299,11 +418,96 @@ function pairingSeed(signIndex1: number, signIndex2: number): number {
 }
 
 function getElementDynamic(element1: ZodiacElement, element2: ZodiacElement): string {
-  if (element1 === element2) return ELEMENT_SAME_DYNAMIC[element1]
+  if (element1 === element2) {
+    return isEnglishLocale() ? ELEMENT_SAME_DYNAMIC_EN[element1] : ELEMENT_SAME_DYNAMIC[element1]
+  }
   const [left, right] = [element1, element2].sort(
     (a, b) => ELEMENT_ORDER[a] - ELEMENT_ORDER[b],
   )
-  return ELEMENT_CROSS_DYNAMIC[`${left}-${right}`]
+  const key = `${left}-${right}`
+  return isEnglishLocale()
+    ? ELEMENT_CROSS_DYNAMIC_EN[key] ?? ELEMENT_CROSS_DYNAMIC[key]
+    : ELEMENT_CROSS_DYNAMIC[key]
+}
+
+function localizePairingResult(result: PairingResult): PairingResult {
+  if (!isEnglishLocale()) return result
+
+  const primaryRel = result.relationships[0] ?? '普通'
+  const sign1Name = ZODIAC_SIGNS.find((s) => s.name === result.sign1.name)?.nameEn ?? result.sign1.name
+  const sign2Name = ZODIAC_SIGNS.find((s) => s.name === result.sign2.name)?.nameEn ?? result.sign2.name
+  const compatibility = COMPATIBILITY_EN[result.compatibility] ?? result.compatibility
+  const relationships = result.relationships.map((rel) => RELATIONSHIP_EN[rel] ?? rel)
+
+  return {
+    ...result,
+    sign1: { ...result.sign1, name: sign1Name },
+    sign2: { ...result.sign2, name: sign2Name },
+    relationships,
+    relationshipNotes: result.relationships.map((type) => ({
+      type: RELATIONSHIP_EN[type] ?? type,
+      description: RELATIONSHIP_DESCRIPTIONS_EN[type] ?? RELATIONSHIP_DESCRIPTIONS_EN['普通'],
+    })),
+    compatibility,
+    summary: buildPairingSummaryEn(sign1Name, sign2Name, result.compatibility, primaryRel),
+    analysis: ANALYSIS_EN[primaryRel] ?? ANALYSIS_EN['普通'],
+    elementDynamic: getElementDynamic(result.sign1.element, result.sign2.element),
+    dimensions: result.dimensions.map((dim, index) => ({
+      key: DIMENSION_KEY_EN[dim.key] ?? dim.key,
+      value: dim.value,
+      text: DIMENSION_TEXT_EN[index % DIMENSION_TEXT_EN.length],
+    })),
+    strengths: STRENGTHS_EN.slice(0, 3),
+    challenges: CHALLENGES_EN.slice(0, 3),
+    advice: ADVICE_EN[result.compatibility] ?? ADVICE_EN['中等'],
+  }
+}
+
+function buildPairingSummaryEn(
+  sign1Name: string,
+  sign2Name: string,
+  compatibility: string,
+  primaryRel: string,
+): string {
+  const rel = RELATIONSHIP_EN[primaryRel] ?? primaryRel
+  if (compatibility === '极佳') {
+    return `${sign1Name} and ${sign2Name} form a high-fit pairing. The ${rel} aspect supports natural chemistry and mutual growth.`
+  }
+  if (compatibility === '良好') {
+    return `${sign1Name} and ${sign2Name} work well overall. The ${rel} dynamic gives the bond a solid base that deepens with care.`
+  }
+  if (compatibility === '较差' || compatibility === '一般') {
+    return `${sign1Name} and ${sign2Name} show clearer differences. The ${rel} aspect asks for patience, translation, and repair skills.`
+  }
+  return `${sign1Name} and ${sign2Name} sit in a moderate fit — relationship quality hinges on expression and generosity.`
+}
+
+const DIMENSION_TEXT_EN = [
+  'Chemistry is available here; name preferences early so closeness stays comfortable.',
+  'Clear check-ins prevent small misunderstandings from stacking up.',
+  'Consistency builds safety faster than dramatic promises.',
+  'Keep a little novelty alive so attraction doesn’t flatten into routine.',
+  'Shared goals and repair habits decide whether this lasts.',
+]
+
+const STRENGTHS_EN = [
+  'You can return to shared goals instead of turning every disagreement into a contest.',
+  'Different strengths create useful balance when both sides feel respected.',
+  'Shared interests make it easier to protect quality time together.',
+]
+
+const CHALLENGES_EN = [
+  'Different pacing can create misunderstandings if expectations stay unspoken.',
+  'Unspoken needs may build tension until one side finally overflows.',
+  'Both people need room for individual rhythms and private recovery time.',
+]
+
+const ADVICE_EN: Record<string, string> = {
+  极佳: 'Keep appreciation explicit, try something new together regularly, and leave space for independent growth.',
+  良好: 'Treat friction as information, schedule small relationship check-ins, and express care in the form the other person can receive.',
+  中等: 'Align core values before debating details, avoid major decisions when exhausted, and build one shared hobby as a positive link.',
+  一般: 'Name boundaries clearly, pause to restate each other’s point in conflict, and use shared interests to soften stalemates.',
+  较差: 'State expectations instead of assuming mind-reading, prioritize repair over blame, and honestly review whether the pattern still nourishes you.',
 }
 
 function genPairingDimensionText(
@@ -534,7 +738,7 @@ export function analyzeZodiacPairing(signIndex1: number, signIndex2: number): Pa
     const score = 55
     const compatibility = '中等'
     const analysis = '相同星座的配对，双方性格相似，容易理解彼此，但也可能因为过于相似而缺乏互补性。需要更多的沟通和包容来维持关系。'
-    return {
+    return localizePairingResult({
       sign1: { name: sign1.name, symbol: sign1.symbol, element: sign1.element },
       sign2: { name: sign2.name, symbol: sign2.symbol, element: sign2.element },
       relationships,
@@ -551,7 +755,7 @@ export function analyzeZodiacPairing(signIndex1: number, signIndex2: number): Pa
       strengths: genPairingStrengths(seed, relationships, sign1.element, sign2.element),
       challenges: genPairingChallenges(seed + 5, relationships, sign1.element, sign2.element),
       advice: genPairingAdvice(seed + 9, compatibility, relationships, sign1.element, sign2.element),
-    }
+    })
   }
 
   const element1 = sign1.element
@@ -634,7 +838,7 @@ export function analyzeZodiacPairing(signIndex1: number, signIndex2: number): Pa
     description: RELATIONSHIP_DESCRIPTIONS[type] ?? RELATIONSHIP_DESCRIPTIONS['普通'],
   }))
 
-  return {
+  return localizePairingResult({
     sign1: { name: sign1.name, symbol: sign1.symbol, element: sign1.element },
     sign2: { name: sign2.name, symbol: sign2.symbol, element: sign2.element },
     relationships,
@@ -648,18 +852,20 @@ export function analyzeZodiacPairing(signIndex1: number, signIndex2: number): Pa
     strengths: genPairingStrengths(seed, relationships, element1, element2),
     challenges: genPairingChallenges(seed + 5, relationships, element1, element2),
     advice: genPairingAdvice(seed + 9, compatibility, relationships, element1, element2),
-  }
+  })
 }
 
 export function compatTagClass(compatibility: string): string {
-  if (compatibility === '极佳' || compatibility === '良好') return 'tag tag--good'
-  if (compatibility === '中等' || compatibility === '一般') return 'tag tag--ok'
+  const key = COMPATIBILITY_EN_REVERSE[compatibility] ?? compatibility
+  if (key === '极佳' || key === '良好') return 'tag tag--good'
+  if (key === '中等' || key === '一般') return 'tag tag--ok'
   return 'tag tag--bad'
 }
 
 export function relTagClass(rel: string): string {
-  if (rel === '六合' || rel === '三合') return 'tag tag--good'
-  if (rel === '同象' || rel === '相同') return 'tag tag--info'
-  if (rel === '对宫' || rel === '相刑') return 'tag tag--bad'
+  const key = RELATIONSHIP_EN_REVERSE[rel] ?? rel
+  if (key === '六合' || key === '三合') return 'tag tag--good'
+  if (key === '同象' || key === '相同') return 'tag tag--info'
+  if (key === '对宫' || key === '相刑') return 'tag tag--bad'
   return 'tag tag--muted'
 }

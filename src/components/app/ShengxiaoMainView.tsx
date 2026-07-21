@@ -1,8 +1,11 @@
 import {
   SHENGXIAO_BRAND,
   SHENGXIAO_BRAND_EN,
+  compatibilityLabel,
   compatTagClass,
+  relationshipLabel,
   relTagClass,
+  shengxiaoLabel,
 } from '../../utils/shengxiaoData'
 import { useShengxiaoGame } from '../../hooks/useShengxiaoGame'
 import { ShengxiaoLogoMark } from '../shengxiao/ShengxiaoLogoMark'
@@ -59,9 +62,9 @@ function ShengxiaoMainView() {
 
       <section className="tools-shrine" aria-label={tx('生肖合参', 'Zodiac pairing')}>
         <div className="tools-zodiac-pair">
-          <span>{shengxiao1 || '？'}</span>
+          <span>{shengxiao1 ? shengxiaoLabel(shengxiao1, isEnglish) : '？'}</span>
           <span className="tools-zodiac-pair__link">{tx('缘', 'Bond')}</span>
-          <span>{shengxiao2 || '？'}</span>
+          <span>{shengxiao2 ? shengxiaoLabel(shengxiao2, isEnglish) : '？'}</span>
         </div>
         <p className="tools-shrine__hint">{tx('子丑六合、子午相冲，合参可知缘分深浅', 'Harmony and clash patterns reveal the depth of your bond')}</p>
       </section>
@@ -69,12 +72,16 @@ function ShengxiaoMainView() {
       {result && (
         <section ref={insightRef} className="tools-insight" aria-label={tx('配对结果', 'Pairing result')}>
           <div className="tools-insight__banner">
-            <div className="tools-insight__icon" aria-hidden>配</div>
+            <div className="tools-insight__icon" aria-hidden>{tx('配', 'Pair')}</div>
             <div>
-              <h2 className="tools-insight__title">{shengxiao1} × {shengxiao2}</h2>
+              <h2 className="tools-insight__title">
+                {shengxiaoLabel(shengxiao1, isEnglish)} × {shengxiaoLabel(shengxiao2, isEnglish)}
+              </h2>
               <p className="tools-insight__sub">
                 {tx('契合度', 'Compatibility')}{' '}
-                <span className={compatTagClass(result.compatibility)}>{result.compatibility}</span>
+                <span className={compatTagClass(result.compatibility)}>
+                  {compatibilityLabel(result.compatibility, isEnglish)}
+                </span>
               </p>
             </div>
             <span className="tools-score-ring">{result.score}</span>
@@ -83,7 +90,7 @@ function ShengxiaoMainView() {
           <Panel title={tx('配对关系', 'Pairing dynamics')}>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 12 }}>
               {result.relationships.map((rel) => (
-                <span key={rel} className={relTagClass(rel)}>{rel}</span>
+                <span key={rel} className={relTagClass(rel)}>{relationshipLabel(rel, isEnglish)}</span>
               ))}
             </div>
             <p className="prose">{result.analysis}</p>

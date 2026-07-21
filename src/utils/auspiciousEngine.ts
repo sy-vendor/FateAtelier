@@ -5,6 +5,7 @@ import {
   TIANGAN,
   type EventType,
 } from './auspiciousData'
+import { isEnglishLocale } from '../i18n/locale'
 
 export interface DayPillar {
   gan: string
@@ -19,7 +20,7 @@ export interface ShichenResult {
 
 export interface ShichenSlot {
   shichen: string
-  time: { start: string; end: string; name: string }
+  time: { start: string; end: string; name: string; nameEn: string }
   result: ShichenResult
 }
 
@@ -76,13 +77,13 @@ export function isAuspiciousShichen(date: Date, shichen: string, eventType: Even
 
   if (heMap[dayPillar.zhi]?.includes(shichenPillar.zhi)) {
     score += 20
-    reasons.push('时辰与日柱相合')
+    reasons.push(isEnglishLocale() ? 'The hour harmonizes with the day pillar' : '时辰与日柱相合')
   }
 
   if (shichen === '子' || shichen === '午') {
     if (eventType === 'marriage' || eventType === 'open') {
       score -= 10
-      reasons.push('子午时需谨慎')
+      reasons.push(isEnglishLocale() ? 'Use Zi and Wu hours with care' : '子午时需谨慎')
     }
   }
 
@@ -98,12 +99,13 @@ export function isAuspiciousShichen(date: Date, shichen: string, eventType: Even
 
   if (recommendedShichen[eventType].includes(shichen)) {
     score += 15
-    reasons.push(`适合${EVENT_TYPES.find((e) => e.id === eventType)?.name}`)
+    const event = EVENT_TYPES.find((e) => e.id === eventType)
+    reasons.push(isEnglishLocale() ? `Well suited to ${event?.nameEn}` : `适合${event?.name}`)
   }
 
   return {
     isGood: score >= 60,
-    reason: reasons.length > 0 ? reasons.join('、') : '时辰一般',
+    reason: reasons.length > 0 ? reasons.join(isEnglishLocale() ? ', ' : '、') : isEnglishLocale() ? 'A neutral hour' : '时辰一般',
     score: Math.min(100, Math.max(0, score)),
   }
 }

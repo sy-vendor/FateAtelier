@@ -6,6 +6,8 @@ import { BirthDateFields } from '../tools/BirthDateFields'
 import { Panel, Button, AspectGrid } from '../ui'
 import { useLocale } from '../../i18n/LocaleContext'
 import { useTx } from '../../i18n/useTx'
+import { WUXING_EN } from '../../utils/baziData'
+import { formatGanZhi } from '../../utils/ganZhiLabel'
 import './fortune-tools-stage.css'
 
 function BaziMainView() {
@@ -106,12 +108,12 @@ function BaziMainView() {
       {result && (
         <section ref={insightRef} className="tools-insight" aria-label={tx('八字解读', 'Ba Zi reading')}>
           <div className="tools-insight__banner">
-            <div className="tools-insight__icon" aria-hidden>命</div>
+            <div className="tools-insight__icon" aria-hidden>{tx('命', 'Fate')}</div>
             <div>
-              <h2 className="tools-insight__title">{tx('日柱', 'Day pillar')} {result.bazi[2]}</h2>
-              <p className="tools-insight__sub">{tx('日主五行', 'Day master element')} · {dayMasterWuxing}</p>
+              <h2 className="tools-insight__title">{tx('日柱', 'Day pillar')} {formatGanZhi(result.bazi[2], isEnglish)}</h2>
+              <p className="tools-insight__sub">{tx('日主五行', 'Day master element')} · {isEnglish ? WUXING_EN[dayMasterWuxing] ?? dayMasterWuxing : dayMasterWuxing}</p>
             </div>
-            <span className="tools-score-ring">{result.bazi[2]}</span>
+            <span className="tools-score-ring">{formatGanZhi(result.bazi[2], isEnglish)}</span>
           </div>
 
           <Panel title={tx('四柱八字', 'Four pillars')}>
@@ -119,7 +121,7 @@ function BaziMainView() {
               {pillarLabels.map((label, index) => (
                 <article key={label} className="tools-pillar-card">
                   <div className="tools-pillar-card__label">{label}</div>
-                  <div className="tools-pillar-card__value">{result.bazi[index]}</div>
+                  <div className="tools-pillar-card__value">{formatGanZhi(result.bazi[index], isEnglish)}</div>
                 </article>
               ))}
             </div>
@@ -128,7 +130,7 @@ function BaziMainView() {
           <Panel title={tx('五行分析', 'Five elements')}>
             <AspectGrid
               items={Object.entries(result.wuxing).map(([element, count]) => ({
-                title: `${element}${tx('行', ' element')}`,
+                title: isEnglish ? WUXING_EN[element] ?? element : `${element}${tx('行', ' element')}`,
                 score: count,
                 text: count >= 3
                   ? tx('五行较旺', 'Relatively strong')

@@ -3,9 +3,15 @@ import {
   ALMANAC_BRAND_EN,
   SHICHEN_TIMES,
   WUXING_HINT,
+  almanacActivityLabel,
+  almanacDirectionLabel,
+  almanacJixiongLabel,
+  almanacShichenLabel,
+  almanacWuxingLabel,
   formatAlmanacDate,
   getShichenAdvice,
 } from '../../utils/almanacData'
+import { formatGanZhi } from '../../utils/ganZhiLabel'
 import { shichenTagClass } from '../../utils/almanacEngine'
 import { useAlmanacGame } from '../../hooks/useAlmanacGame'
 import { AlmanacLogoMark } from '../almanac/AlmanacLogoMark'
@@ -29,9 +35,9 @@ function AlmanacMainView() {
   } = useAlmanacGame()
 
   const pillars = [
-    { label: tx('年柱', 'Year pillar'), value: almanac.yearGanZhi, day: false },
-    { label: tx('月柱', 'Month pillar'), value: almanac.monthGanZhi, day: false },
-    { label: tx('日柱', 'Day pillar'), value: almanac.dayGanZhi, day: true },
+    { label: tx('年柱', 'Year pillar'), value: formatGanZhi(almanac.yearGanZhi, isEnglish), day: false },
+    { label: tx('月柱', 'Month pillar'), value: formatGanZhi(almanac.monthGanZhi, isEnglish), day: false },
+    { label: tx('日柱', 'Day pillar'), value: formatGanZhi(almanac.dayGanZhi, isEnglish), day: true },
   ]
 
   return (
@@ -52,11 +58,21 @@ function AlmanacMainView() {
       <section className="almanac-day-banner">
         <div>
           <p className="almanac-day-banner__date">{formatAlmanacDate(today)}</p>
-          <p className="almanac-day-banner__pillar">{tx('日柱', 'Day pillar')} {almanac.dayGanZhi}</p>
-          <p className="almanac-day-banner__sub">{WUXING_HINT[almanac.wuxing]}</p>
+          <p className="almanac-day-banner__pillar">{tx('日柱', 'Day pillar')} {formatGanZhi(almanac.dayGanZhi, isEnglish)}</p>
+          <p className="almanac-day-banner__sub">
+            {isEnglish
+              ? ({
+                  木: 'Wood energy supports growth, planting, and new plans.',
+                  火: 'Fire energy favors expression, connection, and initiative.',
+                  土: 'Earth energy favors foundations, order, and stability.',
+                  金: 'Metal energy favors decisions, trade, and careful organization.',
+                  水: 'Water energy favors reflection, blessings, and restoration.',
+                }[almanac.wuxing] ?? WUXING_HINT[almanac.wuxing])
+              : WUXING_HINT[almanac.wuxing]}
+          </p>
         </div>
         <div className="almanac-wuxing-badge">
-          <span className="almanac-wuxing-badge__value">{almanac.wuxing}</span>
+          <span className="almanac-wuxing-badge__value">{almanacWuxingLabel(almanac.wuxing)}</span>
           <span className="almanac-wuxing-badge__label">{tx('日主五行', 'Day element')}</span>
         </div>
       </section>
@@ -78,22 +94,25 @@ function AlmanacMainView() {
           <span className="almanac-meta__label">{tx('冲煞', 'Clash')}</span>
           <div className="almanac-meta__row">
             <span className="almanac-meta__key">{tx('冲', 'Clash')}</span>
-            <span>{almanac.chongShengxiao}</span>
+            <span>{tx(almanac.chongShengxiao, ({
+              鼠: 'Rat', 牛: 'Ox', 虎: 'Tiger', 兔: 'Rabbit', 龙: 'Dragon', 蛇: 'Snake',
+              马: 'Horse', 羊: 'Goat', 猴: 'Monkey', 鸡: 'Rooster', 狗: 'Dog', 猪: 'Pig',
+            }[almanac.chongShengxiao] ?? almanac.chongShengxiao))}</span>
           </div>
           <div className="almanac-meta__row">
             <span className="almanac-meta__key">{tx('煞', 'Sha')}</span>
-            <span>{almanac.chongFang}</span>
+            <span>{almanacDirectionLabel(almanac.chongFang)}</span>
           </div>
         </article>
         <article className="almanac-meta__item">
           <span className="almanac-meta__label">{tx('方位', 'Directions')}</span>
           <div className="almanac-meta__row">
             <span className="almanac-meta__key">{tx('吉神', 'Auspicious')}</span>
-            <span>{almanac.jishenFangwei}</span>
+            <span>{almanacDirectionLabel(almanac.jishenFangwei)}</span>
           </div>
           <div className="almanac-meta__row">
             <span className="almanac-meta__key">{tx('凶神', 'Inauspicious')}</span>
-            <span>{almanac.xiongshenFangwei}</span>
+            <span>{almanacDirectionLabel(almanac.xiongshenFangwei)}</span>
           </div>
         </article>
       </section>
@@ -108,7 +127,7 @@ function AlmanacMainView() {
           <div className="almanac-yiji__tags">
             {almanac.yi.map((item) => (
               <span key={item} className="tag tag--good">
-                {item}
+                {almanacActivityLabel(item)}
               </span>
             ))}
           </div>
@@ -117,7 +136,7 @@ function AlmanacMainView() {
           <div className="almanac-yiji__tags">
             {almanac.ji.map((item) => (
               <span key={item} className="tag tag--bad">
-                {item}
+                {almanacActivityLabel(item)}
               </span>
             ))}
           </div>
@@ -149,9 +168,11 @@ function AlmanacMainView() {
                   onClick={() => handleShichenSelect(item.shichen)}
                   aria-pressed={selected}
                 >
-                  <span className="almanac-shichen__name">{item.shichen}{tx('时', ' hour')}</span>
+                  <span className="almanac-shichen__name">
+                    {almanacShichenLabel(item.shichen)}{isEnglish ? '' : '时'}
+                  </span>
                   <span className="almanac-shichen__time">{SHICHEN_TIMES[item.shichen]}</span>
-                  <span className={shichenTagClass(item.jixiong)}>{item.jixiong}</span>
+                  <span className={shichenTagClass(item.jixiong)}>{almanacJixiongLabel(item.jixiong)}</span>
                 </button>
               )
             })}
@@ -161,10 +182,10 @@ function AlmanacMainView() {
             <div className="almanac-shichen-detail">
               <div className="almanac-shichen-detail__head">
                 <h4 className="almanac-shichen-detail__title">
-                  {selectedShichenItem.shichen}{tx('时', ' hour')} · {SHICHEN_TIMES[selectedShichenItem.shichen]}
+                  {almanacShichenLabel(selectedShichenItem.shichen)}{isEnglish ? '' : '时'} · {SHICHEN_TIMES[selectedShichenItem.shichen]}
                 </h4>
                 <span className={shichenTagClass(selectedShichenItem.jixiong)}>
-                  {selectedShichenItem.jixiong}
+                  {almanacJixiongLabel(selectedShichenItem.jixiong)}
                 </span>
               </div>
               <p className="almanac-shichen-detail__text">

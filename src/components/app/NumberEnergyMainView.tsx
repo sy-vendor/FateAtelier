@@ -39,6 +39,7 @@ const TYPE_PLACEHOLDER_EN: Record<NumberType, string> = {
 function NumberEnergyMainView() {
   const tx = useTx()
   const { isEnglish } = useLocale()
+  const display = (zh: string, en?: string) => (isEnglish ? (en ?? zh) : zh)
   const {
     input,
     onInputChange,
@@ -130,7 +131,7 @@ function NumberEnergyMainView() {
 
       {!analysis && !hasAnalyzed && (
         <section className="picker-shrine" aria-hidden>
-          <span className="picker-shrine__glyph">数</span>
+          <span className="picker-shrine__glyph">{tx('数', 'No.')}</span>
           <p className="picker-shrine__hint">{tx('号码载气，数字成脉，待入而析', 'Numbers carry energy; enter them to read their pulse')}</p>
         </section>
       )}
@@ -177,7 +178,7 @@ function NumberEnergyMainView() {
                     title: tx(`数字 ${digit}`, `Digit ${digit}`),
                     score: count,
                     text: meaning
-                      ? `${meaning.meaning}（${tx(`出现 ${count} 次`, `appears ${count} times`)}）`
+                      ? `${display(meaning.meaning, meaning.meaningEn)} (${tx(`出现 ${count} 次`, `appears ${count} times`)})`
                       : tx(`出现 ${count} 次`, `Appears ${count} times`),
                   }
                 })}
@@ -203,7 +204,7 @@ function NumberEnergyMainView() {
                     >
                       {combo}
                     </span>
-                    <span className={energyTagClass(info.energy)}>{info.meaning}</span>
+                    <span className={energyTagClass(info.energy)}>{display(info.meaning, info.meaningEn)}</span>
                   </div>
                   <Collapsible
                     open={!!showDetails[`combo-${index}`]}
@@ -211,8 +212,8 @@ function NumberEnergyMainView() {
                     label={tx('查看详情', 'View details')}
                     labelOpen={tx('收起', 'Collapse')}
                   >
-                    {info.detail && <p className="prose">{info.detail}</p>}
-                    {info.suggestion && <p className="callout">💡 {info.suggestion}</p>}
+                    {info.detail && <p className="prose">{display(info.detail, info.detailEn)}</p>}
+                    {info.suggestion && <p className="callout">💡 {display(info.suggestion, info.suggestionEn)}</p>}
                   </Collapsible>
                 </div>
               ))}
@@ -240,17 +241,17 @@ function NumberEnergyMainView() {
                     className="prose"
                     style={{ fontWeight: 600, color: 'var(--ds-text-primary)', marginBottom: 'var(--ds-space-sm)' }}
                   >
-                    {analysis.finalDigitInfo.meaning}
+                    {display(analysis.finalDigitInfo.meaning, analysis.finalDigitInfo.meaningEn)}
                   </p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                     {analysis.finalDigitInfo.wuxing && (
-                      <span className="tag tag--muted">{tx('五行', 'Element')}：{analysis.finalDigitInfo.wuxing}</span>
+                      <span className="tag tag--muted">{tx('五行', 'Element')}：{display(analysis.finalDigitInfo.wuxing, analysis.finalDigitInfo.wuxingEn)}</span>
                     )}
                     {analysis.finalDigitInfo.direction && (
-                      <span className="tag tag--muted">{tx('方位', 'Direction')}：{analysis.finalDigitInfo.direction}</span>
+                      <span className="tag tag--muted">{tx('方位', 'Direction')}：{display(analysis.finalDigitInfo.direction, analysis.finalDigitInfo.directionEn)}</span>
                     )}
                     {analysis.finalDigitInfo.color && (
-                      <span className="tag tag--muted">{tx('颜色', 'Color')}：{analysis.finalDigitInfo.color}</span>
+                      <span className="tag tag--muted">{tx('颜色', 'Color')}：{display(analysis.finalDigitInfo.color, analysis.finalDigitInfo.colorEn)}</span>
                     )}
                   </div>
                 </div>
@@ -262,24 +263,24 @@ function NumberEnergyMainView() {
                 labelOpen={tx('收起详情', 'Collapse details')}
               >
                 {analysis.finalDigitInfo.detail && (
-                  <p className="prose">{analysis.finalDigitInfo.detail}</p>
+                  <p className="prose">{display(analysis.finalDigitInfo.detail, analysis.finalDigitInfo.detailEn)}</p>
                 )}
                 <MetaList
                   rows={[
                     analysis.finalDigitInfo.personality
-                      ? { key: tx('性格', 'Personality'), value: analysis.finalDigitInfo.personality }
+                      ? { key: tx('性格', 'Personality'), value: display(analysis.finalDigitInfo.personality, analysis.finalDigitInfo.personalityEn) }
                       : null,
                     analysis.finalDigitInfo.career
-                      ? { key: tx('职业', 'Career'), value: analysis.finalDigitInfo.career }
+                      ? { key: tx('职业', 'Career'), value: display(analysis.finalDigitInfo.career, analysis.finalDigitInfo.careerEn) }
                       : null,
                     analysis.finalDigitInfo.health
-                      ? { key: tx('健康', 'Health'), value: analysis.finalDigitInfo.health }
+                      ? { key: tx('健康', 'Health'), value: display(analysis.finalDigitInfo.health, analysis.finalDigitInfo.healthEn) }
                       : null,
                     analysis.finalDigitInfo.relationship
-                      ? { key: tx('人际', 'Relationships'), value: analysis.finalDigitInfo.relationship }
+                      ? { key: tx('人际', 'Relationships'), value: display(analysis.finalDigitInfo.relationship, analysis.finalDigitInfo.relationshipEn) }
                       : null,
                     analysis.finalDigitInfo.wealth
-                      ? { key: tx('财运', 'Wealth'), value: analysis.finalDigitInfo.wealth }
+                      ? { key: tx('财运', 'Wealth'), value: display(analysis.finalDigitInfo.wealth, analysis.finalDigitInfo.wealthEn) }
                       : null,
                   ].filter((row): row is { key: string; value: string } => row !== null)}
                 />
@@ -310,14 +311,14 @@ function NumberEnergyMainView() {
                     >
                       {digit}
                     </div>
-                    <p className="prose">{meaning.meaning}</p>
+                    <p className="prose">{display(meaning.meaning, meaning.meaningEn)}</p>
                     {showDetails[`digit-${digit}`] && (
                       <div style={{ marginTop: 'var(--ds-space-md)', textAlign: 'left' }}>
-                        {meaning.detail && <p className="prose">{meaning.detail}</p>}
+                        {meaning.detail && <p className="prose">{display(meaning.detail, meaning.detailEn)}</p>}
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
-                          {meaning.wuxing && <span className="tag tag--muted">{tx('五行', 'Element')}：{meaning.wuxing}</span>}
-                          {meaning.direction && <span className="tag tag--muted">{tx('方位', 'Direction')}：{meaning.direction}</span>}
-                          {meaning.color && <span className="tag tag--muted">{tx('颜色', 'Color')}：{meaning.color}</span>}
+                          {meaning.wuxing && <span className="tag tag--muted">{tx('五行', 'Element')}：{display(meaning.wuxing, meaning.wuxingEn)}</span>}
+                          {meaning.direction && <span className="tag tag--muted">{tx('方位', 'Direction')}：{display(meaning.direction, meaning.directionEn)}</span>}
+                          {meaning.color && <span className="tag tag--muted">{tx('颜色', 'Color')}：{display(meaning.color, meaning.colorEn)}</span>}
                         </div>
                       </div>
                     )}

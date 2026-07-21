@@ -6,6 +6,7 @@ import {
   ZODIAC_NAMES,
   type ColorInfo,
 } from './luckyColorData'
+import { isEnglishLocale } from '../i18n/locale'
 
 export type { ColorInfo }
 
@@ -32,6 +33,7 @@ export function generatePersonalizedLuckyColor(
   zodiacSign?: number,
   shengxiao?: string,
 ): PersonalizedColorResult {
+  const isEnglish = isEnglishLocale()
   const colors = Object.keys(COLOR_DATABASE)
   const scoreMap: Record<string, number> = {}
 
@@ -47,9 +49,9 @@ export function generatePersonalizedLuckyColor(
     queryDate.getDate()
   const baseColorIndex = dateSeed % colors.length
   scoreMap[colors[baseColorIndex]] += 30
-  reasons.push(
-    `根据日期 ${queryDate.getFullYear()}年${queryDate.getMonth() + 1}月${queryDate.getDate()}日`,
-  )
+  reasons.push(isEnglish
+    ? `Based on ${queryDate.getFullYear()}-${queryDate.getMonth() + 1}-${queryDate.getDate()}`
+    : `根据日期 ${queryDate.getFullYear()}年${queryDate.getMonth() + 1}月${queryDate.getDate()}日`)
 
   if (shengxiao) {
     const shengxiaoColors: Record<string, string[]> = {
@@ -73,7 +75,7 @@ export function generatePersonalizedLuckyColor(
         scoreMap[colorKey] += 25
       }
     })
-    reasons.push(`生肖${shengxiao}的幸运色`)
+    reasons.push(isEnglish ? `Lucky colors for the ${shengxiao} zodiac animal` : `生肖${shengxiao}的幸运色`)
   }
 
   if (zodiacSign !== undefined) {
@@ -98,7 +100,7 @@ export function generatePersonalizedLuckyColor(
         scoreMap[colorKey] += 25
       }
     })
-    reasons.push(`星座${ZODIAC_NAMES[zodiacSign]}的幸运色`)
+    reasons.push(isEnglish ? `Lucky colors for ${['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'][zodiacSign]}` : `星座${ZODIAC_NAMES[zodiacSign]}的幸运色`)
   }
 
   if (birthDate) {
@@ -132,7 +134,10 @@ export function generatePersonalizedLuckyColor(
       }
     })
 
-    reasons.push(`八字五行${dominantWuxing}的幸运色（日主：${dayWuxing}）`)
+    const elementEn: Record<string, string> = { 金: 'Metal', 木: 'Wood', 水: 'Water', 火: 'Fire', 土: 'Earth' }
+    reasons.push(isEnglish
+      ? `Lucky colors for the ${elementEn[dominantWuxing]} element (day master: ${elementEn[dayWuxing]})`
+      : `八字五行${dominantWuxing}的幸运色（日主：${dayWuxing}）`)
   }
 
   let maxScore = 0

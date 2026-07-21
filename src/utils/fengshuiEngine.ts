@@ -1,4 +1,5 @@
 import { BAGUA, DIRECTIONS } from './fengshuiData'
+import { isEnglishLocale } from '../i18n/locale'
 
 const TIANGAN = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
 const DIZHI = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
@@ -76,23 +77,43 @@ export function getDirectionInterpretation(directionName: string, date: Date = n
   const isAuspicious = auspicious.includes(directionName)
   const isInauspicious = inauspicious.includes(directionName)
   const gua = BAGUA[direction.symbol as keyof typeof BAGUA]
+  const en = isEnglishLocale()
+  const dirLabel = en ? direction.nameEn : direction.name
+  const symbol = en ? direction.symbolEn : direction.symbol
+  const wuxing = en ? direction.wuxingEn : direction.wuxing
 
   return {
-    direction: directionName,
-    symbol: direction.symbol,
-    wuxing: direction.wuxing,
+    direction: dirLabel,
+    directionKey: directionName,
+    symbol,
+    wuxing,
     color: direction.color,
-    guaInfo: gua,
+    guaInfo: gua
+      ? {
+          ...gua,
+          name: en ? gua.nameEn : gua.name,
+          nature: en ? gua.natureEn : gua.nature,
+          meaning: en ? gua.meaningEn : gua.meaning,
+          wuxing: en ? gua.wuxingEn : gua.wuxing,
+          auspicious: en ? [...gua.auspiciousEn] : [...gua.auspicious],
+        }
+      : undefined,
     auspicious: isAuspicious,
     inauspicious: isInauspicious,
     neutral: !isAuspicious && !isInauspicious,
-    suitableFor: gua?.auspicious || [],
-    meaning: gua?.meaning || '',
+    suitableFor: gua ? (en ? [...gua.auspiciousEn] : [...gua.auspicious]) : [],
+    meaning: gua ? (en ? gua.meaningEn : gua.meaning) : '',
     advice: isAuspicious
-      ? `今日${directionName}方位为吉方，适合进行重要活动。`
+      ? en
+        ? `${dirLabel} is auspicious today — a good time for important plans.`
+        : `今日${dirLabel}方位为吉方，适合进行重要活动。`
       : isInauspicious
-        ? `今日${directionName}方位为凶方，宜谨慎行事。`
-        : `今日${directionName}方位为平方，可正常使用。`,
+        ? en
+          ? `${dirLabel} is inauspicious today — proceed with care.`
+          : `今日${dirLabel}方位为凶方，宜谨慎行事。`
+        : en
+          ? `${dirLabel} is neutral today — fine for ordinary use.`
+          : `今日${dirLabel}方位为平方，可正常使用。`,
   }
 }
 

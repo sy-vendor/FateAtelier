@@ -9,9 +9,10 @@ import { interpretDreamWithMood, rehydrateDreamInterpretation, type DreamInterpr
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
-import { txStatic } from '../i18n/locale'
-import { useLocale } from '../i18n/LocaleContext'
 import { dreamSymbols } from '../data/dreamSymbols'
+import { dreamSymbolsEn } from '../data/dreamSymbols.en'
+import { isEnglishLocale, txStatic } from '../i18n/locale'
+import { useLocale } from '../i18n/LocaleContext'
 
 export interface DreamRecord {
   id: string
@@ -28,8 +29,18 @@ export function useDreamGame() {
   const { isEnglish } = useLocale()
   const [dreamContent, setDreamContent] = useState(() => {
     const match = window.location.pathname.match(/^\/dream\/symbol\/(\d+)\/?$/)
-    const symbol = match ? dreamSymbols[Number(match[1])] : undefined
-    return symbol ? `我梦见了${symbol.keywords[0]}` : ''
+    const index = match ? Number(match[1]) : -1
+    const symbol = index >= 0 ? dreamSymbols[index] : undefined
+    if (!symbol) return ''
+    if (isEnglishLocale()) {
+      const locale = dreamSymbolsEn[index]
+      const keyword =
+        locale?.keywords.find((word) => /^[a-z]/i.test(word)) ??
+        locale?.keywords[0] ??
+        symbol.keywords[0]
+      return `I dreamed of ${keyword}`
+    }
+    return `我梦见了${symbol.keywords[0]}`
   })
   const [selectedMood, setSelectedMood] = useState('')
   const [interpretation, setInterpretation] = useState<DreamInterpretation | null>(null)

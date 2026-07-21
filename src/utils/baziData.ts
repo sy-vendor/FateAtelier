@@ -20,6 +20,25 @@ export const SHICHEN_NAMES: Record<string, string> = {
   亥: '亥时(21:00-23:00)',
 }
 
+export const SHICHEN_NAMES_EN: Record<string, string> = {
+  子: 'Rat hour (23:00–01:00)', 丑: 'Ox hour (01:00–03:00)',
+  寅: 'Tiger hour (03:00–05:00)', 卯: 'Rabbit hour (05:00–07:00)',
+  辰: 'Dragon hour (07:00–09:00)', 巳: 'Snake hour (09:00–11:00)',
+  午: 'Horse hour (11:00–13:00)', 未: 'Goat hour (13:00–15:00)',
+  申: 'Monkey hour (15:00–17:00)', 酉: 'Rooster hour (17:00–19:00)',
+  戌: 'Dog hour (19:00–21:00)', 亥: 'Pig hour (21:00–23:00)',
+}
+
+export const WUXING_EN: Record<string, string> = {
+  木: 'Wood', 火: 'Fire', 土: 'Earth', 金: 'Metal', 水: 'Water',
+}
+
+export const SHISHEN_EN: Record<string, string> = {
+  比肩: 'Peer', 劫财: 'Rob Wealth', 食神: 'Eating God', 伤官: 'Hurting Officer',
+  偏财: 'Indirect Wealth', 正财: 'Direct Wealth', 七杀: 'Seven Killings', 正官: 'Direct Officer',
+  偏印: 'Indirect Resource', 正印: 'Direct Resource',
+}
+
 export const shishenMap: Record<string, Record<string, string>> = {
   甲: { 甲: '比肩', 乙: '劫财', 丙: '食神', 丁: '伤官', 戊: '偏财', 己: '正财', 庚: '七杀', 辛: '正官', 壬: '偏印', 癸: '正印' },
   乙: { 甲: '劫财', 乙: '比肩', 丙: '伤官', 丁: '食神', 戊: '正财', 己: '偏财', 庚: '正官', 辛: '七杀', 壬: '正印', 癸: '偏印' },

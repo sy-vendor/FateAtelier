@@ -5,6 +5,8 @@ import {
   SHENGXIAO_LIST,
   ZODIAC_NAMES,
   formatLuckyColorDate,
+  getTimeSlotLabelEn,
+  getTimeSlotColorEn,
 } from '../../utils/luckyColorData'
 import { useLuckyColorGame } from '../../hooks/useLuckyColorGame'
 import { LuckyColorLogoMark } from '../lucky-color/LuckyColorLogoMark'
@@ -27,6 +29,7 @@ const ZODIAC_EN = [
 function LuckyColorMainView() {
   const tx = useTx()
   const { isEnglish } = useLocale()
+  const colorText = (color: { name: string; nameEn?: string }) => isEnglish ? (color.nameEn ?? color.name) : color.name
   const {
     selectedDate,
     isToday,
@@ -69,6 +72,9 @@ function LuckyColorMainView() {
     handleCalendarTypeChange,
     colorDatabase,
   } = useLuckyColorGame()
+  const localizedDate = isEnglish
+    ? selectedDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+    : formatLuckyColorDate(selectedDate)
 
   const dateFields = useMemo(() => [
     { id: 'query-year', label: tx('年', 'Year'), value: queryYear, set: setQueryYear, max: 4, ph: '2026' },
@@ -83,11 +89,11 @@ function LuckyColorMainView() {
   ], [tx, birthYear, birthMonth, birthDay])
 
   const usageItems = useMemo(() => [
-    { title: tx('穿搭', 'Outfit'), text: tx(`选择含有${luckyColor.name}元素的服饰`, `Wear clothing with ${luckyColor.name} tones`) },
-    { title: tx('环境', 'Space'), text: tx(`在空间中点缀${luckyColor.name}装饰`, `Add ${luckyColor.name} accents to your space`) },
-    { title: tx('配饰', 'Accessories'), text: tx(`佩戴${luckyColor.name}色小物件`, `Wear small ${luckyColor.name} accessories`) },
-    { title: tx('搭配', 'Pairing'), text: tx(`与${secondaryColor.name}组合效果更佳`, `Pairs well with ${secondaryColor.name}`) },
-  ], [tx, luckyColor.name, secondaryColor.name])
+    { title: tx('穿搭', 'Outfit'), text: tx(`选择含有${luckyColor.name}元素的服饰`, `Wear clothing with ${colorText(luckyColor)} tones`) },
+    { title: tx('环境', 'Space'), text: tx(`在空间中点缀${luckyColor.name}装饰`, `Add ${colorText(luckyColor)} accents to your space`) },
+    { title: tx('配饰', 'Accessories'), text: tx(`佩戴${luckyColor.name}色小物件`, `Wear small ${colorText(luckyColor)} accessories`) },
+    { title: tx('搭配', 'Pairing'), text: tx(`与${secondaryColor.name}组合效果更佳`, `Pairs well with ${colorText(secondaryColor)}`) },
+  ], [tx, isEnglish, luckyColor, secondaryColor])
 
   return (
     <div className="lucky-color-stage">
@@ -109,7 +115,7 @@ function LuckyColorMainView() {
           <div>
             <h2 className="lucky-color-picker__title">{tx('查询日期', 'Query date')}</h2>
             <p className="lucky-color-picker__sub">
-              {formatLuckyColorDate(selectedDate)}
+              {localizedDate}
               {isToday && (
                 <>
                   {' '}
@@ -248,7 +254,7 @@ function LuckyColorMainView() {
       <section className="lucky-color-reveal" aria-label={tx('今日幸运色', 'Today\'s lucky color')}>
         <article className="lucky-color-swatch" style={{ backgroundColor: displayHex }}>
           <div className="lucky-color-swatch__overlay">
-            <h2 className="lucky-color-swatch__name">{luckyColor.name}</h2>
+            <h2 className="lucky-color-swatch__name">{colorText(luckyColor)}</h2>
             <div className="lucky-color-swatch__hex-row">
               <span className="lucky-color-swatch__hex">{displayHex}</span>
               <Button
@@ -275,10 +281,10 @@ function LuckyColorMainView() {
         </article>
 
         <div className="lucky-color-side">
-          <p className="lucky-color-side__meaning">{luckyColor.meaning}</p>
+          <p className="lucky-color-side__meaning">{isEnglish ? (luckyColor.meaningEn ?? luckyColor.meaning) : luckyColor.meaning}</p>
           <div className="lucky-color-tags">
-            <span className="tag tag--muted">{tx('五行', 'Element')} · {luckyColor.element}</span>
-            <span className="tag tag--muted">{luckyColor.energy}</span>
+            <span className="tag tag--muted">{tx('五行', 'Element')} · {isEnglish ? (luckyColor.elementEn ?? luckyColor.element) : luckyColor.element}</span>
+            <span className="tag tag--muted">{isEnglish ? (luckyColor.energyEn ?? luckyColor.energy) : luckyColor.energy}</span>
           </div>
           <div className="lucky-color-secondary">
             <div
@@ -286,7 +292,7 @@ function LuckyColorMainView() {
               style={{ backgroundColor: secondaryColor.hex }}
             />
             <div>
-              <p className="lucky-color-secondary__name">{tx('搭配色', 'Pairing')} · {secondaryColor.name}</p>
+              <p className="lucky-color-secondary__name">{tx('搭配色', 'Pairing')} · {colorText(secondaryColor)}</p>
               <p className="lucky-color-secondary__hex">{secondaryColor.hex}</p>
             </div>
           </div>
@@ -298,7 +304,7 @@ function LuckyColorMainView() {
 
       <Panel title={tx('今日建议', 'Today\'s tips')}>
         <ul className="lucky-color-suggestions">
-          {luckyColor.suggestions.map((item) => (
+          {(isEnglish ? (luckyColor.suggestionsEn ?? luckyColor.suggestions) : luckyColor.suggestions).map((item) => (
             <li key={item}>{item}</li>
           ))}
         </ul>
@@ -320,13 +326,13 @@ function LuckyColorMainView() {
           {luckyColor.psychology && (
             <>
               <h3 style={{ margin: '0 0 8px', fontSize: '1rem' }}>{tx('心理学意义', 'Psychology')}</h3>
-              <p className="prose">{luckyColor.psychology}</p>
+              <p className="prose">{isEnglish ? (luckyColor.psychologyEn ?? luckyColor.psychology) : luckyColor.psychology}</p>
             </>
           )}
           {luckyColor.culture && (
             <>
               <h3 style={{ margin: '16px 0 8px', fontSize: '1rem' }}>{tx('文化背景', 'Cultural context')}</h3>
-              <p className="prose">{luckyColor.culture}</p>
+              <p className="prose">{isEnglish ? (luckyColor.cultureEn ?? luckyColor.culture) : luckyColor.culture}</p>
             </>
           )}
         </Panel>
@@ -354,9 +360,9 @@ function LuckyColorMainView() {
                     style={{ backgroundColor: slot.hex }}
                   />
                   <div>
-                    <p className="lucky-color-times__label">{slot.time}</p>
+                    <p className="lucky-color-times__label">{isEnglish ? getTimeSlotLabelEn(slot.time) : slot.time}</p>
                     <p className="lucky-color-times__sub">
-                      {slot.color} · {slot.hex}
+                      {isEnglish ? getTimeSlotColorEn(slot.color) : slot.color} · {slot.hex}
                     </p>
                   </div>
                 </button>
@@ -377,7 +383,7 @@ function LuckyColorMainView() {
                   className="lucky-color-palette__chip"
                   style={{ backgroundColor: colorInfo.hex }}
                 />
-                <span className="lucky-color-palette__label">{colorName}</span>
+                <span className="lucky-color-palette__label">{colorText(colorInfo)}</span>
               </div>
             )
           })}

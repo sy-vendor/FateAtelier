@@ -1,4 +1,4 @@
-import { ZIWEI_BRAND, ZIWEI_BRAND_EN, KEY_PALACE_NAMES, palaceNames } from '../../utils/ziweiData'
+import { ZIWEI_BRAND, ZIWEI_BRAND_EN, KEY_PALACE_NAMES, palaceNames, palaceNamesEn } from '../../utils/ziweiData'
 import { useZiweiGame } from '../../hooks/useZiweiGame'
 import { ZiweiLogoMark } from '../ziwei/ZiweiLogoMark'
 import { ZiweiRitualBar } from '../ziwei/ZiweiRitualBar'
@@ -42,6 +42,7 @@ function ZiweiMainView() {
   } = useZiweiGame()
 
   const focusedPalace = result?.palaces[focusedPalaceIndex]
+  const keyPalaceNames = isEnglish ? KEY_PALACE_NAMES.map((name) => palaceNamesEn[palaceNames.indexOf(name)]) : KEY_PALACE_NAMES
 
   return (
     <div className="tools-stage tools-stage--ziwei">
@@ -95,11 +96,11 @@ function ZiweiMainView() {
       {result && (
         <section ref={insightRef} className="tools-insight" aria-label={tx('紫微命盘', 'Zi Wei chart')}>
           <div className="tools-insight__banner">
-            <div className="tools-insight__icon" aria-hidden>垣</div>
+            <div className="tools-insight__icon" aria-hidden>{tx('垣', 'Star')}</div>
             <div>
-              <h2 className="tools-insight__title">{tx('命宫', 'Life palace')} · {palaceNames[result.mingGong]}</h2>
+              <h2 className="tools-insight__title">{tx('命宫', 'Life palace')} · {(isEnglish ? palaceNamesEn : palaceNames)[result.mingGong]}</h2>
               <p className="tools-insight__sub">
-                {tx('身宫', 'Body palace')} · {palaceNames[result.shenGong]} · {tx('点击宫位细察', 'Tap a palace for details')}
+                {tx('身宫', 'Body palace')} · {(isEnglish ? palaceNamesEn : palaceNames)[result.shenGong]} · {tx('点击宫位细察', 'Tap a palace for details')}
               </p>
             </div>
           </div>
@@ -157,7 +158,7 @@ function ZiweiMainView() {
           <Panel title={tx('重点宫位', 'Key palaces')}>
             <div className="aspect-grid">
               {result.palaces
-                .filter((p) => KEY_PALACE_NAMES.includes(p.name))
+                .filter((p) => keyPalaceNames.includes(p.name))
                 .map((palace) => (
                   <article key={palace.name} className="aspect">
                     <div className="aspect__head">

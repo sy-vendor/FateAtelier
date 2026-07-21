@@ -6,6 +6,7 @@ import {
   type NumberMeaning,
   type NumberType,
 } from './numberEnergyData'
+import { isEnglishLocale } from '../i18n/locale'
 
 export interface NumberEnergyAnalysis {
   numbers: string
@@ -40,6 +41,7 @@ function reduceToSingleDigit(num: number): number {
 }
 
 export function analyzeNumberEnergy(input: string, type: NumberType): NumberEnergyAnalysis | null {
+  const isEnglish = isEnglishLocale()
   const numbers = input.replace(/\D/g, '')
   if (numbers.length === 0) return null
 
@@ -102,47 +104,47 @@ export function analyzeNumberEnergy(input: string, type: NumberType): NumberEner
 
   if (score >= 80) {
     level = 'excellent'
-    levelText = '极佳'
+    levelText = isEnglish ? 'Excellent' : '极佳'
     levelColor = '#4ade80'
   } else if (score >= 60) {
     level = 'good'
-    levelText = '良好'
+    levelText = isEnglish ? 'Good' : '良好'
     levelColor = '#60a5fa'
   } else if (score >= 40) {
     level = 'average'
-    levelText = '一般'
+    levelText = isEnglish ? 'Average' : '一般'
     levelColor = '#fbbf24'
   } else {
     level = 'poor'
-    levelText = '较差'
+    levelText = isEnglish ? 'Poor' : '较差'
     levelColor = '#f87171'
   }
 
   const suggestions: string[] = []
 
   if (score < 60) {
-    suggestions.push('建议选择包含更多吉利数字（1、6、8、9）的组合')
-    suggestions.push('避免过多使用数字4，可考虑用其他数字替代')
+    suggestions.push(isEnglish ? 'Choose combinations with more favorable digits (1, 6, 8, and 9).' : '建议选择包含更多吉利数字（1、6、8、9）的组合')
+    suggestions.push(isEnglish ? 'Avoid overusing 4; consider other digits instead.' : '避免过多使用数字4，可考虑用其他数字替代')
   }
 
   if (uniqueCombinations.length === 0) {
-    suggestions.push('可以尝试选择包含特殊数字组合的号码')
+    suggestions.push(isEnglish ? 'Try a number containing a special digit combination.' : '可以尝试选择包含特殊数字组合的号码')
   } else {
     uniqueCombinations.forEach(({ info }) => {
-      if (info.suggestion) suggestions.push(info.suggestion)
+      if (info.suggestion) suggestions.push(isEnglish ? (info.suggestionEn ?? info.suggestion) : info.suggestion)
     })
   }
 
   if (finalDigit === 4) {
-    suggestions.push('最终数字为4，建议调整以改善整体能量')
+    suggestions.push(isEnglish ? 'The final digit is 4; consider adjusting it to improve the overall energy.' : '最终数字为4，建议调整以改善整体能量')
   }
 
   if (positiveCount < 3) {
-    suggestions.push('增加吉利数字的使用频率，提升整体能量')
+    suggestions.push(isEnglish ? 'Use favorable digits more often to raise overall energy.' : '增加吉利数字的使用频率，提升整体能量')
   }
 
   if (suggestions.length === 0) {
-    suggestions.push('当前数字能量良好，继续保持')
+    suggestions.push(isEnglish ? 'The current number energy is good—keep it up.' : '当前数字能量良好，继续保持')
   }
 
   return {
@@ -161,11 +163,12 @@ export function analyzeNumberEnergy(input: string, type: NumberType): NumberEner
 }
 
 export function validateNumberInput(input: string, type: NumberType): string {
+  const isEnglish = isEnglishLocale()
   const trimmed = input.trim()
   if (!trimmed) return ''
   const numbers = trimmed.replace(/\D/g, '')
-  if (numbers.length === 0) return '请输入有效的数字进行分析'
-  if (type === 'phone' && numbers.length !== 11) return '请输入11位手机号'
-  if (type === 'id' && numbers.length !== 18) return '请输入18位身份证号'
+  if (numbers.length === 0) return isEnglish ? 'Enter valid digits to analyze.' : '请输入有效的数字进行分析'
+  if (type === 'phone' && numbers.length !== 11) return isEnglish ? 'Enter an 11-digit phone number.' : '请输入11位手机号'
+  if (type === 'id' && numbers.length !== 18) return isEnglish ? 'Enter an 18-digit ID number.' : '请输入18位身份证号'
   return ''
 }

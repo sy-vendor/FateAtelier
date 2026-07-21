@@ -86,11 +86,37 @@ export const MERIT_MESSAGES: Record<MeritGameType, string[]> = {
   ],
 }
 
+export const MERIT_MESSAGES_EN: Record<MeritGameType, string[]> = {
+  woodfish: [
+    'Amitabha', 'Boundless merit', 'Sincerity resonates', 'Well done', 'Merit +1',
+    'Blessings abound', 'A quiet heart cools the mind', 'One clear thought', 'Merit complete', 'Kindness endures',
+  ],
+  release: [
+    'Boundless merit in release', 'Compassion in action', 'Merit +3', 'Good deeds return', 'Life is precious',
+    'Compassion awakens', 'Merit complete', 'Kindness endures', 'Blessings abound', 'Boundless merit',
+  ],
+  incense: [
+    'Incense rises', 'Sincerity resonates', 'Merit +2', 'Blessings abound', 'The flame endures',
+    'A sincere prayer', 'Merit complete', 'Kindness endures', 'Boundless merit', 'Sincerity resonates',
+  ],
+  prayer: [
+    'Prayer received', 'Sincerity resonates', 'Merit +5', 'Blessings abound', 'A sincere prayer',
+    'Merit complete', 'Kindness endures', 'Boundless merit', 'May your wish unfold', 'A fortunate star shines',
+  ],
+}
+
 export const MILESTONE_MESSAGES: Record<MeritGameType, (count: number) => string> = {
   woodfish: (c) => `已敲木鱼 ${c} 次，功德无量`,
   release: (c) => `已放生 ${c} 次，慈悲为怀`,
   incense: (c) => `已上香 ${c} 次，香火不断`,
   prayer: (c) => `已祈福 ${c} 次，福报满满`,
+}
+
+export const MILESTONE_MESSAGES_EN: Record<MeritGameType, (count: number) => string> = {
+  woodfish: (c) => `You have struck the woodfish ${c} times — boundless merit`,
+  release: (c) => `You have released ${c} lives — compassion in action`,
+  incense: (c) => `You have offered incense ${c} times — the flame endures`,
+  prayer: (c) => `You have prayed ${c} times — blessings abound`,
 }
 
 export type MeritPhase = 'choose' | 'practice' | 'accumulate' | 'milestone'

@@ -4,8 +4,11 @@ import {
   type EventType,
 } from '../utils/auspiciousData'
 import { calculateDayPillar, getAuspiciousShichens } from '../utils/auspiciousEngine'
+import { txStatic } from '../i18n/locale'
+import { useLocale } from '../i18n/LocaleContext'
 
 export function useAuspiciousGame() {
+  const { isEnglish } = useLocale()
   const today = new Date()
   const [queryYear, setQueryYear] = useState(String(today.getFullYear()))
   const [queryMonth, setQueryMonth] = useState(String(today.getMonth() + 1))
@@ -32,7 +35,7 @@ export function useAuspiciousGame() {
 
   const auspiciousShichens = useMemo(
     () => (dateObj ? getAuspiciousShichens(dateObj, selectedEventType) : []),
-    [dateObj, selectedEventType]
+    [dateObj, selectedEventType, isEnglish]
   )
 
   const goodShichens = auspiciousShichens.filter((s) => s.result.isGood)
@@ -63,7 +66,7 @@ export function useAuspiciousGame() {
 
   const scanTimes = () => {
     if (!dateObj) {
-      setDateError('请输入有效的日期')
+      setDateError(txStatic('请输入有效的日期', 'Please enter a valid date'))
       return
     }
     setDateError('')

@@ -6,6 +6,7 @@ import {
   type NumberType,
 } from '../utils/numberEnergyData'
 import { analyzeNumberEnergy, validateNumberInput } from '../utils/numberEnergyEngine'
+import { txStatic } from '../i18n/locale'
 
 export function useNumberEnergyGame() {
   const [input, setInput] = useState('')
@@ -69,17 +70,20 @@ export function useNumberEnergyGame() {
       setActionError('')
       setTimeout(() => setCopiedText(null), 2000)
     } catch {
-      setActionError('复制失败，请手动复制')
+      setActionError(txStatic('复制失败，请手动复制', 'Copy failed — please copy manually'))
     }
   }
 
   const shareAnalysis = async () => {
     if (!analysis) return
-    const shareText = `🔢 数字能量分析\n\n数字：${analysis.numbers}\n类型：${selectedTypeInfo?.name}\n能量评分：${analysis.score}/100 (${analysis.levelText})\n最终数字：${analysis.finalDigit}\n\n来自：命运工坊 🔮`
+    const shareText = txStatic(
+      `🔢 数字能量分析\n\n数字：${analysis.numbers}\n类型：${selectedTypeInfo?.name}\n能量评分：${analysis.score}/100 (${analysis.levelText})\n最终数字：${analysis.finalDigit}\n\n来自：命运工坊 🔮`,
+      `🔢 Number Energy Analysis\n\nDigits: ${analysis.numbers}\nType: ${selectedTypeInfo?.id === 'phone' ? 'Phone number' : selectedTypeInfo?.id === 'plate' ? 'License plate' : selectedTypeInfo?.id === 'id' ? 'ID number' : 'Other numbers'}\nEnergy score: ${analysis.score}/100 (${analysis.levelText})\nFinal digit: ${analysis.finalDigit}\n\nFrom: Fate Atelier 🔮`,
+    )
 
     if (navigator.share) {
       try {
-        await navigator.share({ title: '🔢 数字能量分析', text: shareText })
+        await navigator.share({ title: txStatic('🔢 数字能量分析', '🔢 Number Energy Analysis'), text: shareText })
       } catch {
         await copyToClipboard(shareText)
       }

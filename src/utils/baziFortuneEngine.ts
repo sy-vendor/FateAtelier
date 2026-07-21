@@ -6,7 +6,9 @@ import {
   analyzeWuxingFromBazi,
 } from './bazi'
 import { tiangan, dizhi } from './constants'
-import { shishenMap } from './baziData'
+import { shishenMap, SHISHEN_EN, WUXING_EN } from './baziData'
+import { isEnglishLocale } from '../i18n/locale'
+import { formatGanZhi } from './ganZhiLabel'
 
 export function calculateHourPillarFromShichen(dayPillar: string, shichen: string): string {
   const hourIndex = dizhi.indexOf(shichen)
@@ -30,7 +32,11 @@ export function analyzeShishen(bazi: string[]): string[] {
     if (index !== 2 && pillar.length >= 1) {
       const gan = pillar[0]
       const shishenName = shishenMap[dayGan]?.[gan] || ''
-      if (shishenName) shishen.push(`${pillar}(${shishenName})`)
+      if (shishenName) {
+        shishen.push(isEnglishLocale()
+          ? `${formatGanZhi(pillar, true)} (${SHISHEN_EN[shishenName] ?? shishenName})`
+          : `${pillar}(${shishenName})`)
+      }
     }
   })
   return shishen
@@ -43,6 +49,64 @@ export interface BaziInterpretation {
   health: string
   relationship: string
   summary: string
+}
+
+function interpretBaziEnglish(
+  wuxing: { [key: string]: number },
+  shishen: string[],
+  dayGan: string,
+  dayWuxing: string,
+  maxWuxing: string,
+  minWuxing: string,
+): BaziInterpretation {
+  const element = WUXING_EN[dayWuxing] ?? dayWuxing
+  const strongest = WUXING_EN[maxWuxing] ?? maxWuxing
+  const weakest = WUXING_EN[minWuxing] ?? minWuxing
+  const profiles: Record<string, { personality: string; career: string }> = {
+    木: {
+      personality: 'You are growth-minded, empathetic, and adaptable. You tend to connect people and ideas naturally; clear boundaries help your generosity remain sustainable.',
+      career: 'Education, design, planning, consulting, culture, and people-focused leadership can reward your ability to develop ideas and help others grow.',
+    },
+    火: {
+      personality: 'You bring warmth, visibility, and momentum to a room. Your directness inspires action; pausing before decisive moments keeps enthusiasm from becoming impatience.',
+      career: 'Communication, sales, media, hospitality, entrepreneurship, and fast-moving creative work suit your presence and ability to motivate others.',
+    },
+    土: {
+      personality: 'You are dependable, practical, and patient. Others value your steadiness; staying open to small experiments prevents stability from turning into inertia.',
+      career: 'Operations, finance, property, administration, planning, and long-term project work benefit from your discipline and sense of responsibility.',
+    },
+    金: {
+      personality: 'You are focused, principled, and analytical. You set high standards and execute with care; flexibility and warmth make your precision even more effective.',
+      career: 'Technology, engineering, finance, law, quality control, and specialist work suit your judgement, structure, and drive for mastery.',
+    },
+    水: {
+      personality: 'You are observant, resourceful, and responsive to change. Your intuition and communication skills are strengths; a clear routine helps focus your many ideas.',
+      career: 'Research, trade, logistics, strategy, media, consulting, and creative work can make good use of your adaptability and insight.',
+    },
+  }
+  const profile = profiles[dayWuxing] ?? profiles.土
+  const strongNote = wuxing[dayWuxing] >= 3
+    ? ` Your ${element} day master is pronounced, so lead with its strengths while leaving room for other viewpoints.`
+    : wuxing[dayWuxing] <= 1
+      ? ` Your ${element} day master is relatively light; deliberate practice and supportive routines can build confidence.`
+      : ''
+  const wealth = maxWuxing === '金' || maxWuxing === '土'
+    ? 'Your chart favors patient accumulation and structured money management. Set long-term goals, research commitments carefully, and let consistency do the work.'
+    : maxWuxing === '火'
+      ? 'You can spot opportunities and act quickly, but returns may be uneven. Pair initiative with a spending limit and a clear risk plan.'
+      : 'Your financial outlook improves through flexibility, diversified skills, and a simple plan for saving and investing rather than impulsive decisions.'
+  const health = `The lighter ${weakest} element suggests making recovery and balance a priority. Keep regular sleep, movement, and nutrition habits, and seek professional care for health concerns.`
+  const relationship = shishen.some((s) => /Direct Officer|Direct Wealth|Eating God/.test(s))
+    ? 'You value reliability and sincere effort in relationships. Shared routines and direct conversations can deepen trust.'
+    : 'Relationships benefit from expressing needs early and allowing both closeness and personal space. Curiosity is more useful than trying to control the outcome.'
+  return {
+    personality: `${profile.personality}${strongNote}`,
+    career: profile.career,
+    wealth,
+    health,
+    relationship,
+    summary: `Your day master is ${dayGan} (${element}). ${strongest} is the strongest element and ${weakest} is the lightest. ${profile.personality} In work, ${profile.career.toLowerCase()} Financially, ${wealth}`,
+  }
 }
 
 export function interpretBazi(bazi: string[], wuxing: { [key: string]: number }, shishen: string[]): {
@@ -59,6 +123,9 @@ export function interpretBazi(bazi: string[], wuxing: { [key: string]: number },
   // 找出最多的五行
   const maxWuxing = Object.entries(wuxing).reduce((a, b) => wuxing[a[0]] > wuxing[b[0]] ? a : b)[0]
   const minWuxing = Object.entries(wuxing).reduce((a, b) => wuxing[a[0]] < wuxing[b[0]] ? a : b)[0]
+  if (isEnglishLocale()) {
+    return interpretBaziEnglish(wuxing, shishen, dayGan, dayWuxing, maxWuxing, minWuxing)
+  }
   
   // 性格分析（更丰富）
   const getPersonalityAnalysis = (dayWuxing: string, wuxing: { [key: string]: number }, shishen: string[]): string => {

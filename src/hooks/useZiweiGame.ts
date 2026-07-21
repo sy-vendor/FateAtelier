@@ -11,6 +11,7 @@ import {
   resolveBirthDate,
   type CalendarType,
 } from '../utils/birthDateUtils'
+import { txStatic } from '../i18n/locale'
 
 export function useZiweiGame() {
   const [calendarType, setCalendarType] = useState<CalendarType>('lunar')
@@ -53,7 +54,7 @@ export function useZiweiGame() {
     })
 
     if ('error' in resolved) {
-      setInputError(resolved.error)
+      setInputError(txStatic(resolved.error, 'Please enter a valid birth date'))
       return
     }
 

@@ -183,9 +183,34 @@ export function useDivinationGame() {
     const { stick, overview, poemInsight, categoryGuidance, categoryLabel, aspects, advice, auspicious, cautions, timing } =
       stickReading
 
-    const aspectBlock = aspects.map((a) => `【${a.label}】${a.text}`).join('\n')
+    const aspectBlock = aspects.map((a) => isEnglish ? `[${a.label}] ${a.text}` : `【${a.label}】${a.text}`).join('\n')
 
-    const text = `第 ${stick.id} 签 - ${stick.title} (${stick.level})
+    const text = isEnglish
+      ? `Sign ${stick.id} — ${stick.title} (${stick.level})
+
+Oracle poem:
+${stick.poem}
+
+Overview:
+${overview}
+
+Plain reading:
+${poemInsight}
+${categoryGuidance ? `\nFor ${categoryLabel}:\n${categoryGuidance}` : ''}
+
+Detailed reading:
+${aspectBlock}
+
+Guidance:
+${advice}
+
+Favorable: ${auspicious.join('; ')}
+Use care with: ${cautions.join('; ')}
+Timing: ${timing}
+${stick.story ? `\nStory:\n${stick.story}` : ''}
+
+From Fate Atelier · Bamboo Oracle`
+      : `第 ${stick.id} 签 - ${stick.title} (${stick.level})
 
 签诗：
 ${stick.poem}
@@ -222,12 +247,14 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
     if (!stickReading) return
 
     const { stick, overview, categoryGuidance } = stickReading
-    const text = `第 ${stick.id} 签 - ${stick.title} (${stick.level})\n\n签诗：${stick.poem}\n\n${overview}${categoryGuidance ? `\n\n${categoryGuidance}` : ''}\n\n来自 命运工坊 · 竹语灵签`
+    const text = isEnglish
+      ? `Sign ${stick.id} — ${stick.title} (${stick.level})\n\nOracle poem: ${stick.poem}\n\n${overview}${categoryGuidance ? `\n\n${categoryGuidance}` : ''}\n\nFrom Fate Atelier · Bamboo Oracle`
+      : `第 ${stick.id} 签 - ${stick.title} (${stick.level})\n\n签诗：${stick.poem}\n\n${overview}${categoryGuidance ? `\n\n${categoryGuidance}` : ''}\n\n来自 命运工坊 · 竹语灵签`
 
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `第 ${stick.id} 签 - ${stick.title}`,
+          title: isEnglish ? `Sign ${stick.id} — ${stick.title}` : `第 ${stick.id} 签 - ${stick.title}`,
           text,
         })
         return

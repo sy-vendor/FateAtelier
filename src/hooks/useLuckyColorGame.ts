@@ -188,10 +188,13 @@ export function useLuckyColorGame() {
   }, [])
 
   const shareColor = useCallback(async () => {
-    const shareText = `今日幸运色：${luckyColor.name}\n颜色代码：${luckyColor.hex}\n含义：${luckyColor.meaning}\n能量：${luckyColor.energy}\n\n来自：命运工坊`
+    const shareText = txStatic(
+      `今日幸运色：${luckyColor.name}\n颜色代码：${luckyColor.hex}\n含义：${luckyColor.meaning}\n能量：${luckyColor.energy}\n\n来自：命运工坊`,
+      `Today's lucky color: ${luckyColor.nameEn ?? luckyColor.name}\nColor code: ${luckyColor.hex}\nMeaning: ${luckyColor.meaningEn ?? luckyColor.meaning}\nEnergy: ${luckyColor.energyEn ?? luckyColor.energy}\n\nFrom: Fate Atelier`,
+    )
     if (navigator.share) {
       try {
-        await navigator.share({ title: '每日幸运色', text: shareText })
+        await navigator.share({ title: txStatic('每日幸运色', 'Daily Lucky Color'), text: shareText })
         return
       } catch {
         // fall through

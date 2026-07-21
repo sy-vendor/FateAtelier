@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 import { NAME_TEST_PHASE_STEP, type NameTestPhase } from '../utils/nameTestData'
 import { computeNameTest, type NameTestResult } from '../utils/nameTestEngine'
+import { txStatic } from '../i18n/locale'
 
 export function useNameTestGame() {
   const [surname, setSurname] = useState('')
@@ -22,7 +23,7 @@ export function useNameTestGame() {
     const s = surname.trim()
     const g = givenName.trim()
     if (!s || !g) {
-      setInputError('请输入完整的姓名（姓氏和名字）')
+      setInputError(txStatic('请输入完整的姓名（姓氏和名字）', 'Please enter both surname and given name'))
       return
     }
 

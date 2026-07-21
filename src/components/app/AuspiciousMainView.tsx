@@ -6,6 +6,7 @@ import {
   shichenTagClass,
 } from '../../utils/auspiciousData'
 import { calculateShichenPillar } from '../../utils/auspiciousEngine'
+import { formatGanZhiParts } from '../../utils/ganZhiLabel'
 import { useAuspiciousGame } from '../../hooks/useAuspiciousGame'
 import { AuspiciousLogoMark } from '../auspicious/AuspiciousLogoMark'
 import { AuspiciousRitualBar } from '../auspicious/AuspiciousRitualBar'
@@ -13,26 +14,6 @@ import { Panel, Button, ChipGrid, MetaList } from '../ui'
 import { useLocale } from '../../i18n/LocaleContext'
 import { useTx } from '../../i18n/useTx'
 import './picker-tools-stage.css'
-
-const EVENT_NAME_EN: Record<string, string> = {
-  marriage: 'Wedding',
-  move: 'Moving',
-  open: 'Business opening',
-  travel: 'Travel',
-  sign: 'Contract signing',
-  ceremony: 'Ceremony',
-  other: 'Other',
-}
-
-const EVENT_DESC_EN: Record<string, string> = {
-  marriage: 'Choose an auspicious day for your wedding',
-  move: 'Choose a good day to move into a new home',
-  open: 'Choose an auspicious day to open for business',
-  travel: 'Choose a favorable day for travel',
-  sign: 'Choose a good day to sign agreements',
-  ceremony: 'Choose an auspicious day for a ceremony',
-  other: 'Choose an auspicious day for important matters',
-}
 
 function AuspiciousMainView() {
   const tx = useTx()
@@ -77,7 +58,7 @@ function AuspiciousMainView() {
         <h2 className="picker-section__title">{tx('选择事件类型', 'Choose event type')}</h2>
         <p className="picker-section__sub">
           {selectedEvent
-            ? tx(selectedEvent.description, EVENT_DESC_EN[selectedEvent.id] ?? selectedEvent.description)
+            ? tx(selectedEvent.description, selectedEvent.descriptionEn)
             : ''}
         </p>
         <ChipGrid
@@ -85,7 +66,7 @@ function AuspiciousMainView() {
           items={EVENT_TYPES.map((event) => ({
             id: event.id,
             icon: event.icon,
-            label: tx(event.name, EVENT_NAME_EN[event.id] ?? event.name),
+            label: tx(event.name, event.nameEn),
           }))}
           value={selectedEventType}
           onChange={(id) => selectEvent(id as typeof selectedEventType)}
@@ -132,7 +113,7 @@ function AuspiciousMainView() {
           <MetaList
             rows={[
               { key: tx('公历', 'Gregorian'), value: formatAuspiciousDate(dateObj) },
-              { key: tx('日柱', 'Day pillar'), value: `${dayPillar.gan}${dayPillar.zhi}` },
+              { key: tx('日柱', 'Day pillar'), value: formatGanZhiParts(dayPillar.gan, dayPillar.zhi, isEnglish) },
             ]}
           />
         )}
@@ -143,7 +124,7 @@ function AuspiciousMainView() {
 
       {!hasScanned && (
         <section className="picker-shrine" aria-hidden>
-          <span className="picker-shrine__glyph">时</span>
+          <span className="picker-shrine__glyph">{tx('时', 'Hr')}</span>
           <p className="picker-shrine__hint">{tx('日柱既定，十二时辰待推，择吉而行', 'Day pillar set; twelve hours await your choice')}</p>
         </section>
       )}
@@ -156,7 +137,7 @@ function AuspiciousMainView() {
                 <span className="tag tag--ok picker-best-card__rank">
                   {tx(`第${index + 1}名`, `#${index + 1}`)}
                 </span>
-                <div className="picker-best-card__name">{item.time.name}</div>
+                <div className="picker-best-card__name">{isEnglish ? item.time.nameEn : item.time.name}</div>
                 <div className="picker-best-card__range">
                   {item.time.start} – {item.time.end}
                 </div>
@@ -180,7 +161,7 @@ function AuspiciousMainView() {
                 <article key={item.shichen} className="picker-shichen-card">
                   <div className="picker-shichen-card__head">
                     <span className="picker-shichen-card__title">
-                      {item.time.name} · {item.time.start}–{item.time.end}
+                      {isEnglish ? item.time.nameEn : item.time.name} · {item.time.start}–{item.time.end}
                     </span>
                     <span className={shichenTagClass(item.result.isGood)}>
                       {item.result.isGood ? tx('吉', 'Good') : tx('平', 'Neutral')}
@@ -188,7 +169,7 @@ function AuspiciousMainView() {
                   </div>
                   <MetaList
                     rows={[
-                      { key: tx('时柱', 'Hour pillar'), value: pillar ? `${pillar.gan}${pillar.zhi}` : '—' },
+                      { key: tx('时柱', 'Hour pillar'), value: pillar ? formatGanZhiParts(pillar.gan, pillar.zhi, isEnglish) : '—' },
                       { key: tx('评分', 'Score'), value: `${item.result.score}${tx('分', ' pts')}` },
                     ]}
                   />

@@ -113,31 +113,31 @@ function HoroscopeMainView() {
         <div className="horoscope-lucky">
           <div className="horoscope-lucky__item">
             <span className="horoscope-lucky__label">{tx('幸运颜色', 'Lucky color')}</span>
-            <span className="horoscope-lucky__value">{isEnglish ? ['Violet', 'Ocean Blue', 'Emerald', 'Gold', 'Rose'][result.overall % 5] : result.color}</span>
+            <span className="horoscope-lucky__value">{result.color}</span>
           </div>
           <div className="horoscope-lucky__item">
             <span className="horoscope-lucky__label">{tx('幸运物品', 'Lucky item')}</span>
-            <span className="horoscope-lucky__value">{isEnglish ? ['Crystal', 'Journal', 'Pendant', 'Lucky coin', 'Charm'][result.overall % 5] : result.item}</span>
+            <span className="horoscope-lucky__value">{result.item}</span>
           </div>
         </div>
 
         <Panel title={tx('星象概览', 'Celestial overview')}>
-          <p className="prose">{isEnglish ? 'Steady momentum surrounds you. Follow your current plan, stay open to small adjustments, and let consistency create progress.' : result.summary}</p>
+          <p className="prose">{result.summary}</p>
           <p className="callout" style={{ marginTop: 12 }}>
             {(isEnglish ? ELEMENT_LABEL_EN : ELEMENT_LABEL)[result.element]} · {(isEnglish ? ELEMENT_PEERS_EN : ELEMENT_PEERS)[result.element]}
           </p>
         </Panel>
 
         <AspectGrid
-          items={result.details.map((d, index) => ({
-            title: isEnglish ? ['Love', 'Career', 'Wealth', 'Health', 'Study'][index] : d.key,
+          items={result.details.map((d) => ({
+            title: d.key,
             score: d.value,
-            text: isEnglish ? 'Keep a balanced pace, communicate clearly, and focus on one practical next step.' : d.text,
+            text: d.text,
           }))}
         />
 
         <Panel title={tx('星轨建议', 'Guidance')}>
-          <p className="prose">{isEnglish ? 'Choose one achievable priority today. A calm, deliberate step will take you further than rushing in several directions.' : result.advice}</p>
+          <p className="prose">{result.advice}</p>
         </Panel>
       </section>
 
@@ -336,21 +336,21 @@ function HoroscopeMainView() {
                   <div className="horoscope-pairing-result__compat">
                     <span className="field__label">{tx('契合度', 'Compatibility')}</span>
                     <span className={compatTagClass(pairingResult.compatibility)}>
-                      {isEnglish ? (pairingResult.score >= 80 ? 'Excellent' : pairingResult.score >= 65 ? 'Promising' : 'Needs care') : pairingResult.compatibility}
+                      {pairingResult.compatibility}
                     </span>
                   </div>
                 </div>
 
-                <p className="horoscope-pairing-result__summary callout">{isEnglish ? 'This pairing has meaningful potential. Its strongest results come from respecting different rhythms and communicating expectations clearly.' : pairingResult.summary}</p>
-                <p className="horoscope-pairing-result__dynamic">{isEnglish ? 'The two elemental styles can complement each other when both people make space for different ways of thinking and feeling.' : pairingResult.elementDynamic}</p>
+                <p className="horoscope-pairing-result__summary callout">{pairingResult.summary}</p>
+                <p className="horoscope-pairing-result__dynamic">{pairingResult.elementDynamic}</p>
 
                 <div className="horoscope-pairing-result__section">
                   <span className="field__label">{tx('相位关系', 'Astrological aspects')}</span>
                   <div className="horoscope-pairing-result__notes">
                     {pairingResult.relationshipNotes.map((note) => (
                       <article key={note.type} className="horoscope-pairing-result__note">
-                        <span className={relTagClass(note.type)}>{isEnglish ? 'Aspect' : note.type}</span>
-                        <p>{isEnglish ? 'This aspect highlights both natural chemistry and an opportunity to understand each other more deeply.' : note.description}</p>
+                        <span className={relTagClass(note.type)}>{note.type}</span>
+                        <p>{note.description}</p>
                       </article>
                     ))}
                   </div>
@@ -359,29 +359,29 @@ function HoroscopeMainView() {
                 <div className="horoscope-pairing-result__section">
                   <span className="field__label">{tx('维度解析', 'Dimensions')}</span>
                   <AspectGrid
-                    items={pairingResult.dimensions.map((d, index) => ({
-                      title: isEnglish ? ['Romance', 'Communication', 'Trust', 'Attraction', 'Long-term'][index] : d.key,
+                    items={pairingResult.dimensions.map((d) => ({
+                      title: d.key,
                       score: d.value,
-                      text: isEnglish ? 'Mutual awareness and clear communication will help this dimension grow.' : d.text,
+                      text: d.text,
                     }))}
                   />
                 </div>
 
                 <Panel title={tx('综合分析', 'Overall analysis')}>
-                  <p className="prose">{isEnglish ? 'You bring distinct strengths to the relationship. Shared goals create stability, while curiosity and patience help turn differences into a source of growth.' : pairingResult.analysis}</p>
+                  <p className="prose">{pairingResult.analysis}</p>
                 </Panel>
 
                 <div className="horoscope-pairing-result__lists">
                   <Panel title={tx('优势亮点', 'Strengths')}>
                     <ul className="horoscope-pairing-result__list">
-                      {(isEnglish ? ['You can support each other under pressure.', 'Different strengths create useful balance.', 'Shared interests encourage quality time.'] : pairingResult.strengths).map((item) => (
+                      {pairingResult.strengths.map((item) => (
                         <li key={item}>{item}</li>
                       ))}
                     </ul>
                   </Panel>
                   <Panel title={tx('潜在挑战', 'Potential challenges')}>
                     <ul className="horoscope-pairing-result__list horoscope-pairing-result__list--warn">
-                      {(isEnglish ? ['Different pacing can create misunderstandings.', 'Unspoken expectations may build tension.', 'Both sides need room for individual needs.'] : pairingResult.challenges).map((item) => (
+                      {pairingResult.challenges.map((item) => (
                         <li key={item}>{item}</li>
                       ))}
                     </ul>
@@ -389,7 +389,7 @@ function HoroscopeMainView() {
                 </div>
 
                 <Panel title={tx('相处建议', 'Relationship advice')}>
-                  <p className="prose">{isEnglish ? 'Talk about needs before tension builds, protect time for both connection and independence, and return to your shared goals when opinions differ.' : pairingResult.advice}</p>
+                  <p className="prose">{pairingResult.advice}</p>
                 </Panel>
               </div>
             )}

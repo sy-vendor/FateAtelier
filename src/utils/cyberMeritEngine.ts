@@ -1,25 +1,28 @@
 import {
   MERIT_GAMES,
   MERIT_MESSAGES,
+  MERIT_MESSAGES_EN,
   MERIT_MILESTONES,
   MILESTONE_MESSAGES,
+  MILESTONE_MESSAGES_EN,
   RELEASE_CREATURES,
   type MeritGameType,
   type ReleaseAnimation,
 } from './cyberMeritData'
+import { isEnglishLocale } from '../i18n/locale'
 
 export function getTotalMerit(counts: Record<MeritGameType, number>): number {
   return MERIT_GAMES.reduce((sum, game) => sum + counts[game.id] * game.meritPerAction, 0)
 }
 
 export function getRandomMessage(type: MeritGameType): string {
-  const pool = MERIT_MESSAGES[type]
+  const pool = isEnglishLocale() ? MERIT_MESSAGES_EN[type] : MERIT_MESSAGES[type]
   return pool[Math.floor(Math.random() * pool.length)]
 }
 
 export function checkMilestone(type: MeritGameType, count: number): string | null {
   if (!MERIT_MILESTONES.includes(count as (typeof MERIT_MILESTONES)[number])) return null
-  return MILESTONE_MESSAGES[type](count)
+  return (isEnglishLocale() ? MILESTONE_MESSAGES_EN : MILESTONE_MESSAGES)[type](count)
 }
 
 export function computeReleaseAnimation(animalIndex: number): ReleaseAnimation {

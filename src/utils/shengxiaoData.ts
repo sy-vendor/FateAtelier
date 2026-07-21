@@ -3,6 +3,41 @@ export const SHENGXIAO_BRAND_EN = 'Zodiac Bond'
 
 export const SHENGXIAO_LIST = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'] as const
 
+export const SHENGXIAO_EN: Record<string, string> = {
+  鼠: 'Rat', 牛: 'Ox', 虎: 'Tiger', 兔: 'Rabbit', 龙: 'Dragon', 蛇: 'Snake',
+  马: 'Horse', 羊: 'Goat', 猴: 'Monkey', 鸡: 'Rooster', 狗: 'Dog', 猪: 'Pig',
+}
+
+export const COMPATIBILITY_EN: Record<string, string> = {
+  极佳: 'Excellent',
+  良好: 'Good',
+  中等: 'Moderate',
+  一般: 'Fair',
+  较差: 'Poor',
+}
+
+export const RELATIONSHIP_EN: Record<string, string> = {
+  六合: 'Six Harmonies',
+  三合: 'Three Harmonies',
+  六冲: 'Six Clashes',
+  六害: 'Six Harms',
+  三刑: 'Three Punishments',
+  相同: 'Same sign',
+  普通: 'Ordinary',
+}
+
+export function shengxiaoLabel(shengxiao: string, english: boolean): string {
+  return english ? SHENGXIAO_EN[shengxiao] ?? shengxiao : shengxiao
+}
+
+export function compatibilityLabel(compatibility: string, english: boolean): string {
+  return english ? COMPATIBILITY_EN[compatibility] ?? compatibility : compatibility
+}
+
+export function relationshipLabel(relationship: string, english: boolean): string {
+  return english ? RELATIONSHIP_EN[relationship] ?? relationship : relationship
+}
+
 export const shengxiaoToDizhi: Record<string, string> = {
   鼠: '子', 牛: '丑', 虎: '寅', 兔: '卯',
   龙: '辰', 蛇: '巳', 马: '午', 羊: '未',

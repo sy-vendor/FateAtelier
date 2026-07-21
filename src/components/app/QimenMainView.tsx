@@ -8,7 +8,15 @@ import {
   getBamenShortName,
   getJiuxingShortName,
   getBashenShortName,
+  getPalaceNameEn,
+  getBamenNameEn,
+  getJiuxingNameEn,
+  getBashenNameEn,
+  getBamenDescriptionEn,
+  getJiuxingDescriptionEn,
+  getBashenDescriptionEn,
 } from '../../utils/qimenData'
+import { formatGanZhi } from '../../utils/ganZhiLabel'
 import { useQimenGame } from '../../hooks/useQimenGame'
 import { QimenLogoMark } from '../qimen/QimenLogoMark'
 import { QimenRitualBar } from '../qimen/QimenRitualBar'
@@ -161,7 +169,7 @@ function QimenMainView() {
 
         {result && dateValid && (
           <div className="qimen-meta">
-            <span className="qimen-meta__chip">{tx('时干支', 'Hour pillar')} {result.shiGanZhi}</span>
+            <span className="qimen-meta__chip">{tx('时干支', 'Hour pillar')} {formatGanZhi(result.shiGanZhi, isEnglish)}</span>
             <span className="qimen-meta__chip">{result.yongJu} {tx('局', 'formation')}</span>
           </div>
         )}
@@ -183,10 +191,10 @@ function QimenMainView() {
                   .filter(Boolean)
                   .join(' ')}
                 onClick={() => selectPalace(index, palace.direction)}
-                aria-label={`${palace.name} ${directionLabel(palace.direction)}`}
+                aria-label={`${isEnglish ? getPalaceNameEn(palace.name) : palace.name} ${directionLabel(palace.direction)}`}
               >
                 <div className="qimen-chart__head">
-                  <span className="qimen-chart__name">{palace.name}</span>
+                  <span className="qimen-chart__name">{isEnglish ? getPalaceNameEn(palace.name) : palace.name}</span>
                   <span className="qimen-chart__dir">{directionLabel(palace.direction)}</span>
                 </div>
                 <div className="qimen-chart__body">
@@ -198,7 +206,7 @@ function QimenMainView() {
                           bamenMeanings[palace.bamen]?.auspicious ? 'tag tag--good' : 'tag tag--bad'
                         }
                       >
-                        {getBamenShortName(palace.bamen)}
+                        {isEnglish ? getBamenNameEn(palace.bamen, true) : getBamenShortName(palace.bamen)}
                       </span>
                     </div>
                   )}
@@ -209,7 +217,7 @@ function QimenMainView() {
                         jiuxingMeanings[palace.jiuxing]?.auspicious ? 'tag tag--good' : 'tag tag--bad'
                       }
                     >
-                      {getJiuxingShortName(palace.jiuxing)}
+                      {isEnglish ? getJiuxingNameEn(palace.jiuxing, true) : getJiuxingShortName(palace.jiuxing)}
                     </span>
                   </div>
                   <div className="qimen-chart__row">
@@ -219,7 +227,7 @@ function QimenMainView() {
                         bashenMeanings[palace.bashen]?.auspicious ? 'tag tag--good' : 'tag tag--bad'
                       }
                     >
-                      {getBashenShortName(palace.bashen)}
+                      {isEnglish ? getBashenNameEn(palace.bashen, true) : getBashenShortName(palace.bashen)}
                     </span>
                   </div>
                 </div>
@@ -251,7 +259,7 @@ function QimenMainView() {
             </div>
             <div>
               <h2 className="qimen-insight__title">
-                {selectedPalace?.name ?? tx('中宫', 'Center')} · {directionLabel(selectedDirection)}
+                {selectedPalace ? (isEnglish ? getPalaceNameEn(selectedPalace.name) : selectedPalace.name) : tx('中宫', 'Center')} · {directionLabel(selectedDirection)}
               </h2>
               <p className="qimen-insight__sub">
                 {selectedPalace?.auspicious ? tx('此宫趋吉', 'This palace trends auspicious') : tx('此宫宜慎', 'Proceed with care in this palace')} · {tx('点击九宫可切换细察', 'Tap palaces to switch focus')}
@@ -283,20 +291,20 @@ function QimenMainView() {
               >
                 {selectedPalace.bamen && bamenMeanings[selectedPalace.bamen] && (
                   <p className="prose">
-                    <strong>{selectedPalace.bamen}：</strong>
-                    {bamenMeanings[selectedPalace.bamen].description}
+                    <strong>{isEnglish ? getBamenNameEn(selectedPalace.bamen) : selectedPalace.bamen}：</strong>
+                    {isEnglish ? getBamenDescriptionEn(selectedPalace.bamen) : bamenMeanings[selectedPalace.bamen].description}
                   </p>
                 )}
                 {jiuxingMeanings[selectedPalace.jiuxing] && (
                   <p className="prose">
-                    <strong>{selectedPalace.jiuxing}：</strong>
-                    {jiuxingMeanings[selectedPalace.jiuxing].description}
+                    <strong>{isEnglish ? getJiuxingNameEn(selectedPalace.jiuxing) : selectedPalace.jiuxing}：</strong>
+                    {isEnglish ? getJiuxingDescriptionEn(selectedPalace.jiuxing) : jiuxingMeanings[selectedPalace.jiuxing].description}
                   </p>
                 )}
                 {bashenMeanings[selectedPalace.bashen] && (
                   <p className="prose">
-                    <strong>{selectedPalace.bashen}：</strong>
-                    {bashenMeanings[selectedPalace.bashen].description}
+                    <strong>{isEnglish ? getBashenNameEn(selectedPalace.bashen) : selectedPalace.bashen}：</strong>
+                    {isEnglish ? getBashenDescriptionEn(selectedPalace.bashen) : bashenMeanings[selectedPalace.bashen].description}
                   </p>
                 )}
               </div>

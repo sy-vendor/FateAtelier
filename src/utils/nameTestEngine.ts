@@ -7,6 +7,8 @@ import {
   wuxingSheng,
   wuxingKe,
 } from './nameTestData'
+import { WUXING_EN } from './baziData'
+import { isEnglishLocale } from '../i18n/locale'
 
 export interface NameTestResult {
   grids: FiveGrids
@@ -54,6 +56,22 @@ function getWuxing(num: number): Wuxing {
 
   // 分析三才配置
 function analyzeSancai(tian: Wuxing, ren: Wuxing, di: Wuxing): string {
+    if (isEnglishLocale()) {
+      const names = [tian, ren, di].map((element) => WUXING_EN[element]).join(' → ')
+      if (wuxingSheng[tian] === ren && wuxingSheng[ren] === di) {
+        return `Excellent Three Talents configuration: ${names}. The elements generate one another, supporting a smooth and balanced path.`
+      }
+      if (wuxingSheng[tian] === ren || wuxingSheng[ren] === di) {
+        return `Favorable Three Talents configuration: ${names}. One productive elemental link supports progress; strengthen the remaining connection with steady effort.`
+      }
+      if (wuxingKe[tian] === ren || wuxingKe[ren] === di) {
+        return `Challenging Three Talents configuration: ${names}. A controlling elemental link calls for patience, clear priorities, and deliberate adjustment.`
+      }
+      if (tian === ren && ren === di) {
+        return `Mixed Three Talents configuration: ${names}. A concentrated element gives focus, though balance comes from welcoming complementary perspectives.`
+      }
+      return `Balanced Three Talents configuration: ${names}. The relationships are neutral overall; practical choices remain the key influence.`
+    }
     // 三才配置：天格、人格、地格的五行关系
     
     // 相生关系
@@ -125,6 +143,31 @@ function calculateScore(grids: FiveGrids, wuxing: { tian: Wuxing, ren: Wuxing, d
 
   // 生成分析报告
 function generateAnalysis(grids: FiveGrids, wuxing: { tian: Wuxing, ren: Wuxing, di: Wuxing, wai: Wuxing, zong: Wuxing }): string {
+    if (isEnglishLocale()) {
+      const levelEn: Record<string, string> = { 大吉: 'Great Fortune', 吉: 'Favorable', 半吉: 'Mixed Fortune', 凶: 'Challenging', 大凶: 'Great Challenge' }
+      const gridNames = [
+        { num: grids.tianGe, name: 'Heaven Grid', wuxing: wuxing.tian },
+        { num: grids.renGe, name: 'Human Grid', wuxing: wuxing.ren },
+        { num: grids.diGe, name: 'Earth Grid', wuxing: wuxing.di },
+        { num: grids.waiGe, name: 'Outer Grid', wuxing: wuxing.wai },
+        { num: grids.zongGe, name: 'Total Grid', wuxing: wuxing.zong },
+      ]
+      const lines = ['[Five-grid numerology]']
+      gridNames.forEach(({ num, name, wuxing: element }) => {
+        const reduced = num > 81 ? ((num - 1) % 81) + 1 : num
+        const meaning = numberMeaning[reduced]
+        if (meaning) lines.push(`${name}: ${num} (${WUXING_EN[element]}) — ${levelEn[meaning.level]}. This number describes the traditional tendency of the grid; use it as reflection, not a verdict.`)
+      })
+      const counts = Object.values(wuxing).reduce<Record<string, number>>((total, element) => {
+        total[element] = (total[element] ?? 0) + 1
+        return total
+      }, {})
+      lines.push('\n[Three Talents]')
+      lines.push(analyzeSancai(wuxing.tian, wuxing.ren, wuxing.di))
+      lines.push('\n[Element balance]')
+      lines.push(`Distribution: ${Object.entries(counts).map(([element, count]) => `${WUXING_EN[element]} ${count}`).join(', ')}`)
+      return lines.join('\n')
+    }
     const analysis: string[] = []
     
     // 五格分析
@@ -181,5 +224,7 @@ export function computeNameTest(surname: string, givenName: string): NameTestRes
 
 export function getGridLevel(num: number): string {
   const reduced = num > 81 ? ((num - 1) % 81) + 1 : num
-  return numberMeaning[reduced]?.level || '平'
+  const level = numberMeaning[reduced]?.level || '平'
+  if (!isEnglishLocale()) return level
+  return ({ 大吉: 'Great Fortune', 吉: 'Favorable', 半吉: 'Mixed Fortune', 凶: 'Challenging', 大凶: 'Great Challenge', 平: 'Neutral' } as Record<string, string>)[level]
 }

@@ -1,5 +1,6 @@
 import { tiangan, dizhi } from './constants'
-import { palaceNames, dizhiIndex } from './ziweiData'
+import { palaceNames, palaceNamesEn, starNamesEn, dizhiIndex } from './ziweiData'
+import { isEnglishLocale } from '../i18n/locale'
 
 // 根据农历月份和时辰计算命宫位置
 function calculateMingGong(lunarMonth: number, shichen: string): number {
@@ -417,6 +418,26 @@ function analyzePalace(palaceIndex: number, mainStars: string[], minorStars: str
   return analysis
 }
 
+function analyzePalaceEnglish(palaceIndex: number, mainStars: string[], minorStars: string[], sihua: { [key: string]: string }): string {
+  const palace = palaceNamesEn[palaceIndex]
+  const main = mainStars.map((star) => starNamesEn[star] ?? star)
+  const minor = minorStars.map((star) => starNamesEn[star] ?? star)
+  const transformations = mainStars.flatMap((star) => [
+    sihua.lu === star ? `${starNamesEn[star] ?? star} transforms to Prosperity` : '',
+    sihua.quan === star ? `${starNamesEn[star] ?? star} transforms to Authority` : '',
+    sihua.ke === star ? `${starNamesEn[star] ?? star} transforms to Recognition` : '',
+    sihua.ji === star ? `${starNamesEn[star] ?? star} transforms to Challenge` : '',
+  ]).filter(Boolean)
+  if (main.length === 0 && minor.length === 0) return `${palace} Palace is unoccupied by charted stars. Read it alongside the opposing palace and the wider chart.`
+  const focus: Record<number, string> = {
+    0: 'This palace describes temperament and life direction. Leadership, adaptability, and how you respond to change are shaped by the stars gathered here.',
+    2: 'This palace concerns partnership. Clear communication and respect for each person’s pace support a lasting connection.',
+    4: 'This palace concerns resources and money. Sustainable progress comes from matching opportunities with practical planning.',
+    8: 'This palace concerns vocation and public direction. Develop a visible strength while building reliable professional relationships.',
+  }
+  return `${palace} Palace: ${main.length ? `main stars: ${main.join(', ')}.` : 'No main star is placed here.'}${minor.length ? ` Supporting influences: ${minor.join(', ')}.` : ''}${transformations.length ? ` ${transformations.join('; ')}.` : ''} ${focus[palaceIndex] ?? 'Its influence is best understood in relation to the Life Palace, supporting stars, and the other palaces.'}`
+}
+
 export interface ZiweiPalaceResult {
   name: string
   mainStars: string[]
@@ -468,12 +489,19 @@ export function buildZiweiChart(
   const palaces: ZiweiPalaceResult[] = []
   for (let i = 0; i < 12; i++) {
     const palaceIndex = (mingGong + i) % 12
+    const mainStars = allStarsMap[palaceIndex].main
+    const minorStars = allStarsMap[palaceIndex].minor
+    const sihuaStars = allStarsMap[palaceIndex].sihua
+    const english = isEnglishLocale()
     palaces.push({
-      name: palaceNames[palaceIndex],
-      mainStars: allStarsMap[palaceIndex].main,
-      minorStars: allStarsMap[palaceIndex].minor,
-      sihua: allStarsMap[palaceIndex].sihua,
-      analysis: analyzePalace(palaceIndex, allStarsMap[palaceIndex].main, allStarsMap[palaceIndex].minor, sihua),
+      name: english ? palaceNamesEn[palaceIndex] : palaceNames[palaceIndex],
+      mainStars: english ? mainStars.map((star) => starNamesEn[star] ?? star) : mainStars,
+      minorStars: english ? minorStars.map((star) => starNamesEn[star] ?? star) : minorStars,
+      sihua: english ? sihuaStars.map((entry) => entry.replace(/化禄$/, ' → Prosperity').replace(/化权$/, ' → Authority').replace(/化科$/, ' → Recognition').replace(/化忌$/, ' → Challenge')).map((entry) => {
+        const [star, transformation] = entry.split(' → ')
+        return `${starNamesEn[star] ?? star} → ${transformation}`
+      }) : sihuaStars,
+      analysis: english ? analyzePalaceEnglish(palaceIndex, mainStars, minorStars, sihua) : analyzePalace(palaceIndex, mainStars, minorStars, sihua),
     })
   }
   return { mingGong, shenGong, palaces }

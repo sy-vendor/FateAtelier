@@ -20,23 +20,36 @@ export const NUMBER_TYPES: NumberTypeOption[] = [
 
 export interface NumberMeaning {
   meaning: string
+  meaningEn?: string
   energy: 'positive' | 'neutral' | 'negative'
   wuxing?: string
+  wuxingEn?: string
   direction?: string
+  directionEn?: string
   color?: string
+  colorEn?: string
   personality?: string
+  personalityEn?: string
   career?: string
+  careerEn?: string
   health?: string
+  healthEn?: string
   relationship?: string
+  relationshipEn?: string
   wealth?: string
+  wealthEn?: string
   detail?: string
+  detailEn?: string
 }
 
 export interface CombinationInfo {
   meaning: string
+  meaningEn?: string
   energy: 'positive' | 'neutral' | 'negative'
   detail?: string
+  detailEn?: string
   suggestion?: string
+  suggestionEn?: string
 }
 
 export const NUMBER_MEANINGS: Record<string, NumberMeaning> = {
@@ -71,6 +84,47 @@ export const COMBINATION_MEANINGS: Record<string, CombinationInfo> = {
   '168': { meaning: '一路发：一路发财，持续成功', energy: 'positive', detail: '168谐音"一路发"，代表持续的成功和财富。', suggestion: '适合持续投资，保持成功势头，一路发展。' },
   '520': { meaning: '我爱你：情感和谐，关系美满', energy: 'positive', detail: '520谐音"我爱你"，代表情感和谐和关系美满。', suggestion: '适合情感关系，注重沟通和和谐，表达爱意。' },
 }
+
+const numberMeaningTranslations: Record<string, Omit<NumberMeaning, 'meaning' | 'energy' | 'wuxing' | 'direction' | 'color' | 'personality' | 'career' | 'health' | 'relationship' | 'wealth' | 'detail'>> = {
+  '0': { meaningEn: 'Infinity, wholeness, beginnings', wuxingEn: 'Earth', directionEn: 'Center', colorEn: 'White', personalityEn: 'Inclusive, open, full of possibility', careerEn: 'Innovation and independent work', healthEn: 'Watch the circulatory system', relationshipEn: 'Inclusive and harmonious with others', wealthEn: 'Steady fortune; create opportunities proactively', detailEn: 'Zero represents infinity and beginnings, amplifying the energy of other digits.' },
+  '1': { meaningEn: 'Independence, leadership, innovation', wuxingEn: 'Water', directionEn: 'North', colorEn: 'Black, deep blue', personalityEn: 'Independent, leading, innovative', careerEn: 'Management, entrepreneurship, technology', healthEn: 'Watch kidneys and the urinary system', relationshipEn: 'Values independence and personal space', wealthEn: 'Strong fortune for investment and entrepreneurship', detailEn: 'One leads the numbers, representing independence, leadership, and innovation.' },
+  '2': { meaningEn: 'Cooperation, balance, harmony', wuxingEn: 'Earth', directionEn: 'Southwest', colorEn: 'Yellow, orange', personalityEn: 'Gentle, cooperative, balanced', careerEn: 'Collaboration, coordination, service', healthEn: 'Watch the spleen, stomach, and digestion', relationshipEn: 'Cooperative and harmonious', wealthEn: 'Steady fortune; suitable for joint investments', detailEn: 'Two represents cooperation and balance, supporting harmony and coordination.' },
+  '3': { meaningEn: 'Creativity, expression, sociability', wuxingEn: 'Fire', directionEn: 'East', colorEn: 'Red, purple', personalityEn: 'Creative, expressive, socially active', careerEn: 'Arts, media, creative industries', healthEn: 'Watch the heart and circulation', relationshipEn: 'Socially active with broad connections', wealthEn: 'Variable fortune; monetize creativity', detailEn: 'Three represents creativity and expression, bringing sociability and vitality.' },
+  '4': { meaningEn: 'Stability, pragmatism, order', wuxingEn: 'Wood', directionEn: 'Southeast', colorEn: 'Green', personalityEn: 'Steady, practical, orderly', careerEn: 'Construction, engineering, management', healthEn: 'Watch liver, gallbladder, and nerves', relationshipEn: 'Reliable, though sometimes conservative', wealthEn: 'Stable fortune; favor prudent investments', detailEn: 'Four represents stability and order: a practical, dependable foundation.' },
+  '5': { meaningEn: 'Freedom, change, adventure', wuxingEn: 'Earth', directionEn: 'Center', colorEn: 'Yellow, brown', personalityEn: 'Free-spirited, adaptable, adventurous', careerEn: 'Sales, travel, independent work', healthEn: 'Watch the spleen, stomach, and digestion', relationshipEn: 'Needs freedom and personal space', wealthEn: 'Variable fortune; stay flexible', detailEn: 'Five represents freedom and change, encouraging exploration while requiring balance.' },
+  '6': { meaningEn: 'Responsibility, care, family', wuxingEn: 'Metal', directionEn: 'Northwest', colorEn: 'Gold, white', personalityEn: 'Responsible, caring, family-oriented', careerEn: 'Education, healthcare, service', healthEn: 'Watch the respiratory system and skin', relationshipEn: 'Values family and harmonious connections', wealthEn: 'Stable fortune; suitable for long-term investing', detailEn: 'Six represents responsibility and care, supporting family and harmony.' },
+  '7': { meaningEn: 'Wisdom, mystery, introspection', wuxingEn: 'Metal', directionEn: 'West', colorEn: 'Silver, white', personalityEn: 'Wise, mysterious, introspective', careerEn: 'Research, analysis, consulting', healthEn: 'Watch the respiratory system and skin', relationshipEn: 'Needs understanding in close relationships', wealthEn: 'Steady fortune; monetize knowledge', detailEn: 'Seven represents wisdom and mystery, encouraging deep reflection.' },
+  '8': { meaningEn: 'Wealth, power, success', wuxingEn: 'Earth', directionEn: 'Northeast', colorEn: 'Gold, yellow', personalityEn: 'Ambitious, practical, success-driven', careerEn: 'Business, finance, management', healthEn: 'Watch the spleen, stomach, and digestion', relationshipEn: 'Career-focused relationships', wealthEn: 'Excellent fortune for investment and entrepreneurship', detailEn: 'Eight represents wealth and success, symbolizing power and achievement.' },
+  '9': { meaningEn: 'Completion, wisdom, compassion', wuxingEn: 'Fire', directionEn: 'South', colorEn: 'Red, purple', personalityEn: 'Wise, compassionate, perfection-seeking', careerEn: 'Education, charity, leadership', healthEn: 'Watch the heart and circulation', relationshipEn: 'Generous with broad connections', wealthEn: 'Good fortune; suitable for charity and investment', detailEn: 'Nine represents completion and wisdom, bringing compassion and fulfillment.' },
+}
+
+Object.entries(numberMeaningTranslations).forEach(([digit, translation]) => {
+  Object.assign(NUMBER_MEANINGS[digit], translation)
+})
+
+const combinationTranslations: Record<string, Pick<CombinationInfo, 'meaningEn' | 'detailEn' | 'suggestionEn'>> = {
+  '11': { meaningEn: 'Double one: strong leadership and independence', detailEn: 'This pairing strengthens leadership and independence, fitting entrepreneurship and management.', suggestionEn: 'Take leadership roles and use your independent, innovative strengths.' },
+  '22': { meaningEn: 'Double two: cooperative harmony and balance', detailEn: 'This pairing strengthens teamwork and balance.', suggestionEn: 'Choose collaborative work and use your coordination skills.' },
+  '33': { meaningEn: 'Double three: boundless creativity and expression', detailEn: 'This pairing strengthens creativity and expression, fitting artistic work.', suggestionEn: 'Choose creative work and use your expressive, social strengths.' },
+  '44': { meaningEn: 'Double four: stable, reliable, practical', detailEn: 'This pairing strengthens stability and pragmatism.', suggestionEn: 'Build steadily with attention to foundations and order.' },
+  '55': { meaningEn: 'Double five: changeable, free, adaptable', detailEn: 'This pairing strengthens change and adaptability, while calling for stability.', suggestionEn: 'Stay flexible while building a stable foundation.' },
+  '66': { meaningEn: 'Double six: multiplied responsibility and care', detailEn: 'This pairing strengthens responsibility and care for others.', suggestionEn: 'Service work can highlight your caring strengths.' },
+  '77': { meaningEn: 'Double seven: exceptional wisdom and depth', detailEn: 'This pairing strengthens wisdom and deep thought.', suggestionEn: 'Research and analysis can showcase your insight.' },
+  '88': { meaningEn: 'Double eight: abundant wealth and influence', detailEn: 'This pairing strengthens wealth and power energy.', suggestionEn: 'Business and investment can highlight your financial strengths.' },
+  '99': { meaningEn: 'Double nine: complete wisdom and compassion', detailEn: 'This pairing strengthens wisdom and compassion.', suggestionEn: 'Education and charity can showcase these strengths.' },
+  '123': { meaningEn: 'Rising sequence: steady progress', detailEn: '123 represents gradual, orderly advancement.', suggestionEn: 'Progress step by step; avoid rushing.' },
+  '321': { meaningEn: 'Reverse sequence: return and restart', detailEn: '321 suggests reflection, adjustment, and a new beginning.', suggestionEn: 'Review the past and plan a new direction.' },
+  '888': { meaningEn: 'Triple eight: amplified wealth and prosperity', detailEn: 'Triple eight carries especially strong wealth energy.', suggestionEn: 'Use financial strengths thoughtfully and keep balance.' },
+  '666': { meaningEn: 'Triple six: amplified responsibility and care', detailEn: 'Triple six strengthens responsibility and care.', suggestionEn: 'Service work can help express these strengths while preserving self-care.' },
+  '999': { meaningEn: 'Triple nine: amplified wisdom and fulfillment', detailEn: 'Triple nine strengthens wisdom and completion.', suggestionEn: 'Education and leadership can express compassionate wisdom.' },
+  '108': { meaningEn: 'One-zero-eight: complete achievement', detailEn: 'In Buddhism, 108 represents completion and merit.', suggestionEn: 'Pursue fulfillment through steady accumulation and meaningful effort.' },
+  '168': { meaningEn: '168: prosperity along the way', detailEn: '168 is associated with continuous success and wealth through its Chinese sound.', suggestionEn: 'Invest steadily and sustain positive momentum.' },
+  '520': { meaningEn: '520: love and harmonious relationships', detailEn: '520 sounds like “I love you” in Chinese, symbolizing affection and harmony.', suggestionEn: 'Nurture communication, harmony, and expressions of care.' },
+}
+
+Object.entries(combinationTranslations).forEach(([combo, translation]) => {
+  Object.assign(COMBINATION_MEANINGS[combo], translation)
+})
 
 export type NumberEnergyPhase = 'type' | 'input' | 'analyze' | 'revealed'
 

@@ -20,17 +20,53 @@ export function getTimeSlotLabel(hour: number): string {
   return '晚上 (18-24点)'
 }
 
+export function getTimeSlotLabelEn(time: string): string {
+  const labels: Record<string, string> = {
+    '早晨 (6-9点)': 'Morning (6–9 AM)',
+    '上午 (9-12点)': 'Late morning (9 AM–12 PM)',
+    '下午 (12-18点)': 'Afternoon (12–6 PM)',
+    '晚上 (18-24点)': 'Evening (6 PM–12 AM)',
+  }
+  return labels[time] ?? time
+}
+
+export function getTimeSlotColorEn(color: string): string {
+  const names: Record<string, string> = {
+    深红: 'Deep red', 正红: 'True red', 亮红: 'Bright red', 暗红: 'Dark red',
+    深橙: 'Deep orange', 正橙: 'True orange', 亮橙: 'Bright orange', 暗橙: 'Dark orange',
+    金黄: 'Golden yellow', 正黄: 'True yellow', 亮黄: 'Bright yellow', 暗黄: 'Dark yellow',
+    深绿: 'Deep green', 正绿: 'True green', 亮绿: 'Bright green', 暗绿: 'Dark green',
+    深蓝: 'Deep blue', 正蓝: 'True blue', 亮蓝: 'Bright blue', 暗蓝: 'Dark blue',
+    深紫: 'Deep purple', 正紫: 'True purple', 亮紫: 'Bright purple', 暗紫: 'Dark purple',
+    深粉: 'Deep pink', 正粉: 'True pink', 亮粉: 'Bright pink', 暗粉: 'Dark pink',
+    深金: 'Deep gold', 正金: 'True gold', 亮金: 'Bright gold', 暗金: 'Dark gold',
+    深银: 'Deep silver', 正银: 'True silver', 亮银: 'Bright silver', 暗银: 'Dark silver',
+    纯白: 'Pure white', 亮白: 'Bright white', 暖白: 'Warm white', 柔白: 'Soft white',
+    深黑: 'Deep black', 正黑: 'True black', 灰黑: 'Charcoal black', 纯黑: 'Pure black',
+    深棕: 'Deep brown', 正棕: 'True brown', 亮棕: 'Bright brown', 暗棕: 'Dark brown',
+    深青: 'Deep teal', 正青: 'True teal', 亮青: 'Bright teal', 暗青: 'Dark teal',
+  }
+  return names[color] ?? color
+}
+
 export interface ColorInfo {
   name: string
+  nameEn?: string
   hex: string
   rgb: string
   meaning: string
+  meaningEn?: string
   suggestions: string[]
+  suggestionsEn?: string[]
   compatibleColors: string[]
   element: string
+  elementEn?: string
   energy: string
+  energyEn?: string
   psychology?: string
+  psychologyEn?: string
   culture?: string
+  cultureEn?: string
   energyLevel?: number
   timeSlots?: { time: string; color: string; hex: string }[]
 }
@@ -285,3 +321,23 @@ export const COLOR_DATABASE: Record<string, ColorInfo> = {
     ]
   }
 }
+
+const colorTranslations: Record<string, Omit<Pick<ColorInfo, 'nameEn' | 'meaningEn' | 'suggestionsEn' | 'elementEn' | 'energyEn' | 'psychologyEn' | 'cultureEn'>, never>> = {
+  red: { nameEn: 'Red', meaningEn: 'Passion, vitality, courage', suggestionsEn: ['For important meetings and decisions', 'Build confidence and initiative', 'Strengthen relationships', 'Spark creativity'], elementEn: 'Fire', energyEn: 'Positive and uplifting', psychologyEn: 'Red can stimulate adrenaline, confidence, and courage. In psychology it represents power, passion, and determination.', cultureEn: 'In Chinese culture, red symbolizes good fortune and celebration; in the West, it represents love and passion.' },
+  orange: { nameEn: 'Orange', meaningEn: 'Creativity, optimism, sociability', suggestionsEn: ['For creative work', 'Encourage teamwork', 'Lift your mood', 'Strengthen communication'], elementEn: 'Fire', energyEn: 'Warm and active', psychologyEn: 'Orange combines red’s vitality with yellow’s joy, supporting creativity, sociability, and optimism.', cultureEn: 'Orange represents sanctity and purity in Hinduism, and autumn and harvest in Western culture.' },
+  yellow: { nameEn: 'Yellow', meaningEn: 'Wisdom, wealth, joy', suggestionsEn: ['For study and reflection', 'Invite prosperity', 'Improve focus', 'Strengthen memory'], elementEn: 'Earth', energyEn: 'Bright and cheerful', psychologyEn: 'Yellow can stimulate creative thought, attention, memory, and optimistic feelings.', cultureEn: 'In China, yellow symbolizes imperial authority; in Buddhism, it represents wisdom and awakening.' },
+  green: { nameEn: 'Green', meaningEn: 'Growth, balance, health', suggestionsEn: ['For new beginnings', 'Support mind-body health', 'Create calm', 'Ease stress'], elementEn: 'Wood', energyEn: 'Vibrant and growing', psychologyEn: 'Green can ease visual fatigue and foster calm, rest, and renewed energy.', cultureEn: 'Green represents paradise in Islam, and nature and environmentalism in Western culture.' },
+  blue: { nameEn: 'Blue', meaningEn: 'Calm, trust, wisdom', suggestionsEn: ['For important communication', 'Improve focus', 'Create security', 'Support deep thought'], elementEn: 'Water', energyEn: 'Calm and profound', psychologyEn: 'Blue can promote calm, security, focus, and logical thinking.', cultureEn: 'Blue represents heaven in Christianity and trust and stability in business culture.' },
+  purple: { nameEn: 'Purple', meaningEn: 'Mystery, inspiration, intuition', suggestionsEn: ['For artistic creation', 'Strengthen intuition', 'Support spirituality', 'Spark imagination'], elementEn: 'Fire', energyEn: 'Mysterious and elegant', psychologyEn: 'Purple can support creativity, intuition, meditation, and artistic reflection.', cultureEn: 'Historically a royal color, purple symbolizes power, mystery, spirituality, and wisdom.' },
+  pink: { nameEn: 'Pink', meaningEn: 'Gentleness, love, romance', suggestionsEn: ['For dates and socializing', 'Nurture affection', 'Lift your mood', 'Ease tension'], elementEn: 'Fire', energyEn: 'Gentle and romantic', psychologyEn: 'Pink can soften aggression, relieve stress and anxiety, and support emotional connection.', cultureEn: 'Pink represents femininity, love, and romance in the West, and cherry blossoms and spring in Japan.' },
+  gold: { nameEn: 'Gold', meaningEn: 'Wealth, success, prestige', suggestionsEn: ['For important occasions', 'Invite prosperity', 'Elevate presence', 'Build confidence'], elementEn: 'Metal', energyEn: 'Prestigious and radiant', psychologyEn: 'Gold can inspire aspiration, confidence, self-esteem, and positive energy.', cultureEn: 'Across cultures, gold symbolizes wealth, power, sacredness, and nobility.' },
+  silver: { nameEn: 'Silver', meaningEn: 'Modernity, technology, future', suggestionsEn: ['For innovative projects', 'Add a technological feel', 'Encourage fresh thinking', 'Strengthen logical analysis'], elementEn: 'Metal', energyEn: 'Modern and forward-looking', psychologyEn: 'Silver can support calm, rational thought, innovation, and logical decision-making.', cultureEn: 'Silver symbolizes technology and the future today, and the moon and mystery in tradition.' },
+  white: { nameEn: 'White', meaningEn: 'Purity, simplicity, new beginnings', suggestionsEn: ['For new plans', 'Create clarity', 'Cleanse energy', 'Improve focus'], elementEn: 'Metal', energyEn: 'Pure and simple', psychologyEn: 'White can create calm and clarity, helping organize thoughts and welcome new beginnings.', cultureEn: 'White represents purity and weddings in the West, and mourning and respect in East Asia.' },
+  black: { nameEn: 'Black', meaningEn: 'Strength, mystery, protection', suggestionsEn: ['For important decisions', 'Strengthen resolve', 'Create protection', 'Improve focus'], elementEn: 'Water', energyEn: 'Deep and powerful', psychologyEn: 'Black can evoke safety, protection, resolve, and deep thought.', cultureEn: 'Black represents elegance and formality in the West, and wisdom and depth in Eastern culture.' },
+  brown: { nameEn: 'Brown', meaningEn: 'Stability, reliability, groundedness', suggestionsEn: ['For long-term planning', 'Create security', 'Strengthen stability', 'Encourage patience'], elementEn: 'Earth', energyEn: 'Steady and grounded', psychologyEn: 'Brown can create stability and security while supporting patience and sustained effort.', cultureEn: 'Brown evokes earth and trees, and symbolizes stability, reliability, and tradition.' },
+  teal: { nameEn: 'Teal', meaningEn: 'Freshness, balance, communication', suggestionsEn: ['For conversation and exchange', 'Create balance', 'Improve expression', 'Support harmony'], elementEn: 'Water', energyEn: 'Fresh and balanced', psychologyEn: 'Teal combines blue’s calm with green’s vitality, supporting balance, communication, and understanding.', cultureEn: 'Teal represents youth and vitality in East Asia, and freshness and modernity in Western culture.' },
+}
+
+Object.entries(colorTranslations).forEach(([key, translation]) => {
+  Object.assign(COLOR_DATABASE[key], translation)
+})

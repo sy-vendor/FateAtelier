@@ -11,6 +11,7 @@ import {
   resolveBirthDate,
   type CalendarType,
 } from '../utils/birthDateUtils'
+import { txStatic } from '../i18n/locale'
 
 export function useBaziGame() {
   const [calendarType, setCalendarType] = useState<CalendarType>('solar')
@@ -52,7 +53,7 @@ export function useBaziGame() {
     })
 
     if ('error' in resolved) {
-      setInputError(resolved.error)
+      setInputError(txStatic(resolved.error, 'Please enter a valid birth date'))
       return
     }
 
@@ -61,7 +62,7 @@ export function useBaziGame() {
 
     const fortune = computeBaziFortune(resolved.date, birthTime)
     if (!fortune) {
-      setInputError('请选择有效的出生时辰')
+      setInputError(txStatic('请选择有效的出生时辰', 'Please select a valid birth hour'))
       return
     }
 

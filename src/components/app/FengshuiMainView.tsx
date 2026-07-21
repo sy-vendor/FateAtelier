@@ -1,4 +1,11 @@
-import { BAGUA, FENGSHUI_BRAND, FENGSHUI_BRAND_EN, FENGSHUI_PURPOSES } from '../../utils/fengshuiData'
+import {
+  BAGUA,
+  FENGSHUI_BRAND,
+  FENGSHUI_BRAND_EN,
+  FENGSHUI_PURPOSES,
+  directionLabel,
+  listJoin,
+} from '../../utils/fengshuiData'
 import { DIRECTION_GRID, useFengshuiGame } from '../../hooks/useFengshuiGame'
 import { FengshuiLogoMark } from '../fengshui/FengshuiLogoMark'
 import { FengshuiRitualBar } from '../fengshui/FengshuiRitualBar'
@@ -42,6 +49,12 @@ function FengshuiMainView() {
     getDirectionStatus,
     directions,
   } = useFengshuiGame()
+
+  const joinDirs = (names: string[]) =>
+    listJoin(
+      names.map((n) => directionLabel(n, isEnglish)),
+      isEnglish,
+    )
 
   return (
     <div className="picker-stage picker-stage--fengshui">
@@ -103,9 +116,9 @@ function FengshuiMainView() {
                 <span className={`fengshui-dir__badge fengshui-dir__badge--${status}`}>
                   {statusLabel(status, tx)}
                 </span>
-                <span className="fengshui-dir__name">{dir.name}</span>
-                <span className="fengshui-dir__gua">{gua?.name ?? dir.symbol}</span>
-                <span className="fengshui-dir__wuxing">{dir.wuxing}</span>
+                <span className="fengshui-dir__name">{isEnglish ? dir.nameEn : dir.name}</span>
+                <span className="fengshui-dir__gua">{isEnglish ? (gua?.nameEn ?? dir.symbolEn) : (gua?.name ?? dir.symbol)}</span>
+                <span className="fengshui-dir__wuxing">{isEnglish ? dir.wuxingEn : dir.wuxing}</span>
               </button>
             )
           })}
@@ -139,9 +152,9 @@ function FengshuiMainView() {
       <Panel title={tx('今日方位总览', 'Today\'s directions')}>
         <MetaList
           rows={[
-            { key: tx('吉方', 'Auspicious'), value: todayDirections.auspicious.join('、') || tx('无', 'None') },
-            { key: tx('凶方', 'Inauspicious'), value: todayDirections.inauspicious.join('、') || tx('无', 'None') },
-            { key: tx('平方', 'Neutral'), value: todayDirections.neutral.join('、') || tx('无', 'None') },
+            { key: tx('吉方', 'Auspicious'), value: joinDirs(todayDirections.auspicious) || tx('无', 'None') },
+            { key: tx('凶方', 'Inauspicious'), value: joinDirs(todayDirections.inauspicious) || tx('无', 'None') },
+            { key: tx('平方', 'Neutral'), value: joinDirs(todayDirections.neutral) || tx('无', 'None') },
           ]}
         />
       </Panel>
@@ -171,7 +184,10 @@ function FengshuiMainView() {
           </div>
           <MetaList
             rows={[
-              { key: tx('适合', 'Suitable for'), value: interpretation.suitableFor.join('、') },
+              {
+                key: tx('适合', 'Suitable for'),
+                value: listJoin(interpretation.suitableFor, isEnglish),
+              },
             ]}
           />
           <p className="callout">{interpretation.advice}</p>
@@ -180,7 +196,7 @@ function FengshuiMainView() {
 
       {!interpretation && (
         <section className="picker-shrine" aria-hidden>
-          <span className="picker-shrine__glyph">方</span>
+          <span className="picker-shrine__glyph">{tx('方', 'Dir')}</span>
           <p className="picker-shrine__hint">{tx('点选八方之一，八卦释义与吉凶自现', 'Select a direction to reveal trigram meaning and fortune')}</p>
         </section>
       )}

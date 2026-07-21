@@ -9,7 +9,12 @@ import {
   jiuxing,
   jiuxingMeanings,
   palacePositions,
+  getBamenMeaningEn,
+  getJiuxingMeaningEn,
+  getBashenMeaningEn,
 } from './qimenData'
+import { isEnglishLocale } from '../i18n/locale'
+import { formatGanZhi } from './ganZhiLabel'
 
 export interface QimenPalace {
   name: string
@@ -234,6 +239,7 @@ export function calculateQimenPan(
   hour: number,
   direction: string,
 ): QimenPanResult {
+  const isEnglish = isEnglishLocale()
   const date = new Date(year, month - 1, day, hour)
   const dayPillar = calculateDayPillar(date)
   const hourPillar = calculateHourPillar(dayPillar, hour)
@@ -292,14 +298,22 @@ export function calculateQimenPan(
   })
 
   const targetPalace = palaces.find((p) => p.direction === direction) || palaces[4]
-  const directionAnalysis = targetPalace.auspicious
-    ? `${direction}方位为吉，${targetPalace.bamen ? `遇${targetPalace.bamen}，` : ''}${targetPalace.jiuxing}临，${targetPalace.bashen}护，适合${direction}方行动。`
-    : `${direction}方位为凶，${targetPalace.bamen ? `遇${targetPalace.bamen}，` : ''}${targetPalace.jiuxing}临，${targetPalace.bashen}现，不宜${direction}方行动。`
+  const directionEn: Record<string, string> = { 东: 'East', 东南: 'Southeast', 南: 'South', 西南: 'Southwest', 西: 'West', 西北: 'Northwest', 北: 'North', 东北: 'Northeast', 中: 'Center' }
+  const directionName = directionEn[direction] ?? direction
+  const directionAnalysis = isEnglish
+    ? `${directionName} is ${targetPalace.auspicious ? 'auspicious' : 'inauspicious'}: ${targetPalace.bamen ? `${getBamenMeaningEn(targetPalace.bamen)} at the gate, ` : ''}${getJiuxingMeaningEn(targetPalace.jiuxing)} at the star, and ${getBashenMeaningEn(targetPalace.bashen)} in support. ${targetPalace.auspicious ? `Movement toward ${directionName} is favored.` : `Avoid movement toward ${directionName} if possible.`}`
+    : targetPalace.auspicious
+      ? `${direction}方位为吉，${targetPalace.bamen ? `遇${targetPalace.bamen}，` : ''}${targetPalace.jiuxing}临，${targetPalace.bashen}护，适合${direction}方行动。`
+      : `${direction}方位为凶，${targetPalace.bamen ? `遇${targetPalace.bamen}，` : ''}${targetPalace.jiuxing}临，${targetPalace.bashen}现，不宜${direction}方行动。`
 
-  const timeAnalysis = `时干支：${shiGanZhi}，用局：${yongJu}局。此时${targetPalace.auspicious ? '吉' : '凶'}，${targetPalace.bamen ? `${targetPalace.bamen}主${bamenMeanings[targetPalace.bamen]?.meaning}，` : ''}${targetPalace.jiuxing}主${jiuxingMeanings[targetPalace.jiuxing]?.meaning}，${targetPalace.bashen}主${bashenMeanings[targetPalace.bashen]?.meaning}。`
+  const timeAnalysis = isEnglish
+    ? `Hour pillar: ${formatGanZhi(shiGanZhi, true)}; formation: ${yongJu}. This hour is ${targetPalace.auspicious ? 'auspicious' : 'inauspicious'}: ${targetPalace.bamen ? `${getBamenMeaningEn(targetPalace.bamen)} at the gate; ` : ''}${getJiuxingMeaningEn(targetPalace.jiuxing)} at the star; ${getBashenMeaningEn(targetPalace.bashen)} in the spirit.`
+    : `时干支：${shiGanZhi}，用局：${yongJu}局。此时${targetPalace.auspicious ? '吉' : '凶'}，${targetPalace.bamen ? `${targetPalace.bamen}主${bamenMeanings[targetPalace.bamen]?.meaning}，` : ''}${targetPalace.jiuxing}主${jiuxingMeanings[targetPalace.jiuxing]?.meaning}，${targetPalace.bashen}主${bashenMeanings[targetPalace.bashen]?.meaning}。`
 
   const auspiciousCount = palaces.filter((p) => p.auspicious).length
-  const overallAnalysis = `当前盘面：${auspiciousCount}宫为吉，${9 - auspiciousCount}宫为凶。${targetPalace.auspicious ? '整体趋势向好' : '整体趋势需谨慎'}，建议${targetPalace.auspicious ? '把握时机' : '保守行事'}。`
+  const overallAnalysis = isEnglish
+    ? `Current chart: ${auspiciousCount} auspicious palaces and ${9 - auspiciousCount} inauspicious palaces. The overall trend ${targetPalace.auspicious ? 'is favorable; seize the opportunity.' : 'calls for caution; proceed conservatively.'}`
+    : `当前盘面：${auspiciousCount}宫为吉，${9 - auspiciousCount}宫为凶。${targetPalace.auspicious ? '整体趋势向好' : '整体趋势需谨慎'}，建议${targetPalace.auspicious ? '把握时机' : '保守行事'}。`
 
   return {
     palaces,

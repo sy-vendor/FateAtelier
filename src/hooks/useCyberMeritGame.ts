@@ -17,6 +17,7 @@ import {
   playMeritTone,
 } from '../utils/cyberMeritEngine'
 import { getStorageItem, setStorageItem } from '../utils/storage'
+import { txStatic } from '../i18n/locale'
 
 function loadCount(key: string): number {
   const result = getStorageItem<number>(key, 0)
@@ -121,7 +122,7 @@ export function useCyberMeritGame() {
       const y = event ? event.clientY : window.innerHeight / 2
       setIsKnocking(true)
       window.setTimeout(() => setIsKnocking(false), 200)
-      bumpCount('woodfish', x, y, '功德+1')
+      bumpCount('woodfish', x, y, txStatic('功德+1', 'Merit +1'))
       woodfishAudioRef.current?.play().catch(() => playMeritTone('woodfish'))
     },
     [bumpCount]
@@ -133,7 +134,7 @@ export function useCyberMeritGame() {
       const y = event.clientY
       setReleasingAnimal(computeReleaseAnimation(animalIndex))
       window.setTimeout(() => setReleasingAnimal(null), 1800)
-      bumpCount('release', x, y, '功德+3')
+      bumpCount('release', x, y, txStatic('功德+3', 'Merit +3'))
       playMeritTone('release')
     },
     [bumpCount]
@@ -145,7 +146,7 @@ export function useCyberMeritGame() {
       const x = event ? event.clientX : window.innerWidth / 2
       const y = event ? event.clientY : window.innerHeight / 2
       setIsBurning(true)
-      bumpCount('incense', x, y, '功德+2')
+      bumpCount('incense', x, y, txStatic('功德+2', 'Merit +2'))
       playMeritTone('incense')
       window.setTimeout(() => setIsBurning(false), 10000)
     },
@@ -158,7 +159,7 @@ export function useCyberMeritGame() {
       const x = event ? event.clientX : window.innerWidth / 2
       const y = event ? event.clientY : window.innerHeight / 2
       setIsPraying(true)
-      bumpCount('prayer', x, y, '功德+5')
+      bumpCount('prayer', x, y, txStatic('功德+5', 'Merit +5'))
       playMeritTone('prayer')
       window.setTimeout(() => setIsPraying(false), 3000)
     },
