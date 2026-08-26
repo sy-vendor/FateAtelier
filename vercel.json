@@ -4,10 +4,5 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
-  "rewrites": [
-    {
-      "source": "/((?!api/|assets/|manifest\\.json|sw\\.js|favicon\\.ico|favicon-32\\.png|apple-touch-icon\\.png|logo\\.svg|og-image\\.svg|robots\\.txt|sitemap\\.xml).*)",
-      "destination": "/index.html"
-    }
-  ]
+  "cleanUrls": true
 }

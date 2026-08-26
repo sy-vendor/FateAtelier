@@ -45,6 +45,15 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char])
 }
 
+function writeRouteHtml(route, html) {
+  const directoryTarget = path.join(dist, route)
+  const cleanUrlTarget = path.join(dist, `${route}.html`)
+  fs.mkdirSync(directoryTarget, { recursive: true })
+  fs.mkdirSync(path.dirname(cleanUrlTarget), { recursive: true })
+  fs.writeFileSync(path.join(directoryTarget, 'index.html'), html)
+  fs.writeFileSync(cleanUrlTarget, html)
+}
+
 function writeDetailPage({ route, title, description, parentName, body, schemaType = 'Article' }) {
   const url = `${origin}/${route}`
   const fullTitle = `${title} | 命运工坊`
@@ -68,9 +77,7 @@ function writeDetailPage({ route, title, description, parentName, body, schemaTy
     .replace(/<meta property="og:description" content="[^"]*"\s*\/>/, `<meta property="og:description" content="${escapeHtml(description)}" />`)
     .replace('<div id="root"></div>', crawlable)
     .replace('</head>', `<script type="application/ld+json">${escapeJson(schema)}</script></head>`)
-  const target = path.join(dist, route)
-  fs.mkdirSync(target, { recursive: true })
-  fs.writeFileSync(path.join(target, 'index.html'), html)
+  writeRouteHtml(route, html)
   return url
 }
 
@@ -98,9 +105,7 @@ for (const [slug, title, description, intro, question, answer] of pages) {
     .replace(/<meta property="og:description" content="[^"]*"\s*\/>/, `<meta property="og:description" content="${description}" />`)
     .replace('<div id="root"></div>', crawlable)
     .replace('</head>', `<script type="application/ld+json">${escapeJson(schema)}</script></head>`)
-  const target = path.join(dist, slug)
-  fs.mkdirSync(target, { recursive: true })
-  fs.writeFileSync(path.join(target, 'index.html'), html)
+  writeRouteHtml(slug, html)
 }
 
 const detailUrls = []
@@ -148,6 +153,7 @@ for (const hub of hubs) {
   const featurePath = path.join(dist, feature, 'index.html')
   const featureHtml = fs.readFileSync(featurePath, 'utf8').replace('</main></div>', `<p><a href="/${hub.route}">${hub.title}</a></p></main></div>`)
   fs.writeFileSync(featurePath, featureHtml)
+  fs.writeFileSync(path.join(dist, `${feature}.html`), featureHtml)
 }
 
 const sitemapPath = path.join(dist, 'sitemap.xml')

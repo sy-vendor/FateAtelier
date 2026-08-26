@@ -23,7 +23,16 @@ export function TarotRwsArt({ src, accent, gold, skyTop, skyBottom, bare = false
         } as CSSProperties
       }
     >
-      <img className="tarot-rws-art__img" src={src} alt="" draggable={false} />
+      <img
+        className="tarot-rws-art__img"
+        src={src}
+        alt=""
+        width={300}
+        height={527}
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+      />
       {!bare && (
         <>
           <div className="tarot-rws-art__vignette" aria-hidden />

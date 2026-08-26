@@ -1,9 +1,11 @@
+import { getStorageString } from '../utils/storage'
+
 const STORAGE_KEY = 'fate-atelier-locale'
 
 export type Locale = 'zh-CN' | 'en'
 
 export function getStoredLocale(): Locale {
-  const value = localStorage.getItem(STORAGE_KEY)
+  const value = getStorageString(STORAGE_KEY, 'zh-CN').data
   return value === 'en' ? 'en' : 'zh-CN'
 }
 

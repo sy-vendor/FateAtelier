@@ -58,6 +58,31 @@ export function getStorageItem<T>(key: string, defaultValue?: T): StorageResult<
 }
 
 /**
+ * Read a string while remaining compatible with keys that historically stored
+ * an unquoted raw value instead of JSON.
+ */
+export function getStorageString(key: string, defaultValue?: string): StorageResult<string> {
+  try {
+    const item = localStorage.getItem(key)
+    if (item === null) return { success: true, data: defaultValue }
+    if (item.startsWith('"')) {
+      const parsed = JSON.parse(item)
+      return typeof parsed === 'string'
+        ? { success: true, data: parsed }
+        : { success: false, data: defaultValue, error: 'Stored value is not a string' }
+    }
+    return { success: true, data: item }
+  } catch (error) {
+    logError(`Failed to get storage string "${key}":`, error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      data: defaultValue,
+    }
+  }
+}
+
+/**
  * 安全地设置 localStorage 数据
  */
 export function setStorageItem<T>(key: string, value: T): StorageResult<void> {
@@ -141,4 +166,3 @@ export function getStorageUsage(): { used: number; available: number; percentage
     return { used: 0, available: 0, percentage: 0 }
   }
 }
-

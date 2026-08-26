@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { getStorageString, setStorageItem } from '../utils/storage'
 
 export type Locale = 'zh-CN' | 'en'
 
@@ -17,7 +18,7 @@ function browserLocale(): Locale {
 }
 
 function savedLocale(): Locale | null {
-  const value = localStorage.getItem(STORAGE_KEY)
+  const value = getStorageString(STORAGE_KEY).data
   return value === 'zh-CN' || value === 'en' ? value : null
 }
 
@@ -45,7 +46,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     locale,
     isEnglish: locale === 'en',
     setLocale: (next) => {
-      localStorage.setItem(STORAGE_KEY, next)
+      setStorageItem(STORAGE_KEY, next)
       setLocaleState(next)
     },
   }), [locale])

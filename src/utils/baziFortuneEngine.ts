@@ -10,6 +10,17 @@ import { shishenMap, SHISHEN_EN, WUXING_EN } from './baziData'
 import { isEnglishLocale } from '../i18n/locale'
 import { formatGanZhi } from './ganZhiLabel'
 
+/** Stable selection keeps the same chart interpretation consistent across runs. */
+function selectStable<T>(items: readonly T[] | undefined, seed: string): T | undefined {
+  if (!items?.length) return undefined
+  let hash = 2166136261
+  for (let index = 0; index < seed.length; index += 1) {
+    hash ^= seed.charCodeAt(index)
+    hash = Math.imul(hash, 16777619)
+  }
+  return items[(hash >>> 0) % items.length]
+}
+
 export function calculateHourPillarFromShichen(dayPillar: string, shichen: string): string {
   const hourIndex = dizhi.indexOf(shichen)
   if (hourIndex === -1) return ''
@@ -119,6 +130,7 @@ export function interpretBazi(bazi: string[], wuxing: { [key: string]: number },
 } {
   const dayGan = bazi[2]?.[0] || ''
   const dayWuxing = tianganWuxing[dayGan] || '土'
+  const chartSeed = `${bazi.join('|')}|${Object.entries(wuxing).sort(([a], [b]) => a.localeCompare(b)).map(([key, value]) => `${key}:${value}`).join('|')}`
   
   // 找出最多的五行
   const maxWuxing = Object.entries(wuxing).reduce((a, b) => wuxing[a[0]] > wuxing[b[0]] ? a : b)[0]
@@ -172,7 +184,7 @@ export function interpretBazi(bazi: string[], wuxing: { [key: string]: number },
     const isStrong = wuxingStrength >= 3
     const isWeak = wuxingStrength <= 1
     
-    let personality = basePersonality[dayWuxing]?.[Math.floor(Math.random() * basePersonality[dayWuxing].length)] || ''
+    let personality = selectStable(basePersonality[dayWuxing], `${chartSeed}|personality`) || ''
     
     if (isStrong) {
       personality += ' 您的日主五行较旺，性格特点会更加明显，但需要注意不要过于强势，学会倾听和包容。'
@@ -236,7 +248,7 @@ export function interpretBazi(bazi: string[], wuxing: { [key: string]: number },
       ]
     }
     
-    let career = baseCareer[dayWuxing]?.[Math.floor(Math.random() * baseCareer[dayWuxing].length)] || ''
+    let career = selectStable(baseCareer[dayWuxing], `${chartSeed}|career`) || ''
     
     // 根据十神调整
     if (shishen.some(s => s.includes('正官'))) {
