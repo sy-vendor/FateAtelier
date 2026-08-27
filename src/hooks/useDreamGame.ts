@@ -28,7 +28,7 @@ const INTERPRET_DELAY_MS = 900
 export function useDreamGame() {
   const { isEnglish } = useLocale()
   const [dreamContent, setDreamContent] = useState(() => {
-    const match = window.location.pathname.match(/^\/dream\/symbol\/(\d+)\/?$/)
+    const match = window.location.pathname.match(/^\/(?:en\/)?dream\/symbol\/(\d+)\/?$/)
     const index = match ? Number(match[1]) : -1
     const symbol = index >= 0 ? dreamSymbols[index] : undefined
     if (!symbol) return ''

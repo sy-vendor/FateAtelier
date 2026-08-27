@@ -34,7 +34,7 @@ function pickStickForCategory(category: string): DivinationStick {
 }
 
 function getLinkedStick(): DivinationStick | null {
-  const match = window.location.pathname.match(/^\/divination\/stick\/(\d+)\/?$/)
+  const match = window.location.pathname.match(/^\/(?:en\/)?divination\/stick\/(\d+)\/?$/)
   if (!match) return null
   return divinationSticks.find((stick) => stick.id === Number(match[1])) ?? null
 }

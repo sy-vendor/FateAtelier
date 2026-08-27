@@ -10,7 +10,7 @@ export default function TarotFeatureRoute() {
   const tarot = useTarotGame()
 
   useEffect(() => {
-    const match = window.location.pathname.match(/^\/tarot\/card\/(\d+)\/?$/)
+    const match = window.location.pathname.match(/^\/(?:en\/)?tarot\/card\/(\d+)\/?$/)
     if (!match) return
     const card = tarotCards.find((item) => item.id === Number(match[1]))
     if (card) tarot.handleSelectCardFromBrowser(card)

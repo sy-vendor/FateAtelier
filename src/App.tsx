@@ -13,19 +13,17 @@ import { useDailyJourney } from './hooks/useDailyJourney'
 import { APP_NAVIGATE_EVENT } from './utils/appNavigation'
 import './components/app/app-shell.css'
 import { useLocale } from './i18n/LocaleContext'
+import { localePath, parseLocalePath } from './utils/localePath'
 
 function App() {
   const { locale, setLocale, isEnglish } = useLocale()
-  const pageFromLocation = (): AppPage => {
-    const slug = window.location.pathname.split('/').filter(Boolean)[0] || 'tarot'
-    return APP_FEATURES.some((feature) => feature.page === slug) ? slug as AppPage : 'tarot'
-  }
+  const pageFromLocation = (): AppPage => parseLocalePath().page
   const [currentPage, setCurrentPage] = useState<AppPage>(pageFromLocation)
   const dailyJourney = useDailyJourney(currentPage)
 
   const currentFeature = useMemo(
     () => APP_FEATURES.find((f) => f.page === currentPage) ?? APP_FEATURES[0],
-    [currentPage]
+    [currentPage],
   )
 
   useEffect(() => {
@@ -38,32 +36,49 @@ function App() {
     const onNavigate = (event: Event) => {
       const page = (event as CustomEvent<AppPage>).detail
       if (!APP_FEATURES.some((feature) => feature.page === page)) return
-      window.history.pushState(null, '', `/${page}`)
+      window.history.pushState(null, '', localePath(page, locale))
       setCurrentPage(page)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
     window.addEventListener(APP_NAVIGATE_EVENT, onNavigate)
     return () => window.removeEventListener(APP_NAVIGATE_EVENT, onNavigate)
-  }, [])
+  }, [locale])
 
   useEffect(() => {
-    // Detail landing pages are emitted with their own server-rendered metadata.
-    // Preserve it after React mounts so crawlers keep the long-tail canonical.
-    if (window.location.pathname.split('/').filter(Boolean).length > 1) return
-    const canonicalUrl = `https://www.fateatelier.cloud/${currentPage}`
+    // Detail landing pages keep server-rendered metadata for long-tail SEO.
+    if (parseLocalePath().segments.length > 1) return
+    const canonicalUrl = `https://www.fateatelier.cloud${localePath(currentPage, locale)}`
     const seoTitle = isEnglish ? currentFeature.seoTitleEn : currentFeature.seoTitle
     const description = isEnglish ? currentFeature.descriptionEn : currentFeature.description
-    document.title = `${seoTitle} | ${isEnglish ? 'Fate Atelier' : '命运工坊'}`
+    const brand = isEnglish ? 'Fate Atelier' : '命运工坊'
+    document.title = `${seoTitle} | ${brand}`
     document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', description)
     document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute('content', document.title)
     document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute('content', description)
     document.querySelector<HTMLMetaElement>('meta[property="og:url"]')?.setAttribute('content', canonicalUrl)
+    document.querySelector<HTMLMetaElement>('meta[property="og:locale"]')?.setAttribute('content', isEnglish ? 'en_US' : 'zh_CN')
     document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', canonicalUrl)
-  }, [currentFeature, currentPage, isEnglish])
+
+    const ensureAlternate = (hreflang: string, href: string) => {
+      let link = document.querySelector<HTMLLinkElement>(`link[rel="alternate"][hreflang="${hreflang}"]`)
+      if (!link) {
+        link = document.createElement('link')
+        link.rel = 'alternate'
+        link.hreflang = hreflang
+        document.head.appendChild(link)
+      }
+      link.href = href
+    }
+    const zhUrl = `https://www.fateatelier.cloud${localePath(currentPage, 'zh-CN')}`
+    const enUrl = `https://www.fateatelier.cloud${localePath(currentPage, 'en')}`
+    ensureAlternate('zh-CN', zhUrl)
+    ensureAlternate('en', enUrl)
+    ensureAlternate('x-default', zhUrl)
+  }, [currentFeature, currentPage, isEnglish, locale])
 
   const navigateTo = (page: AppPage) => {
     if (page === currentPage) return
-    window.history.pushState(null, '', `/${page}`)
+    window.history.pushState(null, '', localePath(page, locale))
     setCurrentPage(page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -96,7 +111,6 @@ function App() {
               <span className="sr-only">{isEnglish ? '切换到中文' : 'Switch to English'}</span>
             </button>
           </div>
-
         </header>
 
         <DailyJourney {...dailyJourney} onSelect={navigateTo} />
@@ -108,11 +122,7 @@ function App() {
         <footer className="shell-footer">
           <p>
             © {new Date().getFullYear()} {isEnglish ? 'Fate Atelier · For entertainment only' : '命运工坊 · 仅供娱乐参考'} ·{' '}
-            <a
-              href="https://github.com/sy-vendor/FateAtelier"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://github.com/sy-vendor/FateAtelier" target="_blank" rel="noopener noreferrer">
               GitHub
             </a>
           </p>
