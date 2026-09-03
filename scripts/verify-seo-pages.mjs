@@ -5,6 +5,10 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dist = path.join(root, 'dist')
 const checks = [
+  ['tarot', '玩法介绍'],
+  ['en/tarot', 'How to play'],
+  ['tarot', '每日一牌'],
+  ['en/tarot', 'Daily Draw'],
   ['tarot', '免费在线塔罗占卜'],
   ['en/tarot', 'Free Online Tarot Reading'],
   ['tarot/card/0', '愚者塔罗牌义'],
@@ -15,7 +19,7 @@ const checks = [
   ['en/divination/stick/1', 'Stick #1'],
   ['tarot/cards', '78 张塔罗牌牌义大全'],
   ['en/tarot/cards', 'All 78 Tarot Card Meanings'],
-  ['en', 'Fate Atelier'],
+  ['en', 'How to explore'],
 ]
 
 for (const [route, expected] of checks) {
