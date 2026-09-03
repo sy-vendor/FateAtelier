@@ -4,6 +4,7 @@ import { useLocale } from '../i18n/LocaleContext'
 import { useTx } from '../i18n/useTx'
 import { TarotCardVisual } from './tarot/TarotCardVisual'
 import { getDailyTarotDraw, saveDailyTarotDraw } from '../utils/dailyTarotCard'
+import { resolveCanonicalTarotCard } from '../utils/tarotCardResolve'
 import { Button } from './ui'
 
 interface DailyCardProps {
@@ -27,18 +28,23 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
   const [hasViewedToday, setHasViewedToday] = useState(false)
   const [flipping, setFlipping] = useState(false)
 
+  const localizedCard = useMemo(
+    () => (dailyCard ? resolveCanonicalTarotCard(dailyCard) : null),
+    [dailyCard, isEnglish],
+  )
+
   const reading = useMemo(() => {
-    if (!dailyCard) return null
+    if (!localizedCard) return null
     return {
       keywords: splitKeywords(
-        (isReversed ? dailyCard.meaning?.reversed : dailyCard.meaning?.upright) ?? '',
+        (isReversed ? localizedCard.meaning?.reversed : localizedCard.meaning?.upright) ?? '',
       ),
       interpretation:
-        (isReversed ? dailyCard.interpretation?.reversed : dailyCard.interpretation?.upright) ?? '',
-      advice: (isReversed ? dailyCard.advice?.reversed : dailyCard.advice?.upright) ?? '',
-      description: dailyCard.description ?? '',
+        (isReversed ? localizedCard.interpretation?.reversed : localizedCard.interpretation?.upright) ?? '',
+      advice: (isReversed ? localizedCard.advice?.reversed : localizedCard.advice?.upright) ?? '',
+      description: localizedCard.description ?? '',
     }
-  }, [dailyCard, isReversed])
+  }, [localizedCard, isReversed])
 
   useEffect(() => {
     const { card, isReversed: reversed, revealed } = getDailyTarotDraw()
@@ -50,7 +56,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
     }
   }, [])
 
-  if (!dailyCard || !reading) {
+  if (!dailyCard || !localizedCard || !reading) {
     return null
   }
 
@@ -75,9 +81,9 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
     weekday: 'long',
   })
 
-  const typeLabel = dailyCard.type === 'major' ? tx('大阿卡纳', 'Major Arcana') : tx('小阿卡纳', 'Minor Arcana')
-  const cardName = isEnglish ? dailyCard.nameEn : dailyCard.name
-  const altName = isEnglish ? dailyCard.name : dailyCard.nameEn
+  const typeLabel = localizedCard.type === 'major' ? tx('大阿卡纳', 'Major Arcana') : tx('小阿卡纳', 'Minor Arcana')
+  const cardName = isEnglish ? localizedCard.nameEn : localizedCard.name
+  const altName = isEnglish ? localizedCard.name : localizedCard.nameEn
 
   return (
     <section className="tarot-daily-panel" aria-label={tx('每日一牌', 'Daily Draw')}>
@@ -120,7 +126,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
               <aside className="tarot-daily__visual">
                 <div className="tarot-daily__card-frame">
                   <TarotCardVisual
-                    card={dailyCard}
+                    card={localizedCard}
                     faceUp
                     isReversed={isReversed}
                     size="md"
@@ -173,7 +179,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
             </div>
 
             <div className="tarot-daily__actions">
-              <Button variant="primary" onClick={() => onSelectCard(dailyCard, isReversed)}>
+              <Button variant="primary" onClick={() => onSelectCard(localizedCard, isReversed)}>
                 {tx('查看完整牌义', 'View Full Meaning')}
               </Button>
             </div>
