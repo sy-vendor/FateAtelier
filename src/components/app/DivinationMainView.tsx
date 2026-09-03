@@ -245,7 +245,7 @@ function DivinationMainView() {
 
           <Panel title={tx('签诗', 'Poem')}>
             <p className="divination-poem">{stick.poem}</p>
-            {stick.dailyPoem && stick.dailyPoem !== stick.poem && (
+            {!isEnglish && stick.dailyPoem && stick.dailyPoem !== stick.poem && (
               <p className="divination-poem divination-poem--daily">{stick.dailyPoem}</p>
             )}
           </Panel>
@@ -254,9 +254,11 @@ function DivinationMainView() {
             <p className="prose">{stickReading.overview}</p>
           </Panel>
 
-          <Panel title={tx('签诗白话', 'Poem in plain language')}>
-            <p className="prose divination-reading__poem-insight">{stickReading.poemInsight}</p>
-          </Panel>
+          {(!isEnglish || stickReading.poemInsight !== stick.poem) && (
+            <Panel title={tx('签诗白话', 'Poem in plain language')}>
+              <p className="prose divination-reading__poem-insight">{stickReading.poemInsight}</p>
+            </Panel>
+          )}
 
           {stickReading.categoryGuidance && stickReading.categoryLabel && (
             <Panel title={`${tx('所问', 'Question')} · ${stickReading.categoryLabel}`}>

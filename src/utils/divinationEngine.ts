@@ -262,6 +262,8 @@ export function resolveCanonicalStick(stick: DivinationStick): DivinationStick {
     title: locale.titleEn,
     poem: locale.plainPoemEn,
     plainPoem: locale.plainPoemEn,
+    // Classical Chinese couplets stay Chinese-only; do not surface them in EN UI.
+    dailyPoem: undefined,
     interpretation: locale.interpretationEn,
     advice: locale.adviceEn,
     story: locale.storyEn,
