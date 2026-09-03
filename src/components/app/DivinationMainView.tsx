@@ -230,7 +230,19 @@ function DivinationMainView() {
       {showResult && stickReading && stick && (
         <section className="divination-result" aria-label={tx('签文结果', 'Oracle result')}>
           <div className="divination-result__banner">
-            <div className="divination-result__num">{tx(`第${stick.id}签`, `Stick #${stick.id}`)}</div>
+            <div
+              className={`divination-result__num${isEnglish ? ' divination-result__num--en' : ''}`}
+              aria-label={tx(`第${stick.id}签`, `Stick #${stick.id}`)}
+            >
+              {isEnglish ? (
+                <>
+                  <span className="divination-result__num-kicker">Stick</span>
+                  <span className="divination-result__num-id">#{stick.id}</span>
+                </>
+              ) : (
+                `第${stick.id}签`
+              )}
+            </div>
             <div>
               <h2 className="divination-result__title">{stick.title}</h2>
               <p className="divination-result__sub">{stickReading.timing}</p>

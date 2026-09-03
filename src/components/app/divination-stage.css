@@ -449,14 +449,41 @@
   place-items: center;
   width: 64px;
   height: 64px;
+  box-sizing: border-box;
+  padding: 6px;
   border-radius: 50%;
   border: 2px solid rgba(120, 190, 140, 0.4);
   background: rgba(90, 160, 120, 0.1);
   font-family: var(--ds-font-display);
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
   color: var(--ds-text-primary);
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.divination-result__num--en {
+  align-content: center;
+  gap: 1px;
+}
+
+.divination-result__num-kicker {
+  display: block;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ds-text-muted);
+  line-height: 1;
+}
+
+.divination-result__num-id {
+  display: block;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.1;
 }
 
 .divination-result__title {
