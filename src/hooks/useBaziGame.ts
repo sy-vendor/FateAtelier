@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { tianganWuxing } from '../utils/constants'
 import {
   BAZI_PHASE_STEP,
@@ -11,9 +11,11 @@ import {
   resolveBirthDate,
   type CalendarType,
 } from '../utils/birthDateUtils'
+import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
 
 export function useBaziGame() {
+  const { isEnglish } = useLocale()
   const [calendarType, setCalendarType] = useState<CalendarType>('solar')
   const [solarYear, setSolarYear] = useState('')
   const [solarMonth, setSolarMonth] = useState('')
@@ -40,8 +42,8 @@ export function useBaziGame() {
     setPhase((p) => (p === 'idle' ? 'birth' : p))
   }, [])
 
-  const calculateFortune = useCallback(() => {
-    const resolved = resolveBirthDate({
+  const resolveCurrentBirth = useCallback(() => {
+    return resolveBirthDate({
       calendarType,
       solarYear,
       solarMonth,
@@ -51,6 +53,19 @@ export function useBaziGame() {
       lunarDay,
       isLunarLeapMonth,
     })
+  }, [
+    calendarType,
+    solarYear,
+    solarMonth,
+    solarDay,
+    lunarYear,
+    lunarMonth,
+    lunarDay,
+    isLunarLeapMonth,
+  ])
+
+  const calculateFortune = useCallback(() => {
+    const resolved = resolveCurrentBirth()
 
     if ('error' in resolved) {
       setInputError(txStatic(resolved.error, 'Please enter a valid birth date'))
@@ -69,18 +84,15 @@ export function useBaziGame() {
     setResult(fortune)
     setPhase('insight')
     window.setTimeout(scrollToInsight, 80)
-  }, [
-    calendarType,
-    solarYear,
-    solarMonth,
-    solarDay,
-    lunarYear,
-    lunarMonth,
-    lunarDay,
-    isLunarLeapMonth,
-    birthTime,
-    scrollToInsight,
-  ])
+  }, [resolveCurrentBirth, birthTime, scrollToInsight])
+
+  useEffect(() => {
+    if (phase !== 'insight') return
+    const resolved = resolveCurrentBirth()
+    if ('error' in resolved) return
+    const fortune = computeBaziFortune(resolved.date, birthTime)
+    if (fortune) setResult(fortune)
+  }, [isEnglish, phase, resolveCurrentBirth, birthTime])
 
   const dayMasterWuxing = result ? tianganWuxing[result.bazi[2][0]] ?? '—' : '—'
 

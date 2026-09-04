@@ -1,9 +1,11 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { NAME_TEST_PHASE_STEP, type NameTestPhase } from '../utils/nameTestData'
 import { computeNameTest, type NameTestResult } from '../utils/nameTestEngine'
+import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
 
 export function useNameTestGame() {
+  const { isEnglish } = useLocale()
   const [surname, setSurname] = useState('')
   const [givenName, setGivenName] = useState('')
   const [phase, setPhase] = useState<NameTestPhase>('idle')
@@ -34,6 +36,14 @@ export function useNameTestGame() {
     setPhase('insight')
     window.setTimeout(scrollToInsight, 80)
   }, [surname, givenName, scrollToInsight])
+
+  useEffect(() => {
+    if (phase !== 'insight') return
+    const s = surname.trim()
+    const g = givenName.trim()
+    if (!s || !g) return
+    setResult(computeNameTest(s, g))
+  }, [isEnglish, phase, surname, givenName])
 
   const onSurnameChange = (v: string) => {
     setSurname(v)

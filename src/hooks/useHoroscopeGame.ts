@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { toast } from '../utils/toast'
 import { digitsOnly, type CalendarType } from '../utils/birthDateUtils'
 import { lunarToSolar } from '../utils/lunarCalendar'
@@ -52,7 +52,7 @@ export function useHoroscopeGame() {
   const result = useMemo(() => {
     const seed = getHoroscopeSeed(today, signIndex, period)
     return generateHoroscope(seed, sign.element)
-  }, [today, signIndex, period, sign.element])
+  }, [today, signIndex, period, sign.element, isEnglish])
 
   const ritualStep = useMemo((): 1 | 2 | 3 | 4 => {
     if (pairingResult) return 4
@@ -179,6 +179,11 @@ export function useHoroscopeGame() {
       toast.warning(isEnglish ? 'Please choose two zodiac signs' : '请选择两个星座')
     }
   }, [pairingSign1, pairingSign2, isEnglish])
+
+  useEffect(() => {
+    if (pairingSign1 === null || pairingSign2 === null) return
+    setPairingResult((previous) => (previous ? analyzeZodiacPairing(pairingSign1, pairingSign2) : previous))
+  }, [isEnglish, pairingSign1, pairingSign2])
 
   return {
     period,

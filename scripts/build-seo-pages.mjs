@@ -56,6 +56,7 @@ function writeRouteHtml(route, html) {
 }
 
 function applyShell(html, { title, description, url, lang, locale, hreflangRoute, jsonLd, body }) {
+  const brand = lang === 'en' ? 'Fate Atelier' : '命运工坊'
   let next = html
     .replace(/<html lang="[^"]*"/, `<html lang="${lang}"`)
     .replace(/<title>.*?<\/title>/, `<title>${escapeHtml(title)}</title>`)
@@ -66,6 +67,12 @@ function applyShell(html, { title, description, url, lang, locale, hreflangRoute
     .replace(/<meta property="og:title" content="[^"]*"\s*\/>/, `<meta property="og:title" content="${escapeHtml(title)}" />`)
     .replace(/<meta property="og:description" content="[^"]*"\s*\/>/, `<meta property="og:description" content="${escapeHtml(description)}" />`)
     .replace(/<meta property="og:locale" content="[^"]*"\s*\/>/, `<meta property="og:locale" content="${locale}" />`)
+    .replace(/<meta property="og:image:alt" content="[^"]*"\s*\/>/, `<meta property="og:image:alt" content="${escapeHtml(brand)}" />`)
+    .replace(/<meta property="og:site_name" content="[^"]*"\s*\/>/, `<meta property="og:site_name" content="${escapeHtml(brand)}" />`)
+    .replace(/<meta name="twitter:url" content="[^"]*"\s*\/>/, `<meta name="twitter:url" content="${url}" />`)
+    .replace(/<meta name="twitter:title" content="[^"]*"\s*\/>/, `<meta name="twitter:title" content="${escapeHtml(title)}" />`)
+    .replace(/<meta name="twitter:description" content="[^"]*"\s*\/>/, `<meta name="twitter:description" content="${escapeHtml(description)}" />`)
+    .replace(/<meta name="twitter:image:alt" content="[^"]*"\s*\/>/, `<meta name="twitter:image:alt" content="${escapeHtml(brand)}" />`)
     .replace('<div id="root"></div>', body)
   const headExtras = [
     hreflangRoute != null ? hreflangBlock(hreflangRoute) : '',

@@ -40,7 +40,7 @@ function getLinkedStick(): DivinationStick | null {
 }
 
 export function useDivinationGame() {
-  const { isEnglish } = useLocale()
+  const { isEnglish, enPackVersion } = useLocale()
   const linkedStick = useMemo(getLinkedStick, [])
   const [phase, setPhase] = useState<DrawPhase>(linkedStick ? 'done' : 'intent')
   const [isShaking, setIsShaking] = useState(false)
@@ -166,7 +166,7 @@ export function useDivinationGame() {
   const stickReading = useMemo((): StickReading | null => {
     if (!drawnStick) return null
     return rehydrateStickReading(drawnStick, selectedCategory || undefined)
-  }, [drawnStick, selectedCategory, isEnglish])
+  }, [drawnStick, selectedCategory, isEnglish, enPackVersion])
 
   const toggleFavorite = useCallback((stickId: number) => {
     setFavorites((prev) => {

@@ -1,7 +1,7 @@
 import { tarotCards, type TarotCard } from '../data/tarotCards'
-import { tarotCardsEn } from '../data/tarotCards.en'
 import type { DrawnCard } from '../types'
 import { isEnglishLocale } from '../i18n/locale'
+import { getEnLocalePacks } from '../i18n/enLocalePacks'
 
 /** 用当前牌库回填历史记录里可能缺失字段的旧牌数据（文案随当前语言切换，不沿用旧语言快照） */
 export function resolveCanonicalTarotCard(card: TarotCard | Partial<TarotCard> & { id: number }): TarotCard {
@@ -10,7 +10,7 @@ export function resolveCanonicalTarotCard(card: TarotCard | Partial<TarotCard> &
     return card as TarotCard
   }
 
-  const en = isEnglishLocale() ? tarotCardsEn[canonical.id] : undefined
+  const en = isEnglishLocale() ? getEnLocalePacks()?.tarotCardsEn[canonical.id] : undefined
   return {
     ...canonical,
     ...card,

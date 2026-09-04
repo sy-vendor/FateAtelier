@@ -1,6 +1,5 @@
 import type { DivinationStick } from '../data/divinationSticks'
 import { divinationSticks } from '../data/divinationSticks'
-import { divinationSticksEn } from '../data/divinationSticks.en'
 import {
   CATEGORY_DETAIL_KEYS,
   DEFAULT_DETAIL_BY_LEVEL,
@@ -10,6 +9,7 @@ import {
   type DetailField,
 } from './divinationData'
 import { isEnglishLocale } from '../i18n/locale'
+import { getEnLocalePacks } from '../i18n/enLocalePacks'
 
 export interface ReadingAspect {
   label: string
@@ -254,7 +254,7 @@ export function resolveCanonicalStick(stick: DivinationStick): DivinationStick {
   const canonical = divinationSticks.find((s) => s.id === stick.id) ?? stick
   if (!isEnglishLocale()) return canonical
 
-  const locale = divinationSticksEn[canonical.id]
+  const locale = getEnLocalePacks()?.divinationSticksEn[canonical.id]
   if (!locale) return canonical
 
   return {
@@ -283,7 +283,7 @@ function buildPoemInsight(stick: DivinationStick): string {
 function buildOverview(stick: DivinationStick, category?: string): string {
   if (isEnglishLocale()) {
     const metaEn = LEVEL_META_EN[stick.level] ?? LEVEL_META_EN['中']
-    const levelEn = divinationSticksEn[stick.id]?.levelEn ?? stick.level
+    const levelEn = getEnLocalePacks()?.divinationSticksEn[stick.id]?.levelEn ?? stick.level
     const core = cleanRepetitiveText(stick.interpretation, stick.title)
 
     const openings = [

@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { digitsOnly } from '../utils/birthDateUtils'
 import { DIRECTION_ANGLES, QIMEN_PHASE_STEP, type QimenPhase } from '../utils/qimenData'
 import { calculateQimenPan } from '../utils/qimenEngine'
+import { useLocale } from '../i18n/LocaleContext'
 
 function parseDateParts(year: string, month: string, day: string, hour: string) {
   const y = parseInt(year, 10)
@@ -14,6 +15,7 @@ function parseDateParts(year: string, month: string, day: string, hour: string) 
 }
 
 export function useQimenGame() {
+  const { isEnglish } = useLocale()
   const today = new Date()
   const [queryYear, setQueryYear] = useState(String(today.getFullYear()))
   const [queryMonth, setQueryMonth] = useState(String(today.getMonth() + 1))
@@ -40,7 +42,7 @@ export function useQimenGame() {
       dateParts.hour,
       selectedDirection,
     )
-  }, [dateParts, selectedDirection])
+  }, [dateParts, selectedDirection, isEnglish])
 
   const selectedPalace = useMemo(() => {
     if (!result) return null

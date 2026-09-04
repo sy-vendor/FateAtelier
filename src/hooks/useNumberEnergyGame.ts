@@ -6,9 +6,11 @@ import {
   type NumberType,
 } from '../utils/numberEnergyData'
 import { analyzeNumberEnergy, validateNumberInput } from '../utils/numberEnergyEngine'
+import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
 
 export function useNumberEnergyGame() {
+  const { isEnglish } = useLocale()
   const [input, setInput] = useState('')
   const [selectedType, setSelectedType] = useState<NumberType>('phone')
   const [showDetails, setShowDetails] = useState<Record<string, boolean>>({})
@@ -19,12 +21,12 @@ export function useNumberEnergyGame() {
   const inputError = useMemo(() => {
     if (!hasAnalyzed) return ''
     return validateNumberInput(input, selectedType)
-  }, [input, selectedType, hasAnalyzed])
+  }, [input, selectedType, hasAnalyzed, isEnglish])
 
   const analysis = useMemo(() => {
     if (!hasAnalyzed || inputError) return null
     return analyzeNumberEnergy(input, selectedType)
-  }, [input, selectedType, hasAnalyzed, inputError])
+  }, [input, selectedType, hasAnalyzed, inputError, isEnglish])
 
   const phase: NumberEnergyPhase = useMemo(() => {
     if (!input.trim()) return 'input'

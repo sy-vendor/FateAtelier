@@ -1,7 +1,7 @@
 import type { MatchedDreamSymbol } from '../data/dreamSymbols'
 import { dreamSymbols, findDreamSymbols } from '../data/dreamSymbols'
-import { dreamSymbolsEn } from '../data/dreamSymbols.en'
 import { isEnglishLocale } from '../i18n/locale'
+import { getEnLocalePacks } from '../i18n/enLocalePacks'
 
 const MOOD_META: Record<
   string,
@@ -138,7 +138,7 @@ function localizeMatchedSymbols(symbols: MatchedDreamSymbol[], isEnglish: boolea
 
   return symbols.map((symbol) => {
     const index = dreamSymbols.findIndex((item) => item.keywords[0] === symbol.keywords[0])
-    const locale = index >= 0 ? dreamSymbolsEn[index] : undefined
+    const locale = index >= 0 ? getEnLocalePacks()?.dreamSymbolsEn[index] : undefined
     if (!locale) return symbol
 
     return {
@@ -197,7 +197,7 @@ function buildThemes(symbols: MatchedDreamSymbol[], isEnglish: boolean): string 
 function categoryKeyOf(symbol: MatchedDreamSymbol): string {
   const index = dreamSymbols.findIndex((item) => item.keywords[0] === symbol.keywords[0])
   if (index >= 0) {
-    return dreamSymbolsEn[index]?.categoryKey ?? dreamSymbols[index].category
+    return getEnLocalePacks()?.dreamSymbolsEn[index]?.categoryKey ?? dreamSymbols[index].category
   }
   return symbol.category
 }

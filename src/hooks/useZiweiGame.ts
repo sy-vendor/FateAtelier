@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { calculateYearPillar, calculateDayPillar } from '../utils/bazi'
 import {
   ZIWEI_PHASE_STEP,
@@ -11,9 +11,11 @@ import {
   resolveBirthDate,
   type CalendarType,
 } from '../utils/birthDateUtils'
+import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
 
 export function useZiweiGame() {
+  const { isEnglish } = useLocale()
   const [calendarType, setCalendarType] = useState<CalendarType>('lunar')
   const [solarYear, setSolarYear] = useState('')
   const [solarMonth, setSolarMonth] = useState('')
@@ -41,8 +43,8 @@ export function useZiweiGame() {
     setPhase((p) => (p === 'idle' ? 'birth' : p))
   }, [])
 
-  const calculateChart = useCallback(() => {
-    const resolved = resolveBirthDate({
+  const resolveCurrentBirth = useCallback(() => {
+    return resolveBirthDate({
       calendarType,
       solarYear,
       solarMonth,
@@ -52,6 +54,19 @@ export function useZiweiGame() {
       lunarDay,
       isLunarLeapMonth,
     })
+  }, [
+    calendarType,
+    solarYear,
+    solarMonth,
+    solarDay,
+    lunarYear,
+    lunarMonth,
+    lunarDay,
+    isLunarLeapMonth,
+  ])
+
+  const calculateChart = useCallback(() => {
+    const resolved = resolveCurrentBirth()
 
     if ('error' in resolved) {
       setInputError(txStatic(resolved.error, 'Please enter a valid birth date'))
@@ -76,18 +91,23 @@ export function useZiweiGame() {
     setFocusedPalaceIndex(0)
     setPhase('insight')
     window.setTimeout(scrollToInsight, 80)
-  }, [
-    calendarType,
-    solarYear,
-    solarMonth,
-    solarDay,
-    lunarYear,
-    lunarMonth,
-    lunarDay,
-    isLunarLeapMonth,
-    birthTime,
-    scrollToInsight,
-  ])
+  }, [resolveCurrentBirth, birthTime, scrollToInsight])
+
+  useEffect(() => {
+    if (phase !== 'insight') return
+    const resolved = resolveCurrentBirth()
+    if ('error' in resolved) return
+    const yearPillar = calculateYearPillar(resolved.date)
+    const dayPillar = calculateDayPillar(resolved.date)
+    setResult(buildZiweiChart(
+      yearPillar,
+      dayPillar,
+      resolved.lunarYear,
+      resolved.lunarMonth,
+      resolved.lunarDay,
+      birthTime,
+    ))
+  }, [isEnglish, phase, resolveCurrentBirth, birthTime])
 
   const shenGongPalaceIndex = result
     ? (result.shenGong - result.mingGong + 12) % 12

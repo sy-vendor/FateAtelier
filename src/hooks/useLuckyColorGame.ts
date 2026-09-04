@@ -15,9 +15,11 @@ import {
   getZodiacSignByDate,
 } from '../utils/luckyColorEngine'
 import { toast } from '../utils/toast'
+import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
 
 export function useLuckyColorGame() {
+  const { isEnglish } = useLocale()
   const today = new Date()
   const [queryYear, setQueryYear] = useState(String(today.getFullYear()))
   const [queryMonth, setQueryMonth] = useState(String(today.getMonth() + 1))
@@ -101,12 +103,13 @@ export function useLuckyColorGame() {
     zodiacSign,
     shengxiao,
     selectedDate,
+    isEnglish,
   ])
 
   const luckyColor = useMemo(() => {
     if (personalizedResult) return personalizedResult.color
     return generateLuckyColor(selectedDate)
-  }, [selectedDate, personalizedResult])
+  }, [selectedDate, personalizedResult, isEnglish])
 
   const secondaryColor = useMemo(
     () => getSecondaryColor(luckyColor, selectedDate),

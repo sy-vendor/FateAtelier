@@ -24,7 +24,7 @@ function rehydrateReadingRecord(reading: ReadingRecord): ReadingRecord {
 }
 
 export function useTarotGame() {
-  const { isEnglish } = useLocale()
+  const { isEnglish, enPackVersion } = useLocale()
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
   const [selectedCard, setSelectedCard] = useState<DrawnCard | null>(null)
   const [threeCardReading, setThreeCardReading] = useState<DrawnCard[] | null>(null)
@@ -76,7 +76,7 @@ export function useTarotGame() {
       return generateThreeCardReading(threeCardReading, readingType, question, isEnglish)
     }
     return null
-  }, [threeCardReading, selectedReadingType, customQuestion, viewingHistoryReading, isEnglish])
+  }, [threeCardReading, selectedReadingType, customQuestion, viewingHistoryReading, isEnglish, enPackVersion])
 
   const drawCard = useCallback(() => {
     if (drawnCards.length >= 78) {

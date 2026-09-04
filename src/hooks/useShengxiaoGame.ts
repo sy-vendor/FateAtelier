@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { SHENGXIAO_LIST, SHENGXIAO_PHASE_STEP, shengxiaoLabel, type ShengxiaoPhase } from '../utils/shengxiaoData'
 import { analyzePairing, type ShengxiaoPairingResult } from '../utils/shengxiaoEngine'
-import { isEnglishLocale, txStatic } from '../i18n/locale'
+import { txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
 
 export function useShengxiaoGame() {
@@ -59,7 +59,7 @@ export function useShengxiaoGame() {
 
   const shengxiaoChips = SHENGXIAO_LIST.map((sx) => ({
     id: sx,
-    label: shengxiaoLabel(sx, isEnglishLocale()),
+    label: shengxiaoLabel(sx, isEnglish),
   }))
 
   return {

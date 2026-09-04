@@ -10,9 +10,9 @@ import { getStorageItem, setStorageItem } from '../utils/storage'
 import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
 import { dreamSymbols } from '../data/dreamSymbols'
-import { dreamSymbolsEn } from '../data/dreamSymbols.en'
 import { isEnglishLocale, txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
+import { getEnLocalePacks } from '../i18n/enLocalePacks'
 
 export interface DreamRecord {
   id: string
@@ -26,14 +26,14 @@ const STORAGE_DEBOUNCE_MS = 400
 const INTERPRET_DELAY_MS = 900
 
 export function useDreamGame() {
-  const { isEnglish } = useLocale()
+  const { isEnglish, enPackVersion } = useLocale()
   const [dreamContent, setDreamContent] = useState(() => {
     const match = window.location.pathname.match(/^\/(?:en\/)?dream\/symbol\/(\d+)\/?$/)
     const index = match ? Number(match[1]) : -1
     const symbol = index >= 0 ? dreamSymbols[index] : undefined
     if (!symbol) return ''
     if (isEnglishLocale()) {
-      const locale = dreamSymbolsEn[index]
+      const locale = getEnLocalePacks()?.dreamSymbolsEn[index]
       const keyword =
         locale?.keywords.find((word) => /^[a-z]/i.test(word)) ??
         locale?.keywords[0] ??
@@ -146,7 +146,7 @@ export function useDreamGame() {
   useEffect(() => {
     if (phase !== 'revealed' || !dreamContent.trim()) return
     setInterpretation(interpretDreamWithMood(dreamContent, selectedMood, isEnglish))
-  }, [isEnglish]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isEnglish, enPackVersion]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleDeleteHistory = useCallback(async (id: string) => {
     const confirmed = await confirm({

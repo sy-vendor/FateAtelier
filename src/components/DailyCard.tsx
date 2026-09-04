@@ -20,7 +20,7 @@ function splitKeywords(raw: string): string[] {
 }
 
 function DailyCard({ onSelectCard }: DailyCardProps) {
-  const { isEnglish } = useLocale()
+  const { isEnglish, enPackVersion } = useLocale()
   const tx = useTx()
   const [dailyCard, setDailyCard] = useState<TarotCard | null>(null)
   const [isReversed, setIsReversed] = useState(false)
@@ -30,7 +30,7 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
 
   const localizedCard = useMemo(
     () => (dailyCard ? resolveCanonicalTarotCard(dailyCard) : null),
-    [dailyCard, isEnglish],
+    [dailyCard, isEnglish, enPackVersion],
   )
 
   const reading = useMemo(() => {

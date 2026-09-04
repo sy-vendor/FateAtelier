@@ -16,7 +16,7 @@ import { OracleVessel } from '../divination/OracleVessel'
 import { Panel, Button, Segmented, Collapsible } from '../ui'
 import { useLocale } from '../../i18n/LocaleContext'
 import { useTx } from '../../i18n/useTx'
-import { divinationSticksEn } from '../../data/divinationSticks.en'
+import { getEnLocalePacks } from '../../i18n/enLocalePacks'
 import './divination-stage.css'
 import NextJourney from './NextJourney'
 
@@ -91,6 +91,9 @@ function DivinationMainView() {
   } = useDivinationGame()
 
   const stick = stickReading?.stick
+  const stickLevelLabel = stick
+    ? (isEnglish ? (getEnLocalePacks()?.divinationSticksEn[stick.id]?.levelEn ?? stick.level) : stick.level)
+    : ''
 
   const categoryOptions = useMemo(
     () => CATEGORY_OPTIONS.map((o) => ({
@@ -251,7 +254,7 @@ function DivinationMainView() {
               className="divination-level-tag"
               style={{ background: getLevelColor(stick.level) }}
             >
-              {isEnglish ? (divinationSticksEn[stick.id]?.levelEn ?? stick.level) : stick.level}
+              {stickLevelLabel}
             </span>
           </div>
 
@@ -432,7 +435,9 @@ function DivinationMainView() {
                           className="divination-level-tag"
                           style={{ background: getLevelColor(item.stick.level), fontSize: '0.72rem', padding: '4px 10px' }}
                         >
-                          {isEnglish ? (divinationSticksEn[item.stick.id]?.levelEn ?? item.stick.level) : item.stick.level}
+                          {isEnglish
+                            ? (getEnLocalePacks()?.divinationSticksEn[item.stick.id]?.levelEn ?? item.stick.level)
+                            : item.stick.level}
                         </span>
                         <Button variant="ghost" small onClick={() => toggleFavorite(item.stick.id)}>
                           {favorites.has(item.stick.id) ? tx('已收藏', 'Saved') : tx('收藏', 'Save')}

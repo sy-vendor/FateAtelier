@@ -5,6 +5,7 @@ import {
   getTodayAuspiciousDirections,
   recommendDirectionForPurpose,
 } from '../utils/fengshuiEngine'
+import { useLocale } from '../i18n/LocaleContext'
 
 export const DIRECTION_GRID: Record<string, string> = {
   西北: 'nw',
@@ -18,13 +19,14 @@ export const DIRECTION_GRID: Record<string, string> = {
 }
 
 export function useFengshuiGame() {
+  const { isEnglish } = useLocale()
   const [selectedDirection, setSelectedDirection] = useState<string | null>(null)
   const [selectedPurpose, setSelectedPurpose] = useState('')
 
   const todayDirections = useMemo(() => getTodayAuspiciousDirections(), [])
   const interpretation = useMemo(
     () => (selectedDirection ? getDirectionInterpretation(selectedDirection) : null),
-    [selectedDirection]
+    [selectedDirection, isEnglish],
   )
 
   const phase: FengshuiPhase = useMemo(() => {

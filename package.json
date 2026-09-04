@@ -15,12 +15,12 @@
     "build:tarot-images": "node scripts/build-tarot-images.mjs"
   },
   "dependencies": {
-    "@cometpisces/tarot-kit-images": "^0.2.0",
     "@vercel/analytics": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@cometpisces/tarot-kit-images": "^0.2.0",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@typescript-eslint/eslint-plugin": "^6.14.0",

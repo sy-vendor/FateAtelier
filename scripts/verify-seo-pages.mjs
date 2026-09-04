@@ -43,8 +43,11 @@ for (const hreflang of ['zh-CN', 'en', 'x-default']) {
   }
 }
 const featureEnHtml = fs.readFileSync(path.join(dist, 'en/tarot/index.html'), 'utf8')
-if (!featureEnHtml.includes('hreflang="zh-CN"') || !featureEnHtml.includes('lang="en"')) {
+  if (!featureEnHtml.includes('hreflang="zh-CN"') || !featureEnHtml.includes('lang="en"')) {
   throw new Error('English feature page missing hreflang or lang=en')
+}
+if (!featureEnHtml.includes('twitter:title') || !featureEnHtml.includes('Free Online Tarot Reading')) {
+  throw new Error('English feature page missing localized Twitter title')
 }
 const detailEnHtml = fs.readFileSync(path.join(dist, 'en/tarot/card/0/index.html'), 'utf8')
 if (!detailEnHtml.includes('hreflang="zh-CN"') || !detailEnHtml.includes('lang="en"')) {
