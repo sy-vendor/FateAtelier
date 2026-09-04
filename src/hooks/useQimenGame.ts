@@ -3,6 +3,8 @@ import { digitsOnly } from '../utils/birthDateUtils'
 import { DIRECTION_ANGLES, QIMEN_PHASE_STEP, type QimenPhase } from '../utils/qimenData'
 import { calculateQimenPan } from '../utils/qimenEngine'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
+import { trackFeatureStart } from '../utils/analytics'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 function parseDateParts(year: string, month: string, day: string, hour: string) {
@@ -17,6 +19,7 @@ function parseDateParts(year: string, month: string, day: string, hour: string) 
 
 export function useQimenGame() {
   const { isEnglish } = useLocale()
+  const localeKey = localeMemoKey(isEnglish)
   const today = new Date()
   const [queryYear, setQueryYear] = useState(String(today.getFullYear()))
   const [queryMonth, setQueryMonth] = useState(String(today.getMonth() + 1))
@@ -36,14 +39,17 @@ export function useQimenGame() {
 
   const result = useMemo(() => {
     if (!dateParts) return null
-    return calculateQimenPan(
-      dateParts.year,
-      dateParts.month,
-      dateParts.day,
-      dateParts.hour,
-      selectedDirection,
+    return withLocaleKey(
+      localeKey,
+      calculateQimenPan(
+        dateParts.year,
+        dateParts.month,
+        dateParts.day,
+        dateParts.hour,
+        selectedDirection,
+      ),
     )
-  }, [dateParts, selectedDirection, isEnglish])
+  }, [dateParts, selectedDirection, localeKey])
 
   const selectedPalace = useMemo(() => {
     if (!result) return null
@@ -102,6 +108,7 @@ export function useQimenGame() {
       setSelectedDirection(direction)
       setFocusedPalaceIndex(index)
       setPhase('insight')
+      trackFeatureStart('qimen', direction)
       markDailyJourneyComplete('qimen')
       window.setTimeout(scrollToInsight, 80)
     },

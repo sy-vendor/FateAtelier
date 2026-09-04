@@ -18,6 +18,7 @@ import {
 } from '../utils/cyberMeritEngine'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { txStatic } from '../i18n/locale'
+import { trackFeatureStart } from '../utils/analytics'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 function loadCount(key: string): number {
@@ -99,6 +100,7 @@ export function useCyberMeritGame() {
         return { ...prev, [type]: newCount }
       })
       setSessionActions((n) => n + 1)
+      if (sessionActions === 0) trackFeatureStart('cybermerit', type)
       markDailyJourneyComplete('cybermerit')
 
       const message = getRandomMessage(type)
@@ -115,7 +117,7 @@ export function useCyberMeritGame() {
         }, 200)
       }
     },
-    [addFloatingText, saveCount]
+    [addFloatingText, saveCount, sessionActions]
   )
 
   const knockWoodfish = useCallback(

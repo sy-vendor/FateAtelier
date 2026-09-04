@@ -8,10 +8,13 @@ import {
 import { calculateDayPillar, getAuspiciousShichens } from '../utils/auspiciousEngine'
 import { txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
+import { trackFeatureStart } from '../utils/analytics'
 
 export function useAuspiciousGame() {
   const { isEnglish } = useLocale()
+  const localeKey = localeMemoKey(isEnglish)
   const today = new Date()
   const [queryYear, setQueryYear] = useState(String(today.getFullYear()))
   const [queryMonth, setQueryMonth] = useState(String(today.getMonth() + 1))
@@ -42,8 +45,8 @@ export function useAuspiciousGame() {
   )
 
   const auspiciousShichens = useMemo(
-    () => (dateObj ? getAuspiciousShichens(dateObj, selectedEventType) : []),
-    [dateObj, selectedEventType, isEnglish]
+    () => withLocaleKey(localeKey, dateObj ? getAuspiciousShichens(dateObj, selectedEventType) : []),
+    [dateObj, selectedEventType, localeKey],
   )
 
   const goodShichens = auspiciousShichens.filter((s) => s.result.isGood)
@@ -85,6 +88,7 @@ export function useAuspiciousGame() {
     setDateTouched(true)
     setEventTouched(true)
     setHasScanned(true)
+    trackFeatureStart('auspicious', selectedEventType)
     markDailyJourneyComplete('auspicious')
   }
 

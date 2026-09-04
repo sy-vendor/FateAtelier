@@ -98,6 +98,9 @@ function stripTemplateNoise(html, lang = 'en') {
     : '<noscript><p><strong>命运工坊</strong> — 免费、无广告、无需注册的在线占卜与命理工具。请启用 JavaScript 以完整体验。</p></noscript>'
   return html
     .replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>\s*/g, '')
+    // Prevent duplicate hreflang when the template or a prior pass already injected alternates.
+    .replace(/<link\s+[^>]*rel=["']alternate["'][^>]*>\s*/gi, '')
+    .replace(/<link\s+[^>]*hreflang=["'][^"']*["'][^>]*>\s*/gi, '')
     .replace(
       /<noscript>[\s\S]*?<\/noscript>/,
       noscript,
@@ -303,9 +306,6 @@ function homeToolList(entries, english) {
   ]
   const homePath = path.join(dist, 'index.html')
   let home = fs.readFileSync(homePath, 'utf8')
-  if (!home.includes('hreflang="en"')) {
-    home = home.replace('</head>', `    ${hreflangBlock('')}\n  </head>`)
-  }
   const seoBody = `<div id="root"><main class="seo-entry"><h1>Fate Atelier</h1><p>${escapeHtml(description)}</p><h2>About the workshop</h2><p>${escapeHtml(intro)}</p><h2>${howTitle}</h2><ol>${howSteps.map((step) => `<li>${escapeHtml(step)}</li>`).join('')}</ol><h2>Explore tools</h2><ul>${homeToolList(pagesEn, true)}</ul><h2>Guides &amp; trust</h2><ul><li><a href="/guides">English divination guides</a></li><li><a href="/methodology">Methodology</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/disclaimer">Disclaimer</a></li><li><a href="/about">About</a></li></ul><p><a href="/zh">中文版</a></p></main></div>`
   home = applyShell(home.includes('<div id="root"></div>') ? home : home.replace(/<div id="root">[\s\S]*?<\/div>/, '<div id="root"></div>'), {
     title,

@@ -13,6 +13,7 @@ import {
 } from '../utils/birthDateUtils'
 import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
+import { trackFeatureStart } from '../utils/analytics'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export function useBaziGame() {
@@ -84,6 +85,7 @@ export function useBaziGame() {
 
     setResult(fortune)
     setPhase('insight')
+    trackFeatureStart('bazi')
     markDailyJourneyComplete('bazi')
     window.setTimeout(scrollToInsight, 80)
   }, [resolveCurrentBirth, birthTime, scrollToInsight])

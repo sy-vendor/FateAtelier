@@ -58,8 +58,10 @@ function HomeMainView({ onNavigate }: HomeMainViewProps) {
   const [reflectPage, setReflectPage] = useState<FeaturePage>('tarot')
   const [journalTick, setJournalTick] = useState(0)
 
-  const recent = useMemo(() => listRecentCompletions(6), [journalTick])
-  const week = useMemo(() => listWeekEntries(), [journalTick])
+  // journalTick forces a re-read after saves without fake memo deps
+  void journalTick
+  const recent = listRecentCompletions(6)
+  const week = listWeekEntries()
   const intent = INTENT_OPTIONS.find((item) => item.id === intentId) ?? null
 
   const weekStats = useMemo(() => {

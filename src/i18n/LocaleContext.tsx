@@ -129,6 +129,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>
 }
 
+/** Colocated with provider for app DX; not a Fast Refresh concern for this context module. */
+// eslint-disable-next-line react-refresh/only-export-components -- useLocale belongs with LocaleProvider
 export function useLocale(): LocaleContextValue {
   const context = useContext(LocaleContext)
   if (!context) throw new Error('useLocale must be used inside LocaleProvider')

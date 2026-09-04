@@ -11,6 +11,7 @@ import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
 import { txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 import { trackFeatureStart } from '../utils/analytics'
@@ -61,6 +62,7 @@ function capHistory(records: ReadingRecord[]): ReadingRecord[] {
 
 export function useTarotGame() {
   const { isEnglish, enPackVersion } = useLocale()
+  const localeKey = localeMemoKey(isEnglish, enPackVersion)
   const [drawnCards, setDrawnCards] = useState<DrawnCard[]>([])
   const [selectedCard, setSelectedCard] = useState<DrawnCard | null>(null)
   const [threeCardReading, setThreeCardReading] = useState<DrawnCard[] | null>(null)
@@ -115,10 +117,13 @@ export function useTarotGame() {
     if (threeCardReading && threeCardReading.length === 3) {
       const readingType = (viewingHistoryReading?.readingType as ReadingType) || selectedReadingType
       const question = viewingHistoryReading?.customQuestion || customQuestion
-      return generateThreeCardReading(threeCardReading, readingType, question, isEnglish)
+      return withLocaleKey(
+        localeKey,
+        generateThreeCardReading(threeCardReading, readingType, question, isEnglish),
+      )
     }
     return null
-  }, [threeCardReading, selectedReadingType, customQuestion, viewingHistoryReading, isEnglish, enPackVersion])
+  }, [threeCardReading, selectedReadingType, customQuestion, viewingHistoryReading, isEnglish, localeKey])
 
   const drawCard = useCallback(() => {
     if (drawnCards.length >= 78) {

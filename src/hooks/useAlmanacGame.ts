@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { generateAlmanac } from '../utils/almanacEngine'
+import { trackFeatureStart } from '../utils/analytics'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export function useAlmanacGame() {
@@ -26,12 +27,16 @@ export function useAlmanacGame() {
   const handleShichenSelect = (shichen: string) => {
     setSelectedShichen(shichen)
     setEngaged(true)
+    trackFeatureStart('almanac', shichen)
     markDailyJourneyComplete('almanac')
   }
 
   const markEngaged = (value: boolean) => {
     setEngaged(value)
-    if (value) markDailyJourneyComplete('almanac')
+    if (value) {
+      trackFeatureStart('almanac')
+      markDailyJourneyComplete('almanac')
+    }
   }
 
   return {

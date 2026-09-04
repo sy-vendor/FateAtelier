@@ -48,23 +48,36 @@ for (const [route, expected] of checks) {
   }
 }
 
+function assertUniqueHreflang(html, label) {
+  for (const hreflang of ['zh-CN', 'en', 'x-default']) {
+    const count = (html.match(new RegExp(`hreflang="${hreflang}"`, 'g')) || []).length
+    if (count !== 1) {
+      throw new Error(`${label} should have exactly one hreflang=${hreflang}, found ${count}`)
+    }
+  }
+  const xDefault = html.match(/hreflang="x-default"\s+href="([^"]+)"/)
+  if (!xDefault) throw new Error(`${label} missing x-default href`)
+  // English is the default locale: x-default must not point at /zh paths.
+  if (/\/zh(\/|$)/.test(new URL(xDefault[1]).pathname)) {
+    throw new Error(`${label} x-default must point at English URL, got ${xDefault[1]}`)
+  }
+}
+
 const homeHtml = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
 if (!homeHtml.includes('How to explore') || !homeHtml.includes('lang="en"')) {
   throw new Error('English homepage (/) missing How to explore or lang=en')
 }
 if (!homeHtml.includes('ad-free')) throw new Error('English homepage missing ad-free')
+assertUniqueHreflang(homeHtml, 'English homepage')
 
 const zhHomeHtml = fs.readFileSync(path.join(dist, 'zh/index.html'), 'utf8')
 if (!zhHomeHtml.includes('玩法介绍') || !zhHomeHtml.includes('lang="zh-CN"')) {
   throw new Error('Chinese homepage (/zh) missing 玩法介绍 or lang=zh-CN')
 }
+assertUniqueHreflang(zhHomeHtml, 'Chinese homepage')
 
 const featureZhHtml = fs.readFileSync(path.join(dist, 'zh/tarot/index.html'), 'utf8')
-for (const hreflang of ['zh-CN', 'en', 'x-default']) {
-  if (!featureZhHtml.includes(`hreflang="${hreflang}"`)) {
-    throw new Error(`Chinese feature page missing hreflang=${hreflang}`)
-  }
-}
+assertUniqueHreflang(featureZhHtml, 'Chinese feature /zh/tarot')
 const featureEnHtml = fs.readFileSync(path.join(dist, 'tarot/index.html'), 'utf8')
 if (!featureEnHtml.includes('hreflang="zh-CN"') || !featureEnHtml.includes('lang="en"')) {
   throw new Error('English feature page missing hreflang or lang=en')

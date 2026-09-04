@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import { TRUST_PAGES, getTrustPageCopy, type TrustPage } from '../../content/trustPages'
 import type { AppPage } from '../../types/appPage'
 import { useLocale } from '../../i18n/LocaleContext'
 import { useTx } from '../../i18n/useTx'
+import { isAnalyticsEnabled, setAnalyticsEnabled } from '../../utils/analytics'
 import { pagePath } from '../../utils/localePath'
 import './trust-stage.css'
 
@@ -16,6 +18,12 @@ export default function TrustMainView({ page, onNavigate }: TrustMainViewProps) 
   const copy = getTrustPageCopy(page)
   const sections = isEnglish ? copy.sectionsEn : copy.sectionsZh
   const title = isEnglish ? copy.titleEn : copy.titleZh
+  const [analyticsOn, setAnalyticsOn] = useState(() => isAnalyticsEnabled())
+
+  useEffect(() => {
+    if (page !== 'privacy') return
+    setAnalyticsOn(isAnalyticsEnabled())
+  }, [page])
 
   return (
     <article className="trust-stage">
@@ -63,6 +71,28 @@ export default function TrustMainView({ page, onNavigate }: TrustMainViewProps) 
           )}
         </section>
       ))}
+
+      {page === 'privacy' && (
+        <section className="trust-stage__section trust-stage__control">
+          <h3>{tx('匿名使用统计', 'Anonymous analytics')}</h3>
+          <label className="trust-stage__toggle">
+            <input
+              type="checkbox"
+              checked={analyticsOn}
+              onChange={(event) => {
+                const next = event.target.checked
+                setAnalyticsEnabled(next)
+                setAnalyticsOn(next)
+              }}
+            />
+            <span>
+              {analyticsOn
+                ? tx('已开启：页面进入与完成等产品事件会匿名上报', 'On: page enter and complete events are sent anonymously')
+                : tx('已关闭：不加载 Analytics，也不发送产品事件', 'Off: Analytics is not loaded and product events are not sent')}
+            </span>
+          </label>
+        </section>
+      )}
 
       <p className="trust-stage__back">
         <a

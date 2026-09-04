@@ -25,12 +25,8 @@ describe('getZodiacSignByDate', () => {
   })
 
   it('handles cusp-adjacent days consistently', () => {
-    const latePisces = getZodiacSignByDate(3, 20)
-    const earlyAries = getZodiacSignByDate(3, 21)
-    expect(typeof latePisces).toBe('number')
-    expect(typeof earlyAries).toBe('number')
-    expect(latePisces).toBeGreaterThanOrEqual(0)
-    expect(earlyAries).toBeLessThan(12)
+    expect(getZodiacSignByDate(3, 20)).toBe(11) // Pisces
+    expect(getZodiacSignByDate(3, 21)).toBe(0) // Aries
   })
 })
 
@@ -47,6 +43,10 @@ describe('calculateYearPillar', () => {
     const lichun = getLichunDate(2024)
     expect(lichun).toBeInstanceOf(Date)
     expect(Number.isNaN(lichun.getTime())).toBe(false)
+    // Approximate window for Lichun around early February.
+    expect(lichun.getMonth()).toBe(1)
+    expect(lichun.getDate()).toBeGreaterThanOrEqual(3)
+    expect(lichun.getDate()).toBeLessThanOrEqual(5)
   })
 })
 

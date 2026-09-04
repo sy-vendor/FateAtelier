@@ -7,12 +7,14 @@ import {
 } from '../utils/numberEnergyData'
 import { analyzeNumberEnergy, validateNumberInput } from '../utils/numberEnergyEngine'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
 import { txStatic } from '../i18n/locale'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
-import { trackFeatureShare } from '../utils/analytics'
+import { trackFeatureShare, trackFeatureStart } from '../utils/analytics'
 
 export function useNumberEnergyGame() {
   const { isEnglish } = useLocale()
+  const localeKey = localeMemoKey(isEnglish)
   const [input, setInput] = useState('')
   const [selectedType, setSelectedType] = useState<NumberType>('phone')
   const [showDetails, setShowDetails] = useState<Record<string, boolean>>({})
@@ -22,13 +24,13 @@ export function useNumberEnergyGame() {
 
   const inputError = useMemo(() => {
     if (!hasAnalyzed) return ''
-    return validateNumberInput(input, selectedType)
-  }, [input, selectedType, hasAnalyzed, isEnglish])
+    return withLocaleKey(localeKey, validateNumberInput(input, selectedType))
+  }, [input, selectedType, hasAnalyzed, localeKey])
 
   const analysis = useMemo(() => {
     if (!hasAnalyzed || inputError) return null
-    return analyzeNumberEnergy(input, selectedType)
-  }, [input, selectedType, hasAnalyzed, inputError, isEnglish])
+    return withLocaleKey(localeKey, analyzeNumberEnergy(input, selectedType))
+  }, [input, selectedType, hasAnalyzed, inputError, localeKey])
 
   const phase: NumberEnergyPhase = useMemo(() => {
     if (!input.trim()) return 'input'
@@ -61,6 +63,7 @@ export function useNumberEnergyGame() {
       return
     }
     setHasAnalyzed(true)
+    trackFeatureStart('numberenergy', selectedType)
     markDailyJourneyComplete('numberenergy')
   }
 

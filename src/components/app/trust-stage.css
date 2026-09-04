@@ -87,3 +87,25 @@
 .trust-stage__back a:hover {
   text-decoration: underline;
 }
+
+.trust-stage__control {
+  margin-top: var(--ds-space-lg);
+  padding: var(--ds-space-md);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  background: color-mix(in srgb, var(--ds-surface) 88%, transparent);
+}
+
+.trust-stage__toggle {
+  display: flex;
+  gap: var(--ds-space-sm);
+  align-items: flex-start;
+  margin: 0;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.trust-stage__toggle input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}

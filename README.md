@@ -94,7 +94,7 @@ npm run build:tarot-images
 
 ```text
 FateAtelier/
-├── public/                 # robots、基础 sitemap、图标、PWA
+├── public/                 # robots、基础 sitemap、图标
 ├── scripts/                # 数据生成、SEO 构建与校验
 ├── src/
 │   ├── components/

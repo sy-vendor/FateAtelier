@@ -14,6 +14,8 @@ import {
   type PairingResult,
 } from '../utils/horoscopeEngine'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
+import { trackFeatureStart } from '../utils/analytics'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export type BirthQueryResult = {
@@ -31,6 +33,7 @@ function scrollToHoroscopeReading() {
 
 export function useHoroscopeGame() {
   const { isEnglish } = useLocale()
+  const localeKey = localeMemoKey(isEnglish)
   const today = useMemo(() => {
     const d = new Date()
     d.setHours(12, 0, 0, 0)
@@ -57,8 +60,8 @@ export function useHoroscopeGame() {
 
   const result = useMemo(() => {
     const seed = getHoroscopeSeed(today, signIndex, period)
-    return generateHoroscope(seed, sign.element)
-  }, [today, signIndex, period, sign.element, isEnglish])
+    return withLocaleKey(localeKey, generateHoroscope(seed, sign.element))
+  }, [today, signIndex, period, sign.element, localeKey])
 
   const ritualStep = useMemo((): 1 | 2 | 3 | 4 => {
     if (pairingResult) return 4
@@ -103,6 +106,7 @@ export function useHoroscopeGame() {
     if (idx >= 0) {
       setSignIndex(idx)
       setEngaged(true)
+      trackFeatureStart('horoscope', id)
       markDailyJourneyComplete('horoscope')
     }
   }, [])
@@ -154,6 +158,7 @@ export function useHoroscopeGame() {
       setSignIndex(calculatedSign)
       setEngaged(true)
       setBirthQueryResult({ signIndex: calculatedSign })
+      trackFeatureStart('horoscope', 'birth-query')
       markDailyJourneyComplete('horoscope')
       scrollToHoroscopeReading()
       return
@@ -177,6 +182,7 @@ export function useHoroscopeGame() {
         ? `Lunar ${year}-${month}-${day} → Gregorian ${solarDate.getFullYear()}-${solarMonth}-${solarDay}`
         : `农历 ${year}年${isLunarLeapMonth ? '闰' : ''}${month}月${day}日 → 阳历 ${solarDate.getFullYear()}年${solarMonth}月${solarDay}日`,
     })
+    trackFeatureStart('horoscope', 'birth-query')
     markDailyJourneyComplete('horoscope')
     scrollToHoroscopeReading()
   }, [birthYear, birthMonth, birthDay, calendarType, isLunarLeapMonth, isEnglish])

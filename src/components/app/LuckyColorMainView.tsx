@@ -88,12 +88,16 @@ function LuckyColorMainView() {
     { id: 'birth-day', label: tx('日', 'Day'), value: birthDay, ph: '10' },
   ], [tx, birthYear, birthMonth, birthDay])
 
-  const usageItems = useMemo(() => [
-    { title: tx('穿搭', 'Outfit'), text: tx(`选择含有${luckyColor.name}元素的服饰`, `Wear clothing with ${colorText(luckyColor)} tones`) },
-    { title: tx('环境', 'Space'), text: tx(`在空间中点缀${luckyColor.name}装饰`, `Add ${colorText(luckyColor)} accents to your space`) },
-    { title: tx('配饰', 'Accessories'), text: tx(`佩戴${luckyColor.name}色小物件`, `Wear small ${colorText(luckyColor)} accessories`) },
-    { title: tx('搭配', 'Pairing'), text: tx(`与${secondaryColor.name}组合效果更佳`, `Pairs well with ${colorText(secondaryColor)}`) },
-  ], [tx, isEnglish, luckyColor, secondaryColor])
+  const usageItems = useMemo(() => {
+    const label = (color: { name: string; nameEn?: string }) =>
+      isEnglish ? (color.nameEn ?? color.name) : color.name
+    return [
+      { title: tx('穿搭', 'Outfit'), text: tx(`选择含有${luckyColor.name}元素的服饰`, `Wear clothing with ${label(luckyColor)} tones`) },
+      { title: tx('环境', 'Space'), text: tx(`在空间中点缀${luckyColor.name}装饰`, `Add ${label(luckyColor)} accents to your space`) },
+      { title: tx('配饰', 'Accessories'), text: tx(`佩戴${luckyColor.name}色小物件`, `Wear small ${label(luckyColor)} accessories`) },
+      { title: tx('搭配', 'Pairing'), text: tx(`与${secondaryColor.name}组合效果更佳`, `Pairs well with ${label(secondaryColor)}`) },
+    ]
+  }, [tx, isEnglish, luckyColor, secondaryColor])
 
   return (
     <div className="lucky-color-stage">

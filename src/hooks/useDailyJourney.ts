@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { AppPage, FeaturePage } from '../types/appPage'
 import { isFeaturePage } from '../utils/localePath'
 import { getStorageItem, setStorageItem } from '../utils/storage'
-import { DAILY_JOURNEY_COMPLETE_EVENT } from '../utils/dailyJourney'
+import { DAILY_JOURNEY_COMPLETE_EVENT, withCompletedPage } from '../utils/dailyJourney'
 
 interface DailyJourneyState {
   date: string
@@ -74,10 +74,10 @@ export function useDailyJourney(_currentPage: AppPage) {
     const onComplete = (event: Event) => {
       const page = (event as CustomEvent<AppPage>).detail
       if (!page || !isFeaturePage(page)) return
-      setState((previous) => {
-        if (previous.completed.includes(page)) return previous
-        return { ...previous, completed: [...previous.completed, page] }
-      })
+      setState((previous) => ({
+        ...previous,
+        completed: withCompletedPage(previous.completed, page),
+      }))
     }
     window.addEventListener(DAILY_JOURNEY_COMPLETE_EVENT, onComplete)
     return () => window.removeEventListener(DAILY_JOURNEY_COMPLETE_EVENT, onComplete)

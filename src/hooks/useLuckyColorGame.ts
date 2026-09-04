@@ -16,12 +16,14 @@ import {
 } from '../utils/luckyColorEngine'
 import { toast } from '../utils/toast'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
 import { txStatic } from '../i18n/locale'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
-import { trackFeatureShare } from '../utils/analytics'
+import { trackFeatureShare, trackFeatureStart } from '../utils/analytics'
 
 export function useLuckyColorGame() {
   const { isEnglish } = useLocale()
+  const localeKey = localeMemoKey(isEnglish)
   const today = useMemo(() => new Date(), [])
   const [queryYear, setQueryYear] = useState(String(today.getFullYear()))
   const [queryMonth, setQueryMonth] = useState(String(today.getMonth() + 1))
@@ -44,14 +46,20 @@ export function useLuckyColorGame() {
   const setShowDetails = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
     setShowDetailsState((prev) => {
       const next = typeof value === 'function' ? value(prev) : value
-      if (next) markDailyJourneyComplete('luckycolor')
+      if (next) {
+        trackFeatureStart('luckycolor')
+        markDailyJourneyComplete('luckycolor')
+      }
       return next
     })
   }, [])
 
   const setSelectedTimeSlot = useCallback((value: string | null) => {
     setSelectedTimeSlotState(value)
-    if (value) markDailyJourneyComplete('luckycolor')
+    if (value) {
+      trackFeatureStart('luckycolor', value)
+      markDailyJourneyComplete('luckycolor')
+    }
   }, [])
 
   const selectedDate = useMemo(() => {
@@ -107,7 +115,7 @@ export function useLuckyColorGame() {
       sx = dizhiToShengxiao[yearPillar[1]]
     }
 
-    return generatePersonalizedLuckyColor(selectedDate, birth, zodiac, sx)
+    return withLocaleKey(localeKey, generatePersonalizedLuckyColor(selectedDate, birth, zodiac, sx))
   }, [
     usePersonalized,
     calendarType,
@@ -118,13 +126,13 @@ export function useLuckyColorGame() {
     zodiacSign,
     shengxiao,
     selectedDate,
-    isEnglish,
+    localeKey,
   ])
 
   const luckyColor = useMemo(() => {
     if (personalizedResult) return personalizedResult.color
-    return generateLuckyColor(selectedDate)
-  }, [selectedDate, personalizedResult, isEnglish])
+    return withLocaleKey(localeKey, generateLuckyColor(selectedDate))
+  }, [selectedDate, personalizedResult, localeKey])
 
   const secondaryColor = useMemo(
     () => getSecondaryColor(luckyColor, selectedDate),

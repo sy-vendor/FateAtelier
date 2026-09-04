@@ -8,19 +8,20 @@ const TarotLibrary = lazy(() => import('../tarot/TarotLibrary'))
 /** Keep the full deck and tarot state out of every non-tarot entry bundle. */
 export default function TarotFeatureRoute() {
   const tarot = useTarotGame()
+  const { handleSelectCardFromBrowser } = tarot
 
   useEffect(() => {
     const match = window.location.pathname.match(/^\/(?:en\/|zh\/|zh-CN\/)?tarot\/card\/(\d+)\/?$/)
     if (!match) return
     const card = tarotCards.find((item) => item.id === Number(match[1]))
-    if (card) tarot.handleSelectCardFromBrowser(card)
-  }, [tarot.handleSelectCardFromBrowser])
+    if (card) handleSelectCardFromBrowser(card)
+  }, [handleSelectCardFromBrowser])
 
   return (
     <>
       <div className="tarot-route-tools">
         <Suspense fallback={null}>
-          <TarotLibrary onSelectCard={tarot.handleSelectCardFromBrowser} />
+          <TarotLibrary onSelectCard={handleSelectCardFromBrowser} />
         </Suspense>
       </div>
       <TarotMainView {...tarot} />

@@ -3,6 +3,7 @@ import { SHENGXIAO_LIST, SHENGXIAO_PHASE_STEP, shengxiaoLabel, type ShengxiaoPha
 import { analyzePairing, type ShengxiaoPairingResult } from '../utils/shengxiaoEngine'
 import { txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
+import { trackFeatureStart } from '../utils/analytics'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export function useShengxiaoGame() {
@@ -49,6 +50,7 @@ export function useShengxiaoGame() {
 
     setResult(pairingResult)
     setPhase('insight')
+    trackFeatureStart('shengxiao')
     markDailyJourneyComplete('shengxiao')
     window.setTimeout(scrollToInsight, 80)
   }, [shengxiao1, shengxiao2, scrollToInsight])

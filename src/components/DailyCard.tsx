@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { TarotCard } from '../data/tarotCards'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
 import { useTx } from '../i18n/useTx'
 import { TarotCardVisual } from './tarot/TarotCardVisual'
 import { getDailyTarotDraw, saveDailyTarotDraw } from '../utils/dailyTarotCard'
@@ -28,9 +29,10 @@ function DailyCard({ onSelectCard }: DailyCardProps) {
   const [hasViewedToday, setHasViewedToday] = useState(false)
   const [flipping, setFlipping] = useState(false)
 
+  const localeKey = localeMemoKey(isEnglish, enPackVersion)
   const localizedCard = useMemo(
-    () => (dailyCard ? resolveCanonicalTarotCard(dailyCard) : null),
-    [dailyCard, isEnglish, enPackVersion],
+    () => withLocaleKey(localeKey, dailyCard ? resolveCanonicalTarotCard(dailyCard) : null),
+    [dailyCard, localeKey],
   )
 
   const reading = useMemo(() => {

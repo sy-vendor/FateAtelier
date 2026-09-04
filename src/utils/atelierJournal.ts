@@ -16,7 +16,7 @@ export interface JournalEntry {
 }
 
 const STORAGE_KEY = 'fate-atelier-journal-v1'
-const JOURNAL_CAP = 80
+export const JOURNAL_CAP = 80
 
 interface JournalState {
   entries: JournalEntry[]

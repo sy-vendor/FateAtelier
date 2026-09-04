@@ -12,7 +12,8 @@ import type { AppPage } from './types/appPage'
 import { getPageSubtitle } from './utils/appSubtitles'
 import { useDailyJourney } from './hooks/useDailyJourney'
 import { APP_NAVIGATE_EVENT } from './utils/appNavigation'
-import { trackPageEnter } from './utils/analytics'
+import { ANALYTICS_PREF_EVENT, isAnalyticsEnabled, trackPageEnter } from './utils/analytics'
+import { buildHreflangAlternates } from './utils/seoMetadata'
 import './components/app/app-shell.css'
 import { useLocale } from './i18n/LocaleContext'
 import { pagePath, parseLocalePath } from './utils/localePath'
@@ -21,6 +22,7 @@ function App() {
   const { locale, setLocale, isEnglish } = useLocale()
   const pageFromLocation = (): AppPage => parseLocalePath().page
   const [currentPage, setCurrentPage] = useState<AppPage>(pageFromLocation)
+  const [analyticsOn, setAnalyticsOn] = useState(() => isAnalyticsEnabled())
   const dailyJourney = useDailyJourney(currentPage)
 
   const currentFeature = useMemo(
@@ -93,12 +95,18 @@ function App() {
       }
       link.href = href
     }
-    const zhUrl = `https://www.fateatelier.cloud${pagePath(currentPage, 'zh-CN')}`
-    const enUrl = `https://www.fateatelier.cloud${pagePath(currentPage, 'en')}`
-    ensureAlternate('zh-CN', zhUrl)
-    ensureAlternate('en', enUrl)
-    ensureAlternate('x-default', zhUrl)
+    for (const { hreflang, href } of buildHreflangAlternates(currentPage)) {
+      ensureAlternate(hreflang, href)
+    }
   }, [currentFeature, currentPage, isEnglish, locale])
+
+  useEffect(() => {
+    const onPref = (event: Event) => {
+      setAnalyticsOn(Boolean((event as CustomEvent<boolean>).detail))
+    }
+    window.addEventListener(ANALYTICS_PREF_EVENT, onPref)
+    return () => window.removeEventListener(ANALYTICS_PREF_EVENT, onPref)
+  }, [])
 
   const navigateTo = (page: AppPage) => {
     if (page === currentPage) return
@@ -173,7 +181,7 @@ function App() {
 
       <ToastContainer />
       <ConfirmDialogContainer />
-      <Analytics />
+      {analyticsOn ? <Analytics /> : null}
     </div>
   )
 }

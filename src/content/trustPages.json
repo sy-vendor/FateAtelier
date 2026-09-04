@@ -133,8 +133,8 @@
     "slug": "privacy",
     "titleZh": "隐私说明",
     "titleEn": "Privacy",
-    "descriptionZh": "命运工坊如何处理本地数据与分析：默认不上传占卜内容，可选的匿名使用统计。",
-    "descriptionEn": "How Fate Atelier handles local data and analytics: readings stay local by default; optional anonymous usage stats.",
+    "descriptionZh": "命运工坊如何处理本地数据与分析：默认不上传占卜内容；匿名使用统计默认开启，可在本页关闭。",
+    "descriptionEn": "How Fate Atelier handles local data and analytics: readings stay local by default; anonymous usage stats are on by default and can be turned off here.",
     "sectionsZh": [
       {
         "heading": "本地优先",
@@ -146,8 +146,9 @@
       {
         "heading": "分析与埋点",
         "paragraphs": [
-          "我们可能使用 Vercel Analytics 等匿名访问统计，了解页面进入、完成与分享等产品事件，以便改进工坊。",
-          "这类统计不用于识别你的真实身份，也不把牌面原文或梦境全文作为云端档案保存。"
+          "默认情况下，我们会使用 Vercel Analytics 等匿名访问统计，记录页面进入、完成与分享等产品事件，以便改进工坊。",
+          "统计字段仅含事件名与玩法标识等非个人标识信息；不用于识别真实身份，也不会把牌面原文或梦境全文作为云端档案保存。",
+          "你可在本页下方关闭「匿名使用统计」。关闭后不再加载 Analytics，也不会发送产品事件。若浏览器开启 Do Not Track，且你尚未手动选择偏好，我们也会默认关闭统计。"
         ]
       },
       {
@@ -174,8 +175,9 @@
       {
         "heading": "Analytics",
         "paragraphs": [
-          "We may use anonymous product analytics (for example Vercel Analytics) for events such as page enter, complete, and share so we can improve the workshop.",
-          "These stats are not used to identify you personally, and card text or dream text is not kept as a cloud archive."
+          "By default we use anonymous product analytics (for example Vercel Analytics) for events such as page enter, complete, and share so we can improve the workshop.",
+          "Events carry page/feature identifiers only—not personal identity—and card or dream text is not kept as a cloud archive.",
+          "Use the control below to turn anonymous analytics off. When off, we do not load Analytics or send product events. If Do Not Track is enabled and you have not set a preference, analytics stay off."
         ]
       },
       {

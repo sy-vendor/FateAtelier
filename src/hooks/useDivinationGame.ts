@@ -13,6 +13,7 @@ import { toast } from '../utils/toast'
 import { confirm } from '../utils/confirm'
 import { txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
 import { DRAW_PHASE_STEP, type DrawPhase } from '../utils/divinationData'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 import { trackFeatureShare, trackFeatureStart } from '../utils/analytics'
@@ -89,6 +90,7 @@ function getLinkedStick(): DivinationStick | null {
 
 export function useDivinationGame() {
   const { isEnglish, enPackVersion } = useLocale()
+  const localeKey = localeMemoKey(isEnglish, enPackVersion)
   const linkedStick = useMemo(getLinkedStick, [])
   const [phase, setPhase] = useState<DrawPhase>(linkedStick ? 'done' : 'intent')
   const [isShaking, setIsShaking] = useState(false)
@@ -161,7 +163,7 @@ export function useDivinationGame() {
         return { ...item, stick: resolveCanonicalStick(base) }
       }),
     )
-  }, [isEnglish, enPackVersion])
+  }, [localeKey])
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -235,8 +237,8 @@ export function useDivinationGame() {
 
   const stickReading = useMemo((): StickReading | null => {
     if (!drawnStick) return null
-    return rehydrateStickReading(drawnStick, selectedCategory || undefined)
-  }, [drawnStick, selectedCategory, isEnglish, enPackVersion])
+    return withLocaleKey(localeKey, rehydrateStickReading(drawnStick, selectedCategory || undefined))
+  }, [drawnStick, selectedCategory, localeKey])
 
   const toggleFavorite = useCallback((stickId: number) => {
     setFavorites((prev) => {

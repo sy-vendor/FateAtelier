@@ -6,6 +6,8 @@ import {
   recommendDirectionForPurpose,
 } from '../utils/fengshuiEngine'
 import { useLocale } from '../i18n/LocaleContext'
+import { localeMemoKey, withLocaleKey } from '../i18n/localeMemo'
+import { trackFeatureStart } from '../utils/analytics'
 import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export const DIRECTION_GRID: Record<string, string> = {
@@ -21,13 +23,14 @@ export const DIRECTION_GRID: Record<string, string> = {
 
 export function useFengshuiGame() {
   const { isEnglish } = useLocale()
+  const localeKey = localeMemoKey(isEnglish)
   const [selectedDirection, setSelectedDirection] = useState<string | null>(null)
   const [selectedPurpose, setSelectedPurpose] = useState('')
 
   const todayDirections = useMemo(() => getTodayAuspiciousDirections(), [])
   const interpretation = useMemo(
-    () => (selectedDirection ? getDirectionInterpretation(selectedDirection) : null),
-    [selectedDirection, isEnglish],
+    () => withLocaleKey(localeKey, selectedDirection ? getDirectionInterpretation(selectedDirection) : null),
+    [selectedDirection, localeKey],
   )
 
   const phase: FengshuiPhase = useMemo(() => {
@@ -41,6 +44,7 @@ export function useFengshuiGame() {
 
   const selectDirection = (directionName: string) => {
     setSelectedDirection(directionName)
+    trackFeatureStart('fengshui', directionName)
     markDailyJourneyComplete('fengshui')
   }
 
@@ -54,6 +58,7 @@ export function useFengshuiGame() {
     const recommended = recommendDirectionForPurpose(purpose)
     if (recommended.length > 0) {
       setSelectedDirection(recommended[0])
+      trackFeatureStart('fengshui', purpose)
       markDailyJourneyComplete('fengshui')
     }
   }
