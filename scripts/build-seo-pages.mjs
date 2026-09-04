@@ -224,8 +224,8 @@ function homeToolList(entries, english) {
 // English home landing
 {
   const title = 'Fate Atelier | Free Tarot, BaZi, Zi Wei & Divination Tools'
-  const description = 'Free online divination workshop: tarot spreads, horoscope, Chinese almanac, BaZi, fortune sticks, dream guide, feng shui, and more—with clear how-to guides in English.'
-  const intro = 'Fate Atelier is a free browser workshop for traditional and modern divination play. Each tool includes a short intro, what you can try, step-by-step how-to, and FAQ so you can start without an account.'
+  const description = 'Free, ad-free online divination workshop: tarot, horoscope, Chinese almanac, BaZi, fortune sticks, dream guide, feng shui, and more—no signup required, with clear how-to guides in English.'
+  const intro = 'Fate Atelier is a free, ad-free browser workshop for traditional and modern divination play. Each tool includes a short intro, what you can try, step-by-step how-to, and FAQ so you can start without an account.'
   const howTitle = 'How to explore'
   const howSteps = [
     'Pick a tool below that matches your question—cards, calendar, chart, or a calm ritual.',
@@ -263,8 +263,8 @@ function homeToolList(entries, english) {
   }
   if (!home.includes('玩法介绍')) {
     const title = '命运工坊'
-    const description = '免费在线综合占卜工坊：塔罗牌阵、星座运势、黄历宜忌、八字紫微、抽签解梦、风水择日等，含玩法介绍与常见问题。'
-    const intro = '命运工坊把多种传统与现代占卜玩法放在同一个网页里：先看功能介绍与步骤，再直接体验抽牌、排盘或今日仪式，无需下载。'
+    const description = '免费无广告的在线综合占卜工坊：塔罗牌阵、星座运势、黄历宜忌、八字紫微、抽签解梦、风水择日等，无需注册，含玩法介绍与常见问题。'
+    const intro = '命运工坊把多种传统与现代占卜玩法放在同一个网页里：先看功能介绍与步骤，再直接体验抽牌、排盘或今日仪式。全程免费、无广告、无需下载与注册。'
     const howSteps = [
       '从下方功能中选择与问题最贴近的工具。',
       '按页面「玩法介绍」完成提问、抽取或输入。',

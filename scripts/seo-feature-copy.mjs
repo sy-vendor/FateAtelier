@@ -1,6 +1,63 @@
 /** Bilingual SEO copy for crawlable feature landing pages. */
 
-export const pagesZh = [
+const FREE_VALUE_FAQ_ZH = {
+  q: '需要付费或看广告吗？',
+  a: '不需要。相关功能均可免费使用，无广告打扰，也无需注册登录。',
+}
+
+const FREE_VALUE_FAQ_EN = {
+  q: 'Is it free? Are there ads or sign-ups?',
+  a: 'Yes. Fate Atelier tools are free and ad-free, with no account required.',
+}
+
+function enrichPages(pages, faq, locale) {
+  return pages.map((page) => {
+    const hasFreeFaq = page.faqs.some((f) =>
+      locale === 'zh'
+        ? /付费|免费|广告|注册|登录/.test(`${f.q}${f.a}`)
+        : /free|ads?|account|sign.?up|login/i.test(`${f.q}${f.a}`),
+    )
+
+    const faqs = hasFreeFaq
+      ? page.faqs.map((f) => {
+          if (locale === 'zh' && /付费|免费/.test(f.q) && !f.a.includes('无广告')) {
+            return { ...f, a: `${f.a.replace(/。$/, '')}。无广告打扰，也无需注册登录。` }
+          }
+          if (locale === 'en' && /free/i.test(f.q) && !/ad-free/i.test(f.a)) {
+            return { ...f, a: `${f.a.replace(/\.$/, '')}. It is also ad-free, with no account required.` }
+          }
+          if (locale === 'en' && /account/i.test(f.q) && !/ad-free|free/i.test(f.a)) {
+            return { ...f, a: `${f.a.replace(/\.$/, '')} The tools stay free and ad-free.` }
+          }
+          if (locale === 'zh' && /登录|注册/.test(f.q) && !f.a.includes('无广告')) {
+            return { ...f, a: `${f.a.replace(/。$/, '')}。全程免费、无广告。` }
+          }
+          return f
+        })
+      : [faq, ...page.faqs]
+
+    let { description, intro } = page
+    if (locale === 'zh') {
+      if (!description.includes('无广告')) {
+        description = `${description.replace(/。$/, '')}。免费无广告，无需注册。`
+      }
+      if (!intro.includes('无广告')) {
+        intro = `${intro.replace(/。$/, '')}。全程免费、无广告、无需注册。`
+      }
+    } else {
+      if (!/ad-free/i.test(description)) {
+        description = `${description.replace(/\.$/, '')}. Free, ad-free, no signup.`
+      }
+      if (!/ad-free/i.test(intro)) {
+        intro = `${intro.replace(/\.$/, '')} Free, ad-free, and no account required.`
+      }
+    }
+
+    return { ...page, description, intro, faqs }
+  })
+}
+
+const pagesZhRaw = [
   {
     slug: 'tarot',
     title: '免费在线塔罗占卜',
@@ -350,7 +407,7 @@ export const pagesZh = [
   },
 ]
 
-export const pagesEn = [
+const pagesEnRaw = [
   {
     slug: 'tarot',
     title: 'Free Online Tarot Reading',
@@ -699,3 +756,6 @@ export const pagesEn = [
     related: [['/en/horoscope', 'Daily horoscope'], ['/en/nametest', 'Chinese name reading'], ['/en/bazi', 'Free BaZi chart']],
   },
 ]
+
+export const pagesZh = enrichPages(pagesZhRaw, FREE_VALUE_FAQ_ZH, 'zh')
+export const pagesEn = enrichPages(pagesEnRaw, FREE_VALUE_FAQ_EN, 'en')
