@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   DREAM_PHASE_STEP,
   formatDreamDate,
@@ -18,12 +18,39 @@ export interface DreamRecord {
   id: string
   content: string
   mood: string
-  interpretation: DreamInterpretation
   timestamp: number
+  /** Legacy field; new records omit it and re-interpret on view. */
+  interpretation?: DreamInterpretation
 }
 
 const STORAGE_DEBOUNCE_MS = 400
 const INTERPRET_DELAY_MS = 900
+const DREAM_HISTORY_CAP = 50
+
+type StoredDreamRecord = {
+  id: string
+  content: string
+  mood: string
+  timestamp: number
+}
+
+function toStoredDreamRecord(record: DreamRecord): StoredDreamRecord {
+  return {
+    id: record.id,
+    content: record.content,
+    mood: record.mood,
+    timestamp: record.timestamp,
+  }
+}
+
+function hydrateDreamRecord(raw: DreamRecord | StoredDreamRecord): DreamRecord {
+  return {
+    id: raw.id,
+    content: raw.content,
+    mood: raw.mood,
+    timestamp: raw.timestamp,
+  }
+}
 
 export function useDreamGame() {
   const { isEnglish, enPackVersion } = useLocale()
@@ -47,12 +74,12 @@ export function useDreamGame() {
   const [phase, setPhase] = useState<DreamPhase>('slumber')
   const [inputError, setInputError] = useState('')
   const [history, setHistory] = useState<DreamRecord[]>(() => {
-    const result = getStorageItem<DreamRecord[]>('dream-interpretation-history', [])
+    const result = getStorageItem<Array<DreamRecord | StoredDreamRecord>>('dream-interpretation-history', [])
     if (result.error) {
       requestAnimationFrame(() => toast.error(txStatic('加载历史记录失败', 'Failed to load history')))
     }
     if (result.success && result.data !== undefined && Array.isArray(result.data)) {
-      return result.data
+      return result.data.map(hydrateDreamRecord).slice(0, DREAM_HISTORY_CAP)
     }
     return []
   })
@@ -70,7 +97,10 @@ export function useDreamGame() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      const result = setStorageItem('dream-interpretation-history', historyRef.current)
+      const result = setStorageItem(
+        'dream-interpretation-history',
+        historyRef.current.map(toStoredDreamRecord),
+      )
       if (!result.success && result.error) {
         toast.warning(result.error || txStatic('保存历史记录失败', 'Failed to save history'))
       }
@@ -80,7 +110,10 @@ export function useDreamGame() {
 
   useEffect(() => {
     return () => {
-      void setStorageItem('dream-interpretation-history', historyRef.current)
+      void setStorageItem(
+        'dream-interpretation-history',
+        historyRef.current.map(toStoredDreamRecord),
+      )
     }
   }, [])
 
@@ -115,10 +148,9 @@ export function useDreamGame() {
         id: Date.now().toString(),
         content: trimmed,
         mood: selectedMood,
-        interpretation: result,
         timestamp: Date.now(),
       }
-      setHistory((prev) => [record, ...prev].slice(0, 50))
+      setHistory((prev) => [record, ...prev].slice(0, DREAM_HISTORY_CAP))
       setPhase('revealed')
       window.setTimeout(scrollToResult, 100)
     }, INTERPRET_DELAY_MS)
@@ -169,21 +201,6 @@ export function useDreamGame() {
     setPhase('slumber')
   }, [])
 
-  const moonLabel = useMemo(() => {
-    switch (phase) {
-      case 'slumber':
-        return '月华静候 · 述梦以启'
-      case 'recount':
-        return '梦境已录 · 轻触月轮解析'
-      case 'interpreting':
-        return '梦雾流转中…'
-      case 'revealed':
-        return '梦意已显 · 再入新梦'
-      default:
-        return ''
-    }
-  }, [phase])
-
   return {
     dreamContent,
     setDreamContent,
@@ -199,7 +216,6 @@ export function useDreamGame() {
     setShowHistory,
     resultSectionRef,
     symbolCount,
-    moonLabel,
     handleInterpret,
     handleClear,
     handleViewHistory,

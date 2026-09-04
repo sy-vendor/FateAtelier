@@ -1,8 +1,4 @@
-import { useTx } from '../../i18n/useTx'
-
-interface DivinationRitualBarProps {
-  step: 1 | 2 | 3 | 4
-}
+import { RitualBar, type RitualStepIndex } from '../ui'
 
 const STEPS = [
   { num: 1, zh: '默念', en: 'Focus' },
@@ -11,28 +7,14 @@ const STEPS = [
   { num: 4, zh: '悟签', en: 'Reflect' },
 ] as const
 
-export function DivinationRitualBar({ step }: DivinationRitualBarProps) {
-  const tx = useTx()
+export function DivinationRitualBar({ step }: { step: RitualStepIndex }) {
   return (
-    <div className="ritual-steps divination-ritual" aria-label={tx('求签流程', 'Oracle draw steps')}>
-      {STEPS.map(({ num, zh, en }) => {
-        const done = num < step
-        const active = num === step
-        const cls = [
-          'ritual-step',
-          done ? 'ritual-step--done' : '',
-          active ? 'ritual-step--active' : '',
-        ]
-          .filter(Boolean)
-          .join(' ')
-
-        return (
-          <div key={num} className={cls} aria-current={active ? 'step' : undefined}>
-            <span className="ritual-step__num">{done ? '✓' : num}</span>
-            <span className="ritual-step__label">{tx(zh, en)}</span>
-          </div>
-        )
-      })}
-    </div>
+    <RitualBar
+      step={step}
+      steps={STEPS}
+      ariaLabelZh="求签流程"
+      ariaLabelEn="Oracle draw steps"
+      className="divination-ritual"
+    />
   )
 }

@@ -1,8 +1,4 @@
-import { useTx } from '../../i18n/useTx'
-
-interface NumberEnergyRitualBarProps {
-  step: 1 | 2 | 3 | 4
-}
+import { RitualBar, type RitualStepIndex } from '../ui'
 
 const STEPS = [
   { num: 1, zh: '选型', en: 'Type' },
@@ -11,28 +7,14 @@ const STEPS = [
   { num: 4, zh: '悟能', en: 'Insight' },
 ] as const
 
-export function NumberEnergyRitualBar({ step }: NumberEnergyRitualBarProps) {
-  const tx = useTx()
+export function NumberEnergyRitualBar({ step }: { step: RitualStepIndex }) {
   return (
-    <div className="ritual-steps number-energy-ritual" aria-label={tx('数字能量流程', 'Number energy steps')}>
-      {STEPS.map(({ num, zh, en }) => {
-        const done = num < step
-        const active = num === step
-        const cls = [
-          'ritual-step',
-          done ? 'ritual-step--done' : '',
-          active ? 'ritual-step--active' : '',
-        ]
-          .filter(Boolean)
-          .join(' ')
-
-        return (
-          <div key={num} className={cls} aria-current={active ? 'step' : undefined}>
-            <span className="ritual-step__num">{done ? '✓' : num}</span>
-            <span className="ritual-step__label">{tx(zh, en)}</span>
-          </div>
-        )
-      })}
-    </div>
+    <RitualBar
+      step={step}
+      steps={STEPS}
+      ariaLabelZh="数字能量流程"
+      ariaLabelEn="Number energy steps"
+      className="picker-ritual"
+    />
   )
 }

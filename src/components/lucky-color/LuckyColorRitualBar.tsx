@@ -1,8 +1,4 @@
-import { useTx } from '../../i18n/useTx'
-
-interface LuckyColorRitualBarProps {
-  step: 1 | 2 | 3 | 4
-}
+import { RitualBar, type RitualStepIndex } from '../ui'
 
 const STEPS = [
   { num: 1, zh: '定日', en: 'Date' },
@@ -11,28 +7,14 @@ const STEPS = [
   { num: 4, zh: '习用', en: 'Apply' },
 ] as const
 
-export function LuckyColorRitualBar({ step }: LuckyColorRitualBarProps) {
-  const tx = useTx()
+export function LuckyColorRitualBar({ step }: { step: RitualStepIndex }) {
   return (
-    <div className="ritual-steps lucky-color-ritual" aria-label={tx('幸运色流程', 'Lucky color steps')}>
-      {STEPS.map(({ num, zh, en }) => {
-        const done = num < step
-        const active = num === step
-        const cls = [
-          'ritual-step',
-          done ? 'ritual-step--done' : '',
-          active ? 'ritual-step--active' : '',
-        ]
-          .filter(Boolean)
-          .join(' ')
-
-        return (
-          <div key={num} className={cls} aria-current={active ? 'step' : undefined}>
-            <span className="ritual-step__num">{done ? '✓' : num}</span>
-            <span className="ritual-step__label">{tx(zh, en)}</span>
-          </div>
-        )
-      })}
-    </div>
+    <RitualBar
+      step={step}
+      steps={STEPS}
+      ariaLabelZh="幸运色流程"
+      ariaLabelEn="Lucky color steps"
+      className="lucky-color-ritual"
+    />
   )
 }

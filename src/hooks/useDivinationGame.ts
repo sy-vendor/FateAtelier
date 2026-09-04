@@ -22,7 +22,53 @@ export interface DrawHistory {
   category?: string
 }
 
+/** Slim persistence: stick id only (full stick resolved on load / view). */
+type StoredDrawHistory = {
+  id: string
+  stickId: number
+  timestamp: number
+  category?: string
+}
+
 const STORAGE_DEBOUNCE_MS = 400
+const DRAW_HISTORY_CAP = 50
+
+function toStoredDrawHistory(item: DrawHistory): StoredDrawHistory {
+  return {
+    id: item.id,
+    stickId: item.stick.id,
+    timestamp: item.timestamp,
+    category: item.category,
+  }
+}
+
+function hydrateDrawHistoryItem(raw: StoredDrawHistory | DrawHistory | Record<string, unknown>): DrawHistory | null {
+  const stickId =
+    typeof (raw as StoredDrawHistory).stickId === 'number'
+      ? (raw as StoredDrawHistory).stickId
+      : (raw as DrawHistory).stick?.id
+  if (typeof stickId !== 'number') return null
+
+  const base = divinationSticks.find((s) => s.id === stickId)
+  if (!base) return null
+
+  const id = typeof raw.id === 'string' ? raw.id : String(Date.now())
+  const timestamp = typeof raw.timestamp === 'number' ? raw.timestamp : Date.now()
+  const category = typeof (raw as StoredDrawHistory).category === 'string'
+    ? (raw as StoredDrawHistory).category
+    : undefined
+
+  return {
+    id,
+    stick: resolveCanonicalStick(base),
+    timestamp,
+    category,
+  }
+}
+
+function capDrawHistory(items: DrawHistory[]): DrawHistory[] {
+  return items.length > DRAW_HISTORY_CAP ? items.slice(0, DRAW_HISTORY_CAP) : items
+}
 
 function pickStickForCategory(category: string): DivinationStick {
   const pool =
@@ -48,12 +94,16 @@ export function useDivinationGame() {
   const [showResult, setShowResult] = useState(Boolean(linkedStick))
   const [selectedCategory, setSelectedCategory] = useState('')
   const [drawHistory, setDrawHistory] = useState<DrawHistory[]>(() => {
-    const historyResult = getStorageItem<DrawHistory[]>('divination-draw-history', [])
+    const historyResult = getStorageItem<Array<StoredDrawHistory | DrawHistory>>('divination-draw-history', [])
     if (historyResult.error) {
       requestAnimationFrame(() => toast.error(txStatic('加载历史记录失败', 'Failed to load history')))
     }
     if (historyResult.success && historyResult.data !== undefined && Array.isArray(historyResult.data)) {
-      return historyResult.data
+      return capDrawHistory(
+        historyResult.data
+          .map(hydrateDrawHistoryItem)
+          .filter((item): item is DrawHistory => item !== null),
+      )
     }
     return []
   })
@@ -81,7 +131,10 @@ export function useDivinationGame() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      const result = setStorageItem('divination-draw-history', drawHistoryRef.current)
+      const result = setStorageItem(
+        'divination-draw-history',
+        drawHistoryRef.current.map(toStoredDrawHistory),
+      )
       if (!result.success && result.error) {
         toast.warning(result.error || txStatic('保存历史记录失败', 'Failed to save history'))
       }
@@ -91,9 +144,22 @@ export function useDivinationGame() {
 
   useEffect(() => {
     return () => {
-      void setStorageItem('divination-draw-history', drawHistoryRef.current)
+      void setStorageItem(
+        'divination-draw-history',
+        drawHistoryRef.current.map(toStoredDrawHistory),
+      )
     }
   }, [])
+
+  useEffect(() => {
+    setDrawHistory((prev) =>
+      prev.map((item) => {
+        const base = divinationSticks.find((s) => s.id === item.stick.id)
+        if (!base) return item
+        return { ...item, stick: resolveCanonicalStick(base) }
+      }),
+    )
+  }, [isEnglish, enPackVersion])
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -146,11 +212,11 @@ export function useDivinationGame() {
 
         const historyItem: DrawHistory = {
           id: Date.now().toString(),
-          stick,
+          stick: resolveCanonicalStick(stick),
           timestamp: Date.now(),
           category: selectedCategory || undefined,
         }
-        setDrawHistory((prev) => [historyItem, ...prev])
+        setDrawHistory((prev) => capDrawHistory([historyItem, ...prev]))
       }, 600)
     }, 1800)
   }, [isShaking, selectedCategory, ensureMotionPermission])
@@ -241,7 +307,7 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
     }).catch(() => {
       toast.error(txStatic('复制失败', 'Copy failed'))
     })
-  }, [stickReading])
+  }, [stickReading, isEnglish])
 
   const shareStick = useCallback(async () => {
     if (!stickReading) return
@@ -263,7 +329,7 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
       }
     }
     copyToClipboard()
-  }, [stickReading, copyToClipboard])
+  }, [stickReading, copyToClipboard, isEnglish])
 
   const exportHistory = useCallback(() => {
     const data = JSON.stringify(drawHistoryRef.current, null, 2)
@@ -286,7 +352,7 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
     })
     if (confirmed) {
       setDrawHistory([])
-      setStorageItem('divination-draw-history', [])
+      setStorageItem('divination-draw-history', [] as StoredDrawHistory[])
     }
   }, [])
 

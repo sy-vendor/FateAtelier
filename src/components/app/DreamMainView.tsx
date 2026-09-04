@@ -127,7 +127,7 @@ function DreamMainView() {
               <span className="dream-shrine__done-disc" />
             </div>
             <div className="dream-shrine__done-copy">
-              <p className="dream-shrine__done-eyebrow">Dream revealed</p>
+              <p className="dream-shrine__done-eyebrow">{tx('梦境已启', 'Dream revealed')}</p>
               <p className="dream-shrine__done-title">{tx('梦意已显', 'Meaning revealed')}</p>
               <p className="dream-shrine__done-sub">{tx('解读在下方展开；若要再录一场新梦，点这里重新开始', 'The reading unfolds below. Tap here to record a new dream')}</p>
             </div>
@@ -239,9 +239,6 @@ function DreamMainView() {
                 <span className="dream-history-card__meta">
                   {formatDreamDate(record.timestamp)}
                   {record.mood ? ` · ${moodLabel(record.mood)}` : ''}
-                  {record.interpretation.symbols.length > 0
-                    ? ` · ${tx(`${record.interpretation.symbols.length} 个符号`, `${record.interpretation.symbols.length} symbols`)}`
-                    : ''}
                 </span>
                 <div className="dream-actions" style={{ marginTop: 12 }}>
                   <Button small onClick={() => handleViewHistory(record)}>

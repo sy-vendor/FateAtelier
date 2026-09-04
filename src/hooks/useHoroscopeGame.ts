@@ -32,6 +32,7 @@ export function useHoroscopeGame() {
   const { isEnglish } = useLocale()
   const today = new Date()
   const [period, setPeriod] = useState<HoroscopePeriod>('today')
+  const [periodTouched, setPeriodTouched] = useState(false)
   const [signIndex, setSignIndex] = useState(0)
   const [engaged, setEngaged] = useState(false)
   const [calendarType, setCalendarType] = useState<CalendarType>('solar')
@@ -57,8 +58,9 @@ export function useHoroscopeGame() {
   const ritualStep = useMemo((): 1 | 2 | 3 | 4 => {
     if (pairingResult) return 4
     if (showPairing || engaged) return 3
+    if (periodTouched) return 2
     return 1
-  }, [pairingResult, showPairing, engaged])
+  }, [pairingResult, showPairing, engaged, periodTouched])
 
   const lunarSolarPreview = useMemo(() => {
     if (calendarType !== 'lunar' || !birthYear || !birthMonth || !birthDay) return null
@@ -101,7 +103,7 @@ export function useHoroscopeGame() {
 
   const handlePeriodChange = useCallback((v: HoroscopePeriod) => {
     setPeriod(v)
-    setEngaged(true)
+    setPeriodTouched(true)
   }, [])
 
   const handleCalendarTypeChange = useCallback(

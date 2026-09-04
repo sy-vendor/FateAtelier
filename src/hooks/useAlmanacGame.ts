@@ -15,7 +15,7 @@ export function useAlmanacGame() {
   const ritualStep = useMemo((): 1 | 2 | 3 | 4 => {
     if (selectedShichen) return 4
     if (engaged) return 3
-    return 2
+    return 1
   }, [selectedShichen, engaged])
 
   const handleShichenSelect = (shichen: string) => {

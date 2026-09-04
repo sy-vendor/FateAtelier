@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import { digitsOnly, parseSolarParts } from '../utils/birthDateUtils'
 import {
+  AUSPICIOUS_PHASE_STEP,
+  type AuspiciousPhase,
   type EventType,
 } from '../utils/auspiciousData'
 import { calculateDayPillar, getAuspiciousShichens } from '../utils/auspiciousEngine'
@@ -14,6 +16,8 @@ export function useAuspiciousGame() {
   const [queryMonth, setQueryMonth] = useState(String(today.getMonth() + 1))
   const [queryDay, setQueryDay] = useState(String(today.getDate()))
   const [selectedEventType, setSelectedEventType] = useState<EventType>('marriage')
+  const [eventTouched, setEventTouched] = useState(false)
+  const [dateTouched, setDateTouched] = useState(false)
   const [dateError, setDateError] = useState('')
   const [hasScanned, setHasScanned] = useState(false)
 
@@ -22,11 +26,14 @@ export function useAuspiciousGame() {
     [queryYear, queryMonth, queryDay]
   )
 
-  const ritualStep: 1 | 2 | 3 | 4 = useMemo(() => {
-    if (hasScanned) return 4
-    if (dateObj) return 3
-    return 2
-  }, [hasScanned, dateObj])
+  const phase: AuspiciousPhase = useMemo(() => {
+    if (hasScanned) return 'revealed'
+    if (dateTouched && dateObj) return 'scan'
+    if (eventTouched) return 'date'
+    return 'intent'
+  }, [hasScanned, dateTouched, dateObj, eventTouched])
+
+  const ritualStep = AUSPICIOUS_PHASE_STEP[phase]
 
   const dayPillar = useMemo(
     () => (dateObj ? calculateDayPillar(dateObj) : null),
@@ -43,24 +50,28 @@ export function useAuspiciousGame() {
 
   const setYear = (v: string) => {
     setQueryYear(digitsOnly(v, 4))
+    setDateTouched(true)
     setDateError('')
     setHasScanned(false)
   }
 
   const setMonth = (v: string) => {
     setQueryMonth(digitsOnly(v, 2))
+    setDateTouched(true)
     setDateError('')
     setHasScanned(false)
   }
 
   const setDay = (v: string) => {
     setQueryDay(digitsOnly(v, 2))
+    setDateTouched(true)
     setDateError('')
     setHasScanned(false)
   }
 
   const selectEvent = (id: EventType) => {
     setSelectedEventType(id)
+    setEventTouched(true)
     setHasScanned(false)
   }
 
@@ -70,6 +81,8 @@ export function useAuspiciousGame() {
       return
     }
     setDateError('')
+    setDateTouched(true)
+    setEventTouched(true)
     setHasScanned(true)
   }
 
@@ -84,7 +97,7 @@ export function useAuspiciousGame() {
     selectEvent,
     dateError,
     ritualStep,
-    phase: hasScanned ? 'revealed' as const : dateObj ? 'scan' as const : 'date' as const,
+    phase,
     dateObj,
     dayPillar,
     auspiciousShichens,

@@ -1,8 +1,4 @@
-import { useTx } from '../../i18n/useTx'
-
-interface AlmanacRitualBarProps {
-  step: 1 | 2 | 3 | 4
-}
+import { RitualBar, type RitualStepIndex } from '../ui'
 
 const STEPS = [
   { num: 1, zh: '晨起', en: 'Rise' },
@@ -11,28 +7,14 @@ const STEPS = [
   { num: 4, zh: '择吉时', en: 'Timing' },
 ] as const
 
-export function AlmanacRitualBar({ step }: AlmanacRitualBarProps) {
-  const tx = useTx()
+export function AlmanacRitualBar({ step }: { step: RitualStepIndex }) {
   return (
-    <div className="ritual-steps almanac-ritual" aria-label={tx('察历流程', 'Almanac steps')}>
-      {STEPS.map(({ num, zh, en }) => {
-        const done = num < step
-        const active = num === step
-        const cls = [
-          'ritual-step',
-          done ? 'ritual-step--done' : '',
-          active ? 'ritual-step--active' : '',
-        ]
-          .filter(Boolean)
-          .join(' ')
-
-        return (
-          <div key={num} className={cls} aria-current={active ? 'step' : undefined}>
-            <span className="ritual-step__num">{done ? '✓' : num}</span>
-            <span className="ritual-step__label">{tx(zh, en)}</span>
-          </div>
-        )
-      })}
-    </div>
+    <RitualBar
+      step={step}
+      steps={STEPS}
+      ariaLabelZh="察历流程"
+      ariaLabelEn="Almanac steps"
+      className="almanac-ritual"
+    />
   )
 }

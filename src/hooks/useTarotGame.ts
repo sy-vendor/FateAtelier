@@ -15,12 +15,46 @@ import { getStorageItem, setStorageItem } from '../utils/storage'
 import type { TarotGameApi } from '../types/tarotGameApi'
 
 const READING_HISTORY_SAVE_DEBOUNCE_MS = 400
+const READING_HISTORY_CAP = 50
 
-function rehydrateReadingRecord(reading: ReadingRecord): ReadingRecord {
+/** Slim persistence: card ids + orientation only (no full card payloads / interpretations). */
+type StoredDrawnCard = { card: { id: number }; isReversed: boolean }
+type StoredReadingRecord = {
+  id: string
+  type: 'single' | 'three'
+  cards: StoredDrawnCard[]
+  timestamp: number
+  readingType?: string
+  customQuestion?: string
+}
+
+function toStoredReading(reading: ReadingRecord): StoredReadingRecord {
   return {
-    ...reading,
-    cards: resolveDrawnCards(reading.cards ?? []),
+    id: reading.id,
+    type: reading.type,
+    timestamp: reading.timestamp,
+    readingType: reading.readingType,
+    customQuestion: reading.customQuestion,
+    cards: reading.cards.map((c) => ({
+      card: { id: c.card.id },
+      isReversed: c.isReversed,
+    })),
   }
+}
+
+function rehydrateReadingRecord(reading: ReadingRecord | StoredReadingRecord): ReadingRecord {
+  return {
+    id: reading.id,
+    type: reading.type,
+    timestamp: reading.timestamp,
+    readingType: reading.readingType,
+    customQuestion: reading.customQuestion,
+    cards: resolveDrawnCards((reading.cards ?? []) as ReadingRecord['cards']),
+  }
+}
+
+function capHistory(records: ReadingRecord[]): ReadingRecord[] {
+  return records.length > READING_HISTORY_CAP ? records.slice(0, READING_HISTORY_CAP) : records
 }
 
 export function useTarotGame() {
@@ -38,14 +72,14 @@ export function useTarotGame() {
   const [customQuestion, setCustomQuestion] = useState<string | undefined>(undefined)
 
   const [readingHistory, setReadingHistory] = useState<ReadingRecord[]>(() => {
-    const result = getStorageItem<ReadingRecord[]>('tarot-reading-history', [])
+    const result = getStorageItem<Array<ReadingRecord | StoredReadingRecord>>('tarot-reading-history', [])
     if (result.error) {
       requestAnimationFrame(() => {
         toast.error(txStatic('加载历史记录失败', 'Failed to load history'))
       })
     }
     if (result.success && result.data !== undefined && Array.isArray(result.data)) {
-      return result.data.map(rehydrateReadingRecord)
+      return capHistory(result.data.map(rehydrateReadingRecord))
     }
     return []
   })
@@ -55,7 +89,10 @@ export function useTarotGame() {
 
   useEffect(() => {
     const id = window.setTimeout(() => {
-      const result = setStorageItem('tarot-reading-history', readingHistoryRef.current)
+      const result = setStorageItem(
+        'tarot-reading-history',
+        readingHistoryRef.current.map(toStoredReading),
+      )
       if (!result.success && result.error) {
         toast.warning(result.error || txStatic('保存历史记录失败', 'Failed to save history'))
       }
@@ -65,7 +102,10 @@ export function useTarotGame() {
 
   useEffect(() => {
     return () => {
-      void setStorageItem('tarot-reading-history', readingHistoryRef.current)
+      void setStorageItem(
+        'tarot-reading-history',
+        readingHistoryRef.current.map(toStoredReading),
+      )
     }
   }, [])
 
@@ -112,9 +152,9 @@ export function useTarotGame() {
         id: Date.now().toString(),
         type: 'single',
         cards: [newDrawnCard],
-        timestamp: Date.now()
+        timestamp: Date.now(),
       }
-      setReadingHistory((prev) => [historyRecord, ...prev])
+      setReadingHistory((prev) => capHistory([historyRecord, ...prev]))
       setViewingHistoryReading(historyRecord)
 
       setDrawingCard(null)
@@ -165,17 +205,15 @@ export function useTarotGame() {
       setThreeCardReading(threeDrawnCards)
       setSelectedCard(null)
 
-      const interpretation = generateThreeCardReading(threeDrawnCards, selectedReadingType, customQuestion, isEnglish)
       const historyRecord: ReadingRecord = {
         id: Date.now().toString(),
         type: 'three',
         cards: threeDrawnCards,
         timestamp: Date.now(),
-        interpretation,
         readingType: selectedReadingType,
-        customQuestion: customQuestion
+        customQuestion: customQuestion,
       }
-      setReadingHistory((prev) => [historyRecord, ...prev])
+      setReadingHistory((prev) => capHistory([historyRecord, ...prev]))
       setViewingHistoryReading(historyRecord)
 
       setDrawingThreeCards(null)
