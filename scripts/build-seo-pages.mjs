@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { pathToFileURL, fileURLToPath } from 'node:url'
+import { execFileSync } from 'node:child_process'
 import { POLISH_MAJOR } from './tarot-polish/major.mjs'
 import { POLISH_WANDS } from './tarot-polish/wands.mjs'
 import { POLISH_CUPS } from './tarot-polish/cups.mjs'
@@ -24,12 +25,25 @@ const origin = 'https://www.fateatelier.cloud'
 const pages = pagesZh
 const TRUST_PAGE_COPY = JSON.parse(fs.readFileSync(path.join(root, 'src/content/trustPages.json'), 'utf8'))
 
+/** Prefer git author date so CI checkouts (identical mtimes) still get stable, content-aware lastmod. */
 function fileLastmod(...relativePaths) {
   let latest = 0
   for (const relative of relativePaths) {
     const full = path.join(root, relative)
     if (!fs.existsSync(full)) continue
-    latest = Math.max(latest, fs.statSync(full).mtimeMs)
+    let stamp = 0
+    try {
+      const gitDate = execFileSync(
+        'git',
+        ['log', '-1', '--format=%cI', '--', relative],
+        { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] },
+      ).trim()
+      if (gitDate) stamp = Date.parse(gitDate) || 0
+    } catch {
+      // Fall through to filesystem mtime when git history is unavailable.
+    }
+    if (!stamp) stamp = fs.statSync(full).mtimeMs
+    latest = Math.max(latest, stamp)
   }
   if (!latest) return null
   return new Date(latest).toISOString().slice(0, 10)

@@ -109,15 +109,14 @@ if (lastmods.length < 10) throw new Error('Sitemap should include lastmod for co
 for (const value of lastmods) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) throw new Error(`Invalid sitemap lastmod: ${value}`)
 }
-const uniqueLastmods = new Set(lastmods)
-if (uniqueLastmods.size < 2) {
-  throw new Error('Sitemap lastmod looks stamped identically across the site; expected content-source dates')
-}
 
-const today = new Date().toISOString().slice(0, 10)
-const todayCount = lastmods.filter((value) => value === today).length
-if (todayCount === lastmods.length) {
-  throw new Error('Sitemap lastmod was refreshed to today for every URL — use content source mtimes instead')
+// Guard against the old anti-pattern of stamping every URL with Date.now() in the build script.
+const buildScript = fs.readFileSync(path.join(root, 'scripts/build-seo-pages.mjs'), 'utf8')
+if (/sitemapUrlEntry\([\s\S]*?lastmod:\s*today/.test(buildScript) || /<lastmod>\$\{today\}<\/lastmod>/.test(buildScript)) {
+  throw new Error('build-seo-pages.mjs must not stamp sitemap lastmod with build-day `today`')
+}
+if (!buildScript.includes('fileLastmod')) {
+  throw new Error('build-seo-pages.mjs should derive sitemap lastmod via fileLastmod/content sources')
 }
 
 if (!fs.existsSync(path.join(dist, 'og-image.png'))) {
