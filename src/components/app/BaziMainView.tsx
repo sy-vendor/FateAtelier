@@ -166,7 +166,7 @@ function BaziMainView() {
             <p className="prose">{result.interpretation.summary}</p>
           </Panel>
 
-          <p className="callout">{tx('八字算命仅供参考，命运掌握在自己手中，理性看待。', 'Ba Zi readings are for reference only. Your choices shape your path.')}</p>
+          <p className="callout">{tx('八字排盘为文化体验版：立春分界与节气采用简化估算，解读供自我反思，理性看待。', 'Ba Zi here is a cultural experience edition: Lichun and solar-term boundaries use simplified estimates. Readings are for reflection only.')}</p>
         </section>
       )}
     </div>

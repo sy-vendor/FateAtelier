@@ -3,10 +3,12 @@ import { resolveThreeCardInterpretation } from './readingInterpretation'
 import { txStatic, isEnglishLocale } from '../i18n/locale'
 import { toast } from './toast'
 import { resolveDrawnCard } from './tarotCardResolve'
+import { trackFeatureShare } from './analytics'
 
 export const shareReading = async (reading: ReadingRecord): Promise<void> => {
   const text = generateShareText(reading)
-  
+  trackFeatureShare('tarot')
+
   if (navigator.share) {
     try {
       await navigator.share({

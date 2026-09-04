@@ -18,6 +18,7 @@ import {
 } from '../utils/cyberMeritEngine'
 import { getStorageItem, setStorageItem } from '../utils/storage'
 import { txStatic } from '../i18n/locale'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 function loadCount(key: string): number {
   const result = getStorageItem<number>(key, 0)
@@ -98,6 +99,7 @@ export function useCyberMeritGame() {
         return { ...prev, [type]: newCount }
       })
       setSessionActions((n) => n + 1)
+      markDailyJourneyComplete('cybermerit')
 
       const message = getRandomMessage(type)
       addFloatingText(meritLabel, x, y, 'merit')

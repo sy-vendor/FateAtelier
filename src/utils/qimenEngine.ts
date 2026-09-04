@@ -36,6 +36,7 @@ export interface QimenPanResult {
 }
 
 function getAllSolarTerms(year: number): Date[] {
+  // 体验版：以立春为锚，按年平均间隔均分 24 节气（非精密交节时刻）
   const daysPerTerm = 365.2422 / 24
   const lichun = getSolarTermDate(year, 0)
   const allTerms: Date[] = []

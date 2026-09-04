@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { APP_FEATURES } from '../../constants/appFeatures'
-import type { AppPage } from '../../types/appPage'
+import type { AppPage, FeaturePage } from '../../types/appPage'
 import type { DailyMission } from '../../hooks/useDailyJourney'
 import { FeatureIcon } from './FeatureIcon'
 import { useLocale } from '../../i18n/LocaleContext'
 
-const MISSION_EN: Partial<Record<AppPage, { eyebrow: string; prompt: string }>> = {
+const MISSION_EN: Partial<Record<FeaturePage, { eyebrow: string; prompt: string }>> = {
   horoscope: { eyebrow: 'Today’s sky', prompt: 'See where your energy flows best today' },
   almanac: { eyebrow: 'Daily rhythm', prompt: 'Explore favorable activities and hours' },
   luckycolor: { eyebrow: 'Color cue', prompt: 'Discover today’s inspiring palette' },
@@ -21,7 +21,7 @@ const MISSION_EN: Partial<Record<AppPage, { eyebrow: string; prompt: string }>> 
 interface DailyJourneyProps {
   streak: number
   missions: DailyMission[]
-  visited: AppPage[]
+  visited: FeaturePage[]
   completed: number
   onSelect: (page: AppPage) => void
 }

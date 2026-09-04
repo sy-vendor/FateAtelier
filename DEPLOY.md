@@ -20,8 +20,10 @@ Fate Atelier 是纯静态前端（Vite 构建 + SEO HTML）。推荐用 **Vercel
 ```text
 https://www.fateatelier.cloud/robots.txt
 https://www.fateatelier.cloud/sitemap.xml
+https://www.fateatelier.cloud/
+https://www.fateatelier.cloud/zh
 https://www.fateatelier.cloud/tarot
-https://www.fateatelier.cloud/en/tarot
+https://www.fateatelier.cloud/zh/tarot
 https://www.fateatelier.cloud/tarot/card/0
 ```
 

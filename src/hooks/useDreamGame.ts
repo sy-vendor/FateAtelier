@@ -13,6 +13,8 @@ import { dreamSymbols } from '../data/dreamSymbols'
 import { isEnglishLocale, txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
 import { getEnLocalePacks } from '../i18n/enLocalePacks'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
+import { trackFeatureStart } from '../utils/analytics'
 
 export interface DreamRecord {
   id: string
@@ -55,7 +57,7 @@ function hydrateDreamRecord(raw: DreamRecord | StoredDreamRecord): DreamRecord {
 export function useDreamGame() {
   const { isEnglish, enPackVersion } = useLocale()
   const [dreamContent, setDreamContent] = useState(() => {
-    const match = window.location.pathname.match(/^\/(?:en\/)?dream\/symbol\/(\d+)\/?$/)
+    const match = window.location.pathname.match(/^\/(?:en\/|zh\/|zh-CN\/)?dream\/symbol\/(\d+)\/?$/)
     const index = match ? Number(match[1]) : -1
     const symbol = index >= 0 ? dreamSymbols[index] : undefined
     if (!symbol) return ''
@@ -139,6 +141,7 @@ export function useDreamGame() {
 
     setInputError('')
     setPhase('interpreting')
+    trackFeatureStart('dream')
 
     window.setTimeout(() => {
       const result = interpretDreamWithMood(trimmed, selectedMood, isEnglish)
@@ -152,6 +155,7 @@ export function useDreamGame() {
       }
       setHistory((prev) => [record, ...prev].slice(0, DREAM_HISTORY_CAP))
       setPhase('revealed')
+      markDailyJourneyComplete('dream')
       window.setTimeout(scrollToResult, 100)
     }, INTERPRET_DELAY_MS)
   }, [dreamContent, selectedMood, scrollToResult, isEnglish])

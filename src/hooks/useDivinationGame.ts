@@ -14,6 +14,8 @@ import { confirm } from '../utils/confirm'
 import { txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
 import { DRAW_PHASE_STEP, type DrawPhase } from '../utils/divinationData'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
+import { trackFeatureShare, trackFeatureStart } from '../utils/analytics'
 
 export interface DrawHistory {
   id: string
@@ -80,7 +82,7 @@ function pickStickForCategory(category: string): DivinationStick {
 }
 
 function getLinkedStick(): DivinationStick | null {
-  const match = window.location.pathname.match(/^\/(?:en\/)?divination\/stick\/(\d+)\/?$/)
+  const match = window.location.pathname.match(/^\/(?:en\/|zh\/|zh-CN\/)?divination\/stick\/(\d+)\/?$/)
   if (!match) return null
   return divinationSticks.find((stick) => stick.id === Number(match[1])) ?? null
 }
@@ -194,6 +196,7 @@ export function useDivinationGame() {
     if (isShaking) return
 
     void ensureMotionPermission()
+    trackFeatureStart('divination', selectedCategory || 'general')
 
     setPhase('shaking')
     setIsShaking(true)
@@ -217,6 +220,7 @@ export function useDivinationGame() {
           category: selectedCategory || undefined,
         }
         setDrawHistory((prev) => capDrawHistory([historyItem, ...prev]))
+        markDailyJourneyComplete('divination')
       }, 600)
     }, 1800)
   }, [isShaking, selectedCategory, ensureMotionPermission])
@@ -312,6 +316,7 @@ ${stick.story ? `\n典故：\n${stick.story}` : ''}
   const shareStick = useCallback(async () => {
     if (!stickReading) return
 
+    trackFeatureShare('divination')
     const { stick, overview, categoryGuidance } = stickReading
     const text = isEnglish
       ? `Sign ${stick.id} — ${stick.title} (${stick.level})\n\nOracle poem: ${stick.poem}\n\n${overview}${categoryGuidance ? `\n\n${categoryGuidance}` : ''}\n\nFrom Fate Atelier · Bamboo Oracle`

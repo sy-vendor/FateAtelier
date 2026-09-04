@@ -8,16 +8,17 @@ function localeFromPathname(pathname?: string): Locale | null {
   if (typeof window === 'undefined' && !pathname) return null
   const path = pathname ?? window.location.pathname
   const first = path.split('/').filter(Boolean)[0]
+  if (first === 'zh' || first === 'zh-CN') return 'zh-CN'
   if (first === 'en') return 'en'
-  if (first) return 'zh-CN'
+  if (first) return 'en'
   return null
 }
 
 export function getStoredLocale(): Locale {
   const fromPath = localeFromPathname()
   if (fromPath) return fromPath
-  const value = getStorageString(STORAGE_KEY, 'zh-CN').data
-  return value === 'en' ? 'en' : 'zh-CN'
+  const value = getStorageString(STORAGE_KEY, 'en').data
+  return value === 'zh-CN' ? 'zh-CN' : 'en'
 }
 
 export function isEnglishLocale(): boolean {

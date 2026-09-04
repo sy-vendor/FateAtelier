@@ -1,7 +1,7 @@
-import type { AppPage } from '../types/appPage'
+import type { FeaturePage } from '../types/appPage'
 
 export interface AppFeature {
-  page: AppPage
+  page: FeaturePage
   icon: string
   name: string
   seoTitle: string

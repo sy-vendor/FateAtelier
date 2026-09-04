@@ -363,7 +363,7 @@ function QimenMainView() {
             <li>{tx('选定所问方位后，盘面会侧重该宫门星神组合', 'After choosing a direction, the chart focuses on that palace')}</li>
             <li>{tx('点击九宫各宫可细察门、星、神之吉凶', 'Tap each palace to inspect gate, star, and spirit fortune')}</li>
             <li>{tx('吉方宜进取，凶方宜回避，中宫观整体气势', 'Advance toward auspicious directions; avoid inauspicious ones')}</li>
-            <li>{tx('盘面推演仅供参考，重大决策尚需结合实际', 'Chart readings are for reference — use judgment for major decisions')}</li>
+            <li>{tx('盘面为简化文化体验版：局数与门星神排布、宫位评分供入门参考，非传统精密排盘', 'This chart is a simplified cultural edition: ju number, gates/stars/spirits, and palace scores are for learning—not a classical professional cast')}</li>
           </ul>
         </Panel>
       )}

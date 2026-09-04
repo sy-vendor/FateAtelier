@@ -53,28 +53,25 @@ const shengxiao = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴'
 // 时辰
 const shichen = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
 
-// 精确计算立春日期（基于天文算法，1900-2100年）
+// 简化估算立春日期（平均太阳速度近似，非精密天文历）
 function getLichunDate(year: number): Date {
-  // 立春是太阳黄经315度的时刻
-  // 使用精确的节气计算
+  // 立春约对应太阳黄经 315°；此处用简化节气推算
   return getSolarTermDate(year, 0) // 0=立春
 }
 
-// 精确计算节气的日期（基于天文算法，1900-2100年）
+// 简化估算节气日期（春分锚定 + 年平均日数线性外推，1900–2100 体验版）
 function getSolarTermDate(year: number, termIndex: number): Date {
   // termIndex: 0=立春, 1=惊蛰, 2=清明, 3=立夏, 4=芒种, 5=小暑, 6=立秋, 7=白露, 8=寒露, 9=立冬, 10=大雪, 11=小寒
-  // 使用精确的节气计算公式（基于太阳黄经和天文历法）
-  
+  // 文化体验版：不以实时天文算法求黄经交点
+
   // 每个节气的太阳黄经（度）
   const solarLongitude = [315, 330, 345, 0, 15, 30, 45, 60, 75, 90, 105, 120]
   const targetLongitude = solarLongitude[termIndex]
-  
-  // 计算该年份的春分点（3月20或21日）
-  // 春分点：太阳黄经为0度
-  const springEquinox = new Date(year, 2, 20) // 3月20日作为基准
-  
-  // 计算从春分到目标节气的天数
-  // 太阳每天大约移动0.9856度（360度/365.2422天）
+
+  // 春分点近似锚定为 3 月 20 日（非逐年精确交点）
+  const springEquinox = new Date(year, 2, 20)
+
+  // 太阳每天大约移动 0.9856 度（360/365.2422）的平均近似
   const degreesPerDay = 360 / 365.2422
   let daysFromEquinox = targetLongitude / degreesPerDay
   
@@ -83,22 +80,21 @@ function getSolarTermDate(year: number, termIndex: number): Date {
     daysFromEquinox += 365.2422
   }
   
-  // 计算精确日期
+  // 计算近似日期
   const resultDate = new Date(springEquinox)
   const totalDays = Math.floor(daysFromEquinox)
   resultDate.setDate(resultDate.getDate() + totalDays)
-  
-  // 微调：根据历史数据修正（1900-2100年的节气日期表）
-  // 这里使用一个更精确的修正算法
+
+  // 粗略世纪微调（仍属体验级近似，非历书查表）
   const centuryOffset = Math.floor((year - 1900) / 100)
-  const correction = centuryOffset * 0.1 // 每世纪微调0.1天
-  
+  const correction = centuryOffset * 0.1
+
   resultDate.setDate(resultDate.getDate() + Math.round(correction))
-  
+
   return resultDate
 }
 
-// 精确计算节气对应的月份
+// 按简化节气推算月柱分界（立春年起算）
 function getJieqiMonth(year: number, month: number, day: number): number {
   const currentDate = new Date(year, month - 1, day)
   

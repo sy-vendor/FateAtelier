@@ -1,8 +1,12 @@
 import type { Locale } from '../i18n/locale'
 import { APP_FEATURES } from '../constants/appFeatures'
-import type { AppPage } from '../types/appPage'
+import { isTrustPage } from '../content/trustPages'
+import type { AppPage, FeaturePage } from '../types/appPage'
 
 const FEATURE_PAGES = new Set(APP_FEATURES.map((feature) => feature.page))
+
+/** Chinese locale path prefix. English uses unprefixed routes. */
+export const ZH_PREFIX = 'zh'
 
 export interface LocalePathParts {
   locale: Locale
@@ -12,27 +16,55 @@ export interface LocalePathParts {
   segments: string[]
 }
 
+export function isFeaturePage(page: string): page is FeaturePage {
+  return FEATURE_PAGES.has(page as FeaturePage)
+}
+
+function stripLocalePrefix(segments: string[]): { locale: Locale; restSegments: string[] } {
+  const first = segments[0]
+  if (first === ZH_PREFIX || first === 'zh-CN') {
+    return { locale: 'zh-CN', restSegments: segments.slice(1) }
+  }
+  // Legacy English prefix — still recognized so old bookmarks keep working until redirects land.
+  if (first === 'en') {
+    return { locale: 'en', restSegments: segments.slice(1) }
+  }
+  return { locale: 'en', restSegments: segments }
+}
+
 export function parseLocalePath(pathname = window.location.pathname): LocalePathParts {
   const segments = pathname.split('/').filter(Boolean)
-  const isEnglish = segments[0] === 'en'
-  const restSegments = isEnglish ? segments.slice(1) : segments
-  const pageSlug = restSegments[0] || 'tarot'
-  const page = (FEATURE_PAGES.has(pageSlug as AppPage) ? pageSlug : 'tarot') as AppPage
+  const { locale, restSegments } = stripLocalePrefix(segments)
+  const pageSlug = restSegments[0]
+  let page: AppPage = 'home'
+  if (pageSlug) {
+    if (isFeaturePage(pageSlug) || isTrustPage(pageSlug)) {
+      page = pageSlug
+    } else {
+      page = 'home'
+    }
+  }
   return {
-    locale: isEnglish ? 'en' : 'zh-CN',
+    locale,
     rest: restSegments.join('/'),
     page,
     segments: restSegments,
   }
 }
 
-/** Build an absolute site path for the given locale. */
+/** Build an absolute site path for the given locale. English is unprefixed; Chinese uses `/zh`. */
 export function localePath(rest: string, locale: Locale): string {
   const cleaned = rest.replace(/^\/+|\/+$/g, '')
-  if (locale === 'en') {
-    return cleaned ? `/en/${cleaned}` : '/en'
+  if (locale === 'zh-CN') {
+    return cleaned ? `/${ZH_PREFIX}/${cleaned}` : `/${ZH_PREFIX}`
   }
   return cleaned ? `/${cleaned}` : '/'
+}
+
+/** Path for an SPA page (home → `/` or `/zh`). */
+export function pagePath(page: AppPage, locale: Locale): string {
+  if (page === 'home') return localePath('', locale)
+  return localePath(page, locale)
 }
 
 export function withCurrentLocale(rest: string, locale: Locale = parseLocalePath().locale): string {
@@ -43,4 +75,10 @@ export function withCurrentLocale(rest: string, locale: Locale = parseLocalePath
 export function switchLocalePath(pathname: string, nextLocale: Locale): string {
   const { rest } = parseLocalePath(pathname)
   return localePath(rest, nextLocale)
+}
+
+/** Normalize legacy `/en/...` URLs to unprefixed English paths. */
+export function canonicalLocalePath(pathname: string): string {
+  const { locale, rest } = parseLocalePath(pathname)
+  return localePath(rest, locale)
 }

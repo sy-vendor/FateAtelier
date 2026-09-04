@@ -6,6 +6,7 @@ import {
   recommendDirectionForPurpose,
 } from '../utils/fengshuiEngine'
 import { useLocale } from '../i18n/LocaleContext'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export const DIRECTION_GRID: Record<string, string> = {
   西北: 'nw',
@@ -40,6 +41,7 @@ export function useFengshuiGame() {
 
   const selectDirection = (directionName: string) => {
     setSelectedDirection(directionName)
+    markDailyJourneyComplete('fengshui')
   }
 
   const resetCompass = () => {
@@ -52,6 +54,7 @@ export function useFengshuiGame() {
     const recommended = recommendDirectionForPurpose(purpose)
     if (recommended.length > 0) {
       setSelectedDirection(recommended[0])
+      markDailyJourneyComplete('fengshui')
     }
   }
 

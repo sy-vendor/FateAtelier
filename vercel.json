@@ -4,5 +4,9 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "framework": "vite",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/en", "destination": "/", "permanent": true },
+    { "source": "/en/:path*", "destination": "/:path*", "permanent": true }
+  ]
 }

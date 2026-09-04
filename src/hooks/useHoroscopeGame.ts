@@ -14,6 +14,7 @@ import {
   type PairingResult,
 } from '../utils/horoscopeEngine'
 import { useLocale } from '../i18n/LocaleContext'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export type BirthQueryResult = {
   signIndex: number
@@ -30,7 +31,11 @@ function scrollToHoroscopeReading() {
 
 export function useHoroscopeGame() {
   const { isEnglish } = useLocale()
-  const today = new Date()
+  const today = useMemo(() => {
+    const d = new Date()
+    d.setHours(12, 0, 0, 0)
+    return d
+  }, [])
   const [period, setPeriod] = useState<HoroscopePeriod>('today')
   const [periodTouched, setPeriodTouched] = useState(false)
   const [signIndex, setSignIndex] = useState(0)
@@ -98,6 +103,7 @@ export function useHoroscopeGame() {
     if (idx >= 0) {
       setSignIndex(idx)
       setEngaged(true)
+      markDailyJourneyComplete('horoscope')
     }
   }, [])
 
@@ -148,6 +154,7 @@ export function useHoroscopeGame() {
       setSignIndex(calculatedSign)
       setEngaged(true)
       setBirthQueryResult({ signIndex: calculatedSign })
+      markDailyJourneyComplete('horoscope')
       scrollToHoroscopeReading()
       return
     }
@@ -170,6 +177,7 @@ export function useHoroscopeGame() {
         ? `Lunar ${year}-${month}-${day} → Gregorian ${solarDate.getFullYear()}-${solarMonth}-${solarDay}`
         : `农历 ${year}年${isLunarLeapMonth ? '闰' : ''}${month}月${day}日 → 阳历 ${solarDate.getFullYear()}年${solarMonth}月${solarDay}日`,
     })
+    markDailyJourneyComplete('horoscope')
     scrollToHoroscopeReading()
   }, [birthYear, birthMonth, birthDay, calendarType, isLunarLeapMonth, isEnglish])
 

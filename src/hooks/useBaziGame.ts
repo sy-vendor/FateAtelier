@@ -13,6 +13,7 @@ import {
 } from '../utils/birthDateUtils'
 import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export function useBaziGame() {
   const { isEnglish } = useLocale()
@@ -83,6 +84,7 @@ export function useBaziGame() {
 
     setResult(fortune)
     setPhase('insight')
+    markDailyJourneyComplete('bazi')
     window.setTimeout(scrollToInsight, 80)
   }, [resolveCurrentBirth, birthTime, scrollToInsight])
 

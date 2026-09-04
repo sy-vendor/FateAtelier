@@ -126,6 +126,12 @@ function HoroscopeMainView() {
           <p className="callout" style={{ marginTop: 12 }}>
             {(isEnglish ? ELEMENT_LABEL_EN : ELEMENT_LABEL)[result.element]} · {(isEnglish ? ELEMENT_PEERS_EN : ELEMENT_PEERS)[result.element]}
           </p>
+          <p className="callout" style={{ marginTop: 12 }}>
+            {tx(
+              '今日内容依据日期、星座元素与固定规则生成，同一天同一星座结果保持一致，仅供自我反思与娱乐。',
+              'Today’s reading is generated from the date, sign element, and fixed rules. The same sign stays consistent within a day—for reflection and entertainment only.',
+            )}
+          </p>
         </Panel>
 
         <AspectGrid

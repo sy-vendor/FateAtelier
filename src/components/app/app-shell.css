@@ -539,6 +539,12 @@ html.app-background-paused body::after {
   border-top: 1px solid var(--ds-border);
   box-sizing: border-box;
   flex-shrink: 0;
+  line-height: 1.7;
+}
+
+.shell-footer p {
+  margin: 0;
+  text-wrap: balance;
 }
 
 .shell-footer a {
@@ -571,6 +577,15 @@ html.app-background-paused body::after {
   padding: var(--ds-space-sm) var(--ds-space-sm) var(--ds-space-lg);
   margin-bottom: var(--ds-space-sm);
   border-bottom: 1px solid var(--ds-border);
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--ds-radius-md);
+  transition: background 0.2s ease;
+}
+
+.shell-nav__brand:hover,
+.shell-nav__brand--active {
+  background: rgba(167, 139, 250, 0.08);
 }
 
 .shell-nav__logo {
@@ -702,17 +717,17 @@ html.app-background-paused body::after {
   justify-content: center;
   gap: 2px;
   flex: 1;
-  max-width: 72px;
+  max-width: 64px;
   height: 52px;
   min-height: 52px;
   max-height: 52px;
-  padding: 6px 4px;
+  padding: 6px 2px;
   border: none;
   border-radius: var(--ds-radius-md);
   background: transparent;
   color: var(--ds-text-muted);
   font-family: var(--ds-font-body);
-  font-size: 0.6rem;
+  font-size: 0.55rem;
   font-weight: 500;
   line-height: 1;
   text-decoration: none;

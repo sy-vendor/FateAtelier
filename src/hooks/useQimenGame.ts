@@ -3,6 +3,7 @@ import { digitsOnly } from '../utils/birthDateUtils'
 import { DIRECTION_ANGLES, QIMEN_PHASE_STEP, type QimenPhase } from '../utils/qimenData'
 import { calculateQimenPan } from '../utils/qimenEngine'
 import { useLocale } from '../i18n/LocaleContext'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 function parseDateParts(year: string, month: string, day: string, hour: string) {
   const y = parseInt(year, 10)
@@ -101,6 +102,7 @@ export function useQimenGame() {
       setSelectedDirection(direction)
       setFocusedPalaceIndex(index)
       setPhase('insight')
+      markDailyJourneyComplete('qimen')
       window.setTimeout(scrollToInsight, 80)
     },
     [scrollToInsight],

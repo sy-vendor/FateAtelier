@@ -8,6 +8,8 @@ import {
 import { analyzeNumberEnergy, validateNumberInput } from '../utils/numberEnergyEngine'
 import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
+import { trackFeatureShare } from '../utils/analytics'
 
 export function useNumberEnergyGame() {
   const { isEnglish } = useLocale()
@@ -59,6 +61,7 @@ export function useNumberEnergyGame() {
       return
     }
     setHasAnalyzed(true)
+    markDailyJourneyComplete('numberenergy')
   }
 
   const toggleDetail = (key: string) => {
@@ -78,6 +81,7 @@ export function useNumberEnergyGame() {
 
   const shareAnalysis = async () => {
     if (!analysis) return
+    trackFeatureShare('numberenergy')
     const shareText = txStatic(
       `🔢 数字能量分析\n\n数字：${analysis.numbers}\n类型：${selectedTypeInfo?.name}\n能量评分：${analysis.score}/100 (${analysis.levelText})\n最终数字：${analysis.finalDigit}\n\n来自：命运工坊 🔮`,
       `🔢 Number Energy Analysis\n\nDigits: ${analysis.numbers}\nType: ${selectedTypeInfo?.id === 'phone' ? 'Phone number' : selectedTypeInfo?.id === 'plate' ? 'License plate' : selectedTypeInfo?.id === 'id' ? 'ID number' : 'Other numbers'}\nEnergy score: ${analysis.score}/100 (${analysis.levelText})\nFinal digit: ${analysis.finalDigit}\n\nFrom: Fate Atelier 🔮`,

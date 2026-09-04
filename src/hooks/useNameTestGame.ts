@@ -3,6 +3,7 @@ import { NAME_TEST_PHASE_STEP, type NameTestPhase } from '../utils/nameTestData'
 import { computeNameTest, type NameTestResult } from '../utils/nameTestEngine'
 import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export function useNameTestGame() {
   const { isEnglish } = useLocale()
@@ -34,6 +35,7 @@ export function useNameTestGame() {
     const r = computeNameTest(s, g)
     setResult(r)
     setPhase('insight')
+    markDailyJourneyComplete('nametest')
     window.setTimeout(scrollToInsight, 80)
   }, [surname, givenName, scrollToInsight])
 

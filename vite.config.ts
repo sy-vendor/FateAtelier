@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -13,5 +14,9 @@ export default defineConfig({
     // Preserve route-level dynamic imports instead of making one feature
     // download the data and code for several unrelated tools.
     chunkSizeWarningLimit: 600,
+  },
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.ts'],
   },
 })

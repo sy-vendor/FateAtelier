@@ -13,6 +13,7 @@ import {
 } from '../utils/birthDateUtils'
 import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export function useZiweiGame() {
   const { isEnglish } = useLocale()
@@ -90,6 +91,7 @@ export function useZiweiGame() {
     setResult(chart)
     setFocusedPalaceIndex(0)
     setPhase('insight')
+    markDailyJourneyComplete('ziwei')
     window.setTimeout(scrollToInsight, 80)
   }, [resolveCurrentBirth, birthTime, scrollToInsight])
 

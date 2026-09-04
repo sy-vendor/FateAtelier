@@ -2,6 +2,7 @@ import type { AppPage } from '../../types/appPage'
 import { APP_FEATURES } from '../../constants/appFeatures'
 import { useTx } from '../../i18n/useTx'
 import { navigateToFeature } from '../../utils/appNavigation'
+import { trackContinuePlay } from '../../utils/analytics'
 import { FeatureIcon } from './FeatureIcon'
 
 const OPTIONS: Record<'tarot' | 'dream' | 'divination', Array<{ page: AppPage; title: string; titleEn: string; text: string; textEn: string }>> = {
@@ -32,7 +33,14 @@ export default function NextJourney({ from }: { from: keyof typeof OPTIONS }) {
         {OPTIONS[from].map((option) => {
           const feature = APP_FEATURES.find((item) => item.page === option.page)!
           return (
-            <button key={option.page} type="button" onClick={() => navigateToFeature(option.page)}>
+            <button
+              key={option.page}
+              type="button"
+              onClick={() => {
+                trackContinuePlay(from, option.page)
+                navigateToFeature(option.page)
+              }}
+            >
               <span className="next-journey__icon" aria-hidden><FeatureIcon page={option.page} size="sm" /></span>
               <span><strong>{tx(option.title, option.titleEn)}</strong><small>{tx(option.text, option.textEn)}</small></span>
               <span aria-hidden>→</span>

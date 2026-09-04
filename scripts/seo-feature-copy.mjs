@@ -80,7 +80,7 @@ const pagesZhRaw = [
       { q: '正位和逆位有什么区别？', a: '正位通常强调主题能量较顺畅的一面；逆位更提示阻滞、内耗或需要调整的角度。同一张牌在不同朝向下含义会有差别。' },
       { q: '塔罗结果能当最终决定吗？', a: '不建议。塔罗更适合用来整理情绪与看见选项，重要决定仍应结合现实条件与自身判断。' },
     ],
-    related: [['/tarot/cards', '浏览全部牌义'], ['/divination', '抽签求签'], ['/dream', '梦境解析']],
+    related: [['/zh/tarot/cards', '浏览全部牌义'], ['/zh/divination', '抽签求签'], ['/zh/dream', '梦境解析']],
   },
   {
     slug: 'horoscope',
@@ -103,7 +103,7 @@ const pagesZhRaw = [
       { q: '每天运势会变吗？', a: '会。页面按日期更新，同一天内反复查看通常保持一致。' },
       { q: '和农历黄历冲突听谁的？', a: '两者体系不同，可作互补参考，不必互相否定；重要安排仍以现实条件为准。' },
     ],
-    related: [['/almanac', '今日黄历'], ['/luckycolor', '每日幸运色'], ['/shengxiao', '生肖配对']],
+    related: [['/zh/almanac', '今日黄历'], ['/zh/luckycolor', '每日幸运色'], ['/zh/shengxiao', '生肖配对']],
   },
   {
     slug: 'almanac',
@@ -126,7 +126,7 @@ const pagesZhRaw = [
       { q: '宜忌很多，必须全部遵守吗？', a: '不必。可优先关注与今天计划直接相关的条目，其余作了解即可。' },
       { q: '时区怎么算？', a: '页面按常见历书逻辑展示当日信息；跨境旅行时请以当地日期与行程安排为主。' },
     ],
-    related: [['/auspicious', '择日吉时'], ['/fengshui', '风水罗盘'], ['/horoscope', '星座运势']],
+    related: [['/zh/auspicious', '择日吉时'], ['/zh/fengshui', '风水罗盘'], ['/zh/horoscope', '星座运势']],
   },
   {
     slug: 'cybermerit',
@@ -149,7 +149,7 @@ const pagesZhRaw = [
       { q: '功德数值有实际意义吗？', a: '主要是趣味记录与自我激励，请勿当作现实功德或功德转让依据。' },
       { q: '需要登录吗？', a: '一般可直接体验；具体进度是否跨设备保存取决于浏览器本地状态。' },
     ],
-    related: [['/divination', '抽签求签'], ['/dream', '梦境解析'], ['/tarot', '塔罗占卜']],
+    related: [['/zh/divination', '抽签求签'], ['/zh/dream', '梦境解析'], ['/zh/tarot', '塔罗占卜']],
   },
   {
     slug: 'bazi',
@@ -172,7 +172,7 @@ const pagesZhRaw = [
       { q: '八字会泄露隐私吗？', a: '排盘在网页中完成；请避免在公共场合展示含完整出生信息的截图。' },
       { q: '和紫微斗数有何不同？', a: '八字侧重四柱与五行生克；紫微以十二宫与主星格局看人生议题，可互补不宜互相替代。' },
     ],
-    related: [['/ziwei', '紫微斗数'], ['/nametest', '姓名测试'], ['/qimen', '奇门遁甲']],
+    related: [['/zh/ziwei', '紫微斗数'], ['/zh/nametest', '姓名测试'], ['/zh/qimen', '奇门遁甲']],
   },
   {
     slug: 'divination',
@@ -196,7 +196,7 @@ const pagesZhRaw = [
       { q: '同一天可以抽很多次吗？', a: '可以体验，但反复追问同一问题容易越抽越乱；建议先消化这一签再决定是否重抽。' },
       { q: '上上签就一定顺利吗？', a: '不一定。签级是态度提示，仍要看签诗语境与你当下的实际条件。' },
     ],
-    related: [['/divination/sticks', '浏览全部签文'], ['/tarot', '塔罗占卜'], ['/dream', '梦境解析']],
+    related: [['/zh/divination/sticks', '浏览全部签文'], ['/zh/tarot', '塔罗占卜'], ['/zh/dream', '梦境解析']],
   },
   {
     slug: 'dream',
@@ -219,7 +219,7 @@ const pagesZhRaw = [
       { q: '噩梦一定是坏事吗？', a: '未必。噩梦常反映压力、未处理情绪或过渡期，解读重点在提醒而非恐吓。' },
       { q: '查不到我的关键词怎么办？', a: '可拆成更短的近义词，或从梦象图鉴里找相近条目对照。' },
     ],
-    related: [['/dream/symbols', '浏览全部梦象'], ['/tarot', '塔罗占卜'], ['/divination', '抽签求签']],
+    related: [['/zh/dream/symbols', '浏览全部梦象'], ['/zh/tarot', '塔罗占卜'], ['/zh/divination', '抽签求签']],
   },
   {
     slug: 'fengshui',
@@ -242,7 +242,7 @@ const pagesZhRaw = [
       { q: '需要站在房屋中心吗？', a: '入门体验可在主要活动区观察；专业勘察会有更严格的立极与量度方法。' },
       { q: '和奇门遁甲有什么关系？', a: '都涉及方位与时间概念，但奇门更侧重择时起局与九宫格局，用途不同。' },
     ],
-    related: [['/qimen', '奇门遁甲'], ['/almanac', '今日黄历'], ['/auspicious', '择日吉时']],
+    related: [['/zh/qimen', '奇门遁甲'], ['/zh/almanac', '今日黄历'], ['/zh/auspicious', '择日吉时']],
   },
   {
     slug: 'auspicious',
@@ -265,7 +265,7 @@ const pagesZhRaw = [
       { q: '找不到完全合适的日子怎么办？', a: '可放宽日期范围，或优先满足最关键约束（场地、亲友档期），再在剩余日期中择优。' },
       { q: '要不要结合八字？', a: '若你重视命理匹配，可再对照八字或请专业人士；本工具先解决「日历层面」的筛选。' },
     ],
-    related: [['/almanac', '今日黄历'], ['/fengshui', '风水罗盘'], ['/bazi', '八字排盘']],
+    related: [['/zh/almanac', '今日黄历'], ['/zh/fengshui', '风水罗盘'], ['/zh/bazi', '八字排盘']],
   },
   {
     slug: 'numberenergy',
@@ -288,7 +288,7 @@ const pagesZhRaw = [
       { q: '结果准不准？', a: '属于趣味解读，可当作自我观察的一面镜子，不宜作为唯一依据。' },
       { q: '生日和手机号哪个更有参考？', a: '生日更贴近「与生俱来」的时间信息；手机号更像日常使用频率高的符号，两者角度不同。' },
     ],
-    related: [['/nametest', '姓名测试'], ['/luckycolor', '每日幸运色'], ['/bazi', '八字排盘']],
+    related: [['/zh/nametest', '姓名测试'], ['/zh/luckycolor', '每日幸运色'], ['/zh/bazi', '八字排盘']],
   },
   {
     slug: 'luckycolor',
@@ -311,7 +311,7 @@ const pagesZhRaw = [
       { q: '一定要全身穿这个颜色吗？', a: '不必。用丝巾、袜子、耳机壳或桌面小物点缀即可。' },
       { q: '和风水颜色有关吗？', a: '这里偏日常仪式与审美灵感；若你关注方位五行用色，可再对照风水罗盘。' },
     ],
-    related: [['/horoscope', '星座运势'], ['/almanac', '今日黄历'], ['/numberenergy', '数字能量']],
+    related: [['/zh/horoscope', '星座运势'], ['/zh/almanac', '今日黄历'], ['/zh/numberenergy', '数字能量']],
   },
   {
     slug: 'qimen',
@@ -334,7 +334,7 @@ const pagesZhRaw = [
       { q: '必须精确到分钟吗？', a: '传统奇门对时辰敏感。入门体验可用整点，正式推演请尽量准确。' },
       { q: '和风水罗盘如何一起用？', a: '罗盘偏空间方位，奇门偏时间格局；可以分开学习，不必强行混为一谈。' },
     ],
-    related: [['/fengshui', '风水罗盘'], ['/bazi', '八字排盘'], ['/ziwei', '紫微斗数']],
+    related: [['/zh/fengshui', '风水罗盘'], ['/zh/bazi', '八字排盘'], ['/zh/ziwei', '紫微斗数']],
   },
   {
     slug: 'nametest',
@@ -357,7 +357,7 @@ const pagesZhRaw = [
       { q: '英文名可以测吗？', a: '本工具主要面向中文姓名笔画与五格体系，英文名不适用同一套算法。' },
       { q: '五格不好就要改名吗？', a: '不必。姓名只是文化与社会层面的一个符号，改名与否应综合法律、习惯与个人意愿。' },
     ],
-    related: [['/bazi', '八字排盘'], ['/numberenergy', '数字能量'], ['/shengxiao', '生肖配对']],
+    related: [['/zh/bazi', '八字排盘'], ['/zh/numberenergy', '数字能量'], ['/zh/shengxiao', '生肖配对']],
   },
   {
     slug: 'ziwei',
@@ -380,7 +380,7 @@ const pagesZhRaw = [
       { q: '看不懂术语怎么办？', a: '先从宫位主题与基础说明读起，不必一次记住全部星曜名称。' },
       { q: '能预测具体事件日期吗？', a: '本页侧重盘面结构与入门解读；精细流年推演需要更系统的方法。' },
     ],
-    related: [['/bazi', '八字排盘'], ['/qimen', '奇门遁甲'], ['/horoscope', '星座运势']],
+    related: [['/zh/bazi', '八字排盘'], ['/zh/qimen', '奇门遁甲'], ['/zh/horoscope', '星座运势']],
   },
   {
     slug: 'shengxiao',
@@ -403,7 +403,7 @@ const pagesZhRaw = [
       { q: '可以测友情或合作吗？', a: '可以。把建议理解为相处风格参考，不限于恋爱场景。' },
       { q: '和星座配对哪个准？', a: '体系不同：生肖按农历年，星座多按太阳落座；可一起看，但都不是绝对标准。' },
     ],
-    related: [['/horoscope', '星座运势'], ['/nametest', '姓名测试'], ['/bazi', '八字排盘']],
+    related: [['/zh/horoscope', '星座运势'], ['/zh/nametest', '姓名测试'], ['/zh/bazi', '八字排盘']],
   },
 ]
 
@@ -430,7 +430,7 @@ const pagesEnRaw = [
       { q: 'What is the difference between upright and reversed?', a: 'Upright often highlights a clearer flow of the theme; reversed points to friction, delay, or an inner adjustment. The same card shifts tone by orientation.' },
       { q: 'Should I treat the cards as a final decision?', a: 'No. Tarot is best for clarity and options. Important choices still need real-world judgment.' },
     ],
-    related: [['/en/tarot/cards', 'Browse all card meanings'], ['/en/divination', 'Online fortune sticks'], ['/en/dream', 'Dream meaning guide']],
+    related: [['/tarot/cards', 'Browse all card meanings'], ['/guides/one-card-tarot', 'One-card asking guide'], ['/guides/three-card-spread', 'Three-card spread guide']],
   },
   {
     slug: 'horoscope',
@@ -453,13 +453,13 @@ const pagesEnRaw = [
       { q: 'Does the horoscope change every day?', a: 'Yes. It updates by date and usually stays consistent within the same day.' },
       { q: 'What if it conflicts with the Chinese almanac?', a: 'They are different systems—use them as complementary references, and prioritize real-world constraints.' },
     ],
-    related: [['/en/almanac', 'Chinese daily almanac'], ['/en/luckycolor', 'Today’s lucky color'], ['/en/shengxiao', 'Chinese zodiac compatibility']],
+    related: [['/almanac', 'Chinese daily almanac'], ['/luckycolor', 'Today’s lucky color'], ['/shengxiao', 'Chinese zodiac compatibility']],
   },
   {
     slug: 'almanac',
-    title: 'Chinese Daily Almanac',
-    description: 'Free Chinese almanac with lunar date, stems and branches, solar terms, daily dos and don’ts, and hour guidance.',
-    intro: 'The daily almanac puts Gregorian and lunar details in one place for a quick traditional-calendar check before travel, meetings, or ceremonies. Treat it as cultural reference, not a rigid rulebook.',
+    title: 'Chinese Almanac Today: Lunar Date & Dos/Don’ts',
+    description: 'Chinese almanac today: free lunar date, stems and branches, solar terms, daily dos and don’ts, and hour guidance—cultural timing, not rigid law.',
+    intro: 'The daily almanac puts Gregorian and lunar details in one place for a quick traditional-calendar check before travel, meetings, or ceremonies. Treat it as cultural reference, not a rigid rulebook. Fate Atelier uses a simplified experience edition—see Methodology.',
     modes: [
       { name: 'Date overview', text: 'See Gregorian, lunar, stem-branch, and solar-term info together.' },
       { name: 'Dos and don’ts', text: 'Scan favorable and unfavorable activities for the day.' },
@@ -474,9 +474,9 @@ const pagesEnRaw = [
     faqs: [
       { q: 'Can almanac advice replace professional decisions?', a: 'No. It is cultural reference—weddings, medical care, and major contracts still need real-world planning.' },
       { q: 'Must I follow every item?', a: 'No. Focus on entries that relate to today’s plans and treat the rest as optional context.' },
-      { q: 'How does timezone work?', a: 'The page shows a conventional daily view; when traveling, prioritize local date and logistics.' },
+      { q: 'How accurate are solar terms here?', a: 'This workshop uses simplified traditional rules for cultural play, not astronomy-grade ephemerides.' },
     ],
-    related: [['/en/auspicious', 'Auspicious date finder'], ['/en/fengshui', 'Online feng shui compass'], ['/en/horoscope', 'Daily horoscope']],
+    related: [['/guides/chinese-almanac-today', 'How to read today’s almanac'], ['/auspicious', 'Auspicious date finder'], ['/methodology', 'Methodology']],
   },
   {
     slug: 'cybermerit',
@@ -499,13 +499,13 @@ const pagesEnRaw = [
       { q: 'Does the merit score mean anything real?', a: 'It is a playful tracker for motivation—not transferable merit or religious credit.' },
       { q: 'Do I need an account?', a: 'You can usually play right away; cross-device progress depends on local browser state.' },
     ],
-    related: [['/en/divination', 'Online fortune sticks'], ['/en/dream', 'Dream meaning guide'], ['/en/tarot', 'Free online tarot reading']],
+    related: [['/divination', 'Online fortune sticks'], ['/dream', 'Dream meaning guide'], ['/tarot', 'Free online tarot reading']],
   },
   {
     slug: 'bazi',
-    title: 'Free BaZi Chart',
-    description: 'Enter birth date and hour for a free Four Pillars chart with stems, branches, five-element balance, and cultural notes.',
-    intro: 'BaZi (Four Pillars) charts your year, month, day, and hour pillars so you can explore stem-branch structure and five-element balance. Fate Atelier keeps the board readable for beginners who want a clear first look.',
+    title: 'BaZi Calculator: Free Four Pillars Chart',
+    description: 'Free BaZi calculator for beginners: enter birth date and hour to read Four Pillars stems, branches, five-element balance, and cultural notes—ad-free, no signup.',
+    intro: 'BaZi (Four Pillars) charts your year, month, day, and hour pillars so you can explore stem-branch structure and five-element balance. Fate Atelier keeps the board readable for beginners who want a clear first look—not a professional verdict.',
     modes: [
       { name: 'Four Pillars board', text: 'View year, month, day, and hour pillars together.' },
       { name: 'Five-element mix', text: 'See whether wood, fire, earth, metal, and water lean strong, weak, or steadier.' },
@@ -521,13 +521,14 @@ const pagesEnRaw = [
       { q: 'What if I do not know my birth hour?', a: 'You can try an approximate hour, but the hour pillar changes the chart—verify when accuracy matters.' },
       { q: 'Is my birth data private?', a: 'Charting runs in the page flow; avoid sharing screenshots that expose full birth details in public.' },
       { q: 'How is BaZi different from Zi Wei?', a: 'BaZi focuses on pillars and element dynamics; Zi Wei maps twelve palaces and star patterns. They complement rather than replace each other.' },
+      { q: 'Is this a professional BaZi reading?', a: 'No. It is a free cultural experience edition with simplified rules. See Methodology for how results are produced.' },
     ],
-    related: [['/en/ziwei', 'Zi Wei Dou Shu chart'], ['/en/nametest', 'Chinese name reading'], ['/en/qimen', 'Qi Men Dun Jia chart']],
+    related: [['/guides/bazi-calculator', 'BaZi calculator basics'], ['/ziwei', 'Zi Wei Dou Shu chart'], ['/methodology', 'Methodology']],
   },
   {
     slug: 'divination',
-    title: 'Online Fortune Sticks',
-    description: 'Draw one of 100 fortune sticks online, then read the poem, plain meaning, themed details, dos and don’ts, and action steps—free.',
+    title: 'Fortune Stick Interpretation Online',
+    description: 'Free fortune stick interpretation: draw one of 100 lots, then read poem, plain meaning, situations, and action steps—ad-free, no signup.',
     intro: 'Fortune sticks work best when you already have one clear question and want directional guidance. The flow emphasizes calm focus and turning the reading into actions—not only a lucky or unlucky label.',
     modes: [
       { name: 'Choose a focus', text: 'Pick a category such as love or career so details lean that way.' },
@@ -546,7 +547,7 @@ const pagesEnRaw = [
       { q: 'Can I draw many times in one day?', a: 'You can, but repeating the same question often adds noise. Digest one reading first.' },
       { q: 'Does a top-tier stick guarantee success?', a: 'No. Stick level is tone, not a contract—read the poem in context with your real situation.' },
     ],
-    related: [['/en/divination/sticks', 'Browse all stick readings'], ['/en/tarot', 'Free online tarot reading'], ['/en/dream', 'Dream meaning guide']],
+    related: [['/guides/fortune-stick-meaning', 'How to read a fortune stick'], ['/divination/sticks', 'Browse all stick readings'], ['/tarot', 'Free online tarot reading']],
   },
   {
     slug: 'dream',
@@ -569,7 +570,7 @@ const pagesEnRaw = [
       { q: 'Are nightmares always bad omens?', a: 'Not necessarily. They often reflect stress or unfinished feelings—and the value is in the reminder.' },
       { q: 'What if my keyword is missing?', a: 'Try shorter synonyms or browse nearby symbols in the library.' },
     ],
-    related: [['/en/dream/symbols', 'Browse all dream symbols'], ['/en/tarot', 'Free online tarot reading'], ['/en/divination', 'Online fortune sticks']],
+    related: [['/dream/symbols', 'Browse all dream symbols'], ['/tarot', 'Free online tarot reading'], ['/divination', 'Online fortune sticks']],
   },
   {
     slug: 'fengshui',
@@ -592,7 +593,7 @@ const pagesEnRaw = [
       { q: 'Must I stand at the center of the house?', a: 'For casual use, any main living area is fine; formal surveys use stricter methods.' },
       { q: 'How does this relate to Qi Men?', a: 'Both touch space and time ideas, but Qi Men focuses on timed charts and palace structures.' },
     ],
-    related: [['/en/qimen', 'Qi Men Dun Jia chart'], ['/en/almanac', 'Chinese daily almanac'], ['/en/auspicious', 'Auspicious date finder']],
+    related: [['/qimen', 'Qi Men Dun Jia chart'], ['/almanac', 'Chinese daily almanac'], ['/auspicious', 'Auspicious date finder']],
   },
   {
     slug: 'auspicious',
@@ -615,7 +616,7 @@ const pagesEnRaw = [
       { q: 'What if no day looks perfect?', a: 'Widen the range, or prioritize hard constraints first, then choose the best remaining day.' },
       { q: 'Should I also check BaZi?', a: 'If that matters to you, compare afterward. This tool focuses on calendar-level filtering first.' },
     ],
-    related: [['/en/almanac', 'Chinese daily almanac'], ['/en/fengshui', 'Online feng shui compass'], ['/en/bazi', 'Free BaZi chart']],
+    related: [['/almanac', 'Chinese daily almanac'], ['/fengshui', 'Online feng shui compass'], ['/bazi', 'Free BaZi chart']],
   },
   {
     slug: 'numberenergy',
@@ -638,7 +639,7 @@ const pagesEnRaw = [
       { q: 'How accurate is it?', a: 'It is entertainment and self-reflection—not a sole decision tool.' },
       { q: 'Birthday or phone number?', a: 'Birthdays lean toward “born with” timing; phone numbers are everyday symbols—different angles.' },
     ],
-    related: [['/en/nametest', 'Chinese name reading'], ['/en/luckycolor', 'Today’s lucky color'], ['/en/bazi', 'Free BaZi chart']],
+    related: [['/nametest', 'Chinese name reading'], ['/luckycolor', 'Today’s lucky color'], ['/bazi', 'Free BaZi chart']],
   },
   {
     slug: 'luckycolor',
@@ -661,7 +662,7 @@ const pagesEnRaw = [
       { q: 'Must I dress head to toe in it?', a: 'No. A scarf, socks, case, or desk accent is enough.' },
       { q: 'Is this the same as feng shui colors?', a: 'This page is daily ritual and style. For directional five-element color ideas, also see the compass.' },
     ],
-    related: [['/en/horoscope', 'Daily horoscope'], ['/en/almanac', 'Chinese daily almanac'], ['/en/numberenergy', 'Number energy reading']],
+    related: [['/horoscope', 'Daily horoscope'], ['/almanac', 'Chinese daily almanac'], ['/numberenergy', 'Number energy reading']],
   },
   {
     slug: 'qimen',
@@ -684,7 +685,7 @@ const pagesEnRaw = [
       { q: 'Do minutes matter?', a: 'Traditional Qi Men is time-sensitive. Whole hours are fine for exploration; use precise time for serious work.' },
       { q: 'How should I use it with the feng shui compass?', a: 'Compass leans space; Qi Men leans timed patterns—learn them as related but separate tools.' },
     ],
-    related: [['/en/fengshui', 'Online feng shui compass'], ['/en/bazi', 'Free BaZi chart'], ['/en/ziwei', 'Zi Wei Dou Shu chart']],
+    related: [['/fengshui', 'Online feng shui compass'], ['/bazi', 'Free BaZi chart'], ['/ziwei', 'Zi Wei Dou Shu chart']],
   },
   {
     slug: 'nametest',
@@ -707,7 +708,7 @@ const pagesEnRaw = [
       { q: 'Can I test an English name?', a: 'This tool follows Chinese stroke and five-grid logic, so English names are not a fit.' },
       { q: 'Should I rename if grids look weak?', a: 'Not necessarily. A name is one social-cultural symbol—legal, personal, and practical factors matter more.' },
     ],
-    related: [['/en/bazi', 'Free BaZi chart'], ['/en/numberenergy', 'Number energy reading'], ['/en/shengxiao', 'Chinese zodiac compatibility']],
+    related: [['/bazi', 'Free BaZi chart'], ['/numberenergy', 'Number energy reading'], ['/shengxiao', 'Chinese zodiac compatibility']],
   },
   {
     slug: 'ziwei',
@@ -730,12 +731,12 @@ const pagesEnRaw = [
       { q: 'What if I do not know the terms?', a: 'Start with palace themes and basic notes; you do not need every star name on day one.' },
       { q: 'Can it pinpoint exact event dates?', a: 'This page emphasizes structure and entry-level reading; fine timing needs deeper methods.' },
     ],
-    related: [['/en/bazi', 'Free BaZi chart'], ['/en/qimen', 'Qi Men Dun Jia chart'], ['/en/horoscope', 'Daily horoscope']],
+    related: [['/bazi', 'Free BaZi chart'], ['/qimen', 'Qi Men Dun Jia chart'], ['/horoscope', 'Daily horoscope']],
   },
   {
     slug: 'shengxiao',
-    title: 'Chinese Zodiac Compatibility',
-    description: 'Pick two Chinese zodiac signs to explore harmony and clash, strengths, friction points, and communication tips.',
+    title: 'Chinese Zodiac Compatibility: Animal Sign Chemistry',
+    description: 'Chinese zodiac compatibility for any two animal signs—harmony and clash themes, strengths, friction, and communication tips for relationships or teamwork.',
     intro: 'Chinese zodiac matching uses traditional harmony/clash ideas plus personality interplay. Treat it as conversation and self-awareness material—not a final verdict on a relationship.',
     modes: [
       { name: 'Two-sign compare', text: 'Choose any pair to see the relationship tone.' },
@@ -753,7 +754,7 @@ const pagesEnRaw = [
       { q: 'Can I use this for friendship or teamwork?', a: 'Yes. Read the advice as style notes, not romance-only rules.' },
       { q: 'Which is more accurate, zodiac or star sign?', a: 'Different systems: Chinese zodiac by lunar year, sun signs by ecliptic position. Use both lightly.' },
     ],
-    related: [['/en/horoscope', 'Daily horoscope'], ['/en/nametest', 'Chinese name reading'], ['/en/bazi', 'Free BaZi chart']],
+    related: [['/guides/chinese-zodiac-compatibility', 'Zodiac compatibility guide'], ['/horoscope', 'Daily horoscope'], ['/nametest', 'Chinese name reading']],
   },
 ]
 

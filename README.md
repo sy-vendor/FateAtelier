@@ -25,7 +25,7 @@
 ## 产品特点
 
 - **免费无广告**：主要功能可直接使用，无需账号
-- **中英双语**：路径 `/` 与 `/en/*`，构建期生成 hreflang 与双语落地页
+- **中英双语**：默认英文路径 `/` 与 `/*`；中文为 `/zh/*`；构建期生成 hreflang 与双语落地页
 - **本地轻量数据**：历史、收藏、连续到访等保存在浏览器 `localStorage`（塔罗 / 抽签 / 解梦历史已瘦身并设上限）
 - **今日探索与结果续玩**：每日任务与玩法间推荐跳转
 - **按路由分包**：英文牌库 / 签文 / 梦象按需加载，避免一次下载全部数据
@@ -35,13 +35,24 @@
 `npm run build` 在 Vite 打包后会跑 `scripts/build-seo-pages.mjs` 与校验：
 
 - 15 个中文 + 15 个英文功能落地页（介绍、玩法、步骤、FAQ、HowTo / FAQ JSON-LD）
-- 塔罗牌义、梦象、签文详情的中英双语页
-- 汇总进 `dist/sitemap.xml`（含 `xhtml:link` 语言对照）
+- 塔罗牌义、梦象、签文详情的中英双语页（含情境、常见误读、相关内链与内容修订日期）
+- 信任页：`/about`、`/methodology`、`/privacy`、`/disclaimer`、`/contact`（中文在 `/zh/*`）
+- 英文选题簇：`/guides/*`（单牌/三牌、黄历、八字、生肖配对、签文解读）
+- 汇总进 `dist/sitemap.xml`（`lastmod` 跟随内容源文件 mtime；`x-default` 指向英文）
 - 强调免费、无广告、无需注册的差异化文案
 
-入口示例：`/tarot`、`/en/tarot`、`/tarot/card/0`、`/dream/symbol/0`、`/divination/stick/1`
+入口示例：`/`（英文首页）、`/zh`（中文首页）、`/methodology`、`/guides/one-card-tarot`、`/tarot`、`/zh/tarot`、`/tarot/card/0`
 
-文案维护：`scripts/seo-feature-copy.mjs`。
+### Search Console 淘汰建议
+
+上线后用 GSC 查看「效果 / 覆盖率」：
+
+1. 90 天无展示、且与同簇页面高度重复的详情 URL，可考虑 `noindex` 或合并到 hub。
+2. 优先保留有点击、有内链、正文差异明显的牌义 / 梦象 / 签文页。
+3. 英文页按意图簇（guides）观察，而不是只看中文关键词镜像。
+4. 旧 `/en/*` 已 301 到无前缀英文路径；中文请使用 `/zh/*`。
+
+文案维护：`scripts/seo-feature-copy.mjs`、`scripts/seo-en-guides.mjs`、`src/content/trustPages.json`。
 
 ## 技术栈
 
@@ -62,6 +73,7 @@ npm run dev          # http://localhost:5173
 npm run build        # tsc → vite → SEO 生成 → verify
 npm run preview
 npm run lint
+npm run test
 ```
 
 ### 数据再生成（可选）
@@ -112,7 +124,7 @@ FateAtelier/
 
 推送 `main` 即自动部署。更多平台说明见 [DEPLOY.md](./DEPLOY.md)。
 
-上线后可抽查：`/robots.txt`、`/sitemap.xml`、`/tarot`、`/en/tarot`。
+上线后可抽查：`/robots.txt`、`/sitemap.xml`、`/`、`/zh`、`/tarot`、`/zh/tarot`。
 
 ## 隐私
 
@@ -124,7 +136,7 @@ FateAtelier/
 
 1. Fork 并创建分支  
 2. 改代码或对应 polish 源数据  
-3. `npm run lint` 与 `npm run build`  
+3. 运行 `npm run lint`、`npm run test` 与 `npm run build`  
 4. 开 PR，说明功能 / 界面 / 文案变化  
 
 ## License

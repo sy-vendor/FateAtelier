@@ -172,6 +172,8 @@ function ZiweiMainView() {
                 ))}
             </div>
           </Panel>
+
+          <p className="callout">{tx('紫微排盘为文化体验版：主星安星与宫位解读按简化规则生成，供入门观盘，不作精密命理依据。', 'Zi Wei here is a cultural experience edition: star placement and palace notes use simplified rules for learning—not classical precision astrology.')}</p>
         </section>
       )}
     </div>

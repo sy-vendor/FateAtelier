@@ -1,6 +1,12 @@
 import type { AppPage } from '../types/appPage'
 
 const SUBTITLES: Record<AppPage, string> = {
+  home: '免费无广告工坊 · 先问一句，再选工具',
+  about: '工坊介绍 · 免费无广告的文化体验',
+  methodology: '方法说明 · 随机、日期种子与简化规则',
+  privacy: '隐私说明 · 本地优先，匿名统计可选',
+  disclaimer: '免责声明 · 仅供娱乐与文化参考',
+  contact: '联系我们 · GitHub 反馈与勘误',
   tarot: '星穹秘典 · 静心抽牌，解读命运',
   horoscope: '星轨观测站 · 十二宫运势指引',
   almanac: '岁时纪历 · 顺天时察宜忌',
@@ -19,6 +25,12 @@ const SUBTITLES: Record<AppPage, string> = {
 }
 
 const SUBTITLES_EN: Record<AppPage, string> = {
+  home: 'Free & ad-free · Ask first, then choose a tool',
+  about: 'About the workshop · Free cultural experience',
+  methodology: 'How results work · Draws, date seeds, simplified rules',
+  privacy: 'Privacy · Local-first with optional anonymous analytics',
+  disclaimer: 'Disclaimer · Entertainment and cultural reference only',
+  contact: 'Contact · GitHub feedback and corrections',
   tarot: 'Starlit Arcana · Draw with intention',
   horoscope: 'Celestial Observatory · Guidance for every sign',
   almanac: 'Seasonal Almanac · Move with the rhythm of the day',

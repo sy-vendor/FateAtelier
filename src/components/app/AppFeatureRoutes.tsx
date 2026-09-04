@@ -1,6 +1,9 @@
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
 import LoadingFallback from '../LoadingFallback'
-import type { AppPage } from '../../types/appPage'
+import type { AppPage, FeaturePage } from '../../types/appPage'
+import HomeMainView from './HomeMainView'
+import TrustMainView from './TrustMainView'
+import { isTrustPage } from '../../content/trustPages'
 
 const TarotFeatureRoute = lazy(() => import('./TarotFeatureRoute'))
 const HoroscopeMainView = lazy(() => import('./HoroscopeMainView'))
@@ -18,10 +21,10 @@ const NameTestMainView = lazy(() => import('./NameTestMainView'))
 const ZiweiMainView = lazy(() => import('./ZiweiMainView'))
 const ShengxiaoMainView = lazy(() => import('./ShengxiaoMainView'))
 
-type NonTarotPage = Exclude<AppPage, 'tarot'>
 type LazyFeature = LazyExoticComponent<ComponentType>
 
-const LAZY_BY_PAGE: Record<NonTarotPage, LazyFeature> = {
+const LAZY_BY_PAGE: Record<FeaturePage, LazyFeature> = {
+  tarot: TarotFeatureRoute,
   horoscope: HoroscopeMainView,
   almanac: AlmanacMainView,
   cybermerit: CyberMeritMainView,
@@ -40,11 +43,15 @@ const LAZY_BY_PAGE: Record<NonTarotPage, LazyFeature> = {
 
 export interface AppFeatureRoutesProps {
   currentPage: AppPage
+  onNavigate: (page: AppPage) => void
 }
 
-function FeatureSwitch({ currentPage }: AppFeatureRoutesProps) {
-  if (currentPage === 'tarot') {
-    return <TarotFeatureRoute />
+function FeatureSwitch({ currentPage, onNavigate }: AppFeatureRoutesProps) {
+  if (currentPage === 'home') {
+    return <HomeMainView onNavigate={onNavigate} />
+  }
+  if (isTrustPage(currentPage)) {
+    return <TrustMainView page={currentPage} onNavigate={onNavigate} />
   }
   const Feature = LAZY_BY_PAGE[currentPage]
   return <Feature />

@@ -21,7 +21,7 @@ export function calculateYearPillar(date: Date): string {
 }
 
 /**
- * 精确计算节气对应的月份
+ * 按简化节气推算月柱分界（体验版）
  * @param year 年份
  * @param month 月份（1-12）
  * @param day 日期

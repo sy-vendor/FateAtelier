@@ -17,10 +17,12 @@ import {
 import { toast } from '../utils/toast'
 import { useLocale } from '../i18n/LocaleContext'
 import { txStatic } from '../i18n/locale'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
+import { trackFeatureShare } from '../utils/analytics'
 
 export function useLuckyColorGame() {
   const { isEnglish } = useLocale()
-  const today = new Date()
+  const today = useMemo(() => new Date(), [])
   const [queryYear, setQueryYear] = useState(String(today.getFullYear()))
   const [queryMonth, setQueryMonth] = useState(String(today.getMonth() + 1))
   const [queryDay, setQueryDay] = useState(String(today.getDate()))
@@ -35,9 +37,22 @@ export function useLuckyColorGame() {
   const [zodiacSign, setZodiacSign] = useState<number | undefined>(undefined)
   const [shengxiao, setShengxiao] = useState('')
 
-  const [showDetails, setShowDetails] = useState(false)
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null)
+  const [showDetails, setShowDetailsState] = useState(false)
+  const [selectedTimeSlot, setSelectedTimeSlotState] = useState<string | null>(null)
   const [copiedHex, setCopiedHex] = useState<string | null>(null)
+
+  const setShowDetails = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    setShowDetailsState((prev) => {
+      const next = typeof value === 'function' ? value(prev) : value
+      if (next) markDailyJourneyComplete('luckycolor')
+      return next
+    })
+  }, [])
+
+  const setSelectedTimeSlot = useCallback((value: string | null) => {
+    setSelectedTimeSlotState(value)
+    if (value) markDailyJourneyComplete('luckycolor')
+  }, [])
 
   const selectedDate = useMemo(() => {
     const year = parseInt(queryYear, 10)
@@ -178,7 +193,7 @@ export function useLuckyColorGame() {
     setQueryMonth(String(today.getMonth() + 1))
     setQueryDay(String(today.getDate()))
     setSelectedTimeSlot(null)
-  }, [today])
+  }, [today, setSelectedTimeSlot])
 
   const copyToClipboard = useCallback(async (text: string, type: string) => {
     try {
@@ -191,6 +206,7 @@ export function useLuckyColorGame() {
   }, [])
 
   const shareColor = useCallback(async () => {
+    trackFeatureShare('luckycolor')
     const shareText = txStatic(
       `今日幸运色：${luckyColor.name}\n颜色代码：${luckyColor.hex}\n含义：${luckyColor.meaning}\n能量：${luckyColor.energy}\n\n来自：命运工坊`,
       `Today's lucky color: ${luckyColor.nameEn ?? luckyColor.name}\nColor code: ${luckyColor.hex}\nMeaning: ${luckyColor.meaningEn ?? luckyColor.meaning}\nEnergy: ${luckyColor.energyEn ?? luckyColor.energy}\n\nFrom: Fate Atelier`,

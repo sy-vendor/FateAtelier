@@ -1,0 +1,287 @@
+[
+  {
+    "slug": "about",
+    "titleZh": "关于命运工坊",
+    "titleEn": "About Fate Atelier",
+    "descriptionZh": "命运工坊是免费、无广告、无需注册的在线占卜与命理工坊，提供塔罗、黄历、八字等文化体验工具。",
+    "descriptionEn": "Fate Atelier is a free, ad-free, no-signup workshop for tarot, Chinese almanac, BaZi, and related cultural tools.",
+    "sectionsZh": [
+      {
+        "heading": "我们是谁",
+        "paragraphs": [
+          "命运工坊（Fate Atelier）把多种传统与现代占卜玩法放在同一个网页里：塔罗、抽签、解梦、星座黄历、八字紫微、择日风水等，全部可在浏览器内直接体验。",
+          "产品定位是「文化体验与自我反思」，不是专业命理事务所或医疗/金融咨询。"
+        ]
+      },
+      {
+        "heading": "你能期待什么",
+        "paragraphs": [],
+        "bullets": [
+          "免费使用核心玩法，无广告、无需注册",
+          "中英双语路径（/ 与 /en）",
+          "结果与历史默认保存在本机浏览器",
+          "功能页旁会说明简化演算或随机抽取的口径"
+        ]
+      },
+      {
+        "heading": "开源",
+        "paragraphs": [
+          "项目在 GitHub 开源，欢迎提 issue 与建议。我们会持续打磨可信边界、留存闭环与 SEO 内容质量，而不是盲目堆新玩法。"
+        ]
+      }
+    ],
+    "sectionsEn": [
+      {
+        "heading": "Who we are",
+        "paragraphs": [
+          "Fate Atelier gathers traditional and modern divination play in one browser workshop: tarot, fortune sticks, dream guides, horoscope, Chinese almanac, BaZi, Zi Wei, timing tools, and more.",
+          "We are a cultural experience and reflection product—not a professional consulting firm, and not medical, legal, or financial advice."
+        ]
+      },
+      {
+        "heading": "What to expect",
+        "paragraphs": [],
+        "bullets": [
+          "Core tools are free, ad-free, and require no account",
+          "Bilingual routes at / and /en",
+          "Results and history stay in your browser by default",
+          "Feature pages state when results use simplified rules or random draws"
+        ]
+      },
+      {
+        "heading": "Open source",
+        "paragraphs": [
+          "The project is open on GitHub. We prioritize trust boundaries, completion loops, and content quality over adding more tools for their own sake."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "methodology",
+    "titleZh": "演算与内容方法",
+    "titleEn": "Methodology",
+    "descriptionZh": "说明命运工坊各类结果如何生成：随机抽取、日期确定性生成，以及传统文化规则的简化版本。",
+    "descriptionEn": "How Fate Atelier results are produced: random draws, date-stable generation, and simplified traditional rules.",
+    "sectionsZh": [
+      {
+        "heading": "三种结果机制",
+        "paragraphs": [
+          "不同玩法使用不同生成方式。阅读结果时，请先看清它属于哪一类。"
+        ],
+        "bullets": [
+          "随机抽取：塔罗抽牌、竹签抽取等，每次结果独立，用于打开新视角。",
+          "日期确定性：星座运势、部分每日灵感等，同一天同一输入通常保持一致，便于复访对照。",
+          "规则简化版：黄历、八字、紫微、奇门等，采用传统文化符号与简化演算，属于「文化体验版」，不是天文级精确排盘。"
+        ]
+      },
+      {
+        "heading": "为什么同一天结果可能不变",
+        "paragraphs": [
+          "对运势类内容，我们刻意使用日期种子，让你今天上午看到的句子下午仍在，方便反思而不是追逐刷新。",
+          "这不等于「真实星象此刻的精确计算」，只是产品设计上的稳定性。"
+        ]
+      },
+      {
+        "heading": "数据与本地性",
+        "paragraphs": [
+          "演算与解读默认在浏览器完成。历史、收藏与工坊记录保存在本机存储；我们不为这些本地记录提供云端账号同步。"
+        ]
+      },
+      {
+        "heading": "内容编辑原则",
+        "paragraphs": [
+          "详情页（牌义、梦象、签文）强调可区分的含义、适用情境与行动建议，并标注内容口径为娱乐与文化参考。",
+          "文案会持续润色；sitemap 的更新时间尽量跟随内容源文件，而不是每次构建全体刷新。"
+        ]
+      }
+    ],
+    "sectionsEn": [
+      {
+        "heading": "Three result mechanisms",
+        "paragraphs": [
+          "Different tools produce results differently. Know which kind you are reading."
+        ],
+        "bullets": [
+          "Random draws: tarot cards and fortune sticks open a fresh angle each time.",
+          "Date-stable generation: daily horoscope and some daily cues stay consistent for the same day and input so you can revisit them.",
+          "Simplified traditional rules: almanac, BaZi, Zi Wei, and Qi Men use cultural symbols with simplified logic—an experiential edition, not astronomy-grade charting."
+        ]
+      },
+      {
+        "heading": "Why same-day results may stay stable",
+        "paragraphs": [
+          "For outlook-style content we intentionally seed by date so the morning line is still there in the afternoon—useful for reflection, not for refresh gambling.",
+          "Stability is a product choice, not a claim of live precise celestial calculation."
+        ]
+      },
+      {
+        "heading": "Data locality",
+        "paragraphs": [
+          "Computation and interpretation run in the browser by default. History, favorites, and journal entries stay in local storage; there is no cloud account sync for those records."
+        ]
+      },
+      {
+        "heading": "Editorial principles",
+        "paragraphs": [
+          "Detail pages (card meanings, dream symbols, stick readings) aim for distinct situations, misreads to avoid, and concrete next steps, always framed as entertainment and cultural reference.",
+          "Copy is revised over time; sitemap lastmod prefers content source dates instead of stamping every URL on each deploy."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "privacy",
+    "titleZh": "隐私说明",
+    "titleEn": "Privacy",
+    "descriptionZh": "命运工坊如何处理本地数据与分析：默认不上传占卜内容，可选的匿名使用统计。",
+    "descriptionEn": "How Fate Atelier handles local data and analytics: readings stay local by default; optional anonymous usage stats.",
+    "sectionsZh": [
+      {
+        "heading": "本地优先",
+        "paragraphs": [
+          "抽牌、解签、解梦、排盘等结果与历史，默认写在你的浏览器本地存储中，不会为了「保存账号」而强制上传。",
+          "清除站点数据或更换设备后，本机记录可能消失，请自行备份重要内容。"
+        ]
+      },
+      {
+        "heading": "分析与埋点",
+        "paragraphs": [
+          "我们可能使用 Vercel Analytics 等匿名访问统计，了解页面进入、完成与分享等产品事件，以便改进工坊。",
+          "这类统计不用于识别你的真实身份，也不把牌面原文或梦境全文作为云端档案保存。"
+        ]
+      },
+      {
+        "heading": "第三方",
+        "paragraphs": [
+          "网站可能加载字体或托管服务商的基础基础设施。请同时参考托管方的隐私政策。"
+        ]
+      },
+      {
+        "heading": "联系我们",
+        "paragraphs": [
+          "如对隐私有疑问，请通过联系页或 GitHub issue 告诉我们。"
+        ]
+      }
+    ],
+    "sectionsEn": [
+      {
+        "heading": "Local first",
+        "paragraphs": [
+          "Draws, readings, charts, and history are stored in your browser by default. We do not require an account upload to “save your profile.”",
+          "Clearing site data or switching devices may erase local records—back up anything important yourself."
+        ]
+      },
+      {
+        "heading": "Analytics",
+        "paragraphs": [
+          "We may use anonymous product analytics (for example Vercel Analytics) for events such as page enter, complete, and share so we can improve the workshop.",
+          "These stats are not used to identify you personally, and card text or dream text is not kept as a cloud archive."
+        ]
+      },
+      {
+        "heading": "Third parties",
+        "paragraphs": [
+          "Fonts or hosting infrastructure may load from providers. Please also review their privacy policies."
+        ]
+      },
+      {
+        "heading": "Contact",
+        "paragraphs": [
+          "Questions about privacy are welcome via the contact page or a GitHub issue."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "disclaimer",
+    "titleZh": "免责声明",
+    "titleEn": "Disclaimer",
+    "descriptionZh": "命运工坊内容仅供娱乐与文化体验，不构成医疗、法律、金融或其他专业建议。",
+    "descriptionEn": "Fate Atelier content is for entertainment and cultural experience only—not medical, legal, financial, or other professional advice.",
+    "sectionsZh": [
+      {
+        "heading": "娱乐与文化体验",
+        "paragraphs": [
+          "本站所有占卜、运势、命理与择吉结果仅供娱乐、自我反思与传统文化体验。",
+          "请勿将结果作为医疗诊断、法律意见、投资决策、人事任免或其他重大决定的唯一依据。"
+        ]
+      },
+      {
+        "heading": "简化演算",
+        "paragraphs": [
+          "黄历、八字、紫微、奇门等功能采用简化规则与产品化评分，与专业馆所的精确排盘可能不同。详见「演算与内容方法」。"
+        ]
+      },
+      {
+        "heading": "责任限制",
+        "paragraphs": [
+          "在法律允许的范围内，因使用或无法使用本站内容而产生的任何直接或间接损失，作者与贡献者不承担责任。"
+        ]
+      }
+    ],
+    "sectionsEn": [
+      {
+        "heading": "Entertainment & cultural experience",
+        "paragraphs": [
+          "All readings, outlooks, charts, and timing cues on this site are for entertainment, self-reflection, and cultural experience.",
+          "Do not treat them as medical diagnosis, legal counsel, investment advice, HR decisions, or the sole basis for any major choice."
+        ]
+      },
+      {
+        "heading": "Simplified methods",
+        "paragraphs": [
+          "Almanac, BaZi, Zi Wei, and Qi Men use simplified rules and productized scoring that may differ from professional charting. See Methodology for details."
+        ]
+      },
+      {
+        "heading": "Limitation of liability",
+        "paragraphs": [
+          "To the extent permitted by law, authors and contributors are not liable for any direct or indirect loss arising from use of—or inability to use—this site."
+        ]
+      }
+    ]
+  },
+  {
+    "slug": "contact",
+    "titleZh": "联系我们",
+    "titleEn": "Contact",
+    "descriptionZh": "通过 GitHub 与命运工坊维护者联系：反馈问题、内容勘误与合作建议。",
+    "descriptionEn": "Reach Fate Atelier maintainers on GitHub for bugs, content fixes, and collaboration ideas.",
+    "sectionsZh": [
+      {
+        "heading": "反馈渠道",
+        "paragraphs": [
+          "欢迎在 GitHub 仓库提交 Issue：功能建议、文案勘误、无障碍问题或安全相关报告。"
+        ],
+        "bullets": [
+          "仓库：https://github.com/sy-vendor/FateAtelier",
+          "线上站点：https://www.fateatelier.cloud/"
+        ]
+      },
+      {
+        "heading": "响应预期",
+        "paragraphs": [
+          "我们是小型开源维护节奏，会尽量回复，但无法承诺即时客服。紧急安全问题请在 Issue 标题标明。"
+        ]
+      }
+    ],
+    "sectionsEn": [
+      {
+        "heading": "How to reach us",
+        "paragraphs": [
+          "Please open a GitHub issue for product ideas, copy corrections, accessibility notes, or security reports."
+        ],
+        "bullets": [
+          "Repository: https://github.com/sy-vendor/FateAtelier",
+          "Live site: https://www.fateatelier.cloud/en"
+        ]
+      },
+      {
+        "heading": "Response expectations",
+        "paragraphs": [
+          "We maintain this as a small open-source project and will reply when we can, without promising instant support. Mark urgent security issues clearly in the title."
+        ]
+      }
+    ]
+  }
+]

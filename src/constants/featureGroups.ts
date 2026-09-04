@@ -1,10 +1,10 @@
-import type { AppPage } from '../types/appPage'
+import type { FeaturePage } from '../types/appPage'
 
 export interface FeatureGroup {
   id: string
   label: string
   labelEn: string
-  pages: AppPage[]
+  pages: FeaturePage[]
 }
 
 /** 功能分组导航 */
@@ -36,11 +36,10 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
   },
 ]
 
-/** 移动端底部快捷入口 */
-export const DOCK_PAGES: AppPage[] = [
+/** 移动端底部快捷入口（首页单独占一位，此处控制其余快捷项） */
+export const DOCK_PAGES: FeaturePage[] = [
   'tarot',
   'horoscope',
   'divination',
   'almanac',
-  'cybermerit',
 ]

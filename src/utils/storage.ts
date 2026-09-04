@@ -146,10 +146,8 @@ export function isStorageAvailable(): boolean {
 export function getStorageUsage(): { used: number; available: number; percentage: number } {
   try {
     let used = 0
-    for (let key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
-        used += localStorage[key].length + key.length
-      }
+    for (const key of Object.keys(localStorage)) {
+      used += (localStorage.getItem(key)?.length ?? 0) + key.length
     }
     
     // 大多数浏览器限制为 5-10MB，这里使用 5MB 作为基准

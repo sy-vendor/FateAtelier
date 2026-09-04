@@ -12,6 +12,8 @@ import { confirm } from '../utils/confirm'
 import { txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
 import { getStorageItem, setStorageItem } from '../utils/storage'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
+import { trackFeatureStart } from '../utils/analytics'
 import type { TarotGameApi } from '../types/tarotGameApi'
 
 const READING_HISTORY_SAVE_DEBOUNCE_MS = 400
@@ -133,6 +135,7 @@ export function useTarotGame() {
       return
     }
 
+    trackFeatureStart('tarot', 'single')
     const randomIndex = Math.floor(Math.random() * availableCards.length)
     const card = availableCards[randomIndex]
     const reversed = Math.random() < 0.5
@@ -156,6 +159,7 @@ export function useTarotGame() {
       }
       setReadingHistory((prev) => capHistory([historyRecord, ...prev]))
       setViewingHistoryReading(historyRecord)
+      markDailyJourneyComplete('tarot')
 
       setDrawingCard(null)
       setShowDrawAnimation(false)
@@ -174,6 +178,7 @@ export function useTarotGame() {
     setSelectedReadingType(type)
     setCustomQuestion(question)
     setShowReadingTypeSelector(false)
+    trackFeatureStart('tarot', type)
 
     const availableCards = tarotCards.filter(
       card => !drawnCards.some((drawn: DrawnCard) => drawn.card.id === card.id)
@@ -215,6 +220,7 @@ export function useTarotGame() {
       }
       setReadingHistory((prev) => capHistory([historyRecord, ...prev]))
       setViewingHistoryReading(historyRecord)
+      markDailyJourneyComplete('tarot')
 
       setDrawingThreeCards(null)
       setShowThreeCardAnimation(false)

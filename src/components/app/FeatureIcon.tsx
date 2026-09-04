@@ -23,6 +23,15 @@ interface FeatureIconProps {
 }
 
 export function FeatureIcon({ page, size = 'md', className = '' }: FeatureIconProps) {
+  if (page === 'home' || page === 'about' || page === 'methodology' || page === 'privacy' || page === 'disclaimer' || page === 'contact') {
+    const mark = page === 'home' ? '✦' : page === 'methodology' ? '◈' : page === 'privacy' ? '◉' : page === 'disclaimer' ? '◎' : page === 'contact' ? '✉' : '✧'
+    return (
+      <span className={className} aria-hidden style={{ fontSize: size === 'lg' ? '1.4rem' : size === 'sm' ? '0.95rem' : '1.15rem' }}>
+        {mark}
+      </span>
+    )
+  }
+
   if (page === 'tarot') {
     return <TarotLogoMark size={size} className={className} />
   }

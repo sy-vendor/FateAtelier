@@ -33,9 +33,8 @@ function placeZiwei(lunarMonth: number, lunarDay: number): number {
   const basePositions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 1] // 正月到十二月
   let basePos = basePositions[(lunarMonth - 1) % 12]
   
-  // 根据农历日期计算偏移量
-  // 紫微星的精确位置需要根据农历日期查表，这里使用完整的算法
-  // 每月的日期对应不同的偏移：1-5日偏移0，6-10日偏移1，11-15日偏移2，16-20日偏移3，21-25日偏移4，26-30日偏移5
+  // 紫微星安星为产品化简化规则（非传统查表精密安星）
+  // 每月日期分段偏移：1-5→0，6-10→1，…，26-30→5
   const dayOffset = Math.floor((lunarDay - 1) / 5)
   basePos = (basePos + dayOffset) % 12
   

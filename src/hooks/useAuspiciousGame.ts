@@ -8,6 +8,7 @@ import {
 import { calculateDayPillar, getAuspiciousShichens } from '../utils/auspiciousEngine'
 import { txStatic } from '../i18n/locale'
 import { useLocale } from '../i18n/LocaleContext'
+import { markDailyJourneyComplete } from '../utils/dailyJourney'
 
 export function useAuspiciousGame() {
   const { isEnglish } = useLocale()
@@ -84,6 +85,7 @@ export function useAuspiciousGame() {
     setDateTouched(true)
     setEventTouched(true)
     setHasScanned(true)
+    markDailyJourneyComplete('auspicious')
   }
 
   return {

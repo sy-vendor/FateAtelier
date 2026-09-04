@@ -1,22 +1,23 @@
 import { useState } from 'react'
 import { APP_FEATURES } from '../../constants/appFeatures'
 import { DOCK_PAGES, FEATURE_GROUPS } from '../../constants/featureGroups'
-import type { AppPage } from '../../types/appPage'
+import type { AppPage, FeaturePage } from '../../types/appPage'
 import { FeatureIcon } from './FeatureIcon'
 import { useLocale } from '../../i18n/LocaleContext'
+import { pagePath } from '../../utils/localePath'
 
 export interface AppNavProps {
   currentPage: AppPage
   onSelect: (page: AppPage) => void
 }
 
-function featureMeta(page: AppPage) {
+function featureMeta(page: FeaturePage) {
   return APP_FEATURES.find((f) => f.page === page)!
 }
 
 export default function AppNav({ currentPage, onSelect }: AppNavProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const { isEnglish } = useLocale()
+  const { isEnglish, locale } = useLocale()
 
   const navContent = (
     <>
@@ -30,7 +31,7 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
               return (
                 <li key={page}>
                   <a
-                    href={`/${page}`}
+                    href={pagePath(page, locale)}
                     className={`shell-nav__item${active ? ' shell-nav__item--active' : ''}`}
                     onClick={(event) => {
                       event.preventDefault()
@@ -56,7 +57,15 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
   return (
     <>
       <aside className="shell-nav shell-nav--desktop" aria-label={isEnglish ? 'Feature navigation' : '功能导航'}>
-        <div className="shell-nav__brand">
+        <a
+          href={pagePath('home', locale)}
+          className={`shell-nav__brand${currentPage === 'home' ? ' shell-nav__brand--active' : ''}`}
+          onClick={(event) => {
+            event.preventDefault()
+            onSelect('home')
+            setMobileOpen(false)
+          }}
+        >
           <span className="shell-nav__logo" aria-hidden>
             ✦
           </span>
@@ -64,27 +73,47 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
             <p className="shell-nav__brand-title">{isEnglish ? 'Fate Atelier' : '命运工坊'}</p>
             <p className="shell-nav__brand-sub">Fate Atelier</p>
           </div>
-        </div>
+        </a>
         <nav className="shell-nav__scroll">{navContent}</nav>
       </aside>
 
       <nav className="shell-dock" aria-label={isEnglish ? 'Quick navigation' : '快捷导航'}>
+        <a
+          href={pagePath('home', locale)}
+          className={`shell-dock__item${currentPage === 'home' ? ' shell-dock__item--active' : ''}`}
+          onClick={(event) => {
+            event.preventDefault()
+            onSelect('home')
+          }}
+          aria-label={isEnglish ? 'Home' : '首页'}
+          aria-current={currentPage === 'home' ? 'page' : undefined}
+        >
+          <span className="shell-dock__icon" aria-hidden>
+            ✦
+          </span>
+          <span className="shell-dock__label">{isEnglish ? 'Home' : '首页'}</span>
+        </a>
         {DOCK_PAGES.map((page) => {
           const f = featureMeta(page)
           const active = page === currentPage
           return (
             <a
               key={page}
-              href={`/${page}`}
+              href={pagePath(page, locale)}
               className={`shell-dock__item${active ? ' shell-dock__item--active' : ''}`}
-              onClick={(event) => { event.preventDefault(); onSelect(page) }}
+              onClick={(event) => {
+                event.preventDefault()
+                onSelect(page)
+              }}
               aria-label={isEnglish ? f.nameEn : f.name}
               aria-current={active ? 'page' : undefined}
             >
               <span className="shell-dock__icon" aria-hidden>
                 <FeatureIcon page={page} size="sm" />
               </span>
-              <span className="shell-dock__label">{isEnglish ? f.nameEn : f.name.replace(/占卜|运势|求签/g, '')}</span>
+              <span className="shell-dock__label">
+                {isEnglish ? f.nameEn : f.name.replace(/占卜|运势|求签/g, '')}
+              </span>
             </a>
           )
         })}

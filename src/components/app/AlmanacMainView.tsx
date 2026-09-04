@@ -196,7 +196,7 @@ function AlmanacMainView() {
         </Panel>
       </section>
 
-      <p className="callout almanac-footnote">{tx('本黄历仅供参考，实际决策请结合具体情况', 'This almanac is for reference only. Use your own judgment for important decisions.')}</p>
+      <p className="callout almanac-footnote">{tx('本黄历为文化体验版：节气与宜忌按简化规则推算，非精密天文历或专业择日结果，重大安排请结合实际情况。', 'This almanac is a cultural experience edition: solar terms and auspicious notes use simplified rules—not precise astronomy or professional date selection. Use your own judgment for important plans.')}</p>
     </div>
   )
 }

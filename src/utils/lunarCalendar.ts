@@ -152,10 +152,10 @@ export function lunarToSolar(lunarYear: number, lunarMonth: number, lunarDay: nu
 }
 
 /**
- * 精确计算节气的日期
+ * 简化估算节气日期（春分锚定 + 年平均日数线性外推，非精密天文历）
  * @param year 年份
  * @param termIndex 节气索引（0=立春, 1=雨水, ..., 11=大寒）
- * @returns 节气日期
+ * @returns 节气日期（体验版近似）
  */
 export function getSolarTermDate(year: number, termIndex: number): Date {
   const solarLongitude = [315, 330, 345, 0, 15, 30, 45, 60, 75, 90, 105, 120]
