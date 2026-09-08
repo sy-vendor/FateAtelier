@@ -16,6 +16,7 @@ import { ANALYTICS_PREF_EVENT, isAnalyticsEnabled, trackPageEnter } from './util
 import { buildHreflangAlternates } from './utils/seoMetadata'
 import './components/app/app-shell.css'
 import { useLocale } from './i18n/LocaleContext'
+import { ensureEnPackForPage } from './i18n/enLocalePacks'
 import { pagePath, parseLocalePath } from './utils/localePath'
 
 function App() {
@@ -57,6 +58,10 @@ function App() {
   useEffect(() => {
     trackPageEnter(currentPage)
   }, [currentPage])
+
+  useEffect(() => {
+    if (isEnglish) ensureEnPackForPage(currentPage)
+  }, [isEnglish, currentPage])
 
   useEffect(() => {
     // Detail landing pages keep server-rendered metadata for long-tail SEO.

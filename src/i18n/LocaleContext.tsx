@@ -2,9 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { getStorageString, setStorageItem } from '../utils/storage'
 import { canonicalLocalePath, switchLocalePath } from '../utils/localePath'
 import {
-  ensureEnLocalePacks,
   getEnLocalePackVersion,
-  prefetchEnLocalePacksIfNeeded,
   subscribeEnLocalePacks,
 } from './enLocalePacks'
 
@@ -34,21 +32,25 @@ function savedLocale(): Locale | null {
 
 /**
  * Resolve locale from URL.
- * Unprefixed paths → English; `/zh/*` → Chinese; legacy `/en/*` → English.
- * Bare `/` is always English (product default).
+ * `/zh/*` → Chinese; legacy `/en/*` → English; unprefixed → English path default
+ * (first-visit geo/browser may still rewrite to `/zh` before persisting).
  */
-function localeFromLocation(): Locale | null {
+function localeFromLocation(): Locale {
   const parts = window.location.pathname.split('/').filter(Boolean)
   if (parts[0] === 'zh' || parts[0] === 'zh-CN') return 'zh-CN'
   if (parts[0] === 'en') return 'en'
   return 'en'
 }
 
-function initialLocale(): Locale {
-  return localeFromLocation() ?? savedLocale() ?? browserLocale()
+function hasExplicitLocalePrefix(): boolean {
+  const first = window.location.pathname.split('/').filter(Boolean)[0]
+  return first === 'zh' || first === 'zh-CN' || first === 'en'
 }
 
-prefetchEnLocalePacksIfNeeded()
+function initialLocale(): Locale {
+  if (hasExplicitLocalePrefix()) return localeFromLocation()
+  return savedLocale() ?? browserLocale()
+}
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(() => initialLocale())
@@ -60,11 +62,8 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => subscribeEnLocalePacks(() => setEnPackVersion(getEnLocalePackVersion())), [])
 
-  useEffect(() => {
-    if (locale === 'en') void ensureEnLocalePacks()
-  }, [locale])
-
   // Prefer explicit URL locale over storage / geo guess; normalize legacy `/en` paths.
+  // Do not persist unprefixed English on first visit — geo may still choose Chinese.
   useEffect(() => {
     const syncFromUrl = () => {
       const fromUrl = localeFromLocation()
@@ -72,10 +71,26 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       if (canonical !== window.location.pathname) {
         window.history.replaceState(null, '', canonical)
       }
-      if (!fromUrl) return
-      if (fromUrl === 'en') void ensureEnLocalePacks()
-      setLocaleState((previous) => (previous === fromUrl ? previous : fromUrl))
-      setStorageItem(STORAGE_KEY, fromUrl)
+
+      if (hasExplicitLocalePrefix()) {
+        setStorageItem(STORAGE_KEY, fromUrl)
+        setLocaleState((previous) => (previous === fromUrl ? previous : fromUrl))
+        return
+      }
+
+      const saved = savedLocale()
+      if (saved) {
+        setLocaleState((previous) => (previous === saved ? previous : saved))
+        if (saved === 'zh-CN' && !window.location.pathname.startsWith('/zh')) {
+          window.history.replaceState(null, '', switchLocalePath(window.location.pathname, 'zh-CN'))
+        } else if (saved === 'en' && window.location.pathname.startsWith('/zh')) {
+          window.history.replaceState(null, '', switchLocalePath(window.location.pathname, 'en'))
+        }
+        return
+      }
+
+      // Unprefixed + no preference: leave initialLocale (browser hint or English) alone
+      // so geo can still choose Chinese without an English pack download race.
     }
     syncFromUrl()
     window.addEventListener('popstate', syncFromUrl)
@@ -83,23 +98,56 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    // Geo hint only when storage is empty; URL already forces English on unprefixed paths.
+    // Geo hint only when the user has not chosen / been assigned a locale yet.
     if (savedLocale()) return
+    if (hasExplicitLocalePrefix()) return
 
     const controller = new AbortController()
+    const commitEnglish = () => {
+      if (savedLocale()) return
+      setStorageItem(STORAGE_KEY, 'en')
+      setLocaleState('en')
+    }
+
+    const timer = window.setTimeout(commitEnglish, 1800)
+
     fetch('/api/locale', { signal: controller.signal })
       .then((response) => (response.ok ? (response.json() as Promise<{ locale?: Locale }>) : null))
       .then((result) => {
-        if (result?.locale !== 'zh-CN') return
         if (savedLocale()) return
-        setStorageItem(STORAGE_KEY, 'zh-CN')
-        setLocaleState('zh-CN')
-        if (!window.location.pathname.startsWith('/zh')) {
-          window.history.replaceState(null, '', switchLocalePath(window.location.pathname, 'zh-CN'))
+        if (result?.locale === 'zh-CN') {
+          setStorageItem(STORAGE_KEY, 'zh-CN')
+          setLocaleState('zh-CN')
+          if (!window.location.pathname.startsWith('/zh')) {
+            window.history.replaceState(null, '', switchLocalePath(window.location.pathname, 'zh-CN'))
+          }
+          return
         }
+        commitEnglish()
       })
-      .catch(() => {})
-    return () => controller.abort()
+      .catch(() => {
+        commitEnglish()
+      })
+      .finally(() => {
+        window.clearTimeout(timer)
+      })
+
+    return () => {
+      controller.abort()
+      window.clearTimeout(timer)
+    }
+  }, [])
+
+  // First paint with Chinese browser + no saved locale: land on /zh without waiting for geo.
+  useEffect(() => {
+    if (savedLocale()) return
+    if (hasExplicitLocalePrefix()) return
+    if (browserLocale() !== 'zh-CN') return
+    setStorageItem(STORAGE_KEY, 'zh-CN')
+    setLocaleState('zh-CN')
+    if (!window.location.pathname.startsWith('/zh')) {
+      window.history.replaceState(null, '', switchLocalePath(window.location.pathname, 'zh-CN'))
+    }
   }, [])
 
   const value = useMemo<LocaleContextValue>(
@@ -108,19 +156,12 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       isEnglish: locale === 'en',
       enPackVersion,
       setLocale: (next) => {
-        const apply = () => {
-          setStorageItem(STORAGE_KEY, next)
-          setLocaleState(next)
-          const nextPath = switchLocalePath(window.location.pathname, next)
-          if (nextPath !== window.location.pathname) {
-            window.history.pushState(null, '', nextPath)
-          }
+        setStorageItem(STORAGE_KEY, next)
+        setLocaleState(next)
+        const nextPath = switchLocalePath(window.location.pathname, next)
+        if (nextPath !== window.location.pathname) {
+          window.history.pushState(null, '', nextPath)
         }
-        if (next === 'en') {
-          void ensureEnLocalePacks().then(apply)
-          return
-        }
-        apply()
       },
     }),
     [locale, enPackVersion],

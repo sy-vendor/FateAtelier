@@ -2,9 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { daySeed } from '../../hooks/useDailyJourney'
 import {
   DAILY_JOURNEY_COMPLETE_EVENT,
+  hasCompletedToday,
   markDailyJourneyComplete,
   withCompletedPage,
 } from '../dailyJourney'
+import { listRecentCompletions } from '../atelierJournal'
 import { installBrowserShims } from './browserShim'
 
 describe('daySeed', () => {
@@ -46,5 +48,20 @@ describe('markDailyJourneyComplete', () => {
     markDailyJourneyComplete('tarot')
     expect(spy).toHaveBeenCalledTimes(1)
     expect((spy.mock.calls[0][0] as CustomEvent).detail).toBe('tarot')
+  })
+
+  it('records journal once per feature per day', () => {
+    markDailyJourneyComplete('cybermerit')
+    markDailyJourneyComplete('cybermerit')
+    markDailyJourneyComplete('cybermerit')
+    expect(hasCompletedToday('cybermerit')).toBe(true)
+    expect(listRecentCompletions(10)).toHaveLength(1)
+    expect(listRecentCompletions(10)[0].page).toBe('cybermerit')
+  })
+
+  it('allows different features the same day', () => {
+    markDailyJourneyComplete('tarot')
+    markDailyJourneyComplete('dream')
+    expect(listRecentCompletions(10)).toHaveLength(2)
   })
 })
