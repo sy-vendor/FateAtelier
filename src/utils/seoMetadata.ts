@@ -8,13 +8,13 @@ export interface HreflangLink {
   href: string
 }
 
-/** Canonical hreflang set: English is x-default (unprefixed paths). */
+/** Canonical hreflang set: Chinese is x-default (unprefixed paths). */
 export function buildHreflangAlternates(page: AppPage, origin = SITE_ORIGIN): HreflangLink[] {
   const zhUrl = `${origin}${pagePath(page, 'zh-CN')}`
   const enUrl = `${origin}${pagePath(page, 'en')}`
   return [
     { hreflang: 'zh-CN', href: zhUrl },
     { hreflang: 'en', href: enUrl },
-    { hreflang: 'x-default', href: enUrl },
+    { hreflang: 'x-default', href: zhUrl },
   ]
 }

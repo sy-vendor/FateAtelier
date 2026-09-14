@@ -6,7 +6,7 @@ export const EN_GUIDE_CLUSTERS = [
     description:
       'A free one-card tarot ritual: clarify one question, draw upright or reversed, and turn the meaning into a next step—no account required.',
     parentName: 'Tarot Reading',
-    parentHref: '/tarot',
+    parentHref: '/en/tarot',
     sections: [
       {
         heading: 'When one card is enough',
@@ -26,9 +26,9 @@ export const EN_GUIDE_CLUSTERS = [
       },
     ],
     links: [
-      ['/tarot', 'Draw one card online'],
-      ['/tarot/cards', 'Browse all 78 card meanings'],
-      ['/guides/three-card-spread', 'Three-card past–present–future'],
+      ['/en/tarot', 'Draw one card online'],
+      ['/en/tarot/cards', 'Browse all 78 card meanings'],
+      ['/en/guides/three-card-spread', 'Three-card past–present–future'],
     ],
   },
   {
@@ -37,7 +37,7 @@ export const EN_GUIDE_CLUSTERS = [
     description:
       'Learn a simple three-card tarot spread for past–present–future storytelling, then try it free online with synthesized guidance.',
     parentName: 'Tarot Reading',
-    parentHref: '/tarot',
+    parentHref: '/en/tarot',
     sections: [
       {
         heading: 'Why three cards',
@@ -53,9 +53,9 @@ export const EN_GUIDE_CLUSTERS = [
       },
     ],
     links: [
-      ['/tarot', 'Try a three-card spread'],
-      ['/guides/one-card-tarot', 'One-card ritual'],
-      ['/divination', 'Compare with a fortune stick'],
+      ['/en/tarot', 'Try a three-card spread'],
+      ['/en/guides/one-card-tarot', 'One-card ritual'],
+      ['/en/divination', 'Compare with a fortune stick'],
     ],
   },
   {
@@ -64,7 +64,7 @@ export const EN_GUIDE_CLUSTERS = [
     description:
       'How to read a Chinese daily almanac (huangli): lunar date, stem-branch day, solar terms, and favorable activities—as cultural timing, not rigid law.',
     parentName: 'Chinese Daily Almanac',
-    parentHref: '/almanac',
+    parentHref: '/en/almanac',
     sections: [
       {
         heading: 'What “today’s almanac” usually includes',
@@ -80,9 +80,9 @@ export const EN_GUIDE_CLUSTERS = [
       },
     ],
     links: [
-      ['/almanac', 'Open today’s Chinese almanac'],
-      ['/auspicious', 'Pick a favorable date'],
-      ['/methodology', 'Read methodology'],
+      ['/en/almanac', 'Open today’s Chinese almanac'],
+      ['/en/auspicious', 'Pick a favorable date'],
+      ['/en/methodology', 'Read methodology'],
     ],
   },
   {
@@ -91,7 +91,7 @@ export const EN_GUIDE_CLUSTERS = [
     description:
       'A plain-English intro to BaZi (Four Pillars): birth year, month, day, and hour stems and branches—plus how Fate Atelier’s free calculator works as a cultural experience.',
     parentName: 'BaZi',
-    parentHref: '/bazi',
+    parentHref: '/en/bazi',
     sections: [
       {
         heading: 'What BaZi charts',
@@ -107,9 +107,9 @@ export const EN_GUIDE_CLUSTERS = [
       },
     ],
     links: [
-      ['/bazi', 'Open the BaZi calculator'],
-      ['/ziwei', 'Compare with Zi Wei charting'],
-      ['/disclaimer', 'Read the disclaimer'],
+      ['/en/bazi', 'Open the BaZi calculator'],
+      ['/en/ziwei', 'Compare with Zi Wei charting'],
+      ['/en/disclaimer', 'Read the disclaimer'],
     ],
   },
   {
@@ -118,7 +118,7 @@ export const EN_GUIDE_CLUSTERS = [
     description:
       'Explore Chinese zodiac (shengxiao) compatibility themes between animal signs—friendship, work, and romance cues framed as cultural reflection.',
     parentName: 'Chinese Zodiac',
-    parentHref: '/shengxiao',
+    parentHref: '/en/shengxiao',
     sections: [
       {
         heading: 'Compatibility is a conversation starter',
@@ -130,9 +130,9 @@ export const EN_GUIDE_CLUSTERS = [
       },
     ],
     links: [
-      ['/shengxiao', 'Try zodiac compatibility'],
-      ['/horoscope', 'Western daily horoscope'],
-      ['/nametest', 'Playful name reading'],
+      ['/en/shengxiao', 'Try zodiac compatibility'],
+      ['/en/horoscope', 'Western daily horoscope'],
+      ['/en/nametest', 'Playful name reading'],
     ],
   },
   {
@@ -141,7 +141,7 @@ export const EN_GUIDE_CLUSTERS = [
     description:
       'How to interpret Chinese fortune sticks (lots): set an intention, draw once, read poem and plain meaning, then choose one practical action.',
     parentName: 'Fortune Sticks',
-    parentHref: '/divination',
+    parentHref: '/en/divination',
     sections: [
       {
         heading: 'The ritual',
@@ -157,9 +157,9 @@ export const EN_GUIDE_CLUSTERS = [
       },
     ],
     links: [
-      ['/divination', 'Draw a fortune stick'],
-      ['/divination/sticks', 'Browse all 100 sticks'],
-      ['/guides/one-card-tarot', 'Or try one-card tarot'],
+      ['/en/divination', 'Draw a fortune stick'],
+      ['/en/divination/sticks', 'Browse all 100 sticks'],
+      ['/en/guides/one-card-tarot', 'Or try one-card tarot'],
     ],
   },
 ]

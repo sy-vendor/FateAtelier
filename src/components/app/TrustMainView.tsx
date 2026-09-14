@@ -96,13 +96,13 @@ export default function TrustMainView({ page, onNavigate }: TrustMainViewProps) 
 
       <p className="trust-stage__back">
         <a
-          href={pagePath('home', locale)}
+          href={pagePath('tarot', locale)}
           onClick={(event) => {
             event.preventDefault()
-            onNavigate('home')
+            onNavigate('tarot')
           }}
         >
-          {tx('返回工坊首页', 'Back to workshop home')}
+          {tx('返回塔罗占卜', 'Back to tarot')}
         </a>
       </p>
     </article>

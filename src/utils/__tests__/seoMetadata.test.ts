@@ -2,19 +2,19 @@ import { describe, expect, it } from 'vitest'
 import { buildHreflangAlternates, SITE_ORIGIN } from '../seoMetadata'
 
 describe('buildHreflangAlternates', () => {
-  it('points x-default at the English URL', () => {
-    const links = buildHreflangAlternates('tarot')
+  it('points x-default at the Chinese URL for a feature page', () => {
+    const links = buildHreflangAlternates('horoscope')
     expect(links).toEqual([
-      { hreflang: 'zh-CN', href: `${SITE_ORIGIN}/zh/tarot` },
-      { hreflang: 'en', href: `${SITE_ORIGIN}/tarot` },
-      { hreflang: 'x-default', href: `${SITE_ORIGIN}/tarot` },
+      { hreflang: 'zh-CN', href: `${SITE_ORIGIN}/horoscope` },
+      { hreflang: 'en', href: `${SITE_ORIGIN}/en/horoscope` },
+      { hreflang: 'x-default', href: `${SITE_ORIGIN}/horoscope` },
     ])
   })
 
-  it('uses English homepage as x-default for home', () => {
-    const links = buildHreflangAlternates('home')
+  it('uses Chinese site root as x-default for tarot default page', () => {
+    const links = buildHreflangAlternates('tarot')
     expect(links.find((item) => item.hreflang === 'x-default')?.href).toBe(`${SITE_ORIGIN}/`)
-    expect(links.find((item) => item.hreflang === 'en')?.href).toBe(`${SITE_ORIGIN}/`)
-    expect(links.find((item) => item.hreflang === 'zh-CN')?.href).toBe(`${SITE_ORIGIN}/zh`)
+    expect(links.find((item) => item.hreflang === 'zh-CN')?.href).toBe(`${SITE_ORIGIN}/`)
+    expect(links.find((item) => item.hreflang === 'en')?.href).toBe(`${SITE_ORIGIN}/en`)
   })
 })

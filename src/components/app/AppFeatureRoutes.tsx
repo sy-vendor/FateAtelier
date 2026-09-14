@@ -1,9 +1,9 @@
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react'
 import LoadingFallback from '../LoadingFallback'
 import type { AppPage, FeaturePage } from '../../types/appPage'
-import HomeMainView from './HomeMainView'
 import TrustMainView from './TrustMainView'
 import { isTrustPage } from '../../content/trustPages'
+import { DEFAULT_PAGE } from '../../utils/localePath'
 
 const TarotFeatureRoute = lazy(() => import('./TarotFeatureRoute'))
 const HoroscopeMainView = lazy(() => import('./HoroscopeMainView'))
@@ -47,13 +47,11 @@ export interface AppFeatureRoutesProps {
 }
 
 function FeatureSwitch({ currentPage, onNavigate }: AppFeatureRoutesProps) {
-  if (currentPage === 'home') {
-    return <HomeMainView onNavigate={onNavigate} />
-  }
   if (isTrustPage(currentPage)) {
     return <TrustMainView page={currentPage} onNavigate={onNavigate} />
   }
-  const Feature = LAZY_BY_PAGE[currentPage]
+  const page = currentPage === 'home' ? DEFAULT_PAGE : currentPage
+  const Feature = LAZY_BY_PAGE[page as FeaturePage] ?? LAZY_BY_PAGE[DEFAULT_PAGE]
   return <Feature />
 }
 

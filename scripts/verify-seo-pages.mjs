@@ -5,33 +5,33 @@ import { fileURLToPath } from 'node:url'
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const dist = path.join(root, 'dist')
 const checks = [
-  ['zh/tarot', '玩法介绍'],
-  ['tarot', 'How to play'],
-  ['zh/tarot', '每日一牌'],
-  ['tarot', 'Daily Draw'],
-  ['zh/tarot', '免费在线塔罗占卜'],
-  ['tarot', 'Free Online Tarot Reading'],
-  ['zh/tarot', '无广告'],
-  ['tarot', 'ad-free'],
-  ['zh/tarot/card/0', '愚者塔罗牌义'],
-  ['tarot/card/0', 'The Fool Tarot Meaning'],
-  ['zh/dream/symbol/0', '梦见'],
-  ['dream/symbol/0', 'Dream of snake'],
-  ['zh/divination/stick/1', '第1签'],
-  ['divination/stick/1', 'Stick #1'],
-  ['zh/tarot/cards', '78 张塔罗牌牌义大全'],
-  ['tarot/cards', 'All 78 Tarot Card Meanings'],
-  ['zh/methodology', '三种结果机制'],
-  ['methodology', 'Three result mechanisms'],
-  ['zh/privacy', '本地优先'],
-  ['privacy', 'Local first'],
-  ['zh/disclaimer', '仅供娱乐'],
-  ['disclaimer', 'Entertainment'],
-  ['guides/one-card-tarot', 'One Card Tarot'],
-  ['guides', 'English Divination Guides'],
-  ['zh/tarot/card/0', '感情与关系'],
-  ['tarot/card/0', 'Love & relationships'],
-  ['zh/tarot/card/0', '常见误读'],
+  ['tarot', '玩法介绍'],
+  ['en/tarot', 'How to play'],
+  ['tarot', '每日一牌'],
+  ['en/tarot', 'Daily Draw'],
+  ['tarot', '免费在线塔罗占卜'],
+  ['en/tarot', 'Free Online Tarot Reading'],
+  ['tarot', '无广告'],
+  ['en/tarot', 'ad-free'],
+  ['tarot/card/0', '愚者塔罗牌义'],
+  ['en/tarot/card/0', 'The Fool Tarot Meaning'],
+  ['dream/symbol/0', '梦见'],
+  ['en/dream/symbol/0', 'Dream of snake'],
+  ['divination/stick/1', '第1签'],
+  ['en/divination/stick/1', 'Stick #1'],
+  ['tarot/cards', '78 张塔罗牌牌义大全'],
+  ['en/tarot/cards', 'All 78 Tarot Card Meanings'],
+  ['methodology', '三种结果机制'],
+  ['en/methodology', 'Three result mechanisms'],
+  ['privacy', '本地优先'],
+  ['en/privacy', 'Local first'],
+  ['disclaimer', '仅供娱乐'],
+  ['en/disclaimer', 'Entertainment'],
+  ['en/guides/one-card-tarot', 'One Card Tarot'],
+  ['en/guides', 'English Divination Guides'],
+  ['tarot/card/0', '感情与关系'],
+  ['en/tarot/card/0', 'Love & relationships'],
+  ['tarot/card/0', '常见误读'],
 ]
 
 for (const [route, expected] of checks) {
@@ -57,35 +57,35 @@ function assertUniqueHreflang(html, label) {
   }
   const xDefault = html.match(/hreflang="x-default"\s+href="([^"]+)"/)
   if (!xDefault) throw new Error(`${label} missing x-default href`)
-  // English is the default locale: x-default must not point at /zh paths.
-  if (/\/zh(\/|$)/.test(new URL(xDefault[1]).pathname)) {
-    throw new Error(`${label} x-default must point at English URL, got ${xDefault[1]}`)
+  // Chinese is the default locale: x-default must not point at /en paths.
+  if (/\/en(\/|$)/.test(new URL(xDefault[1]).pathname)) {
+    throw new Error(`${label} x-default must point at Chinese URL, got ${xDefault[1]}`)
   }
 }
 
 const homeHtml = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
-if (!homeHtml.includes('How to explore') || !homeHtml.includes('lang="en"')) {
-  throw new Error('English homepage (/) missing How to explore or lang=en')
+if (!homeHtml.includes('玩法介绍') || !homeHtml.includes('lang="zh-CN"')) {
+  throw new Error('Chinese homepage (/) missing 玩法介绍 or lang=zh-CN')
 }
-if (!homeHtml.includes('ad-free')) throw new Error('English homepage missing ad-free')
-assertUniqueHreflang(homeHtml, 'English homepage')
+if (!homeHtml.includes('无广告')) throw new Error('Chinese homepage missing 无广告')
+assertUniqueHreflang(homeHtml, 'Chinese homepage')
 
-const zhHomeHtml = fs.readFileSync(path.join(dist, 'zh/index.html'), 'utf8')
-if (!zhHomeHtml.includes('玩法介绍') || !zhHomeHtml.includes('lang="zh-CN"')) {
-  throw new Error('Chinese homepage (/zh) missing 玩法介绍 or lang=zh-CN')
+const enHomeHtml = fs.readFileSync(path.join(dist, 'en/index.html'), 'utf8')
+if (!enHomeHtml.includes('How to explore') || !enHomeHtml.includes('lang="en"')) {
+  throw new Error('English homepage (/en) missing How to explore or lang=en')
 }
-assertUniqueHreflang(zhHomeHtml, 'Chinese homepage')
+assertUniqueHreflang(enHomeHtml, 'English homepage')
 
-const featureZhHtml = fs.readFileSync(path.join(dist, 'zh/tarot/index.html'), 'utf8')
-assertUniqueHreflang(featureZhHtml, 'Chinese feature /zh/tarot')
-const featureEnHtml = fs.readFileSync(path.join(dist, 'tarot/index.html'), 'utf8')
+const featureZhHtml = fs.readFileSync(path.join(dist, 'tarot/index.html'), 'utf8')
+assertUniqueHreflang(featureZhHtml, 'Chinese feature /tarot')
+const featureEnHtml = fs.readFileSync(path.join(dist, 'en/tarot/index.html'), 'utf8')
 if (!featureEnHtml.includes('hreflang="zh-CN"') || !featureEnHtml.includes('lang="en"')) {
   throw new Error('English feature page missing hreflang or lang=en')
 }
 if (!featureEnHtml.includes('twitter:title') || !featureEnHtml.includes('Free Online Tarot Reading')) {
   throw new Error('English feature page missing localized Twitter title')
 }
-const detailEnHtml = fs.readFileSync(path.join(dist, 'tarot/card/0/index.html'), 'utf8')
+const detailEnHtml = fs.readFileSync(path.join(dist, 'en/tarot/card/0/index.html'), 'utf8')
 if (!detailEnHtml.includes('hreflang="zh-CN"') || !detailEnHtml.includes('lang="en"')) {
   throw new Error('English detail page missing hreflang or lang=en')
 }
@@ -93,15 +93,15 @@ if (!detailEnHtml.includes('hreflang="zh-CN"') || !detailEnHtml.includes('lang="
 const sitemap = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
 const required = [
   'https://www.fateatelier.cloud/',
-  'https://www.fateatelier.cloud/zh',
+  'https://www.fateatelier.cloud/en',
   'https://www.fateatelier.cloud/tarot',
-  'https://www.fateatelier.cloud/zh/tarot',
+  'https://www.fateatelier.cloud/en/tarot',
   'https://www.fateatelier.cloud/tarot/card/0',
-  'https://www.fateatelier.cloud/zh/tarot/card/0',
+  'https://www.fateatelier.cloud/en/tarot/card/0',
   'https://www.fateatelier.cloud/tarot/cards',
   'https://www.fateatelier.cloud/methodology',
-  'https://www.fateatelier.cloud/zh/methodology',
-  'https://www.fateatelier.cloud/guides/one-card-tarot',
+  'https://www.fateatelier.cloud/en/methodology',
+  'https://www.fateatelier.cloud/en/guides/one-card-tarot',
 ]
 for (const url of required) {
   if (!sitemap.includes(`<loc>${url}</loc>`)) {
@@ -111,7 +111,10 @@ for (const url of required) {
 if (!sitemap.includes('xmlns:xhtml=')) throw new Error('Sitemap missing xhtml namespace for hreflang')
 if (!sitemap.includes('hreflang="en"')) throw new Error('Sitemap missing hreflang en links')
 if (!sitemap.includes('hreflang="x-default" href="https://www.fateatelier.cloud/"')) {
-  throw new Error('Sitemap x-default should point at English homepage')
+  throw new Error('Sitemap x-default should point at Chinese homepage')
+}
+if (sitemap.includes('hreflang="x-default" href="https://www.fateatelier.cloud/en')) {
+  throw new Error('Sitemap x-default must not point at /en paths')
 }
 
 const urlCount = (sitemap.match(/<loc>/g) || []).length
@@ -151,12 +154,12 @@ if (tarotHtml.includes('"@type":"WebSite"') || tarotHtml.includes('"@type": "Web
   throw new Error('Feature /tarot must not inherit homepage WebSite JSON-LD')
 }
 
-const cardHtml = fs.readFileSync(path.join(dist, 'tarot/card/0/index.html'), 'utf8')
+const cardHtml = fs.readFileSync(path.join(dist, 'en/tarot/card/0/index.html'), 'utf8')
 if (countJsonLd(cardHtml) !== 1) {
-  throw new Error(`Detail /tarot/card/0 should have exactly 1 JSON-LD block, found ${countJsonLd(cardHtml)}`)
+  throw new Error(`Detail /en/tarot/card/0 should have exactly 1 JSON-LD block, found ${countJsonLd(cardHtml)}`)
 }
 if ((cardHtml.match(/<h1[\s>]/g) || []).length !== 1) {
-  throw new Error('Detail /tarot/card/0 should have exactly one <h1>')
+  throw new Error('Detail /en/tarot/card/0 should have exactly one <h1>')
 }
 
 console.log(`Verified ${checks.length} SEO routes and sitemap (${urlCount} urls)`)

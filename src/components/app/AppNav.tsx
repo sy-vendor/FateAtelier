@@ -4,7 +4,7 @@ import { DOCK_PAGES, FEATURE_GROUPS } from '../../constants/featureGroups'
 import type { AppPage, FeaturePage } from '../../types/appPage'
 import { FeatureIcon } from './FeatureIcon'
 import { useLocale } from '../../i18n/LocaleContext'
-import { pagePath } from '../../utils/localePath'
+import { DEFAULT_PAGE, pagePath } from '../../utils/localePath'
 
 export interface AppNavProps {
   currentPage: AppPage
@@ -18,6 +18,7 @@ function featureMeta(page: FeaturePage) {
 export default function AppNav({ currentPage, onSelect }: AppNavProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { isEnglish, locale } = useLocale()
+  const onDefault = currentPage === DEFAULT_PAGE || currentPage === 'home'
 
   const navContent = (
     <>
@@ -27,7 +28,7 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
           <ul className="shell-nav__list">
             {group.pages.map((page) => {
               const f = featureMeta(page)
-              const active = page === currentPage
+              const active = page === currentPage || (page === DEFAULT_PAGE && onDefault)
               return (
                 <li key={page}>
                   <a
@@ -58,11 +59,11 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
     <>
       <aside className="shell-nav shell-nav--desktop" aria-label={isEnglish ? 'Feature navigation' : '功能导航'}>
         <a
-          href={pagePath('home', locale)}
-          className={`shell-nav__brand${currentPage === 'home' ? ' shell-nav__brand--active' : ''}`}
+          href={pagePath(DEFAULT_PAGE, locale)}
+          className={`shell-nav__brand${onDefault ? ' shell-nav__brand--active' : ''}`}
           onClick={(event) => {
             event.preventDefault()
-            onSelect('home')
+            onSelect(DEFAULT_PAGE)
             setMobileOpen(false)
           }}
         >
@@ -78,24 +79,9 @@ export default function AppNav({ currentPage, onSelect }: AppNavProps) {
       </aside>
 
       <nav className="shell-dock" aria-label={isEnglish ? 'Quick navigation' : '快捷导航'}>
-        <a
-          href={pagePath('home', locale)}
-          className={`shell-dock__item${currentPage === 'home' ? ' shell-dock__item--active' : ''}`}
-          onClick={(event) => {
-            event.preventDefault()
-            onSelect('home')
-          }}
-          aria-label={isEnglish ? 'Home' : '首页'}
-          aria-current={currentPage === 'home' ? 'page' : undefined}
-        >
-          <span className="shell-dock__icon" aria-hidden>
-            ✦
-          </span>
-          <span className="shell-dock__label">{isEnglish ? 'Home' : '首页'}</span>
-        </a>
         {DOCK_PAGES.map((page) => {
           const f = featureMeta(page)
-          const active = page === currentPage
+          const active = page === currentPage || (page === DEFAULT_PAGE && onDefault)
           return (
             <a
               key={page}

@@ -17,11 +17,14 @@ import { buildHreflangAlternates } from './utils/seoMetadata'
 import './components/app/app-shell.css'
 import { useLocale } from './i18n/LocaleContext'
 import { ensureEnPackForPage } from './i18n/enLocalePacks'
-import { pagePath, parseLocalePath } from './utils/localePath'
+import { DEFAULT_PAGE, pagePath, parseLocalePath } from './utils/localePath'
 
 function App() {
   const { locale, setLocale, isEnglish } = useLocale()
-  const pageFromLocation = (): AppPage => parseLocalePath().page
+  const pageFromLocation = (): AppPage => {
+    const page = parseLocalePath().page
+    return page === 'home' ? DEFAULT_PAGE : page
+  }
   const [currentPage, setCurrentPage] = useState<AppPage>(pageFromLocation)
   const [analyticsOn, setAnalyticsOn] = useState(() => isAnalyticsEnabled())
   const dailyJourney = useDailyJourney(currentPage)
@@ -31,11 +34,9 @@ function App() {
     [currentPage],
   )
 
-  const topbarTitle = currentPage === 'home'
-    ? (isEnglish ? 'Fate Atelier' : '命运工坊')
-    : isTrustPage(currentPage)
-      ? (isEnglish ? getTrustPageCopy(currentPage).titleEn : getTrustPageCopy(currentPage).titleZh)
-      : (isEnglish ? currentFeature?.nameEn : currentFeature?.name) ?? (isEnglish ? 'Fate Atelier' : '命运工坊')
+  const topbarTitle = isTrustPage(currentPage)
+    ? (isEnglish ? getTrustPageCopy(currentPage).titleEn : getTrustPageCopy(currentPage).titleZh)
+    : (isEnglish ? currentFeature?.nameEn : currentFeature?.name) ?? (isEnglish ? 'Fate Atelier' : '命运工坊')
 
   useEffect(() => {
     const onPopState = () => setCurrentPage(pageFromLocation())
@@ -45,8 +46,9 @@ function App() {
 
   useEffect(() => {
     const onNavigate = (event: Event) => {
-      const page = (event as CustomEvent<AppPage>).detail
-      if (page !== 'home' && !isTrustPage(page) && !APP_FEATURES.some((feature) => feature.page === page)) return
+      const raw = (event as CustomEvent<AppPage>).detail
+      const page = raw === 'home' ? DEFAULT_PAGE : raw
+      if (!isTrustPage(page) && !APP_FEATURES.some((feature) => feature.page === page)) return
       window.history.pushState(null, '', pagePath(page, locale))
       setCurrentPage(page)
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -68,21 +70,13 @@ function App() {
     if (parseLocalePath().segments.length > 1) return
     const canonicalUrl = `https://www.fateatelier.cloud${pagePath(currentPage, locale)}`
     const brand = isEnglish ? 'Fate Atelier' : '命运工坊'
-    const seoTitle = currentPage === 'home'
-      ? brand
-      : isTrustPage(currentPage)
-        ? (isEnglish ? getTrustPageCopy(currentPage).titleEn : getTrustPageCopy(currentPage).titleZh)
-        : (isEnglish ? currentFeature?.seoTitleEn : currentFeature?.seoTitle) ?? brand
-    const description = currentPage === 'home'
-      ? (isEnglish
-        ? 'Free, ad-free online divination workshop: tarot, horoscope, Chinese almanac, BaZi, fortune sticks, dream guide, and more—no signup required.'
-        : '免费无广告的在线综合占卜工坊：塔罗、星座、黄历、八字紫微、抽签解梦等，无需注册。')
-      : isTrustPage(currentPage)
-        ? (isEnglish ? getTrustPageCopy(currentPage).descriptionEn : getTrustPageCopy(currentPage).descriptionZh)
-        : (isEnglish ? currentFeature?.descriptionEn : currentFeature?.description) ?? ''
-    document.title = currentPage === 'home'
-      ? (isEnglish ? `${brand} | Free Tarot & Divination Tools` : `${brand} | 免费在线占卜与命理工具`)
-      : `${seoTitle} | ${brand}`
+    const seoTitle = isTrustPage(currentPage)
+      ? (isEnglish ? getTrustPageCopy(currentPage).titleEn : getTrustPageCopy(currentPage).titleZh)
+      : (isEnglish ? currentFeature?.seoTitleEn : currentFeature?.seoTitle) ?? brand
+    const description = isTrustPage(currentPage)
+      ? (isEnglish ? getTrustPageCopy(currentPage).descriptionEn : getTrustPageCopy(currentPage).descriptionZh)
+      : (isEnglish ? currentFeature?.descriptionEn : currentFeature?.description) ?? ''
+    document.title = `${seoTitle} | ${brand}`
     document.querySelector<HTMLMetaElement>('meta[name="description"]')?.setAttribute('content', description)
     document.querySelector<HTMLMetaElement>('meta[property="og:title"]')?.setAttribute('content', document.title)
     document.querySelector<HTMLMetaElement>('meta[property="og:description"]')?.setAttribute('content', description)
@@ -114,9 +108,10 @@ function App() {
   }, [])
 
   const navigateTo = (page: AppPage) => {
-    if (page === currentPage) return
-    window.history.pushState(null, '', pagePath(page, locale))
-    setCurrentPage(page)
+    const target = page === 'home' ? DEFAULT_PAGE : page
+    if (target === currentPage) return
+    window.history.pushState(null, '', pagePath(target, locale))
+    setCurrentPage(target)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -150,7 +145,7 @@ function App() {
           </div>
         </header>
 
-        {currentPage !== 'home' && !isTrustPage(currentPage) && (
+        {!isTrustPage(currentPage) && (
           <DailyJourney {...dailyJourney} onSelect={navigateTo} />
         )}
 

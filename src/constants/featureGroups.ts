@@ -36,7 +36,7 @@ export const FEATURE_GROUPS: FeatureGroup[] = [
   },
 ]
 
-/** 移动端底部快捷入口（首页单独占一位，此处控制其余快捷项） */
+/** 移动端底部快捷入口（塔罗为默认入口） */
 export const DOCK_PAGES: FeaturePage[] = [
   'tarot',
   'horoscope',

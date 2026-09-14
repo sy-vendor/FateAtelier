@@ -1,5 +1,10 @@
 const CHINESE_REGIONS = new Set(['CN', 'HK', 'MO', 'TW'])
 
+/**
+ * Geo locale hint for the SPA.
+ * Product default is Chinese (unprefixed `/`). Non-Chinese regions get `en`
+ * so the client can send visitors to `/en`; Chinese regions get `zh-CN`.
+ */
 export default function handler(request, response) {
   const country = String(request.headers['x-vercel-ip-country'] || '').toUpperCase()
   const locale = CHINESE_REGIONS.has(country) ? 'zh-CN' : 'en'

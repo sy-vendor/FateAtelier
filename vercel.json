@@ -6,7 +6,7 @@
   "framework": "vite",
   "cleanUrls": true,
   "redirects": [
-    { "source": "/en", "destination": "/", "permanent": true },
-    { "source": "/en/:path*", "destination": "/:path*", "permanent": true }
+    { "source": "/zh", "destination": "/", "permanent": true },
+    { "source": "/zh/:path*", "destination": "/:path*", "permanent": true }
   ]
 }
