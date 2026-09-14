@@ -25,7 +25,7 @@
 ## 产品特点
 
 - **免费无广告**：主要功能可直接使用，无需账号
-- **中英双语**：默认中文路径 `/` 与 `/*`；英文为 `/en/*`；构建期生成 hreflang 与双语落地页
+- **中英双语**：默认路径为中文 `/`、`/*`（`x-default` → 中文）；英文为 `/en/*`
 - **本地轻量数据**：历史、收藏、连续到访等保存在浏览器 `localStorage`（塔罗 / 抽签 / 解梦历史已瘦身并设上限）
 - **今日探索与结果续玩**：每日任务与玩法间推荐跳转
 - **按路由分包**：英文牌库 / 签文 / 梦象按需加载，避免一次下载全部数据
@@ -34,14 +34,15 @@
 
 `npm run build` 在 Vite 打包后会跑 `scripts/build-seo-pages.mjs` 与校验：
 
+- 根路径 `/` 默认塔罗入口（标题 / OG / 正文含「免费在线塔罗占卜」）
 - 15 个中文 + 15 个英文功能落地页（介绍、玩法、步骤、FAQ、HowTo / FAQ JSON-LD）
 - 塔罗牌义、梦象、签文详情的中英双语页（含情境、常见误读、相关内链与内容修订日期）
 - 信任页：`/about`、`/methodology`、`/privacy`、`/disclaimer`、`/contact`（英文在 `/en/*`）
-- 英文选题簇：`/en/guides/*`（单牌/三牌、黄历、八字、生肖配对、签文解读）
-- 汇总进 `dist/sitemap.xml`（`lastmod` 跟随内容源文件 mtime；`x-default` 指向中文）
+- 英文选题簇：`/en/guides/*`
+- 汇总进 `dist/sitemap.xml`（无前缀中文 URL 的 priority 高于对应 `/en/*`；`lastmod` 跟随内容源；`x-default` → 中文）
 - 强调免费、无广告、无需注册的差异化文案
 
-入口示例：`/`（中文首页）、`/en`（英文首页）、`/methodology`、`/en/guides/one-card-tarot`、`/tarot`、`/en/tarot`、`/tarot/card/0`
+入口示例：`/`、`/tarot`、`/methodology`、`/en`、`/en/tarot`、`/en/guides/one-card-tarot`
 
 ### Search Console 淘汰建议
 

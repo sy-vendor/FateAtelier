@@ -293,21 +293,26 @@ function homeToolList(entries, english) {
   }).join('')
 }
 
-// Chinese homepage is the site root (default locale)
+// Chinese root: tarot-first entry (matches SPA default), other tools secondary
 {
+  const tarot = pages.find((entry) => entry.slug === 'tarot')
   const title = '命运工坊'
-  const description = '免费无广告的在线综合占卜工坊：塔罗牌阵、星座运势、黄历宜忌、八字紫微、抽签解梦、风水择日等，无需注册，含玩法介绍与常见问题。'
-  const intro = '命运工坊把多种传统与现代占卜玩法放在同一个网页里：先看功能介绍与步骤，再直接体验抽牌、排盘或今日仪式。全程免费、无广告、无需下载与注册。'
+  const description = '命运工坊免费在线塔罗占卜：每日一牌、单牌洞察与三牌时空阵，含正逆位解读。无广告、无需注册；亦可使用星座、黄历、八字、抽签、解梦等工具。'
+  const intro = '命运工坊默认从塔罗占卜开始：先想清楚一个具体问题，再抽牌阅读正逆位提示与行动建议。全程免费、无广告、无需下载与注册。'
   const howSteps = [
-    '从下方功能中选择与问题最贴近的工具。',
-    '按页面「玩法介绍」完成提问、抽取或输入。',
-    '阅读结果后，可跳转相关功能交叉参考，或切换到 English。',
+    '默念一个具体问题，或今天最想留意的主题。',
+    '选择每日一牌、单牌洞察或三牌时空牌阵并完成抽牌。',
+    '阅读正逆位牌义与建议；需要时再切换到黄历、抽签或其他工具交叉参考。',
   ]
+  const tarotModes = (tarot?.modes || [])
+    .map((mode) => `<li><strong>${escapeHtml(mode.name)}</strong>：${escapeHtml(mode.text)}</li>`)
+    .join('')
+  const otherTools = pages.filter((entry) => entry.slug !== 'tarot')
   const homePath = path.join(dist, 'index.html')
   let home = fs.readFileSync(homePath, 'utf8')
-  const seoBody = `<div id="root"><main class="seo-entry"><h1>${title}</h1><p>${escapeHtml(description)}</p><h2>工坊介绍</h2><p>${escapeHtml(intro)}</p><h2>玩法介绍</h2><ol>${howSteps.map((step) => `<li>${escapeHtml(step)}</li>`).join('')}</ol><h2>全部功能</h2><ul>${homeToolList(pages, false)}</ul><h2>信任与说明</h2><ul><li><a href="/methodology">演算与内容方法</a></li><li><a href="/privacy">隐私说明</a></li><li><a href="/disclaimer">免责声明</a></li><li><a href="/about">关于命运工坊</a></li><li><a href="/contact">联系我们</a></li></ul><p><a href="/en">English</a></p></main></div>`
+  const seoBody = `<div id="root"><main class="seo-entry"><h1>${title}</h1><p>${escapeHtml(description)}</p><h2>免费在线塔罗占卜</h2><p>${escapeHtml(intro)}</p><h2>玩法介绍</h2><ol>${howSteps.map((step) => `<li>${escapeHtml(step)}</li>`).join('')}</ol>${tarotModes ? `<h2>你可以体验</h2><ul>${tarotModes}</ul>` : ''}<p><a href="/tarot">查看完整塔罗玩法与常见问题</a> · <a href="/tarot/cards">浏览 78 张牌义</a></p><h2>其他工具</h2><ul>${homeToolList(otherTools, false)}</ul><h2>信任与说明</h2><ul><li><a href="/methodology">演算与内容方法</a></li><li><a href="/privacy">隐私说明</a></li><li><a href="/disclaimer">免责声明</a></li><li><a href="/about">关于命运工坊</a></li><li><a href="/contact">联系我们</a></li></ul><p><a href="/en">English</a></p></main></div>`
   home = applyShell(home.includes('<div id="root"></div>') ? home : home.replace(/<div id="root">[\s\S]*?<\/div>/, '<div id="root"></div>'), {
-    title: `${title} | 免费在线占卜与命理工具`,
+    title: `${title} | 免费在线塔罗占卜与命理工具`,
     description,
     url: `${origin}/`,
     lang: 'zh-CN',
@@ -745,6 +750,12 @@ const featurePriority = {
   bazi: '0.8',
 }
 
+/** Lower sitemap priority for /en mirrors relative to the unprefixed zh URL. */
+function enPriority(zhPriority) {
+  const value = Math.max(0.1, Number(zhPriority) - 0.2)
+  return value.toFixed(1)
+}
+
 function sitemapUrlEntry({ loc, changefreq, priority, alternates, lastmod }) {
   const lines = [
     '  <url>',
@@ -774,8 +785,8 @@ const sitemapEntries = [
   }),
   sitemapUrlEntry({
     loc: `${origin}/en`,
-    changefreq: 'daily',
-    priority: '0.9',
+    changefreq: 'weekly',
+    priority: '0.6',
     lastmod: homeLastmod,
     alternates: [['zh-CN', `${origin}/`], ['en', `${origin}/en`], ['x-default', `${origin}/`]],
   }),
@@ -783,18 +794,19 @@ const sitemapEntries = [
     const zh = absolutePath(slug, false)
     const en = absolutePath(slug, true)
     const alternates = [['zh-CN', zh], ['en', en], ['x-default', zh]]
+    const zhPriority = featurePriority[slug] || '0.7'
     return [
       sitemapUrlEntry({
         loc: zh,
         changefreq: featureChangeFreq[slug] || 'weekly',
-        priority: featurePriority[slug] || '0.7',
+        priority: zhPriority,
         lastmod: featureCopyLastmod,
         alternates,
       }),
       sitemapUrlEntry({
         loc: en,
         changefreq: featureChangeFreq[slug] || 'weekly',
-        priority: featurePriority[slug] || '0.7',
+        priority: enPriority(zhPriority),
         lastmod: featureCopyLastmod,
         alternates,
       }),
@@ -803,32 +815,33 @@ const sitemapEntries = [
   ...trustPairs.flatMap(({ zhUrl, enUrl, lastmod }) => {
     const alternates = [['zh-CN', zhUrl], ['en', enUrl], ['x-default', zhUrl]]
     return [
-      sitemapUrlEntry({ loc: zhUrl, changefreq: 'monthly', priority: '0.4', lastmod, alternates }),
-      sitemapUrlEntry({ loc: enUrl, changefreq: 'monthly', priority: '0.4', lastmod, alternates }),
+      sitemapUrlEntry({ loc: zhUrl, changefreq: 'monthly', priority: '0.45', lastmod, alternates }),
+      sitemapUrlEntry({ loc: enUrl, changefreq: 'monthly', priority: '0.25', lastmod, alternates }),
     ]
   }),
   ...guideUrls.map(({ url, lastmod }) => sitemapUrlEntry({
     loc: url,
     changefreq: 'monthly',
-    priority: '0.55',
+    priority: '0.4',
     lastmod,
   })),
   ...[...detailPairs, ...hubPairs].flatMap(({ route, zhUrl, enUrl, lastmod }) => {
     const alternates = [['zh-CN', zhUrl], ['en', enUrl], ['x-default', zhUrl]]
     const isHub = route.endsWith('/cards') || route.endsWith('/symbols') || route.endsWith('/sticks')
     const isDetail = route.includes('/card/') || route.includes('/symbol/') || route.includes('/stick/')
+    const zhPriority = isHub ? '0.65' : '0.55'
     return [
       sitemapUrlEntry({
         loc: zhUrl,
         changefreq: isDetail ? 'monthly' : 'weekly',
-        priority: isHub ? '0.6' : '0.5',
+        priority: zhPriority,
         lastmod,
         alternates,
       }),
       sitemapUrlEntry({
         loc: enUrl,
         changefreq: isDetail ? 'monthly' : 'weekly',
-        priority: isHub ? '0.6' : '0.5',
+        priority: enPriority(zhPriority),
         lastmod,
         alternates,
       }),

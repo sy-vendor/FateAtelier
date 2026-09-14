@@ -1,4 +1,4 @@
-# Fate Atelier / 命运工坊
+# 命运工坊 / Fate Atelier
 User-agent: *
 Allow: /
 

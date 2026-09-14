@@ -67,7 +67,9 @@ const homeHtml = fs.readFileSync(path.join(dist, 'index.html'), 'utf8')
 if (!homeHtml.includes('玩法介绍') || !homeHtml.includes('lang="zh-CN"')) {
   throw new Error('Chinese homepage (/) missing 玩法介绍 or lang=zh-CN')
 }
+if (!homeHtml.includes('免费在线塔罗占卜')) throw new Error('Chinese homepage should lead with 免费在线塔罗占卜')
 if (!homeHtml.includes('无广告')) throw new Error('Chinese homepage missing 无广告')
+if (!homeHtml.includes('content="zh_CN"')) throw new Error('Chinese homepage missing og:locale zh_CN')
 assertUniqueHreflang(homeHtml, 'Chinese homepage')
 
 const enHomeHtml = fs.readFileSync(path.join(dist, 'en/index.html'), 'utf8')
@@ -91,6 +93,12 @@ if (!detailEnHtml.includes('hreflang="zh-CN"') || !detailEnHtml.includes('lang="
 }
 
 const sitemap = fs.readFileSync(path.join(dist, 'sitemap.xml'), 'utf8')
+const zhTarotPriority = sitemap.match(/<loc>https:\/\/www\.fateatelier\.cloud\/tarot<\/loc>[\s\S]*?<priority>([^<]+)<\/priority>/)
+const enTarotPriority = sitemap.match(/<loc>https:\/\/www\.fateatelier\.cloud\/en\/tarot<\/loc>[\s\S]*?<priority>([^<]+)<\/priority>/)
+if (!zhTarotPriority || !enTarotPriority) throw new Error('Sitemap missing /tarot or /en/tarot priority')
+if (!(Number(zhTarotPriority[1]) > Number(enTarotPriority[1]))) {
+  throw new Error(`Chinese /tarot priority (${zhTarotPriority[1]}) should exceed English (${enTarotPriority[1]})`)
+}
 const required = [
   'https://www.fateatelier.cloud/',
   'https://www.fateatelier.cloud/en',
